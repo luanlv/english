@@ -1,0 +1,52 @@
+@()(implicit ctx: Context)
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>English site !!</title>
+		@cssTag("mainChat.css")
+	</head>
+
+	<body
+		id="@ctx.userId.getOrElse("")"
+		name="@ctx.username.getOrElse("")"
+		mv = "@mVersion(ctx.userId)"
+	>
+
+	<div id="nav"> </div>
+	<div id="app"> </div>
+	<div id="rightContainer"></div>
+
+	@jsTag("mithril.js")
+	@jQueryTag
+	@jsTag("ws.js")
+	@jsTag("app.js")
+
+	<script >
+		m.route.mode = "pathname";
+		m.route(document.getElementById('app'), "/", {
+		  "/": route(Home),
+		  "/dashboard": route(Dashboard),
+		});
+	</script>
+	<script >
+		(function() {
+			try {
+				var $_console$$ = console;
+				Object.defineProperty(window, "console", {
+					get: function() {
+						if ($_console$$._commandLineAPI)
+							throw "Sorry, for security reasons, the script console is deactivated on netflix.com";
+						return $_console$$
+					},
+					set: function($val$$) {
+						$_console$$ = $val$$
+					}
+				})
+			} catch ($ignore$$) {
+			}
+		})()
+	</script>
+	</body>
+</html>
