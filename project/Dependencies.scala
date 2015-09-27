@@ -48,7 +48,7 @@ object Dependencies {
   val bigPipe = "com.ybrikman.ping" %% "big-pipe" % "0.0.12"
 
   object play {
-    val version = "2.4.2"
+    val version = "2.4.3"
     val api = "com.typesafe.play" %% "play" % version
     val test = "com.typesafe.play" %% "play-test" % version
   }

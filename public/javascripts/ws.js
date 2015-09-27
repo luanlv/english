@@ -4,7 +4,8 @@ var userId = document.body.getAttribute("id");
 var userName = document.body.getAttribute("name");
 var mVersion = document.body.getAttribute("mv");
 
-var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
+var ws = new WebSocket("ws://108.61.160.215:9000/socket?sri=" + sri);
+//var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://192.168.1.25:9000/socket?sri=" + sri);
 
 var pingData = function() {
