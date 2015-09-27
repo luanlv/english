@@ -33,6 +33,11 @@ private[userMessage] final class UserMessageActor(
 
     case InitChat(fromId, toId) => sendInitChat(fromId, toId)
 
+    case MissingMes(userId, f, t) => {
+      println("actor message ok")
+      sendMissingMes(userId, f, t)
+    }
+
     case GetName(id) => lightUser(id) match {
       case None => sender ! "anonymous"
       case Some(user) => sender ! user.name
@@ -63,6 +68,13 @@ private[userMessage] final class UserMessageActor(
     val mesId = if(fromId < toId) fromId + toId else toId + fromId
     val listMes = api.getInitMes(mesId).await
     bus.publish(SendTo(fromId, "init_chat", listMes), 'users)
+  }
+
+  def sendMissingMes(userId: String, f: Int, t: Int) {
+    println("Send missing mess")
+    val missingMes = api.getMissingMes(userId, f, t).await
+    println(missingMes.toString)
+    bus.publish(SendTo(userId, "smm", missingMes), 'users)
   }
 
   def sendMessage(fromId: String, o: JsObject) {

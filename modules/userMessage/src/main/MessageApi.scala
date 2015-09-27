@@ -32,4 +32,7 @@ final class MessageApi(
     Env.current.messageRepo.getInitMes(mesId)
   }
 
+  def getMissingMes(userId: String, f: Int, t: Int) = {
+    Env.current.messageRepo.getMissingMes(userId, f, t)
+  }
 }

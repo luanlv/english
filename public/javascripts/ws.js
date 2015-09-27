@@ -1,11 +1,13 @@
 var sri = Math.random().toString(36).substring(2);
 
 var userId = document.body.getAttribute("id");
+
 var userName = document.body.getAttribute("name");
 var mVersion = document.body.getAttribute("mv");
+var mRVersion = document.body.getAttribute("mv");
 
-var ws = new WebSocket("ws://108.61.160.215:9000/socket?sri=" + sri);
-//var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
+//var ws = new WebSocket("ws://108.61.160.215:9000/socket?sri=" + sri);
+var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://192.168.1.25:9000/socket?sri=" + sri);
 
 var pingData = function() {
@@ -77,7 +79,7 @@ var getChat = function(uid){
 ctrl.listen = function(d){
   if(d.t === "ul"){
     d.d.map(function(uid){
-      if(data.userOnline.indexOf(uid) < 0 && uid != userId) {
+      if(data.userOnline.indexOf(uid) < 0) {
         data.userOnline.push(uid);
       }
     });
@@ -103,28 +105,32 @@ ctrl.listen = function(d){
 
   if(d.t === "mes"){
     if(mVersion == (d.d.v-1)){
-      var uid = (userId == d.d.f)? d.d.t: d.d.f;
-      var chat = getChat(uid);
-      if(!chat.exist && d.d.f != userId){
-        data.chat.push(
-            {
-              uid: d.d.f, display: true, input: m.prop(''), init: false, hide: false, chat: [
-                {f: d.d.f, "v": d.d.mv, "mes": d.d.m, "time": d.d.time}
-              ]
-            }
-        );
-        send(sendData("init_chat", uid));
-      } else {
-        data.chat[chat.pos].chat.push(
-          {f: d.d.f, "v": d.d.mv, "mes": d.d.m, "time": d.d.time}
-        )
-        if(data.chat[chat.pos].display != true){
-          data.chat[chat.pos].display = true;
-          data.chat[chat.pos].hide = false;
-        }
-      }
+      doMes(d);
+      mVersion++;
+      mRVersion ++;
+    } else {
       mVersion = d.d.v;
-      m.redraw();
+      var timeOut = setTimeout(function repeart(){
+        if(mRVersion == d.d.v -1){
+          doMes(d);
+          mRVersion++;
+          clearTimeout(timeOut)
+        } else {
+          setTimeout(repeart, 300)
+        }
+      },300);
+      var sendMes = { f: (mRVersion +1), t: (d.d.v -1) };
+      send(sendData("gmm", sendMes));
+      setTimeout(function getMissMes(){
+        console.log("SEEND REQUEST GET MISSING MESS: " + sendMes.toString());
+        if(mRVersion == d.d.v){
+          clearTimeout(getMissMes)
+        } else {
+          send(sendData("gmm", sendMes));
+          setTimeout(getMissMes, 2000)
+        }
+      }, 2000)
+
     }
   }
 
@@ -153,6 +159,30 @@ ctrl.listen = function(d){
     }
   }
 
+  if(d.t === "smm"){
+      d.d.map(function(mes){
+      var uid = (userId == mes.f)?mes.t:mes.f;
+      var chat = getChat(uid);
+      if(chat.exist){
+        if(data.chat[chat.pos].chat.length < 1) {
+          d.d.map(function (mes) {
+            data.chat[chat.pos].chat.push(mes)
+          });
+        } else {
+          d.d.map(function(mes){
+            if(mes.v < data.chat[chat.pos].chat[0].v) data.chat[chat.pos].chat.push(mes)
+          })
+        }
+      } else {
+        d.d.map(function(mes){
+          if(mes.v < data.chat[chat.pos].chat[0].v) data.chat[chat.pos].chat.push(mes)
+        })
+      }
+      if(mRVersion < mes.mv) mRVersion = mes.mv;
+     });
+      m.redraw()
+  }
+
 };
 
 function sortByVer(a,b) {
@@ -175,4 +205,27 @@ ws.onmessage = function (e) {
   ctrl.listen(m)
 };
 
+var doMes = function(d){
+    var uid = (userId == d.d.f)? d.d.t: d.d.f;
+    var chat = getChat(uid);
+    if(!chat.exist && d.d.f != userId){
+      data.chat.push(
+          {
+            uid: d.d.f, display: true, input: m.prop(''), init: false, hide: false, chat: [
+            {f: d.d.f, "v": d.d.mv, "mes": d.d.m, "time": d.d.time}
+          ]
+          }
+      );
+      send(sendData("init_chat", uid));
+    } else {
+      data.chat[chat.pos].chat.push(
+          {f: d.d.f, "v": d.d.mv, "mes": d.d.m, "time": d.d.time}
+      );
+      if(data.chat[chat.pos].display != true){
+        data.chat[chat.pos].display = true;
+        data.chat[chat.pos].hide = false;
+      }
+    }
+    m.redraw();
+};
 

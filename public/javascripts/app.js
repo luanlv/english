@@ -26,6 +26,10 @@ var requestWithFeedback = function(args) {
 
 var nav = {
   controller: function(){
+    setInterval(function(){
+      console.log("mVersion:" + mVersion);
+      console.log("mRVersion:" + mRVersion);
+    }, 1000)
   },
   view: function(){
     rd("nav");
@@ -108,9 +112,7 @@ var right = {
     m.redraw.strategy("diff");
 
     ctrl.makechat = function(uid) {
-
       var chat = getChat(uid);
-
       if(!chat.exist){
         data.chat.push(
             {
@@ -165,7 +167,7 @@ var right = {
       m('#user-list', [
         m('.title-user-list', "USER ONLINE"),
         data.userOnline.map(function(uid){
-          return m('div.userOnline', {onclick: function(){if(userId.length > 0) ctrl.makechat(uid)}}, getUser(uid).name)
+          return m('div.userOnline', {onclick: function(){if(userId.length > 0 && userId !== uid) ctrl.makechat(uid)}}, getUser(uid).name)
         }),
         m('.title-user-list', "USER ONLINE")
       ]),

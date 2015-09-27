@@ -40,6 +40,14 @@ final class MessageRepo(repo: UserMessage.Builder) {
     }
   }
 
+  def getMissingMes(userId: String, f: Int, t: Int) = {
+    repo.getMissingMes(userId, f, t).map{
+      data => data.map{
+        mes => BSONFormats.toJSON(mes).as[JsObject].-("_id").-("lid").-("mid")
+      }
+    }
+  }
+
 }
 
 

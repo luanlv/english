@@ -11,6 +11,8 @@ import lila.common.PimpedJson._
 import lila.hub.actorApi.relation.ReloadOnlineFriends
 import makeTimeout.large
 
+import scala.util.parsing.json.JSONObject
+
 object Handler {
 
   type Controller = PartialFunction[(String, JsObject), Unit]
@@ -43,6 +45,14 @@ object Handler {
         (hub.actor.userMessage ? GetName(id)) foreach {
           case "error" => println("errror:" +id)
           case name:String  => socket ! SendName(uid, id, name)
+        }
+      }
+      case ("gmm", o) => userId foreach { u =>
+        if(u.length > 0){
+          println("u:" + "handerOK:" + o.toString)
+          val f = ((o\"d").as[JsObject]\"f").as[Int]
+          val t = ((o\"d").as[JsObject]\"t").as[Int]
+          hub.actor.userMessage ! MissingMes(u, f, t)
         }
       }
 
