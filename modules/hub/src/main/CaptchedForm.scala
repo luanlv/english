@@ -7,7 +7,7 @@ import play.api.data._
 import actorApi.captcha._
 import lila.common.Captcha
 import lila.common.Captcha2
-import lila.hub.{ ActorMap, Sequencer }
+//import lila.hub.{ ActorMap, Sequencer }
 
 trait CaptchedForm {
 
