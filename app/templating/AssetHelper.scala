@@ -10,12 +10,13 @@ trait AssetHelper { self: I18nHelper =>
 
   def isProd: Boolean
 
-  val assetDomain = "luanlv.info" //  lila.api.Env.current.Net.AssetDomain
+  //val assetDomain = "luanlv.info" //  lila.api.Env.current.Net.AssetDomain
   //val assetDomain = "188.166.254.203:9000" //  lila.api.Env.current.Net.AssetDomain
   //val assetDomain = "localhost:9000" //  lila.api.Env.current.Net.AssetDomain
   //val assetDomain = "192.168.1.25:9000" //  lila.api.Env.current.Net.AssetDomain
 
-  val assetBaseUrl = s"http://$assetDomain"
+  //val assetBaseUrl = s"http://$assetDomain"
+  val assetBaseUrl = ""
 
   def cdnUrl(path: String) = s"$assetBaseUrl$path"
   def staticUrl(path: String) = s"$assetBaseUrl${routes.Assets.at(path)}"

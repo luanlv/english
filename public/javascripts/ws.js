@@ -3,8 +3,8 @@ var sri = Math.random().toString(36).substring(2);
 var userId = document.body.getAttribute("id");
 
 var userName = document.body.getAttribute("name");
-var mVersion = document.body.getAttribute("mv");
-var mRVersion = document.body.getAttribute("mv");
+var mVersion = parseInt(document.body.getAttribute("mv"));
+var mRVersion = parseInt(document.body.getAttribute("mv"));
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var ws = new WebSocket("ws://luanlv.info:9000/socket?sri=" + sri);
@@ -46,13 +46,13 @@ var waitForConnection = function (callback, interval) {
 };
 
 setInterval(function(){
-  ws.send(pingData());
+  send(pingData());
 }, 1000);
 
 
 ws.onopen = function(){
   console.log('WebSocket ok');
-  ws.send(sendData("get_onlines", ""));
+  send(sendData("get_onlines", ""));
 };
 
 
@@ -120,7 +120,7 @@ ctrl.listen = function(d){
           setTimeout(repeart, 300)
         }
       },300);
-      var sendMes = { f: (mRVersion +1), t: (d.d.v -1) };
+      var sendMes = { f: mRVersion +1, t: (d.d.v -1) };
       send(sendData("gmm", sendMes));
       setTimeout(function getMissMes(){
         console.log("SEEND REQUEST GET MISSING MESS: " + sendMes.toString());
