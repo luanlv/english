@@ -65,16 +65,20 @@ var data = {
 };
 
 
-var getChat = function(uid){
-  var exist = false;
+var getPosChat = function(uid){
   pos = -1;
   for(var len = 0; len < data.chat.length; len++){
     if(data.chat[len].uid == uid) {
-      exist = true;
       pos = len;
+      return pos
     }
   }
-  return {exist: exist, pos: pos}
+  if(pos = -1){
+    console.log("send inti_chat form getPosChat");
+    data.chat.push({uid: uid, display: true, input: m.prop(''), init: false, hide: false, chat: []});
+    send(sendData("init_chat", uid));
+    return (data.chat.length - 1)
+  }
 };
 
 ctrl.listen = function(d){
@@ -143,23 +147,20 @@ ctrl.listen = function(d){
     var listMes = d.d;
     if(listMes.length > 0){
       var uid = (userId == d.d[0].f)?d.d[0].t:d.d[0].f;
-      var chat = getChat(uid);
-      if(chat.exist){
-        if(data.chat[chat.pos].chat.length < 1) {
-          d.d.map(function (mes) {
-            data.chat[chat.pos].chat.push(mes)
-          });
-        } else {
-          d.d.map(function(mes){
-            if(mes.mv < data.chat[chat.pos].chat[0].mv) data.chat[chat.pos].chat.push(mes)
-          })
-        }
+      var pos = getPosChat(uid);
+      console.log("init posssssssss:" + pos);
+      if(data.chat[pos].chat.length <= 1) {
+        d.d.map(function (mes) {
+          console.log("push:" + mes.mes)
+          data.chat[pos].chat.push(mes)
+        });
       } else {
         d.d.map(function(mes){
-          if(mes.mv < data.chat[chat.pos].chat[0].mv) data.chat[chat.pos].chat.push(mes)
+          console.log("push2:" + mes.mes)
+          if(mes.mv < data.chat[pos].chat[0].mv) data.chat[pos].chat.push(mes)
         })
       }
-      data.chat[chat.pos].chat.sort(sortByVer);
+      data.chat[pos].chat.sort(sortByVer);
       m.redraw()
     }
   }
@@ -167,24 +168,15 @@ ctrl.listen = function(d){
   if(d.t === "smm"){
       d.d.map(function(mes){
       var uid = (userId == mes.f)?mes.t:mes.f;
-      var chat = getChat(uid);
-      if(!chat.exist){
-        data.chat.push(
-            {
-              uid: uid, display: true, input: m.prop(''), init: false, hide: false, chat: [
-            ]
-            }
-        );
-        chat = getChat(uid);
-      }
+      var pos = getPosChat(uid);
 
-      if(data.chat[chat.pos].chat.length < 1) {
+      if(data.chat[pos].chat.length < 1) {
         d.d.map(function (mes) {
-          data.chat[chat.pos].chat.push(mes)
+          data.chat[pos].chat.push(mes)
         });
       } else {
         d.d.map(function(mes){
-          if(mes.mv < data.chat[chat.pos].chat[0].mv) data.chat[chat.pos].chat.push(mes)
+          if(mes.mv < data.chat[pos].chat[0].mv) data.chat[pos].chat.push(mes)
         })
       }
 
@@ -204,10 +196,6 @@ function sortByVer(a,b) {
 }
 
 
-var poshMes = function(data, chat){
-  if(!chat.init){
-  }
-};
 
 
 ws.onmessage = function (e) {
@@ -217,24 +205,13 @@ ws.onmessage = function (e) {
 
 var doMes = function(d){
     var uid = (userId == d.d.f)? d.d.t: d.d.f;
-    var chat = getChat(uid);
-    if(!chat.exist && d.d.f != userId){
-      data.chat.push(
-          {
-            uid: d.d.f, display: true, input: m.prop(''), init: false, hide: false, chat: [
-            {f: d.d.f, "v": d.d.mv, "mes": d.d.m, "time": d.d.time}
-          ]
-          }
-      );
-      send(sendData("init_chat", uid));
-    } else {
-      data.chat[chat.pos].chat.push(
-          {f: d.d.f, "v": d.d.mv, "mes": d.d.m, "time": d.d.time}
-      );
-      if(data.chat[chat.pos].display != true){
-        data.chat[chat.pos].display = true;
-        data.chat[chat.pos].hide = false;
-      }
+    var pos = getPosChat(uid);
+    data.chat[pos].chat.push(
+        {f: d.d.f, "v": d.d.mv, "mes": d.d.m, "time": d.d.time}
+    );
+    if(data.chat[pos].display != true){
+      data.chat[pos].display = true;
+      data.chat[pos].hide = false;
     }
     m.redraw();
 };

@@ -112,19 +112,9 @@ var right = {
     m.redraw.strategy("diff");
 
     ctrl.makechat = function(uid) {
-      var chat = getChat(uid);
-      if(!chat.exist){
-        data.chat.push(
-            {
-              uid: uid, display: true, input: m.prop(''), init: false, hide: false, chat: [
-              ]
-            }
-        );
-        send(sendData("init_chat", uid));
-      } else {
-        data.chat[chat.pos].display = true;
-        data.chat[chat.pos].hide = false;
-      }
+      var pos = getPosChat(uid);
+      data.chat[pos].display = true;
+      data.chat[pos].hide = false;
 
     };
 
