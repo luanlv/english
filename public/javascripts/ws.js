@@ -144,7 +144,7 @@ ctrl.listen = function(d){
   }
 
   if(d.t === "init_chat"){
-    var listMes = d.d;
+    var listMes = d.d.reverse();
     if(listMes.length > 0){
       var uid = (userId == d.d[0].f)?d.d[0].t:d.d[0].f;
       var pos = getPosChat(uid);

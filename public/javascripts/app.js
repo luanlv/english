@@ -1,7 +1,7 @@
 var redraw = 0;
 var rd = function(name){
   //console.log("redraw " + name)
-}
+};
 
 var requestWithFeedback = function(args) {
   var data = m.prop();
@@ -33,12 +33,14 @@ var nav = {
   },
   view: function(){
     rd("nav");
+    redraw++;
     return [
       m("a", {href: "/", config: m.route}, " Home |"),
       (userId.length>0)?(" ---Hello:" + userId) + "--- |":"",
       (userId.length>0)?m("a", {href: "/logout"}, " Đăng xuất"):"",
       (!userId.length>0)?m("a", {href: "/login"}, " Đăng nhập |"):"",
       (!userId.length>0)?m("a", {href: "/signup"}, " Đăng ký"):"",
+      m("", " " + "redraw: " + redraw)
     ]
   }
 };
