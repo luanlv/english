@@ -43,11 +43,13 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
   // generic message handler
   def receiveGeneric: Receive = {
 
-    case Ping(uid)             => ping(uid)
+    case Ping(uid, v)             => ping(uid, v)
 
     case SetAlive(uid)         => setAlive(uid)
 
     case SendName(uid, id, name)   => sendName(uid, id,  name)
+
+    case OnelineFriend(uid, list) => sendOnelineFriend(uid, list)
 
     case Test2(uid, to, mes)   => test2(uid, to, mes)
 
@@ -85,13 +87,12 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     member push makeMessage(t, data)
   }
 
-  def ping(uid: String) {
+  def ping(uid: String, v: Int) {
     setAlive(uid)
-    withMember(uid)(_ push pong)
+    withMember(uid)(_ push makePong(v))
   }
 
   def test2(uid: String, to: String, mes: String) {
-    println(members(uid))
     members(uid).userId foreach { userId =>
       val mesjson = Json.obj("from" -> userId, "mes" -> mes)
       withMember(uidByUserId(to).toList.head)(_ push makeMessage("test", mesjson))
@@ -156,6 +157,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
   def sendName(uid: String, id: String, name: String) {
     withMember(uid)(_ push makeMessage("nu", Json.obj("id" -> id, "n" -> name)))
+  }
+
+  def sendOnelineFriend(uid: String, list: Set[String]) {
+    withMember(uid)(_ push makeMessage("ul", list))
   }
 
   def uids = members.keys

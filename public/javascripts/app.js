@@ -263,12 +263,12 @@ var getUser = function(name){
   } else {
     data.user[name] = {};
     send(sendData("gn", name));
-    setTimeout(function(){
+    setTimeout(function getName(){
       if(data.user[name]  === undefined){
-        send(sendData("gn", name));
+        setTimeout(getName, 2000);
       }
     }, 2000);
-    return {name: ""}
+    return {name: "...."}
   }
 };
 

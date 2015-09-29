@@ -25,11 +25,13 @@ private[userMessage] final class UserMessageActor(
 
   def receive = {
 
-    case PingVersion(userId) => sendPong(userId)
+    case PingVersion(userId) => {
+      sender ! api.findLastesUserMesVersion(userId).await
+    }
 
     case Msg(userId, o) => sendMessage(userId, o)
 
-    case GetOnlineUser(userId) => sendUserOnline(userId)
+    case GetOnlineUser(userId) => sender ! onlineIds.map(_.toString)
 
     case InitChat(fromId, toId) => sendInitChat(fromId, toId)
 
@@ -56,12 +58,6 @@ private[userMessage] final class UserMessageActor(
     case _ =>
   }
   private def onlineIds: Set[ID] = onlines.keySet
-
-  def sendPong(userId: String) {
-    val mv = api.findLastesUserMesVersion(userId).await
-    bus.publish(SendTo(userId, "p", mv), 'users)
-
-  }
 
   def sendInitChat(fromId: String, toId: String) {
     val mesId = if(fromId < toId) fromId + toId else toId + fromId
@@ -115,8 +111,5 @@ private[userMessage] final class UserMessageActor(
     }
   }
 
-  private def sendUserOnline(userId: String){
-    bus.publish(SendTo(userId, "ul", onlineIds), 'users)
-  }
 
 }

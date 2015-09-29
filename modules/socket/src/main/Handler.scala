@@ -28,16 +28,20 @@ object Handler {
     def baseController(member: SocketMember): Controller = {
       case ("p", _) => {
         userId match {
-          case None => socket ! Ping(uid)
+          case None => socket ! Ping(uid, 0)
           case Some(user) => {
-            socket ! SetAlive(uid)
-            hub.actor.userMessage ! PingVersion(user)
+            (hub.actor.userMessage ? PingVersion(user)) foreach {
+              case v: Int => socket ! Ping(uid, v)
+              case _ => println("unhander !!!")
+            }
           }
         }
       }
 
       case ("get_onlines", _) => userId foreach { u =>
-        hub.actor.userMessage ! GetOnlineUser(u)
+        (hub.actor.userMessage ? GetOnlineUser(u)) foreach {
+          case data: Set[String] => socket ! OnelineFriend(uid, data)
+        }
       }
 
       case ("gn", o) => userId foreach { u =>

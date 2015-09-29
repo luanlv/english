@@ -8,7 +8,7 @@ case class Connected[M <: SocketMember](
   enumerator: JsEnumerator,
   member: M)
 case class Sync(uid: String, friends: List[String])
-case class Ping(uid: String)
+case class Ping(uid: String, v: Int)
 case class SetAlive(uid: String)
 case class Test(uid: String)
 case class Test2(uid: String, to: String, mes: String)
@@ -32,3 +32,5 @@ case class NbMembers(nb: Int, pong: JsObject)
 case class StartWatching(uid: String, member: SocketMember, gameIds: Set[String])
 
 case class SendName(uid: String, id: String, name: String)
+
+case class OnelineFriend(uid: String, list: Set[String])

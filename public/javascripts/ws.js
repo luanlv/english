@@ -6,9 +6,9 @@ var userName = document.body.getAttribute("name");
 var mVersion = document.body.getAttribute("mv");
 var mRVersion = document.body.getAttribute("mv");
 
-var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
+//var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://luanlv.info:9000/socket?sri=" + sri);
-//var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
+var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://192.168.1.25:9000/socket?sri=" + sri);
 
 var pingData = function() {
@@ -80,7 +80,7 @@ var getChat = function(uid){
 ctrl.listen = function(d){
   if(d.t === "ul"){
     d.d.map(function(uid){
-      if(data.userOnline.indexOf(uid) < 0) {
+      if(data.userOnline.indexOf(uid) < 0 && uid != userId) {
         data.userOnline.push(uid);
       }
     });
