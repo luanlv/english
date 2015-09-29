@@ -105,32 +105,36 @@ ctrl.listen = function(d){
   }
 
   if(d.t === "mes"){
-    if(mVersion == (d.d.v-1)){
+    if(mVersion >= (d.d.v-1)){
       doMes(d);
       mVersion++;
       mRVersion ++;
     } else {
+      var sendMes = { f: (mVersion+1), t: (d.d.v -1) };
       mVersion = d.d.v;
-      var timeOut = setTimeout(function repeart(){
-        if(mRVersion == d.d.v -1){
+
+      setTimeout(function delayDoMes(){
+        console.log("delay domess");
+        if(mRVersion >= sendMes.t){
           doMes(d);
           mRVersion++;
-          clearTimeout(timeOut)
-        } else {
-          setTimeout(repeart, 300)
+        }else{
+          setTimeout(delayDoMes, 200);
         }
-      },300);
-      var sendMes = { f: mRVersion +1, t: (d.d.v -1) };
+      }, 100);
+
+      console.log("SEEND REQUEST GET MISSING MESS: " + sendMes.f + "=>" + sendMes.t);
       send(sendData("gmm", sendMes));
-      setTimeout(function getMissMes(){
-        console.log("SEEND REQUEST GET MISSING MESS: " + sendMes.toString());
-        if(mRVersion == d.d.v){
-          clearTimeout(getMissMes)
+      var gmm = setTimeout(function getMissMes(){
+        console.log("SEEND REQUEST GET MISSING MESS: " + sendMes.f + "=>" + sendMes.t);
+        console.log("current mes need:" + sendMes.t);
+        if(mRVersion >= sendMes.t){
+          clearTimeout(gmm)
         } else {
           send(sendData("gmm", sendMes));
-          setTimeout(getMissMes, 2000)
+          setTimeout(getMissMes, 1500)
         }
-      }, 2000)
+      }, 1500)
 
     }
   }
@@ -147,12 +151,12 @@ ctrl.listen = function(d){
           });
         } else {
           d.d.map(function(mes){
-            if(mes.v < data.chat[chat.pos].chat[0].v) data.chat[chat.pos].chat.push(mes)
+            if(mes.mv < data.chat[chat.pos].chat[0].mv) data.chat[chat.pos].chat.push(mes)
           })
         }
       } else {
         d.d.map(function(mes){
-          if(mes.v < data.chat[chat.pos].chat[0].v) data.chat[chat.pos].chat.push(mes)
+          if(mes.mv < data.chat[chat.pos].chat[0].mv) data.chat[chat.pos].chat.push(mes)
         })
       }
       data.chat[chat.pos].chat.sort(sortByVer);
@@ -164,21 +168,26 @@ ctrl.listen = function(d){
       d.d.map(function(mes){
       var uid = (userId == mes.f)?mes.t:mes.f;
       var chat = getChat(uid);
-      if(chat.exist){
-        if(data.chat[chat.pos].chat.length < 1) {
-          d.d.map(function (mes) {
-            data.chat[chat.pos].chat.push(mes)
-          });
-        } else {
-          d.d.map(function(mes){
-            if(mes.v < data.chat[chat.pos].chat[0].v) data.chat[chat.pos].chat.push(mes)
-          })
-        }
+      if(!chat.exist){
+        data.chat.push(
+            {
+              uid: uid, display: true, input: m.prop(''), init: false, hide: false, chat: [
+            ]
+            }
+        );
+        chat = getChat(uid);
+      }
+
+      if(data.chat[chat.pos].chat.length < 1) {
+        d.d.map(function (mes) {
+          data.chat[chat.pos].chat.push(mes)
+        });
       } else {
         d.d.map(function(mes){
-          if(mes.v < data.chat[chat.pos].chat[0].v) data.chat[chat.pos].chat.push(mes)
+          if(mes.mv < data.chat[chat.pos].chat[0].mv) data.chat[chat.pos].chat.push(mes)
         })
       }
+
       if(mRVersion < mes.mv) mRVersion = mes.mv;
      });
       m.redraw()
@@ -187,9 +196,9 @@ ctrl.listen = function(d){
 };
 
 function sortByVer(a,b) {
-  if (a.v < b.v)
+  if (a.mv < b.mv)
     return -1;
-  if (a.v > b.v)
+  if (a.mv > b.mv)
     return 1;
   return 0;
 }
