@@ -9,7 +9,7 @@ import reactivemongo.bson.Macros
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import spray.caching.{ LruCache, Cache }
-
+import play.modules.reactivemongo.json._
 import lila.db.BSON.BSONJodaDateTimeHandler
 import lila.db.Types._
 
@@ -51,10 +51,10 @@ object UserMessage {
     }
 
     def getInitMes(mesId: String) = {
-      coll.find(BSONDocument("mid" -> mesId))
+      coll.find(BSONDocument("mid" -> mesId), BSONDocument("_id" -> 0, "mid" -> 0, "lid" -> 0))
       .sort(BSONDocument("v" -> -1))
       .cursor[BSONDocument]()
-      .collect[List](10)
+      .collect[List](10).map(_.map(toJSON(_)))
     }
 
     def getMissingMes(userId: String, f: Int, t: Int) = {
@@ -64,8 +64,8 @@ object UserMessage {
         Match(BSONDocument("lid.id" -> userId)),
         Sort(Descending("lid.v")),
         Match(BSONDocument("$and" -> BSONArray(BSONDocument("lid.v" -> BSONDocument("$gte" -> f)), BSONDocument("lid.v" -> BSONDocument("$lte" -> t))))),
-        Project(BSONDocument("v" -> 1, "mes" -> 1, "time" -> 1, "f" -> 1, "t" -> 1, "mv" -> "$lid.v"))
-      )).map(_.documents.map(_.as[BSONDocument]))
+        Project(BSONDocument("_id" -> 0, "v" -> 1, "mes" -> 1, "time" -> 1, "f" -> 1, "t" -> 1, "mv" -> "$lid.v"))
+      )).map(_.documents.map(toJSON(_)))
     }
   }
 

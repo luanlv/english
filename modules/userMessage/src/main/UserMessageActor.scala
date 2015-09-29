@@ -34,7 +34,6 @@ private[userMessage] final class UserMessageActor(
     case InitChat(fromId, toId) => sendInitChat(fromId, toId)
 
     case MissingMes(userId, f, t) => {
-      println("actor message ok")
       sendMissingMes(userId, f, t)
     }
 
@@ -66,15 +65,15 @@ private[userMessage] final class UserMessageActor(
 
   def sendInitChat(fromId: String, toId: String) {
     val mesId = if(fromId < toId) fromId + toId else toId + fromId
-    val listMes = api.getInitMes(mesId).await
-    bus.publish(SendTo(fromId, "init_chat", listMes), 'users)
+    api.getInitMes(mesId).map{
+      listMes => bus.publish(SendTo(fromId, "init_chat", listMes), 'users)
+    }
   }
 
   def sendMissingMes(userId: String, f: Int, t: Int) {
-    println("Send missing mess")
-    val missingMes = api.getMissingMes(userId, f, t).await
-    println(missingMes.toString)
-    bus.publish(SendTo(userId, "smm", missingMes), 'users)
+    api.getMissingMes(userId, f, t).map{
+      missingMes => bus.publish(SendTo(userId, "smm", missingMes), 'users)
+    }
   }
 
   def sendMessage(fromId: String, o: JsObject) {
@@ -102,7 +101,6 @@ private[userMessage] final class UserMessageActor(
                 bus.publish(SendTo(toId, "mes", data.++(Json.obj("v" -> vReceive))), 'users)
                 bus.publish(SendTo(fromId, "mes", data.++(Json.obj("v" -> vSender))), 'users)
               }
-              println("save mes OK!")
             }
             case error         => println("save mes ERROR!")
           }

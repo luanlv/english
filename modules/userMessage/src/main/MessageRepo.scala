@@ -19,6 +19,7 @@ import lila.memo.UserMessage
 import play.modules.reactivemongo.json.BSONFormats
 import scala.concurrent.ExecutionContext.Implicits.global
 
+
 final class MessageRepo(repo: UserMessage.Builder) {
 
   def lastMesVersion(chatId: String) = {
@@ -33,19 +34,11 @@ final class MessageRepo(repo: UserMessage.Builder) {
   }
 
   def getInitMes(mesId: String) = {
-    repo.getInitMes(mesId).map{
-      data => data.map{
-        mes => BSONFormats.toJSON(mes).as[JsObject].-("_id").-("lid").-("mid")
-      }
-    }
+    repo.getInitMes(mesId)
   }
 
   def getMissingMes(userId: String, f: Int, t: Int) = {
-    repo.getMissingMes(userId, f, t).map{
-      data => data.map{
-        mes => BSONFormats.toJSON(mes).as[JsObject].-("_id").-("lid").-("mid")
-      }
-    }
+    repo.getMissingMes(userId, f, t)
   }
 
 }

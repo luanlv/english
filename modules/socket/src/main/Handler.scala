@@ -49,7 +49,6 @@ object Handler {
       }
       case ("gmm", o) => userId foreach { u =>
         if(u.length > 0){
-          println("u:" + "handerOK:" + o.toString)
           val f = ((o\"d").as[JsObject]\"f").as[Int]
           val t = ((o\"d").as[JsObject]\"t").as[Int]
           hub.actor.userMessage ! MissingMes(u, f, t)

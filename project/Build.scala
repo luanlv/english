@@ -70,7 +70,7 @@ object ApplicationBuild extends Build {
   )
 
   lazy val memo = project("memo", Seq(common, db)).settings(
-    libraryDependencies ++= Seq(guava, findbugs, spray.caching) ++ provided(play.api, RM)
+    libraryDependencies ++= Seq(guava, findbugs, spray.caching) ++ provided(play.api, RM, PRM)
   )
 
   lazy val hub = project("hub", Seq(common)).settings(

@@ -2,18 +2,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Lichess Monitor</title>
+    <title>Monitor</title>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
     <link rel="shortcut icon" href="@routes.Assets.at("favicon.ico")" type="image/x-icon" />
     @cssTag("monitor.css")
   </head>
   <body>
     <a class="back" href="#">&lt; back to lichess</a>
-    <h1>Lichess reactor <span class="down">DOWN</span><span class="up">OPERATIONAL</span></h1>
+    <h1>Reactor <span class="down">DOWN</span><span class="up">OPERATIONAL</span></h1>
     <div id="monitors" class="clearfix">
-    </div>
-    <div id="actions">
-      <a href="#" id="shutdown">Emergency reactor shutdown - DON'T CLICK</a>
     </div>
     <script>
       window.document.getElementById("shutdown").onclick = function() {

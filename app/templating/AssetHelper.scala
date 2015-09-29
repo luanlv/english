@@ -10,7 +10,7 @@ trait AssetHelper { self: I18nHelper =>
 
   def isProd: Boolean
 
-  val assetDomain = "108.61.160.215:9000" //  lila.api.Env.current.Net.AssetDomain
+  val assetDomain = "luanlv.info" //  lila.api.Env.current.Net.AssetDomain
   //val assetDomain = "localhost:9000" //  lila.api.Env.current.Net.AssetDomain
   //val assetDomain = "192.168.1.25:9000" //  lila.api.Env.current.Net.AssetDomain
 
