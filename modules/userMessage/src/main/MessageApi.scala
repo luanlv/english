@@ -24,15 +24,15 @@ final class MessageApi(
     Env.current.cached.userChatVersion(userId)
   }
 
-  def insert(mesId: String, v: Int, fromId: String, vSender: Int, toId: String, vReceive: Int, mes: String, time: DateTime) = {
-    Env.current.messageRepo.insert(mesId, v, fromId, vSender, toId, vReceive, mes, time)
+  def insert(mesId: String, mv: Int, fromId: String, toId: String, mes: String, time: DateTime) = {
+    Env.current.messageRepo.insert(mesId, mv, fromId, toId, mes, time)
   }
 
   def getInitMes(mesId: String) = {
     Env.current.messageRepo.getInitMes(mesId)
   }
 
-  def getMissingMes(userId: String, f: Int, t: Int) = {
-    Env.current.messageRepo.getMissingMes(userId, f, t)
+  def getMissingMes(listMesIds: Array[String]) = {
+    Env.current.messageRepo.getMissingMes(listMesIds)
   }
 }

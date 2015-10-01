@@ -26,10 +26,6 @@ var requestWithFeedback = function(args) {
 
 var nav = {
   controller: function(){
-    setInterval(function(){
-      console.log("mVersion:" + mVersion);
-      console.log("mRVersion:" + mRVersion);
-    }, 1000)
   },
   view: function(){
     rd("nav");

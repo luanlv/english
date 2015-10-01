@@ -21,11 +21,11 @@ object UserMessage {
 
     def lastMesVersion(chatId: String) = {
       coll.find(BSONDocument("mid" -> chatId))
-        .sort(BSONDocument("v" -> -1))
+        .sort(BSONDocument("mv" -> -1))
         .cursor[BSONDocument]()
           .headOption.map { x => x match {
         case None => 0
-        case Some(doc) => doc.getAs[Int]("v").getOrElse(0)
+        case Some(doc) => doc.getAs[Int]("mv").getOrElse(0)
         }
       }
     }
@@ -45,28 +45,25 @@ object UserMessage {
     }
   }
 
-    def insert(mesId: String, v: Int, fromId: String, vSender: Int, toId: String, vReceive: Int, mes: String, time: DateTime) = {
-      val bs = BSONDocument("mid" -> mesId, "v" -> v, "lid" -> BSONArray(BSONDocument("id" -> fromId, "v" -> vSender), BSONDocument("id" -> toId, "v" -> vReceive)), "f" -> fromId, "t" -> toId, "mes" -> mes, "time" -> time)
+    def insert(mesId: String, mv: Int, fromId: String, toId: String, mes: String, time: DateTime) = {
+      val bs = BSONDocument("_id" -> (mesId + "_" + mv), "mid" -> mesId, "mv" -> mv,  "f" -> fromId, "t" -> toId, "mes" -> mes, "time" -> time)
       coll.insert(bs)
     }
 
     def getInitMes(mesId: String) = {
-      coll.find(BSONDocument("mid" -> mesId), BSONDocument("_id" -> 0, "mid" -> 0, "lid" -> 0))
-      .sort(BSONDocument("v" -> -1))
+      coll.find(BSONDocument("mid" -> mesId), BSONDocument("_id" -> 0, "mid" -> 0))
+      .sort(BSONDocument("mv" -> -1))
       .cursor[BSONDocument]()
       .collect[List](10).map(_.map(toJSON(_)))
     }
 
-    def getMissingMes(userId: String, f: Int, t: Int) = {
-      import coll.BatchCommands.AggregationFramework, AggregationFramework.{ AddToSet, Group, Match, Project, Push, Unwind, Sort, Ascending, Descending, Limit}
-      coll.aggregate(Match(BSONDocument("lid.id" -> userId)), List(
-        Unwind("lid"),
-        Match(BSONDocument("lid.id" -> userId)),
-        Sort(Descending("lid.v")),
-        Match(BSONDocument("$and" -> BSONArray(BSONDocument("lid.v" -> BSONDocument("$gte" -> f)), BSONDocument("lid.v" -> BSONDocument("$lte" -> t))))),
-        Project(BSONDocument("_id" -> 0, "v" -> 1, "mes" -> 1, "time" -> 1, "f" -> 1, "t" -> 1, "mv" -> "$lid.v"))
-      )).map(_.documents.map(toJSON(_)))
+    def getMissingMes(listMesIds: Array[String]) = {
+      coll.find(BSONDocument("_id" -> BSONDocument("$in" -> listMesIds)))
+      .sort(BSONDocument("mv" -> -1))
+      .cursor[BSONDocument]()
+      .collect[List](10).map(_.map(toJSON(_)))
     }
+
   }
 
   def apply(coll: Coll) = new Builder(coll)

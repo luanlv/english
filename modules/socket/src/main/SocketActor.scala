@@ -51,6 +51,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case OnelineFriend(uid, list) => sendOnelineFriend(uid, list)
 
+    case SendMissingMes(uid, f, t, data) => sendMissingMes(uid, f, t, data)
+
+    case SendInitMes(uid, data) => sendInitMes(uid, data)
+
     case Test2(uid, to, mes)   => test2(uid, to, mes)
 
     case Broom                 => broom
@@ -161,6 +165,14 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
   def sendOnelineFriend(uid: String, list: Set[String]) {
     withMember(uid)(_ push makeMessage("ul", list))
+  }
+
+  def sendMissingMes(uid: String, f: Int, t: Int, data: List[JsValue]){
+    withMember(uid)(_ push makeMessage("smm", Json.obj("f" -> f, "t" -> t, "d" -> data)))
+  }
+
+  def sendInitMes(uid: String, data: List[JsValue]) {
+    withMember(uid)(_ push makeMessage("init_chat", data))
   }
 
   def uids = members.keys

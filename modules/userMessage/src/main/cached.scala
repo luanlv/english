@@ -22,11 +22,19 @@ final class Cached(
   private def oneWeekAgo = DateTime.now minusWeeks 1
 
   private val cache: Cache[Int] = LruCache(timeToLive = 1 hour)
+  private val cacheVersion: Cache[Map[Int, String]] = LruCache(timeToLive = 5 minute, maxCapacity = 100000)
 
-  def chatVersion(chatId: String): Fu[Int] = cache("chatVer:" + chatId) {
-    val v = Env.current.messageRepo.lastMesVersion(chatId)
-    println("chatVer:" + chatId + ": " + v.await)
-    v
+
+  def pushVersion(uid:String, v: Int, mid: String) =  {
+    cacheVersion.apply(uid + v)(scala.Predef.Map(v -> mid))
+  }
+
+  def mapVersion(uid: String, v: Int) = cacheVersion.get(uid + v)
+
+  def chatVersion(mesId: String): Fu[Int] = cache("chatVer:" + mesId) {
+     val v = Env.current.messageRepo.lastMesVersion(mesId)
+     println(mesId + ":" + v.await)
+     v
   }
   def userChatVersion(userId: String): Fu[Int] = cache("userChatVer:" + userId) {
     val v = Env.current.messageRepo.lastUserMesVersion(userId)
@@ -36,7 +44,14 @@ final class Cached(
 
   def setNewVersion(id: String, v: Int) = {
     cache.remove(id)
-    cache.apply(id)(Future(v))
+    cache.apply(id)(v)
+  }
+
+  def setNewVersion(pre: String, id1: String, v1: Int, id2:String, v2: Int) = {
+    cache.remove(pre + id1)
+    cache.remove(pre + id2)
+    cache.apply(pre + id1)(v1)
+    cache.apply(pre + id2)(v2)
   }
 
   def clearCache = fuccess(cache.clear)

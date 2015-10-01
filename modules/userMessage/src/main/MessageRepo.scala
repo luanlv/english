@@ -22,23 +22,23 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 final class MessageRepo(repo: UserMessage.Builder) {
 
-  def lastMesVersion(chatId: String) = {
-    repo.lastMesVersion(chatId)
+  def lastMesVersion(mesId: String) = {
+    repo.lastMesVersion(mesId)
   }
   def lastUserMesVersion(userId: String) = {
       repo.lastUserMesVersion(userId)
     }
 
-  def insert(mesId: String, v: Int, fromId: String, vSender: Int, toId: String, vReceive: Int, mes: String, time: DateTime) = {
-    repo.insert(mesId, v, fromId, vSender, toId, vReceive, mes, time)
+  def insert(mesId: String, mv: Int, fromId: String, toId: String, mes: String, time: DateTime) = {
+    repo.insert(mesId, mv, fromId, toId, mes, time)
   }
 
   def getInitMes(mesId: String) = {
     repo.getInitMes(mesId)
   }
 
-  def getMissingMes(userId: String, f: Int, t: Int) = {
-    repo.getMissingMes(userId, f, t)
+  def getMissingMes(listMesIds: Array[String]) = {
+    repo.getMissingMes(listMesIds)
   }
 
 }

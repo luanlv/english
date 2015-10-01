@@ -7,8 +7,8 @@ var mVersion = parseInt(document.body.getAttribute("mv"));
 var mRVersion = parseInt(document.body.getAttribute("mv"));
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
-var ws = new WebSocket("ws://luanlv.info:9000/socket?sri=" + sri);
-//var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
+//var ws = new WebSocket("ws://luanlv.info:9000/socket?sri=" + sri);
+var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://192.168.1.25:9000/socket?sri=" + sri);
 
 var pingData = function() {
@@ -130,11 +130,11 @@ ctrl.listen = function(d){
       console.log("SEEND REQUEST GET MISSING MESS: " + sendMes.f + "=>" + sendMes.t);
       send(sendData("gmm", sendMes));
       var gmm = setTimeout(function getMissMes(){
-        console.log("SEEND REQUEST GET MISSING MESS: " + sendMes.f + "=>" + sendMes.t);
-        console.log("current mes need:" + sendMes.t);
         if(mRVersion >= sendMes.t){
           clearTimeout(gmm)
         } else {
+          console.log("SEEND REQUEST GET MISSING MESS: " + sendMes.f + "=>" + sendMes.t);
+          console.log("current mes need:" + sendMes.t);
           send(sendData("gmm", sendMes));
           setTimeout(getMissMes, 1500)
         }
@@ -151,12 +151,13 @@ ctrl.listen = function(d){
       console.log("init posssssssss:" + pos);
       if(data.chat[pos].chat.length <= 1) {
         d.d.map(function (mes) {
-          console.log("push:" + mes.mes)
+          console.log("init_chat: " + mes.mv);
+          console.log("push:" + mes.mes);
           data.chat[pos].chat.push(mes)
         });
       } else {
         d.d.map(function(mes){
-          console.log("push2:" + mes.mes)
+          console.log("init_chat: " + mes.mv + " --- " + data.chat[pos].chat[0].mv);
           if(mes.mv < data.chat[pos].chat[0].mv) data.chat[pos].chat.push(mes)
         })
       }
@@ -166,22 +167,22 @@ ctrl.listen = function(d){
   }
 
   if(d.t === "smm"){
-      d.d.map(function(mes){
+      d.d.d.map(function(mes){
       var uid = (userId == mes.f)?mes.t:mes.f;
       var pos = getPosChat(uid);
-
       if(data.chat[pos].chat.length < 1) {
-        d.d.map(function (mes) {
+        d.d.d.map(function (mes) {
           data.chat[pos].chat.push(mes)
         });
       } else {
-        d.d.map(function(mes){
-          if(mes.mv < data.chat[pos].chat[0].mv) data.chat[pos].chat.push(mes)
+        d.d.d.map(function (mes) {
+          console.log("smm: " + mes.mv + " --- " + data.chat[pos].chat[data.chat[pos].chat.length - 1].mv);
+          if (mes.mv > data.chat[pos].chat[data.chat[pos].chat.length - 1].mv) data.chat[pos].chat.push(mes)
         })
       }
-
-      if(mRVersion < mes.mv) mRVersion = mes.mv;
+      if(mRVersion == d.d.f -1 ) mRVersion = d.d.t;
      });
+
       m.redraw()
   }
 

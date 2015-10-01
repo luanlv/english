@@ -44,8 +44,8 @@ final class Env(
 
   lazy val messageRepo = new MessageRepo(repo = userMessage)
 
-  scheduler.once(5 seconds) {
-    scheduler.message(2 second) {
+  scheduler.once(2 seconds) {
+    scheduler.message(1 second) {
       actor -> lila.userMessage.actorApi.NotifyMovement
     }
   }

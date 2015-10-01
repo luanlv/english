@@ -11,6 +11,7 @@ import lila.common.PimpedJson._
 import lila.hub.actorApi.relation.ReloadOnlineFriends
 import makeTimeout.large
 
+import scala.concurrent.Future
 import scala.util.parsing.json.JSONObject
 
 object Handler {
@@ -55,13 +56,23 @@ object Handler {
         if(u.length > 0){
           val f = ((o\"d").as[JsObject]\"f").as[Int]
           val t = ((o\"d").as[JsObject]\"t").as[Int]
-          hub.actor.userMessage ! MissingMes(u, f, t)
+          (hub.actor.userMessage ? MissingMes(u, f, t)) foreach{
+            case dataFu: Future[List[JsValue]] => dataFu.map{
+              data => socket ! SendMissingMes(uid, f, t, data)
+            }
+            case _ => println("gmm from " + userId + " error!")
+          }
         }
       }
 
       case ("init_chat", o) => userId foreach { fromId =>
         if(fromId.length() > 0) {
-          hub.actor.userMessage ! InitChat(fromId, (o \ "d").as[String])
+          (hub.actor.userMessage ? InitChat(fromId, (o \ "d").as[String])) foreach{
+            case dataFu: Future[List[JsValue]] => dataFu.map{
+              case data => socket ! SendInitMes(uid, data)
+              case _ => println("init_chat from " + userId + " error!")
+            }
+          }
         }
       }
 
