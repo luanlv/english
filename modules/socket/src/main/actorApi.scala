@@ -37,3 +37,5 @@ case class OnelineFriend(uid: String, list: Set[String])
 
 case class SendMissingMes(uid: String, f: Int, t: Int, data: List[JsValue])
 case class SendInitMes(uid: String, data: List[JsValue])
+
+case class SendInitNotify(uid: String, data: List[JsValue])

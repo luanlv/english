@@ -35,4 +35,16 @@ final class MessageApi(
   def getMissingMes(listMesIds: Array[String]) = {
     Env.current.messageRepo.getMissingMes(listMesIds)
   }
+
+  def notifyMessage(uid: String, chatId: String, mesId: String, mv: Int, mes: String, time: DateTime) = {
+    Env.current.notifyRepo.notifyMessage(uid, chatId, mesId, mv, mes, time)
+  }
+
+  def getNotifyMessage(userId: String) = {
+    Env.current.notifyRepo.getNotifyMessage(userId)
+  }
+
+  def resetNotify(userId: String) = {
+    Env.current.notifyRepo.resetNotify(userId)
+  }
 }

@@ -145,3 +145,52 @@ textarea {
   height: 22px;
   width: 22px;
 }
+
+.notify {
+  background: #ddd;
+  width: 30px;
+  height: 20px;
+  position: fixed;
+  right: 300px;
+  top: 0;
+  color: red;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.unread{
+  background: red;
+}
+
+.notifyWr{
+  position: relative;
+}
+
+.inNotify {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 350px;
+  height: 380px;
+  background: greenyellow;
+}
+
+.notifyMes{
+  text-align: left;
+  border-bottom: 1px solid #999;
+}
+
+.notifyName {
+  display: inline-block;
+  color: black;
+  font-weight: bold;
+}
+.notifyName:after{
+  content: " : "
+}
+.lastMes {
+  display: inline-block;
+  color: #333;
+  font-weight: lighter;
+}

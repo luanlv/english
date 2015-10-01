@@ -55,6 +55,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case SendInitMes(uid, data) => sendInitMes(uid, data)
 
+    case SendInitNotify(uid, data) => sendInitNotify(uid, data)
+
     case Test2(uid, to, mes)   => test2(uid, to, mes)
 
     case Broom                 => broom
@@ -175,6 +177,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     withMember(uid)(_ push makeMessage("init_chat", data))
   }
 
+  def sendInitNotify(uid: String, data: List[JsValue]) = {
+    withMember(uid)(_ push makeMessage("init_notify", data))
+  }
   def uids = members.keys
 
   def membersByUserId(userId: String): Iterable[M] = members collect {

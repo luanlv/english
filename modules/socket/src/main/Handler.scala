@@ -76,6 +76,18 @@ object Handler {
         }
       }
 
+      case ("gnm", o) => userId foreach { userId =>
+        if(userId.length() > 0) {
+          (hub.actor.userMessage ? InitNotify(userId)) foreach {
+            case dataFu: Future[List[JsValue]] => dataFu.map{
+              case data => socket ! SendInitNotify(uid, data)
+              case _ => println("gnm from" + userId + " error!")
+            }
+
+          }
+        }
+      }
+
       case ("m", o) => userId foreach { u =>
         if(u.length() > 0) {
           (o \ "d").asOpt[JsObject] foreach { data =>

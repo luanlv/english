@@ -13,6 +13,7 @@ import lila.common.LightUser
 import lila.hub.actorApi.relation._
 import lila.hub.actorApi.{SendTos, SendTo}
 import makeTimeout.short
+import reactivemongo.bson.BSONDocument
 
 private[userMessage] final class UserMessageActor(
                                                getOnlineUserIds: () => Set[String],
@@ -26,7 +27,7 @@ private[userMessage] final class UserMessageActor(
   def receive = {
 
     case PingVersion(userId) => {
-      sender ! api.findLastesUserMesVersion(userId).await
+      sender ! Env.current.cached.getNotify(userId).await
     }
 
     case Msg(userId, o) => sendMessage(userId, o)
@@ -45,6 +46,12 @@ private[userMessage] final class UserMessageActor(
     case GetName(id) => lightUser(id) match {
       case None => sender ! "anonymous"
       case Some(user) => sender ! user.name
+    }
+
+    case InitNotify(userId) => {
+      sender ! api.getNotifyMessage(userId)
+      api.resetNotify(userId)
+      Env.current.cached.setNewVersion("notify:" + userId, 0)
     }
 
     case NotifyMovement =>
@@ -92,10 +99,17 @@ private[userMessage] final class UserMessageActor(
               Env.current.cached.pushVersion(toId, toV + 1, mesId + "_" + (mv + 1) )
               Env.current.cached.pushVersion(fromId, toV + 1, mesId + "_" + (mv + 1) )
 
-              if(onlines.contains(toId)){
-                val data = Json.obj("mv" -> (mv + 1), "f" -> fromId, "t" -> toId, "m" -> mes, "time" -> time)
-                bus.publish(SendTo(fromId, "mes", data.++(Json.obj("v" -> (fromV + 1)))), 'users)
-                bus.publish(SendTo(toId, "mes", data.++(Json.obj("v" -> (toV + 1 )))), 'users)
+              val data = Json.obj("mv" -> (mv + 1), "f" -> fromId, "t" -> toId, "m" -> mes, "time" -> time)
+              bus.publish(SendTo(fromId, "mes", data.++(Json.obj("v" -> (fromV + 1)))), 'users)
+              bus.publish(SendTo(toId, "mes", data.++(Json.obj("v" -> (toV + 1 )))), 'users)
+              if(api.notifyMessage(toId, fromId,  mesId,  mv + 1, mes, time)){
+                Env.current.cached.getNotify(toId).map{
+                  num => {
+                    Env.current.cached.setNewVersion("notify:" + toId, num + 1)
+                    bus.publish(SendTo(toId, "ntf", num+1), 'users)
+                  }
+                }
+
               }
             }
             case error         => println("save mes ERROR!")

@@ -4,8 +4,8 @@ import akka.actor._
 import com.typesafe.config.Config
 
 import lila.common.PimpedConfig._
-import lila.memo.{ ExpireSetMemo, MongoCache, UserMessage }
-import lila.usrMessage.MessageRepo
+import lila.memo.{NotifyMessage, ExpireSetMemo, MongoCache, UserMessage}
+import lila.usrMessage.{NotifyRepo, MessageRepo}
 import scala.concurrent.duration._
 
 final class Env(
@@ -16,6 +16,7 @@ final class Env(
                    lightUser: String => Option[lila.common.LightUser],
                    mongoCache: MongoCache.Builder,
                    userMessage: UserMessage.Builder,
+                   notifyMessage: NotifyMessage.Builder,
                    scheduler: lila.common.Scheduler,
                    system: ActorSystem) {
 
@@ -43,6 +44,7 @@ final class Env(
     mongoCache = mongoCache)
 
   lazy val messageRepo = new MessageRepo(repo = userMessage)
+  lazy val notifyRepo = new NotifyRepo(repo = notifyMessage)
 
   scheduler.once(2 seconds) {
     scheduler.message(1 second) {
@@ -60,6 +62,7 @@ object Env {
     lightUser = lila.user.Env.current.lightUser,
     mongoCache = lila.memo.Env.current.mongoCache,
     userMessage = lila.memo.Env.current.mongoUserMessage,
+    notifyMessage = lila.memo.Env.current.mongoNotifyMessage,
     scheduler = lila.common.PlayApp.scheduler,
     system = lila.common.PlayApp.system)
 }

@@ -31,19 +31,19 @@ object UserMessage {
     }
 
     def lastUserMesVersion(userId: String) = {
-    import coll.BatchCommands.AggregationFramework, AggregationFramework.{ AddToSet, Group, Match, Project, Push, Unwind, Sort, Ascending, Descending, Limit}
-    coll.aggregate(Match(BSONDocument("lid.id" -> userId)), List(
-      Unwind("lid"),
-      Match(BSONDocument("lid.id" -> userId)),
-      Sort(Descending("lid.v")),
-      Limit(1)
-    )).map(_.documents.headOption.flatMap(_.getAs[BSONDocument]("lid")).flatMap(_.getAs[Int]("v"))).map {
-       _ match {
-         case None => 0
-         case Some(num) => num
-       }
+      import coll.BatchCommands.AggregationFramework, AggregationFramework.{ AddToSet, Group, Match, Project, Push, Unwind, Sort, Ascending, Descending, Limit}
+      coll.aggregate(Match(BSONDocument("lid.id" -> userId)), List(
+        Unwind("lid"),
+        Match(BSONDocument("lid.id" -> userId)),
+        Sort(Descending("lid.v")),
+        Limit(1)
+      )).map(_.documents.headOption.flatMap(_.getAs[BSONDocument]("lid")).flatMap(_.getAs[Int]("v"))).map {
+         _ match {
+           case None => 0
+           case Some(num) => num
+         }
+      }
     }
-  }
 
     def insert(mesId: String, mv: Int, fromId: String, toId: String, mes: String, time: DateTime) = {
       val bs = BSONDocument("_id" -> (mesId + "_" + mv), "mid" -> mesId, "mv" -> mv,  "f" -> fromId, "t" -> toId, "mes" -> mes, "time" -> time)

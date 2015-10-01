@@ -26,8 +26,16 @@ var requestWithFeedback = function(args) {
 
 var nav = {
   controller: function(){
+    var ctrl = this;
+    ctrl.displayNofity = function(){
+      if(data.notify.notifyMessage.length < 1){
+        send(sendData("gnm", 0))
+      }
+      data.notify.n = 0;
+      data.notify.display = !data.notify.display
+    };
   },
-  view: function(){
+  view: function(ctrl){
     rd("nav");
     redraw++;
     return [
@@ -36,6 +44,23 @@ var nav = {
       (userId.length>0)?m("a", {href: "/logout"}, " Đăng xuất"):"",
       (!userId.length>0)?m("a", {href: "/login"}, " Đăng nhập |"):"",
       (!userId.length>0)?m("a", {href: "/signup"}, " Đăng ký"):"",
+      m('.notify', {
+        onclick: function(){
+          ctrl.displayNofity()
+        }
+      },[
+        data.notify.n,
+        m('.notifyWr', [
+          !data.notify.display?"":m('.inNotify', !data.notify.init?"LOADING":[
+              data.notify.notifyMessage.map(function(mes){
+                return m('.notifyMes', [
+                  m('.notifyName', getUser(mes.m.uid).name),
+                  m('.lastMes', mes.m.lm.mes)
+                ])
+              })
+          ])
+        ])
+      ]),
       m("", " " + "redraw: " + redraw)
     ]
   }
@@ -163,15 +188,19 @@ var right = {
       m('#dock-bot', [
       data.chat.map(function(chat, rank){
         return !chat.display?"":m('.chatWr' + (chat.hide?".w2":".w1"), [
-          m('.chat-title2', {style: !chat.hide?"display: none":"", onclick: function(){ctrl.toggleChat(rank)}}, getUser(chat.uid).name
-          ),
+          m('.chat-title2' + (chat.read?"":".unread"), {
+            style: !chat.hide?"display: none":"",
+            onclick: function(){ctrl.toggleChat(rank)}
+          }, getUser(chat.uid).name),
           m('.chatboxWr', {style: chat.hide?"display: none":""},
             [
-                    m('.chat-title', {onclick: function(){ctrl.toggleChat(rank)}}, [
+                    m('.chat-title' + (chat.read?"":".unread"), {
+                      onclick: function(){ctrl.toggleChat(rank)}
+                    }, [
                       getUser(chat.uid).name,
                       m('span.close-chat', {onclick: function(){ctrl.stopChat(rank)}}, "X")
                     ]),
-                    m('.chat-box', {config: scrollBottom}, [
+                    m('.chat-box', {config: scrollBottom, onclick: function(){markRead(rank)}}, [
                       chat.chat.map(function(item, num){
                         return [
                           chat.init?m('.loading_chat', "Loading previous ..."):"",
@@ -183,6 +212,8 @@ var right = {
                     ,
                     m('textarea.new-comment[placeholder="..."][rows=1]', {
                       style: chat.hide?"display: none":"",
+                      onfocus: function(){markRead(rank)},
+                      onselect: function(){markRead(rank)},
                       config: function (element, isInit, ctx) {
                           element.value = data.chat[rank].input();
                       },
@@ -260,6 +291,13 @@ var getUser = function(name){
   }
 };
 
+var markRead = function(rank){
+  if(data.chat[rank].read === false){
+    console.log("mark read: " + rank);
+    send(sendData("mr", data.chat[rank].uid, data.chat[rank].chat[data.chat[rank].chat.length - 1].mv));
+    data.chat[rank].read = true;
+  }
+};
 
 m.mount(document.getElementById('nav'), nav);
 m.mount(document.getElementById('app'), Loading);

@@ -7,7 +7,7 @@ var mVersion = parseInt(document.body.getAttribute("mv"));
 var mRVersion = parseInt(document.body.getAttribute("mv"));
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
-var ws = new WebSocket("ws://luanlv.info:9000/socket?sri=" + sri);
+var ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://192.168.1.25:9000/socket?sri=" + sri);
 
@@ -61,12 +61,19 @@ var ctrl = {};
 var data = {
   userOnline: [],
   user: {},
-  chat: []
+  chat: [],
+  notify: {
+    n: 0,
+    notifyMessage: [],
+    init: false,
+    display: false
+  }
 };
 
 
 var getPosChat = function(uid, mv){
-  var cv = (mv == undefined)?0:mv
+  var cv = (mv == undefined)?0:mv;
+  var read = (mv == undefined)
   pos = -1;
   for(var len = 0; len < data.chat.length; len++){
     if(data.chat[len].uid == uid) {
@@ -76,13 +83,20 @@ var getPosChat = function(uid, mv){
   }
   if(pos = -1){
     console.log("send inti_chat form getPosChat");
-    data.chat.push({uid: uid, display: true, input: m.prop(''), init: false, hide: false, chat: []});
+    data.chat.push({uid: uid, display: true, input: m.prop(''), init: false, hide: false, read: read, chat: []});
     send(sendData("init_chat", {w: uid, cv: cv}));
     return (data.chat.length - 1)
   }
 };
 
 ctrl.listen = function(d){
+
+  if(d.t === "n"){
+    var preNotify = data.notify.n;
+    if(data.notify.display == false) data.notify.n = d.d;
+    if(preNotify !== data.notifyn) m.redraw()
+  }
+
   if(d.t === "ul"){
     d.d.map(function(uid){
       if(data.userOnline.indexOf(uid) < 0 && uid != userId) {
@@ -190,6 +204,10 @@ ctrl.listen = function(d){
       m.redraw()
   }
 
+  if(d.t === "init_notify") {
+    data.notify.notifyMessage = d.d
+    data.notify.init = true
+  }
 };
 
 function sortByVer(a,b) {
@@ -219,6 +237,7 @@ var doMes = function(d){
       data.chat[pos].display = true;
       data.chat[pos].hide = false;
     }
+    if(userId !== d.d.f) data.chat[pos].read = false;
     m.redraw();
 };
 
