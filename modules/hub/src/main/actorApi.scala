@@ -217,6 +217,6 @@ package userMessage {
   case class NotifyMovementOnlineUser()
   case class GetOnlineUser(userId: String)
   case class GetName(uid: String)
-  case class InitChat(fromId: String, toId: String)
+  case class InitChat(fromId: String, toId: String, cv: Int)
   case class MissingMes(userId: String, f: Int, t: Int)
 }

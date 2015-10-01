@@ -65,7 +65,8 @@ var data = {
 };
 
 
-var getPosChat = function(uid){
+var getPosChat = function(uid, mv){
+  var cv = (mv == undefined)?0:mv
   pos = -1;
   for(var len = 0; len < data.chat.length; len++){
     if(data.chat[len].uid == uid) {
@@ -76,7 +77,7 @@ var getPosChat = function(uid){
   if(pos = -1){
     console.log("send inti_chat form getPosChat");
     data.chat.push({uid: uid, display: true, input: m.prop(''), init: false, hide: false, chat: []});
-    send(sendData("init_chat", uid));
+    send(sendData("init_chat", {w: uid, cv: cv}));
     return (data.chat.length - 1)
   }
 };
@@ -144,15 +145,15 @@ ctrl.listen = function(d){
   }
 
   if(d.t === "init_chat"){
-    var listMes = d.d.reverse();
+    var listMes = d.d;
     if(listMes.length > 0){
       var uid = (userId == d.d[0].f)?d.d[0].t:d.d[0].f;
       var pos = getPosChat(uid);
       console.log("init posssssssss:" + pos);
       if(data.chat[pos].chat.length <= 1) {
         d.d.map(function (mes) {
-          console.log("init_chat: " + mes.mv);
-          console.log("push:" + mes.mes);
+          //console.log("init_chat: " + mes.mv);
+          //console.log("push:" + mes.mes);
           data.chat[pos].chat.push(mes)
         });
       } else {
@@ -161,7 +162,10 @@ ctrl.listen = function(d){
           if(mes.mv < data.chat[pos].chat[0].mv) data.chat[pos].chat.push(mes)
         })
       }
+      console.log(data.chat[pos].chat);
       data.chat[pos].chat.sort(sortByVer);
+      console.log("sorted");
+      console.log(data.chat[pos].chat);
       m.redraw()
     }
   }
@@ -189,6 +193,7 @@ ctrl.listen = function(d){
 };
 
 function sortByVer(a,b) {
+  console.log("sorting " + a.mv + b.mv)
   if (a.mv < b.mv)
     return -1;
   if (a.mv > b.mv)
@@ -206,9 +211,9 @@ ws.onmessage = function (e) {
 
 var doMes = function(d){
     var uid = (userId == d.d.f)? d.d.t: d.d.f;
-    var pos = getPosChat(uid);
+    var pos = getPosChat(uid, d.d.mv);
     data.chat[pos].chat.push(
-        {f: d.d.f, "v": d.d.mv, "mes": d.d.m, "time": d.d.time}
+        {f: d.d.f, "mv": d.d.mv, "mes": d.d.m, "time": d.d.time}
     );
     if(data.chat[pos].display != true){
       data.chat[pos].display = true;

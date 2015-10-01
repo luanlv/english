@@ -28,8 +28,8 @@ final class MessageApi(
     Env.current.messageRepo.insert(mesId, mv, fromId, toId, mes, time)
   }
 
-  def getInitMes(mesId: String) = {
-    Env.current.messageRepo.getInitMes(mesId)
+  def getInitMes(mesId: String, cv: Int) = {
+    Env.current.messageRepo.getInitMes(mesId, cv)
   }
 
   def getMissingMes(listMesIds: Array[String]) = {

@@ -33,9 +33,9 @@ private[userMessage] final class UserMessageActor(
 
     case GetOnlineUser(userId) => sender ! onlineIds.map(_.toString)
 
-    case InitChat(fromId, toId) => {
+    case InitChat(fromId, toId, cv) => {
       val mesId = if(fromId < toId) fromId + toId else toId + fromId
-      sender ! api.getInitMes(mesId)
+      sender ! api.getInitMes(mesId, cv)
     }
 
     case MissingMes(userId, f, t) => {

@@ -33,8 +33,8 @@ final class MessageRepo(repo: UserMessage.Builder) {
     repo.insert(mesId, mv, fromId, toId, mes, time)
   }
 
-  def getInitMes(mesId: String) = {
-    repo.getInitMes(mesId)
+  def getInitMes(mesId: String, cv: Int) = {
+    repo.getInitMes(mesId, cv)
   }
 
   def getMissingMes(listMesIds: Array[String]) = {

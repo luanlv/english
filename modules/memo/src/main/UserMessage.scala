@@ -50,8 +50,9 @@ object UserMessage {
       coll.insert(bs)
     }
 
-    def getInitMes(mesId: String) = {
-      coll.find(BSONDocument("mid" -> mesId), BSONDocument("_id" -> 0, "mid" -> 0))
+    def getInitMes(mesId: String, cv: Int) = {
+      val bs = if(cv == 0) BSONDocument("mid" -> mesId) else BSONDocument("mid" -> mesId, "mv" -> BSONDocument("$lt" -> cv))
+      coll.find(bs, BSONDocument("_id" -> 0, "mid" -> 0))
       .sort(BSONDocument("mv" -> -1))
       .cursor[BSONDocument]()
       .collect[List](10).map(_.map(toJSON(_)))

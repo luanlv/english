@@ -67,7 +67,7 @@ object Handler {
 
       case ("init_chat", o) => userId foreach { fromId =>
         if(fromId.length() > 0) {
-          (hub.actor.userMessage ? InitChat(fromId, (o \ "d").as[String])) foreach{
+          (hub.actor.userMessage ? InitChat(fromId, (o \ "d" \ "w").as[String], (o \ "d" \ "cv").as[Int])) foreach{
             case dataFu: Future[List[JsValue]] => dataFu.map{
               case data => socket ! SendInitMes(uid, data)
               case _ => println("init_chat from " + userId + " error!")
