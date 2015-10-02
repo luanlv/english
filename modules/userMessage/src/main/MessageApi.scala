@@ -47,4 +47,8 @@ final class MessageApi(
   def resetNotify(userId: String) = {
     Env.current.notifyRepo.resetNotify(userId)
   }
+
+  def markRead(userId: String, toId: String, mv: Int) = {
+    Env.current.notifyRepo.markRead(userId, toId, mv)
+  }
 }

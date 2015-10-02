@@ -65,6 +65,14 @@ object Handler {
         }
       }
 
+      case ("mr", o) => userId foreach { userId =>
+        if(userId.length > 0){
+          val toId = (o\"d"\"uid").as[String]
+          val mv = (o\"d"\"mv").as[Int]
+          hub.actor.userMessage ! MarkRead(userId, toId, mv)
+        }
+      }
+
       case ("init_chat", o) => userId foreach { fromId =>
         if(fromId.length() > 0) {
           (hub.actor.userMessage ? InitChat(fromId, (o \ "d" \ "w").as[String], (o \ "d" \ "cv").as[Int])) foreach{

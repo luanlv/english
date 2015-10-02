@@ -56,6 +56,7 @@ final class Cached(
     Env.current.notifyRepo.getNotify(uid)
   }
 
-  def clearCache = fuccess(cache.clear)
+
+  def clearCache(pre: String, uid: String) = cache.remove(pre + uid)
 
 }

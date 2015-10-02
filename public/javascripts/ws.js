@@ -92,9 +92,11 @@ var getPosChat = function(uid, mv){
 ctrl.listen = function(d){
 
   if(d.t === "n"){
-    var preNotify = data.notify.n;
-    if(data.notify.display == false) data.notify.n = d.d;
-    if(preNotify !== data.notifyn) m.redraw()
+    if(!data.notify.display) {
+      var preNotify = data.notify.n;
+      if (data.notify.display == false) data.notify.n = d.d;
+      if (preNotify !== data.notify.n) m.redraw()
+    }
   }
 
   if(d.t === "ul"){
@@ -205,8 +207,9 @@ ctrl.listen = function(d){
   }
 
   if(d.t === "init_notify") {
-    data.notify.notifyMessage = d.d
+    data.notify.notifyMessage = d.d;
     data.notify.init = true
+    m.redraw()
   }
 };
 

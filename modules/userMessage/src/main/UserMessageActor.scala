@@ -39,6 +39,8 @@ private[userMessage] final class UserMessageActor(
       sender ! api.getInitMes(mesId, cv)
     }
 
+    case MarkRead(userId, toId, mv) => markRead(userId, toId, mv)
+
     case MissingMes(userId, f, t) => {
       sendMissingMes(userId, f, t)
     }
@@ -50,8 +52,8 @@ private[userMessage] final class UserMessageActor(
 
     case InitNotify(userId) => {
       sender ! api.getNotifyMessage(userId)
-      api.resetNotify(userId)
       Env.current.cached.setNewVersion("notify:" + userId, 0)
+      api.resetNotify(userId)
     }
 
     case NotifyMovement =>
@@ -80,6 +82,18 @@ private[userMessage] final class UserMessageActor(
     sender ! api.getMissingMes(listMesIds)
   }
 
+  def markRead(userId: String, toId: String, mv: Int) = {
+   api.markRead(userId, toId, mv).map{
+     b => if(b) {
+       val curNotify = Env.current.cached.getNotify(userId).await
+       val newNotify =  if(curNotify > 0) {curNotify - 1} else curNotify
+       Env.current.cached.setNewVersion("notify:" + userId, newNotify)
+       bus.publish(SendTo(toId, "n", newNotify), 'users)
+     }
+   }
+
+  }
+
   def sendMessage(fromId: String, o: JsObject) {
     val curUsers = getOnlineUserIds().flatMap(i => lightUser(i)).toList
     onlines = curUsers.map(e => e.id -> e).toMap
@@ -99,18 +113,16 @@ private[userMessage] final class UserMessageActor(
               Env.current.cached.pushVersion(toId, toV + 1, mesId + "_" + (mv + 1) )
               Env.current.cached.pushVersion(fromId, toV + 1, mesId + "_" + (mv + 1) )
 
-              val data = Json.obj("mv" -> (mv + 1), "f" -> fromId, "t" -> toId, "m" -> mes, "time" -> time)
+              val data = Json.obj("mv" -> (mv + 1), "f" -> fromId, "t" -> toId, "m" -> mes, "timem" -> time)
               bus.publish(SendTo(fromId, "mes", data.++(Json.obj("v" -> (fromV + 1)))), 'users)
               bus.publish(SendTo(toId, "mes", data.++(Json.obj("v" -> (toV + 1 )))), 'users)
-              if(api.notifyMessage(toId, fromId,  mesId,  mv + 1, mes, time)){
-                Env.current.cached.getNotify(toId).map{
-                  num => {
-                    Env.current.cached.setNewVersion("notify:" + toId, num + 1)
-                    bus.publish(SendTo(toId, "ntf", num+1), 'users)
-                  }
-                }
 
+              if(api.notifyMessage(toId, fromId,  mesId,  mv + 1, mes, time)){
+                val newNotify = Env.current.cached.getNotify("notify:" + toId).await + 1
+                Env.current.cached.setNewVersion("notify:" + toId, newNotify)
+                bus.publish(SendTo(toId, "n", newNotify), 'users)
               }
+
             }
             case error         => println("save mes ERROR!")
           }

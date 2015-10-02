@@ -95,7 +95,7 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
   def ping(uid: String, v: Int) {
     setAlive(uid)
-    withMember(uid)(_ push makePong(v))
+    withMember(uid)(_ push makeMessage("n", v))
   }
 
   def test2(uid: String, to: String, mes: String) {

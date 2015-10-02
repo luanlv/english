@@ -55,6 +55,7 @@ var nav = {
               data.notify.notifyMessage.map(function(mes){
                 return m('.notifyMes', [
                   m('.notifyName', getUser(mes.m.uid).name),
+                  m('.mesNumber', " (" + mes.m.n+ ") "),
                   m('.lastMes', mes.m.lm.mes)
                 ])
               })
@@ -294,7 +295,7 @@ var getUser = function(name){
 var markRead = function(rank){
   if(data.chat[rank].read === false){
     console.log("mark read: " + rank);
-    send(sendData("mr", data.chat[rank].uid, data.chat[rank].chat[data.chat[rank].chat.length - 1].mv));
+    send(sendData("mr", {uid: data.chat[rank].uid, mv: data.chat[rank].chat[data.chat[rank].chat.length - 1].mv}));
     data.chat[rank].read = true;
   }
 };

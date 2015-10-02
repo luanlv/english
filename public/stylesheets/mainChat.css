@@ -169,7 +169,7 @@ textarea {
 
 .inNotify {
   position: absolute;
-  top: 0;
+  top: 20px;
   right: 0;
   width: 350px;
   height: 380px;
@@ -186,11 +186,20 @@ textarea {
   color: black;
   font-weight: bold;
 }
-.notifyName:after{
+
+.mesNumber {
+  display: inline-block;
+  color: darkblue;
+}
+.mesNumber:after{
   content: " : "
 }
 .lastMes {
   display: inline-block;
   color: #333;
   font-weight: lighter;
+}
+
+.haveNotify {
+  background: red;
 }

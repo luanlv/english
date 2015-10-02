@@ -220,4 +220,5 @@ package userMessage {
   case class InitChat(fromId: String, toId: String, cv: Int)
   case class MissingMes(userId: String, f: Int, t: Int)
   case class InitNotify(userId: String)
+  case class MarkRead(userId: String, toId: String, mv: Int)
 }

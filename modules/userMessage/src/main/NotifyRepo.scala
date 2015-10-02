@@ -37,6 +37,10 @@ final class NotifyRepo(repo: NotifyMessage.Builder) {
   def resetNotify(userId: String) = {
     repo.resetNotify(userId)
   }
+
+  def markRead(userId: String, toId: String, mv: Int) = {
+    repo.markRead(userId, toId, mv)
+  }
 }
 
 
