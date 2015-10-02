@@ -153,6 +153,7 @@ object NotifyMessage {
           coll.update(
             BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
             BSONDocument(
+              "$inc" -> BSONDocument("m.$.n" -> 1),
               "$set" -> BSONDocument("m.$.d" -> time),
               "$inc" -> BSONDocument("n" -> 1),
               "$set" -> BSONDocument("m.$.lm" -> bs),

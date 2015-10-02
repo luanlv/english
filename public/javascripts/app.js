@@ -28,9 +28,9 @@ var nav = {
   controller: function(){
     var ctrl = this;
     ctrl.displayNofity = function(){
-      if(data.notify.notifyMessage.length < 1){
+      //if(data.notify.notifyMessage.length < 1){
         send(sendData("gnm", 0))
-      }
+      //}
       data.notify.n = 0;
       data.notify.display = !data.notify.display
     };

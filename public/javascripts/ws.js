@@ -208,7 +208,7 @@ ctrl.listen = function(d){
 
   if(d.t === "init_notify") {
     data.notify.notifyMessage = d.d;
-    data.notify.init = true
+    data.notify.init = true;
     m.redraw()
   }
 };
