@@ -156,7 +156,6 @@ textarea {
   color: red;
   text-align: center;
   font-weight: bold;
-  cursor: pointer;
 }
 
 .unread{
@@ -169,16 +168,19 @@ textarea {
 
 .inNotify {
   position: absolute;
-  top: 10px;
+  top: 0;
   right: 0;
   width: 350px;
   height: 380px;
   background: greenyellow;
+  border:1px solid #333;
 }
 
 .notifyMes{
   text-align: left;
   border-bottom: 1px solid #999;
+  cursor: pointer;
+  background: #ddd;
 }
 
 .notifyName {
@@ -202,4 +204,8 @@ textarea {
 
 .haveNotify {
   background: red;
+}
+
+.numNotify{
+  cursor: pointer;
 }

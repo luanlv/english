@@ -73,7 +73,7 @@ var data = {
 
 var getPosChat = function(uid, mv){
   var cv = (mv == undefined)?0:mv;
-  var read = (mv == undefined)
+  var read = (mv == undefined);
   pos = -1;
   for(var len = 0; len < data.chat.length; len++){
     if(data.chat[len].uid == uid) {
@@ -174,14 +174,10 @@ ctrl.listen = function(d){
         });
       } else {
         d.d.map(function(mes){
-          console.log("init_chat: " + mes.mv + " --- " + data.chat[pos].chat[0].mv);
           if(mes.mv < data.chat[pos].chat[0].mv) data.chat[pos].chat.push(mes)
         })
       }
-      console.log(data.chat[pos].chat);
       data.chat[pos].chat.sort(sortByVer);
-      console.log("sorted");
-      console.log(data.chat[pos].chat);
       m.redraw()
     }
   }

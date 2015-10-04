@@ -44,16 +44,24 @@ var nav = {
       (userId.length>0)?m("a", {href: "/logout"}, " Đăng xuất"):"",
       (!userId.length>0)?m("a", {href: "/login"}, " Đăng nhập |"):"",
       (!userId.length>0)?m("a", {href: "/signup"}, " Đăng ký"):"",
-      m('.notify', {
-        onclick: function(){
-          ctrl.displayNofity()
-        }
-      },[
-        data.notify.n,
+      (userId.length>0)?m('.notify', [
+        m('.numNotify',{
+          onclick: function(){
+            ctrl.displayNofity()
+          }
+        }, data.notify.n),
         m('.notifyWr', [
           !data.notify.display?"":m('.inNotify', !data.notify.init?"LOADING":[
               data.notify.notifyMessage.map(function(mes){
-                return m('.notifyMes', [
+                return m('.notifyMes', {
+                  onclick: function(){
+                      ctrl.displayNofity()
+                      var pos = getPosChat(mes.m.uid);
+                      data.chat[pos].display = true;
+                      data.chat[pos].hide = false;
+                      if(mes.m.n > 0) data.chat[pos].read = false
+                  }
+                }, [
                   m('.notifyName', getUser(mes.m.uid).name),
                   m('.mesNumber', " (" + mes.m.n+ ") "),
                   m('.lastMes', mes.m.lm.mes)
@@ -61,7 +69,7 @@ var nav = {
               })
           ])
         ])
-      ]),
+      ]):"",
       m("", " " + "redraw: " + redraw)
     ]
   }
@@ -293,10 +301,15 @@ var getUser = function(name){
 };
 
 var markRead = function(rank){
+  console.log("run markread ")
   if(data.chat[rank].read === false){
-    console.log("mark read: " + rank);
-    send(sendData("mr", {uid: data.chat[rank].uid, mv: data.chat[rank].chat[data.chat[rank].chat.length - 1].mv}));
-    data.chat[rank].read = true;
+    if(data.chat[rank].chat[data.chat[rank].chat.length - 1].f == data.chat[rank].uid) {
+      send(sendData("mr", {
+        uid: data.chat[rank].uid,
+        mv: data.chat[rank].chat[data.chat[rank].chat.length - 1].mv
+      }));
+      data.chat[rank].read = true;
+    }
   }
 };
 
