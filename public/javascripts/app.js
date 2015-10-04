@@ -41,9 +41,9 @@ var nav = {
     return [
       m("a", {href: "/", config: m.route}, " Home |"),
       (userId.length>0)?(" ---Hello:" + userId) + "--- |":"",
-      (userId.length>0)?m("a", {href: "/logout"}, " Đăng xuất"):"",
-      (!userId.length>0)?m("a", {href: "/login"}, " Đăng nhập |"):"",
-      (!userId.length>0)?m("a", {href: "/signup"}, " Đăng ký"):"",
+      (userId.length>0)?m("a", {href: "/logout"}, "Logout"):"",
+      (!userId.length>0)?m("a", {href: "/login"}, "Sign in |"):"",
+      (!userId.length>0)?m("a", {href: "/signup"}, " Sign up"):"",
       (userId.length>0)?m('.notify', [
         m('.numNotify',{
           onclick: function(){
