@@ -40,6 +40,6 @@ object Captcha2 {
 
   val default = Captcha2(
     qId = "00000000",
-    question = "Một cộng một bằng mấy?",
-    solutions = NonEmptyList("2", "hai"))
+    question = "1 plus 1 = ?",
+    solutions = NonEmptyList("2", "hai", "two"))
 }
