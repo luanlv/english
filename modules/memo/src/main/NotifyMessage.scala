@@ -103,67 +103,84 @@ object NotifyMessage {
 
       val bs = BSONDocument("_id" -> (mesId + "_" + mv), "mid" -> mesId, "mv" -> mv,  "f" -> chatId, "t" -> uid, "mes" -> mes, "time" -> time)
 
-      val data = coll.find(BSONDocument("_id" -> uid, "m.uid" -> chatId), BSONDocument("m.$" -> 1, "n" -> 1, "ur" -> 1))
-      .cursor[BSONDocument]()
-      .collect[List]().map(_.map(toJSON(_))).map {
-        list => list match {
-          case List() => (-1, List())
-          case neList => println("LIST:" + neList.head);(((neList.head\"m").as[List[JsObject]].head\"n").as[Int], (neList.head\"ur").as[List[String]])
+      if(mv == 1){
+        coll.update(
+          BSONDocument("_id" -> uid),
+          BSONDocument(
+            "$push" -> BSONDocument("m" -> BSONDocument("uid" -> chatId, "n" -> 1, "d" -> time, "lm" -> bs)),
+            "$inc" -> BSONDocument("n" -> 1),
+            "$push" -> BSONDocument("ur" -> chatId)
+          ),
+          upsert = true
+        )
+
+        coll.update(
+          BSONDocument("_id" -> chatId),
+          BSONDocument(
+            "$push" -> BSONDocument("m" -> BSONDocument("uid" -> uid, "n" -> 0, "d" -> time, "lm" -> bs)),
+            "$inc" -> BSONDocument("n" -> 0)
+          ),
+          upsert = true
+        )
+        true
+      } else {
+        val data = coll.find(BSONDocument("_id" -> uid, "m.uid" -> chatId), BSONDocument("m.$" -> 1, "n" -> 1, "ur" -> 1))
+        .cursor[BSONDocument]()
+        .collect[List]().map(_.map(toJSON(_))).map {
+          list => list match {
+            case List() => (-1, List())
+            case neList => (((neList.head\"m").as[List[JsObject]].head\"n").as[Int], (neList.head\"ur").as[List[String]])
+          }
         }
+
+        coll.update(
+          BSONDocument("_id" -> chatId, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> uid))),
+          BSONDocument(
+            "$set" -> BSONDocument("m.$.d" -> time),
+            "$set" -> BSONDocument("m.$.lm" -> bs),
+            "$push" -> BSONDocument("ur" -> chatId)
+          )
+        )
+
+        val update = data.map{num =>
+          if(num._1 == 0) {
+            coll.update(
+              BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
+              BSONDocument(
+                "$inc" -> BSONDocument("m.$.n" -> 1),
+                "$set" -> BSONDocument("m.$.d" -> time),
+                "$inc" -> BSONDocument("n" -> 1),
+                "$set" -> BSONDocument("m.$.lm" -> bs),
+                "$push" -> BSONDocument("ur" -> chatId)
+              )
+            )
+            true
+          } else if(num._1 > 0 && num._2.contains(chatId)) {
+            coll.update(
+              BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
+              BSONDocument(
+                "$set" -> BSONDocument("m.$.d" -> time),
+                "$set" -> BSONDocument("m.$.lm" -> bs)
+              )
+            )
+            false
+          } else {
+            coll.update(
+              BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
+              BSONDocument(
+                "$inc" -> BSONDocument("m.$.n" -> 1),
+                "$set" -> BSONDocument("m.$.d" -> time),
+                "$inc" -> BSONDocument("n" -> 1),
+                "$set" -> BSONDocument("m.$.lm" -> bs),
+                "$push" -> BSONDocument("ur" -> chatId)
+              )
+            )
+            true
+          }
+        }
+        update.await
       }
 
-      val update = data.map{num =>
-        if(num._1 == -1){
-          println("CASE: 1")
-          coll.update(
-            BSONDocument("_id" -> uid),
-            BSONDocument(
-              "$push" -> BSONDocument("m" -> BSONDocument("uid" -> chatId, "n" -> 1, "d" -> time, "lm" -> bs)),
-              "$inc" -> BSONDocument("n" -> 1),
-              "$push" -> BSONDocument("ur" -> chatId)
-            ),
-            upsert = true
-          )
-          true
-        } else if(num._1 == 0) {
-          println("CASE: 0")
-          coll.update(
-            BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
-            BSONDocument(
-              "$inc" -> BSONDocument("m.$.n" -> 1),
-              "$set" -> BSONDocument("m.$.d" -> time),
-              "$inc" -> BSONDocument("n" -> 1),
-              "$set" -> BSONDocument("m.$.lm" -> bs),
-              "$push" -> BSONDocument("ur" -> chatId)
-            )
-          )
-          true
-        } else if(num._1 > 0 && num._2.contains(chatId)) {
-          println("CASE: contain " + num._1)
-          coll.update(
-            BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
-            BSONDocument(
-              "$set" -> BSONDocument("m.$.d" -> time),
-              "$set" -> BSONDocument("m.$.lm" -> bs)
-            )
-          )
-          false
-        } else {
-          println("CASE: else " )
-          coll.update(
-            BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
-            BSONDocument(
-              "$inc" -> BSONDocument("m.$.n" -> 1),
-              "$set" -> BSONDocument("m.$.d" -> time),
-              "$inc" -> BSONDocument("n" -> 1),
-              "$set" -> BSONDocument("m.$.lm" -> bs),
-              "$push" -> BSONDocument("ur" -> chatId)
-            )
-          )
-          true
-        }
-      }
-      update.await
     }
   }
 
