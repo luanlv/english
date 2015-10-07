@@ -50,16 +50,28 @@ var nav = {
             ctrl.displayNofity()
           }
         }, data.notify.n),
+
         m('.notifyWr', [
           !data.notify.display?"":m('.inNotify', !data.notify.init?"LOADING":[
               data.notify.notifyMessage.map(function(mes){
                 return m('.notifyMes', {
-                  onclick: function(){
-                      ctrl.displayNofity()
-                      var pos = getPosChat(mes.m.uid);
-                      data.chat[pos].display = true;
-                      data.chat[pos].hide = false;
-                      if(mes.m.n > 0) data.chat[pos].read = false
+                  config: function(el){
+                      $(el).click(function(){
+                        data.notify.display = false;
+                        var pos = getPosChat(mes.m.uid);
+                        data.chat[pos].display = true;
+                        data.chat[pos].hide = false;
+                        if(mes.m.n > 0) data.chat[pos].read = false
+                        setTimeout(function focusComment(){
+                          if(document.getElementById(data.chat[pos].uid) != undefined){
+                            console.log("focuss ok")
+                            document.getElementById(data.chat[pos].uid).focus();
+                          } else {
+                            console.log("focuss error")
+                            setTimeout(focusComment, 10)
+                          }
+                        }, 10);
+                      });
                   }
                 }, [
                   m('.notifyName', getUser(mes.m.uid).name),
@@ -219,7 +231,7 @@ var right = {
                       })
                     ])
                     ,
-                    m('textarea.new-comment[placeholder="..."][rows=1]', {
+                    m('textarea.new-comment#' + (chat.uid) + '[placeholder="..."][rows=1]', {
                       style: chat.hide?"display: none":"",
                       onfocus: function(){markRead(rank)},
                       onselect: function(){markRead(rank)},

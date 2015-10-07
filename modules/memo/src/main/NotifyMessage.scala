@@ -137,13 +137,14 @@ object NotifyMessage {
           BSONDocument("_id" -> chatId, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> uid))),
           BSONDocument(
             "$set" -> BSONDocument("m.$.d" -> time),
-            "$set" -> BSONDocument("m.$.lm" -> bs),
-            "$push" -> BSONDocument("ur" -> chatId)
+            "$set" -> BSONDocument("m.$.lm" -> bs)
+            //"$push" -> BSONDocument("ur" -> chatId)
           )
         )
 
         val update = data.map{num =>
           if(num._1 == 0) {
+            println("LINE 147: " + num._1)
             coll.update(
               BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
               BSONDocument(
@@ -156,15 +157,18 @@ object NotifyMessage {
             )
             true
           } else if(num._1 > 0 && num._2.contains(chatId)) {
+            println("LINE 160: " + num._1 + " - " + num._2)
             coll.update(
               BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
               BSONDocument(
+                "$inc" -> BSONDocument("m.$.n" -> 1),
                 "$set" -> BSONDocument("m.$.d" -> time),
                 "$set" -> BSONDocument("m.$.lm" -> bs)
               )
             )
             false
           } else {
+            println("LINE 170: " + num._1 + " - " + num._2)
             coll.update(
               BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
               BSONDocument(

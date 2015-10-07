@@ -210,7 +210,7 @@ ctrl.listen = function(d){
 };
 
 function sortByVer(a,b) {
-  console.log("sorting " + a.mv + b.mv)
+  //console.log("sorting " + a.mv + b.mv)
   if (a.mv < b.mv)
     return -1;
   if (a.mv > b.mv)
