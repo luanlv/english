@@ -148,10 +148,12 @@ var right = {
     m.redraw.strategy("diff");
 
     ctrl.makechat = function(uid) {
+      console.log("makechat");
       var pos = getPosChat(uid);
       data.chat[pos].display = true;
       data.chat[pos].hide = false;
       focusById(data.chat[pos].uid);
+      m.redraw();
     };
 
     ctrl.toggleChat = function(num){
@@ -330,9 +332,9 @@ var focusById = function(uid){
       document.getElementById(uid).focus();
     } else {
       console.log("focuss error")
-      setTimeout(focusComment, 10)
+      setTimeout(focusComment, 100)
     }
-  }, 10);
+  }, 100);
 }
 
 m.mount(document.getElementById('nav'), nav);

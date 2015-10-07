@@ -46,7 +46,7 @@ object UserMessage {
     }
 
     def insert(mesId: String, mv: Int, fromId: String, toId: String, mes: String, time: DateTime) = {
-      val bs = BSONDocument("_id" -> (mesId + "_" + mv), "mid" -> mesId, "mv" -> mv,  "f" -> fromId, "t" -> toId, "mes" -> mes, "time" -> time)
+      val bs = BSONDocument("mid" -> mesId, "mv" -> mv,  "f" -> fromId, "t" -> toId, "mes" -> mes, "time" -> time)
       coll.insert(bs)
     }
 

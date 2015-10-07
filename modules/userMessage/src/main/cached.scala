@@ -40,8 +40,9 @@ final class Cached(
   }
 
   def setNewVersion(id: String, v: Int) = {
-    cache.remove("notify:" + id)
-    cache.apply("notify:" + id)(v)
+    println("new version: " + id + " " + v)
+    cache.remove(id)
+    cache.apply(id)(v)
   }
 
   def setNewVersion(pre: String, id1: String, v1: Int, id2:String, v2: Int) = {

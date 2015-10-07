@@ -52,7 +52,7 @@ private[userMessage] final class UserMessageActor(
 
     case InitNotify(userId) => {
       sender ! api.getNotifyMessage(userId)
-      Env.current.cached.setNewVersion(userId, 0)
+      Env.current.cached.setNewVersion("notify:" + userId, 0)
       api.resetNotify(userId)
     }
 
@@ -87,7 +87,7 @@ private[userMessage] final class UserMessageActor(
      b => if(b) {
        val curNotify = Env.current.cached.getNotify(userId).await
        val newNotify =  if(curNotify > 0) {curNotify - 1} else curNotify
-       Env.current.cached.setNewVersion(userId, newNotify)
+       Env.current.cached.setNewVersion("notify:" + userId, newNotify)
        bus.publish(SendTo(toId, "n", newNotify), 'users)
      }
    }
@@ -119,7 +119,7 @@ private[userMessage] final class UserMessageActor(
 
               if(api.notifyMessage(toId, fromId,  mesId,  mv + 1, mes, time)){
                 val newNotify = Env.current.cached.getNotify(toId).await + 1
-                Env.current.cached.setNewVersion(toId, newNotify)
+                Env.current.cached.setNewVersion("notify:" + toId, newNotify)
                 bus.publish(SendTo(toId, "n", newNotify), 'users)
               } else {
                 println("not update!")
