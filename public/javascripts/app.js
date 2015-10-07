@@ -61,16 +61,8 @@ var nav = {
                         var pos = getPosChat(mes.m.uid);
                         data.chat[pos].display = true;
                         data.chat[pos].hide = false;
-                        if(mes.m.n > 0) data.chat[pos].read = false
-                        setTimeout(function focusComment(){
-                          if(document.getElementById(data.chat[pos].uid) != undefined){
-                            console.log("focuss ok")
-                            document.getElementById(data.chat[pos].uid).focus();
-                          } else {
-                            console.log("focuss error")
-                            setTimeout(focusComment, 10)
-                          }
-                        }, 10);
+                        if(mes.m.n > 0) data.chat[pos].read = false;
+                        focusById(data.chat[pos].uid)
                       });
                   }
                 }, [
@@ -159,7 +151,7 @@ var right = {
       var pos = getPosChat(uid);
       data.chat[pos].display = true;
       data.chat[pos].hide = false;
-
+      focusById(data.chat[pos].uid);
     };
 
     ctrl.toggleChat = function(num){
@@ -201,7 +193,13 @@ var right = {
       m('#user-list', [
         m('.title-user-list', "USER ONLINE"),
         data.userOnline.map(function(uid){
-          return m('div.userOnline', {onclick: function(){if(userId.length > 0 && userId !== uid) ctrl.makechat(uid)}}, getUser(uid).name)
+          return m('div.userOnline', {
+            config: function(el){
+              $(el).click(function(){
+                if(userId.length > 0 && userId !== uid) ctrl.makechat(uid)
+              });
+            }
+          }, getUser(uid).name)
         }),
         m('.title-user-list', "USER ONLINE")
       ]),
@@ -324,6 +322,18 @@ var markRead = function(rank){
     }
   }
 };
+
+var focusById = function(uid){
+  setTimeout(function focusComment(){
+    if(document.getElementById(uid) != undefined){
+      console.log("focuss ok")
+      document.getElementById(uid).focus();
+    } else {
+      console.log("focuss error")
+      setTimeout(focusComment, 10)
+    }
+  }, 10);
+}
 
 m.mount(document.getElementById('nav'), nav);
 m.mount(document.getElementById('app'), Loading);
