@@ -13,6 +13,15 @@
 		name="@ctx.username.getOrElse("")"
 		mv = "@mVersion(ctx.userId)"
 	>
+		<div class="relation_actions">
+		<a class="relation button" href="@routes.Relation.follow("luan2")?mini=1">
+			<span data-icon="h">&nbsp;@trans.follow()</span>
+		</a>
+
+		<a class="relation button hint--bottom" data-hint="@trans.unfollow()" href="@routes.Relation.unfollow("luan2")?mini=1">
+			<span data-icon="h">&nbsp;@trans.following()</span>
+		</a>
+		</div>
 
 	<div id="nav"> </div>
 	<div id="app"> </div>
@@ -20,8 +29,12 @@
 
 	@jsTag("mithril.js")
 	@jQueryTag
+	@jsTag("jquery.textarea_autosize.js")
+	@jsTag("attrchange.js")
+	@jsTag("main.js")
 	@jsTag("ws.js")
 	@jsTag("app.js")
+
 
 	<script >
 		m.route.mode = "pathname";

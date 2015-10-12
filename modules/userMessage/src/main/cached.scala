@@ -32,11 +32,11 @@ final class Cached(
   def mapVersion(uid: String, v: Int) = cacheVersion.get(uid + v)
 
   def chatVersion(mesId: String): Fu[Int] = cache("chatVer:" + mesId) {
-     val v = Env.current.messageRepo.lastMesVersion(mesId)
+     val v = MessageRepo.lastMesVersion(mesId)
      v
   }
   def userChatVersion(userId: String): Fu[Int] = cache("userChatVer:" + userId) {
-    Env.current.messageRepo.lastUserMesVersion(userId)
+    MessageRepo.lastUserMesVersion(userId)
   }
 
   def setNewVersion(id: String, v: Int) = {
@@ -53,7 +53,7 @@ final class Cached(
   }
 
   def getNotify(uid: String) = cache("notify:" + uid) {
-    Env.current.notifyRepo.getNotify(uid)
+    NotifyRepo.getNotify(uid)
   }
 
 

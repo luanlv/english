@@ -13,6 +13,7 @@ import lila.common.LightUser
 import lila.hub.actorApi.relation._
 import lila.hub.actorApi.{SendTos, SendTo}
 import makeTimeout.short
+import play.modules.reactivemongo.json._
 import reactivemongo.bson.BSONDocument
 
 private[userMessage] final class UserMessageActor(
@@ -32,11 +33,12 @@ private[userMessage] final class UserMessageActor(
 
     case Msg(userId, o) => sendMessage(userId, o)
 
-    case GetOnlineUser(userId) => sender ! onlineIds.map(_.toString)
+    case GetOnlineUser(userId) => sender ! onlines.values.toList
 
     case InitChat(fromId, toId, cv) => {
       val mesId = if(fromId < toId) fromId + toId else toId + fromId
-      sender ! api.getInitMes(mesId, cv)
+      println("send to handler")
+      sender ! api.getInitMes(mesId, cv).map(_.map(Json.toJson(_)))
     }
 
     case MarkRead(userId, toId, mv) => markRead(userId, toId, mv)
@@ -51,7 +53,7 @@ private[userMessage] final class UserMessageActor(
     }
 
     case InitNotify(userId) => {
-      sender ! api.getNotifyMessage(userId)
+      sender ! api.getNotifyMessage(userId).map(_.map(Json.toJson(_)))
       Env.current.cached.setNewVersion("notify:" + userId, 0)
       api.resetNotify(userId)
     }
@@ -79,7 +81,7 @@ private[userMessage] final class UserMessageActor(
         case Some(map) => map.await.getOrElse(num, "")
       }
     }
-    sender ! api.getMissingMes(listMesIds)
+    sender ! api.getMissingMes(listMesIds).map(_.map(Json.toJson(_)))
   }
 
   def markRead(userId: String, toId: String, mv: Int) = {
@@ -105,7 +107,7 @@ private[userMessage] final class UserMessageActor(
         var toV = api.findLastesUserMesVersion(toId).await
         var time = DateTime.now()
 
-        api.insert(mesId, mv + 1, fromId, toId, mes, time) map {
+        api.insert(mv + 1, lightUser(fromId).head, lightUser(toId).head, mes, time) map {
           writeResult => writeResult match {
             case ok if ok.ok   => {
               Env.current.cached.setNewVersion("chatVer:" + mesId, mv + 1)
@@ -113,7 +115,7 @@ private[userMessage] final class UserMessageActor(
               Env.current.cached.pushVersion(toId, toV + 1, mesId + "_" + (mv + 1) )
               Env.current.cached.pushVersion(fromId, toV + 1, mesId + "_" + (mv + 1) )
 
-              val data = Json.obj("mv" -> (mv + 1), "f" -> fromId, "t" -> toId, "m" -> mes, "timem" -> time)
+              val data = Json.obj("mv" -> (mv + 1), "f" -> lightUser(fromId).head, "t" -> lightUser(toId).head, "m" -> mes, "timem" -> time)
               bus.publish(SendTo(fromId, "mes", data.++(Json.obj("v" -> (fromV + 1)))), 'users)
               bus.publish(SendTo(toId, "mes", data.++(Json.obj("v" -> (toV + 1 )))), 'users)
 
@@ -135,7 +137,7 @@ private[userMessage] final class UserMessageActor(
 
   private def notifyFollowers(users: List[LightUser], message: String) {
     users foreach { user =>
-        bus.publish(SendTos(onlineIds.toSet, message, user.titleName), 'users)
+        bus.publish(SendTos(onlineIds.toSet, message, user), 'users)
     }
   }
 

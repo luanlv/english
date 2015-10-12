@@ -2,6 +2,7 @@ package lila.socket
 
 import akka.actor.ActorRef
 import akka.pattern.{ ask, pipe }
+import lila.common.LightUser
 import lila.hub.actorApi.userMessage._
 import play.api.libs.iteratee.{ Iteratee, Enumerator }
 import play.api.libs.json._
@@ -41,7 +42,7 @@ object Handler {
 
       case ("get_onlines", _) => userId foreach { u =>
         (hub.actor.userMessage ? GetOnlineUser(u)) foreach {
-          case data: Set[String] => socket ! OnelineFriend(uid, data)
+          case data: List[LightUser] => socket ! OnlineFriends(uid, data)
         }
       }
 
@@ -52,6 +53,7 @@ object Handler {
           case name:String  => socket ! SendName(uid, id, name)
         }
       }
+
       case ("gmm", o) => userId foreach { u =>
         if(u.length > 0){
           val f = ((o\"d").as[JsObject]\"f").as[Int]
@@ -77,7 +79,9 @@ object Handler {
         if(fromId.length() > 0) {
           (hub.actor.userMessage ? InitChat(fromId, (o \ "d" \ "w").as[String], (o \ "d" \ "cv").as[Int])) foreach{
             case dataFu: Future[List[JsValue]] => dataFu.map{
-              case data => socket ! SendInitMes(uid, data)
+              case data => {
+                socket ! SendInitMes(uid, data)
+              }
               case _ => println("init_chat from " + userId + " error!")
             }
           }

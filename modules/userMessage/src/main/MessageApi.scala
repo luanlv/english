@@ -1,6 +1,7 @@
 package lila.userMessage
 
 import akka.actor.ActorSelection
+import lila.common.LightUser
 import org.joda.time.DateTime
 import scala.util.Success
 
@@ -9,7 +10,7 @@ import lila.db.Implicits._
 
 import lila.hub.actorApi.relation.ReloadOnlineFriends
 import lila.hub.actorApi.timeline.{ Propagate, Follow => FollowUser }
-import lila.usrMessage.MessageRepo
+//import lila.usrMessage.MessageRepo
 
 final class MessageApi(
                            //cached: Cached,
@@ -24,31 +25,31 @@ final class MessageApi(
     Env.current.cached.userChatVersion(userId)
   }
 
-  def insert(mesId: String, mv: Int, fromId: String, toId: String, mes: String, time: DateTime) = {
-    Env.current.messageRepo.insert(mesId, mv, fromId, toId, mes, time)
+  def insert(mv: Int, fromId: LightUser, toId: LightUser, mes: String, time: DateTime) = {
+    MessageRepo.insert(mv, fromId, toId, mes, time)
   }
 
   def getInitMes(mesId: String, cv: Int) = {
-    Env.current.messageRepo.getInitMes(mesId, cv)
+    MessageRepo.getInitMes(mesId, cv)
   }
 
   def getMissingMes(listMesIds: Array[String]) = {
-    Env.current.messageRepo.getMissingMes(listMesIds)
+    MessageRepo.getMissingMes(listMesIds)
   }
 
   def notifyMessage(uid: String, chatId: String, mesId: String, mv: Int, mes: String, time: DateTime) = {
-    Env.current.notifyRepo.notifyMessage(uid, chatId, mesId, mv, mes, time)
+    NotifyRepo.notifyMessage(uid, chatId, mesId, mv, mes, time)
   }
 
   def getNotifyMessage(userId: String) = {
-    Env.current.notifyRepo.getNotifyMessage(userId)
+    NotifyRepo.getNotifyMessage(userId)
   }
 
   def resetNotify(userId: String) = {
-    Env.current.notifyRepo.resetNotify(userId)
+    NotifyRepo.resetNotify(userId)
   }
 
   def markRead(userId: String, toId: String, mv: Int) = {
-    Env.current.notifyRepo.markRead(userId, toId, mv)
+    NotifyRepo.markRead(userId, toId, mv)
   }
 }

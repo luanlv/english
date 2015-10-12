@@ -48,7 +48,7 @@ object ApplicationBuild extends Build {
   lazy val modules = Seq(
     common, db, hub, memo, user, image,
     security, i18n, notification, pref, game,
-    socket, monitor, site, userMessage, socketMessage)
+    socket, monitor, site, userMessage, socketMessage, relation)
 
   lazy val moduleRefs = modules map projectToRef
   lazy val moduleCPDeps = moduleRefs map { new sbt.ClasspathDependency(_, None) }
@@ -125,6 +125,10 @@ object ApplicationBuild extends Build {
 
   lazy val site = project("site", Seq(common, socket)).settings(
     libraryDependencies ++= provided(play.api)
+  )
+
+  lazy val relation = project("relation", Seq(common, db, memo, hub, user, game, pref)).settings(
+    libraryDependencies ++= provided(play.api, RM, PRM)
   )
 
 

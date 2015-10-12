@@ -24,7 +24,12 @@ GET   /password/reset/confirm/:token   controllers.Auth.passwordResetConfirm(tok
 POST  /password/reset/confirm/:token   controllers.Auth.passwordResetConfirmApply(token: String)
 POST  /set-fingerprint/:hash/:ms       controllers.Auth.setFingerprint(hash: String, ms: Int)
 
+#User
 
+POST  /rel/follow/:userId              controllers.Relation.follow(userId: String)
+POST  /rel/unfollow/:userId            controllers.Relation.unfollow(userId: String)
+POST  /rel/block/:userId               controllers.Relation.block(userId: String)
+POST  /rel/unblock/:userId             controllers.Relation.unblock(userId: String)
 
 #image
 GET      /image/list                  @controllers.ImageCtrl.getList(name: String ?="", page: Int ?=1)

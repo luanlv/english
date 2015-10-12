@@ -1,5 +1,7 @@
 package lila.socket
 
+import lila.common.LightUser
+
 import scala.concurrent.duration._
 import scala.util.Random
 
@@ -49,7 +51,7 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case SendName(uid, id, name)   => sendName(uid, id,  name)
 
-    case OnelineFriend(uid, list) => sendOnelineFriend(uid, list)
+    case OnlineFriends(uid, listUser) => sendOnlineFriend(uid, listUser)
 
     case SendMissingMes(uid, f, t, data) => sendMissingMes(uid, f, t, data)
 
@@ -165,8 +167,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     withMember(uid)(_ push makeMessage("nu", Json.obj("id" -> id, "n" -> name)))
   }
 
-  def sendOnelineFriend(uid: String, list: Set[String]) {
-    withMember(uid)(_ push makeMessage("ul", list))
+  def sendOnlineFriend(uid: String, listUser: List[LightUser]) {
+    println(listUser)
+    withMember(uid)(_ push makeMessage("ul", listUser))
   }
 
   def sendMissingMes(uid: String, f: Int, t: Int, data: List[JsValue]){

@@ -56,6 +56,15 @@ ws.onopen = function(){
 };
 
 
+ws.onclose = function(){
+  alert("socket closed")
+  console.log("socket closed")
+};
+
+ws.onerror = function(){
+  alert("socket error")
+  console.log("socket error")
+}
 
 var ctrl = {};
 var data = {
@@ -71,20 +80,20 @@ var data = {
 };
 
 
-var getPosChat = function(uid, mv){
+var getPosChat = function(user, mv){
   var cv = (mv == undefined)?0:mv;
   var read = (mv == undefined);
   pos = -1;
   for(var len = 0; len < data.chat.length; len++){
-    if(data.chat[len].uid == uid) {
+    if(data.chat[len].user.id == user.id) {
       pos = len;
       return pos
     }
   }
   if(pos = -1){
     console.log("send inti_chat form getPosChat");
-    data.chat.push({uid: uid, display: true, input: m.prop(''), init: false, hide: false, read: read, chat: []});
-    send(sendData("init_chat", {w: uid, cv: cv}));
+    data.chat.push({user: user, display: true, input: m.prop(''), init: false, hide: false, read: read, chat: []});
+    send(sendData("init_chat", {w: user.id, cv: cv}));
     return (data.chat.length - 1)
   }
 };
@@ -100,9 +109,9 @@ ctrl.listen = function(d){
   }
 
   if(d.t === "ul"){
-    d.d.map(function(uid){
-      if(data.userOnline.indexOf(uid) < 0 && uid != userId) {
-        data.userOnline.push(uid);
+    d.d.map(function(user){
+      if(data.userOnline.indexOf(user) < 0) {
+        data.userOnline.push(user);
       }
     });
     m.redraw();
@@ -114,7 +123,7 @@ ctrl.listen = function(d){
   }
 
   if(d.t === "following_enters"){
-    if(data.userOnline.indexOf(d.d) < 0 && d.d != userId) {
+    if(data.userOnline.indexOf(d.d) < 0) {
       data.userOnline.push(d.d);
       m.redraw();
     }
@@ -163,9 +172,9 @@ ctrl.listen = function(d){
   if(d.t === "init_chat"){
     var listMes = d.d;
     if(listMes.length > 0){
-      var uid = (userId == d.d[0].f)?d.d[0].t:d.d[0].f;
-      var pos = getPosChat(uid);
-      console.log("init posssssssss:" + pos);
+      var user = (userId == d.d[0].f.id)?d.d[0].t:d.d[0].f;
+      var pos = getPosChat(user);
+      //console.log("init posssssssss:" + pos);
       if(data.chat[pos].chat.length <= 1) {
         d.d.map(function (mes) {
           //console.log("init_chat: " + mes.mv);
@@ -227,8 +236,8 @@ ws.onmessage = function (e) {
 };
 
 var doMes = function(d){
-    var uid = (userId == d.d.f)? d.d.t: d.d.f;
-    var pos = getPosChat(uid, d.d.mv);
+    var user = (userId == d.d.f.id)? d.d.t: d.d.f;
+    var pos = getPosChat(user, d.d.mv);
     data.chat[pos].chat.push(
         {f: d.d.f, "mv": d.d.mv, "mes": d.d.m, "time": d.d.time}
     );
@@ -236,7 +245,19 @@ var doMes = function(d){
       data.chat[pos].display = true;
       data.chat[pos].hide = false;
     }
-    if(userId !== d.d.f) data.chat[pos].read = false;
+    if(userId !== d.d.f.id) data.chat[pos].read = false;
     m.redraw();
 };
 
+$('body').on('click', '.relation_actions a.relation', function() {
+  console.log("relation")
+  var $a = $(this).addClass('processing');
+  $.ajax({
+    url: $a.attr('href'),
+    type: 'post',
+    success: function(html) {
+      $a.parent().html(html);
+    }
+  });
+  return false;
+});

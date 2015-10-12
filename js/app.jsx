@@ -29,7 +29,7 @@ var nav = {
     var ctrl = this;
     ctrl.displayNofity = function(){
       //if(data.notify.notifyMessage.length < 1){
-        send(sendData("gnm", 0))
+      send(sendData("gnm", 0))
       //}
       data.notify.n = 0;
       data.notify.display = !data.notify.display
@@ -53,30 +53,24 @@ var nav = {
 
         m('.notifyWr', [
           !data.notify.display?"":m('.inNotify', !data.notify.init?"LOADING":[
-              data.notify.notifyMessage.map(function(mes){
-                return m('.notifyMes', {
-                  config: function(el){
-                      $(el).click(function(){
-                        data.notify.display = false;
-                        var pos = getPosChat(mes.user);
-                        if(data.chat[pos].display == false){
-                          data.chat[pos].display = true;
-                          data.chat[pos].hide = false;
-                          m.redraw();
-                        } else if(data.chat[pos].hide == true){
-                          data.chat[pos].hide = false
-                          m.redraw();
-                        }
-                        if(mes.n > 0) data.chat[pos].read = false;
-                        focusById(data.chat[pos].user.id)
-                      });
-                  }
-                }, [
-                  m('.notifyName', mes.user.name),
-                  m('.mesNumber', " (" + mes.n+ ") "),
-                  m('.lastMes', mes.lm.mes)
-                ])
-              })
+            data.notify.notifyMessage.map(function(mes){
+              return m('.notifyMes', {
+                config: function(el){
+                  $(el).click(function(){
+                    data.notify.display = false;
+                    var pos = getPosChat(mes.m.uid);
+                    data.chat[pos].display = true;
+                    data.chat[pos].hide = false;
+                    if(mes.m.n > 0) data.chat[pos].read = false;
+                    focusById(data.chat[pos].uid)
+                  });
+                }
+              }, [
+                m('.notifyName', getUser(mes.m.uid).name),
+                m('.mesNumber', " (" + mes.m.n+ ") "),
+                m('.lastMes', mes.m.lm.mes)
+              ])
+            })
           ])
         ])
       ]):"",
@@ -96,11 +90,11 @@ var Home = {
   view: function(ctrl) {
     rd("home");
     return [
-        m('div', [
-          ctrl.divs().map(function(item){
+      m('div', [
+        ctrl.divs().map(function(item){
           return m('div.config', {id: item.id, v: item.v}, item.id)
         })
-        ])
+      ])
     ]
   }
 };
@@ -167,7 +161,6 @@ var right = {
 
     ctrl.stopChat = function(num){
       data.chat[num].display = false;
-      data.chat[num].input('');
     };
 
     ctrl.add = function (num) {
@@ -213,77 +206,77 @@ var right = {
       ]),
 
       m('#dock-bot', [
-      data.chat.map(function(chat, rank){
-        return !chat.display?"":m('.chatWr' + (chat.hide?".w2":".w1"), [
-          m('.chat-title2' + (chat.read?"":".unread"), {
-            style: !chat.hide?"display: none":"",
-            onclick: function(){ctrl.toggleChat(rank)}
-          }, chat.user.name),
-          m('.chatboxWr', {style: chat.hide?"display: none":""},
-            [
-                    m('.chat-title' + (chat.read?"":".unread"), {
-                      onclick: function(){ctrl.toggleChat(rank)}
-                    }, [
-                      chat.user.name,
-                      m('span.close-chat', {onclick: function(){ctrl.stopChat(rank)}}, "X")
-                    ]),
-                    m('.chat-box', {config: scrollBottom, onclick: function(){markRead(rank)}}, [
-                      chat.chat.map(function(item, num){
-                        return [
-                          chat.init?m('.loading_chat', "Loading previous ..."):"",
-                          m('div'+ ((item.f.id == userId)?".comment-left": ".comment-right"),
-                              m('.mes', item.mes))
-                        ]
-                      })
-                    ])
-                    ,
-                    m('textarea.auto-size.new-comment#' + (chat.user.id) + '[rows=1]', {
-                      onfocus: function(){markRead(rank)},
-                      //onselect: function(){markRead(rank)},
-                      config: function (element, isInit, ctx) {
-                          if(!isInit) {
-                            $(element).textareaAutoSize();
-                            $(element).attrchange({
-                              //trackValues: true,
-                              callback: function (event) {
-                                var prev = element.previousSibling;
-                                var $prev = $(prev);
-                                if ($prev.scrollTop() + $prev.innerHeight() >= element.previousSibling.scrollHeight) {
-                                  $prev.css('height', 271 - $(element).outerHeight());
-                                  prev.scrollTop = prev.scrollHeight;
-                                } else {
-                                  $prev.css('height', 271 - $(element).outerHeight())
-                                }
+        data.chat.map(function(chat, rank){
+              return !chat.display?"":m('.chatWr' + (chat.hide?".w2":".w1"), [
+                m('.chat-title2' + (chat.read?"":".unread"), {
+                  style: !chat.hide?"display: none":"",
+                  onclick: function(){ctrl.toggleChat(rank)}
+                }, chat.user.name),
+                m('.chatboxWr', {style: chat.hide?"display: none":""},
+                    [
+                      m('.chat-title' + (chat.read?"":".unread"), {
+                        onclick: function(){ctrl.toggleChat(rank)}
+                      }, [
+                        chat.user.name,
+                        m('span.close-chat', {onclick: function(){ctrl.stopChat(rank)}}, "X")
+                      ]),
+                      m('.chat-box', {config: scrollBottom, onclick: function(){markRead(rank)}}, [
+                        chat.chat.map(function(item, num){
+                          return [
+                            chat.init?m('.loading_chat', "Loading previous ..."):"",
+                            m('div'+ ((item.f.id == userId)?".comment-left": ".comment-right"),
+                                m('.mes', item.mes))
+                          ]
+                        })
+                      ])
+                      ,
+                      m('textarea.auto-size.new-comment#' + (chat.user.id) + '[rows=1]', {
+                        style: chat.hide?"display: none":"",
+                        onfocus: function(){markRead(rank)},
+                        //onselect: function(){markRead(rank)},
+                        config: function (element, isInit, ctx) {
+                          $(element).textareaAutoSize();
+                          $(element).attrchange({
+                            //trackValues: true,
+                            callback: function (event) {
+                              var prev = element.previousSibling
+                              var $prev = $(prev);
+                              if($prev.scrollTop() + $prev.innerHeight() >= element.previousSibling.scrollHeight){
+                                $prev.css('height', 271 - $(element).outerHeight());
+                                prev.scrollTop = prev.scrollHeight;
+                              } else {
+                                $prev.css('height', 271 - $(element).outerHeight())
                               }
-                            });
-                          }
+
+                            }
+                          });
                           element.value = data.chat[rank].input();
-                      },
-                      onkeypress: function(e){
-                        if(e.keyCode == 13 && !e.shiftKey) {
-                          if (data.chat[rank].input().length < 1) {
-                            return false;
-                          } else {
-                            var source = e.target || e.srcElement;
-                            var prev = source.previousSibling;
-                            prev.scrollTop = prev.scrollHeight;
-                            ctrl.add(rank);
-                            return false;
+                        },
+                        onkeypress: function(e){
+                          if(e.keyCode == 13 && !e.shiftKey) {
+                            if (data.chat[rank].input().length < 1) {
+                              return false;
+                            } else {
+                              var source = e.target || e.srcElement;
+                              var prev = source.previousSibling;
+                              prev.scrollTop = prev.scrollHeight;
+                              ctrl.add(rank);
+                              return false;
+                            }
+                          }else{
+                            m.redraw.strategy("none")
+                            if(e.keyCode == 13 && e.shiftKey && data.chat[rank].input().length < 1)
+                              return false;
                           }
-                        }else{
-                          m.redraw.strategy("none")
-                          if(e.keyCode == 13 && e.shiftKey && data.chat[rank].input().length < 1)
-                            return false;
-                        }
-                      },
-                      value: data.chat[rank].input(),
-                      oninput: setsVal(data.chat[rank].input)
-                    })
-            ])]
-        ) // .right end
-        }
-      )
-    ])
+                        },
+                        value: data.chat[rank].input(),
+                        oninput: setsVal(data.chat[rank].input)
+                      })
+                    ])]
+              ) // .right end
+            }
+        )
+      ])
     ]
   }
 };
@@ -318,6 +311,20 @@ function setsVal(callback) {
 }
 
 
+var getUser = function(name){
+  if(data.user[name] !== undefined){
+    return data.user[name]
+  } else {
+    data.user[name] = {};
+    send(sendData("gn", name));
+    setTimeout(function getName(){
+      if(data.user[name]  === undefined){
+        setTimeout(getName, 2000);
+      }
+    }, 2000);
+    return {name: "...."}
+  }
+};
 
 var markRead = function(rank){
   console.log("run markread ")
@@ -335,13 +342,13 @@ var markRead = function(rank){
 var focusById = function(uid){
   setTimeout(function focusComment(){
     if(document.getElementById(uid) != undefined){
-      console.log("focuss ok: " + uid)
+      console.log("focuss ok")
       document.getElementById(uid).focus();
     } else {
-      console.log("focuss error: " + uid)
-      setTimeout(focusComment, 300)
+      console.log("focuss error")
+      setTimeout(focusComment, 100)
     }
-  }, 300);
+  }, 100);
 }
 
 m.mount(document.getElementById('nav'), nav);

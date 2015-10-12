@@ -48,7 +48,7 @@ final class Env(
       //Env.gameSearch,
       //Env.teamSearch,
       //Env.forumSearch,
-      //Env.relation,
+      Env.relation,
       //Env.report,
       Env.notification,
       //Env.bookmark,
@@ -92,5 +92,6 @@ object Env {
   def site = lila.site.Env.current
   def monitor = lila.monitor.Env.current
   def userMessage = lila.userMessage.Env.current
+  def relation = lila.relation.Env.current
 
 }
