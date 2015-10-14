@@ -1,15 +1,16 @@
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
-var div = [{id: "home1", v: 1},{id: "home2", v: 5} ,{id:"home3", v: 10}];
+var div = [{id: "div 1", v: 1},{id: "div 2", v: 5} ,{id:"div 3", v: 10}];
 
 var Home = {
   controller: function() {
     var ctrl = this;
     ctrl.divs = m.prop([]);
-    ctrl.divs([]);
+    ctrl.divs(div);
+    rd.home(function(){m.redraw()});
   },
   view: function(ctrl) {
-    api.rd("home");
+    api.rd("home:" + redraw.home);
     redraw.home++;
     return (
         <div>

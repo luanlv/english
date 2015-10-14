@@ -19,11 +19,14 @@ api.requestWithFeedback = function(args) {
     xhr.timeout = 4000
     xhr.ontimeout = function() {
       complete()
-      m.redraw()
+      rd.dashboard(function(){ console.log("json error");m.redraw()})
     }
-  }
+  };
   return {
-    request: m.request(args).then(data).then(function(){complete();m.redraw()}),
+    request: m.request(args).then(data).then(function(){
+      complete()
+      rd.dashboard(function(){ console.log("json ok");m.redraw()})
+    }),
     data: data,
     ready: completed
   }
@@ -75,10 +78,13 @@ module.exports = api;
 },{"../ws/_wsCtrl.js":7}],2:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
+var initData = {}
+//initData.dashboard = {}
+//initData.dashboard.data = {}
 
 var Dashboard = {
   controller: function() {
-    console.log("run controller Dashboard");
+    console.log("controller dashboard!")
     var ctrl = this;
     ctrl.server = initData.dashboard || {server: false};
     ctrl.request = (!ctrl.server.server)? api.requestWithFeedback({method: "GET", url: "/json"}) : {
@@ -86,18 +92,17 @@ var Dashboard = {
       data: m.prop(initData.dashboard.data)
     };
     ctrl.server.server = false;
+    rd.dashboard()
   },
   view: function(ctrl) {
-    api.rd("dashBoard");
+    api.rd("dashBoard:" + redraw.dashboard);
     redraw.dashboard++;
     if(!ctrl.request.ready()) {
-      return m('div', "LOADING !!!")
+      return m('div', "LOADINGGG !!!")
     } else {
-      return [
-        ctrl.request.data().map(function (u) {
-          return m('div', u.name)
-        })
-      ]
+      return {tag: "div", attrs: {}, children: [
+        ctrl.request.data().data
+      ]}
     }
   }
 };
@@ -188,24 +193,26 @@ var Count = {
   }
 };
 
-
-m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
-m.mount(document.getElementById('app'), tenant('all', window.Loading));
-m.mount(document.getElementById('count'), Count);
-m.mount(document.getElementById('rightContainer'), tenant('right', window.Right));
+window.initComponent = function() {
+  m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
+  //m.mount(document.getElementById('app'), tenant('all', window.Loading));
+  m.mount(document.getElementById('count'), Count);
+  m.mount(document.getElementById('rightContainer'), tenant('right', window.Right));
+}
 },{"./dashboard.msx":2,"./home.msx":4,"./nav.msx":5,"./right.msx":6}],4:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
-var div = [{id: "home1", v: 1},{id: "home2", v: 5} ,{id:"home3", v: 10}];
+var div = [{id: "div 1", v: 1},{id: "div 2", v: 5} ,{id:"div 3", v: 10}];
 
 var Home = {
   controller: function() {
     var ctrl = this;
     ctrl.divs = m.prop([]);
-    ctrl.divs([]);
+    ctrl.divs(div);
+    rd.home(function(){m.redraw()});
   },
   view: function(ctrl) {
-    api.rd("home");
+    api.rd("home:" + redraw.home);
     redraw.home++;
     return (
         {tag: "div", attrs: {}, children: [
@@ -243,7 +250,8 @@ var Nav = {
     api.rd("nav: " + redraw.nav);
     redraw.nav++;
     return [
-      m("a", {href: "/", onclick:{function(){rd.all(function(){m.redraw()})}} , config: m.route}, " Home |"),
+      m("a", {href: "/", config: m.route}, " Home |"),
+      m("a", {href: "/dashboard",  config: m.route}, " Dashboard |"),
       (wsCtrl.userId.length>0)?(" ---Hello:" + wsCtrl.userId) + "--- |":"",
       (wsCtrl.userId.length>0)?m("a", {href: "/logout"}, "Logout"):"",
       (!wsCtrl.userId.length>0)?m("a", {href: "/login"}, "Sign in |"):"",
@@ -266,7 +274,6 @@ var Nav = {
                       console.log("click")
                       wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
                       var pos = wsCtrl.getPosChat(mes.user);
-                      console.log(wsCtrl.data.chat[pos]);
                       if(wsCtrl.data.chat[pos].display == false){
                         wsCtrl.data.chat[pos].display = true;
                         wsCtrl.data.chat[pos].hide = false;

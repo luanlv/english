@@ -2,7 +2,8 @@
 
 
 GET /              controllers.Application.index
-
+GET /dashboard              controllers.Application.index
+GET /json              controllers.Application.json
 
 GET   /socket                          controllers.Main.websocket
 

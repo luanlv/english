@@ -20,7 +20,8 @@ var Nav = {
     api.rd("nav: " + redraw.nav);
     redraw.nav++;
     return [
-      m("a", {href: "/", onclick:{function(){rd.all(function(){m.redraw()})}} , config: m.route}, " Home |"),
+      m("a", {href: "/", config: m.route}, " Home |"),
+      m("a", {href: "/dashboard",  config: m.route}, " Dashboard |"),
       (wsCtrl.userId.length>0)?(" ---Hello:" + wsCtrl.userId) + "--- |":"",
       (wsCtrl.userId.length>0)?m("a", {href: "/logout"}, "Logout"):"",
       (!wsCtrl.userId.length>0)?m("a", {href: "/login"}, "Sign in |"):"",
@@ -43,7 +44,6 @@ var Nav = {
                       console.log("click")
                       wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
                       var pos = wsCtrl.getPosChat(mes.user);
-                      console.log(wsCtrl.data.chat[pos]);
                       if(wsCtrl.data.chat[pos].display == false){
                         wsCtrl.data.chat[pos].display = true;
                         wsCtrl.data.chat[pos].hide = false;

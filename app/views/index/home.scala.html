@@ -41,8 +41,9 @@
 		m.route.mode = "pathname";
 		m.route(document.getElementById('app'), "/", {
 		  "/": tenant('home', route(Home)),
-//		  "/dashboard": tenant('dashboard', route(Dashboard)),
+		  "/dashboard": tenant('dashboard', route(Dashboard)),
 		});
+		initComponent();
 	</script>
 	</body>
 </html>

@@ -18,11 +18,14 @@ api.requestWithFeedback = function(args) {
     xhr.timeout = 4000
     xhr.ontimeout = function() {
       complete()
-      m.redraw()
+      rd.dashboard(function(){ console.log("json error");m.redraw()})
     }
-  }
+  };
   return {
-    request: m.request(args).then(data).then(function(){complete();m.redraw()}),
+    request: m.request(args).then(data).then(function(){
+      complete()
+      rd.dashboard(function(){ console.log("json ok");m.redraw()})
+    }),
     data: data,
     ready: completed
   }

@@ -1,9 +1,12 @@
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
+var initData = {}
+//initData.dashboard = {}
+//initData.dashboard.data = {}
 
 var Dashboard = {
   controller: function() {
-    console.log("run controller Dashboard");
+    console.log("controller dashboard!")
     var ctrl = this;
     ctrl.server = initData.dashboard || {server: false};
     ctrl.request = (!ctrl.server.server)? api.requestWithFeedback({method: "GET", url: "/json"}) : {
@@ -11,18 +14,17 @@ var Dashboard = {
       data: m.prop(initData.dashboard.data)
     };
     ctrl.server.server = false;
+    rd.dashboard()
   },
   view: function(ctrl) {
-    api.rd("dashBoard");
+    api.rd("dashBoard:" + redraw.dashboard);
     redraw.dashboard++;
     if(!ctrl.request.ready()) {
-      return m('div', "LOADING !!!")
+      return m('div', "LOADINGGG !!!")
     } else {
-      return [
-        ctrl.request.data().map(function (u) {
-          return m('div', u.name)
-        })
-      ]
+      return <div>
+        {ctrl.request.data().data}
+      </div>
     }
   }
 };
