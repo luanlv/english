@@ -13,29 +13,23 @@ var minifyCss = require('gulp-minify-css');
 
 
 
-gulp.task('bundle', function() {
-  gulp.src('js/app.jsx')
+gulp.task('app', function() {
+  gulp.src('js/app/_main.msx')
       .pipe(browserify({
         transform: ['mithrilify']
       }))
-      .pipe(rename('bundle.js'))
+      .pipe(rename('app2.js'))
       .pipe(gulp.dest('public/javascripts/'))
 });
 
 
-gulp.task('sass', function() {
-  gulp.src('./resources/sass/main.scss')
-      .pipe(sourcemaps.init())
-      .pipe(sass({
-        errLogToConsole: true
+gulp.task('ws', function(){
+  gulp.src('js/ws/_main.js')
+      .pipe(browserify({
+        transform: ['mithrilify']
       }))
-      .pipe(sourcemaps.write())
-      .pipe(minifyCss({compatibility: 'ie8'}))
-      .pipe(gulp.dest('./public/stylesheets'));
-});
-
-gulp.task('watch', ['sass'], function () {
-  gulp.watch('./resources/sass/{,*/}*.{scss,sass}', ['sass'])
+      .pipe(rename('ws2.js'))
+      .pipe(gulp.dest('public/javascripts/'))
 });
 
 //
@@ -58,8 +52,10 @@ gulp.task('serve', function () {
   });
 });
 
-gulp.task('watchjsx', ['bundle'], function () {
-  gulp.watch('js/*.jsx', ['bundle'])
+gulp.task('watchjsx', ['app'], function () {
+  gulp.watch('js/{,*/}*.msx', ['app']);
+  gulp.watch('js/{,*/}*.js', ['app']);
 });
+
 // Creating the default gulp task
-gulp.task('default', [  'watchjsx', 'serve']);
+gulp.task('default', [  'app', 'watchjsx', 'serve']);

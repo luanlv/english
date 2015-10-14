@@ -1,0 +1,73 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = api || {};
+
+api.data = "hello"
+
+api.rd = function(name){
+  console.log("redraw " + name)
+};
+
+api.requestWithFeedback = function(args) {
+  var data = m.prop();
+  var completed = m.prop(false)
+  var complete = function() {
+    completed(true)
+  }
+  args.background = true
+  args.config = function(xhr) {
+    xhr.timeout = 4000
+    xhr.ontimeout = function() {
+      complete()
+      m.redraw()
+    }
+  }
+  return {
+    request: m.request(args).then(data).then(function(){complete();m.redraw()}),
+    data: data,
+    ready: completed
+  }
+};
+
+
+api.scrollBottom = function(element, isInit, context) {
+  if(!isInit){
+    element.scrollTop = element.scrollHeight;
+  }
+  var addLegth = (element.scrollHeight - context.prevHeight) || 0;
+  if( element.scrollHeight - element.clientHeight - element.scrollTop < addLegth +  + 10 )
+    element.scrollTop = element.scrollHeight;
+  context.prevHeight = element.scrollHeight
+}
+
+api.setsVal = function(callback) {
+  return function(e) {
+    m.withAttr("value", callback)(e);
+    m.redraw.strategy("none")
+  }
+}
+
+
+
+api.markRead = function(rank){
+  if(wsCtrl.data.chat[rank].read === false){
+    if(wsCtrl.data.chat[rank].chat[wsCtrl.data.chat[rank].chat.length - 1].f.id == wsCtrl.data.chat[rank].user.id) {
+      wsCtrl.send(wsCtrl.sendData("mr", {
+        uid: wsCtrl.data.chat[rank].user.id,
+        mv: wsCtrl.data.chat[rank].chat[wsCtrl.data.chat[rank].chat.length - 1].mv
+      }));
+    }
+    wsCtrl.data.chat[rank].read = true;
+  }
+};
+
+api.focusById = function(uid){
+  setTimeout(function focusComment(){
+    if(document.getElementById(uid) != undefined){
+      document.getElementById(uid).focus();
+    } else {
+      setTimeout(focusComment, 100)
+    }
+  }, 100);
+};
+
+module.exports = api;

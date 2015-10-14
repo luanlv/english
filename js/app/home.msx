@@ -1,0 +1,26 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+var div = [{id: "home1", v: 1},{id: "home2", v: 5} ,{id:"home3", v: 10}];
+
+var Home = {
+  controller: function() {
+    var ctrl = this;
+    ctrl.divs = m.prop([]);
+    ctrl.divs([]);
+  },
+  view: function(ctrl) {
+    api.rd("home");
+    redraw.home++;
+    return (
+        <div>
+          {ctrl.divs().map(function(item){
+              return <div className="config"
+                          id={item.id}
+                          v={item.v}>{item.id}</div>
+              })}
+        </div>
+    )
+  }
+};
+
+module.exports = Home;

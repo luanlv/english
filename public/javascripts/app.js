@@ -320,15 +320,15 @@ function setsVal(callback) {
 
 
 var markRead = function(rank){
-  console.log("run markread ")
+  console.log("run markread ");
   if(data.chat[rank].read === false){
     if(data.chat[rank].chat[data.chat[rank].chat.length - 1].f.id == data.chat[rank].user.id) {
       send(sendData("mr", {
         uid: data.chat[rank].user.id,
         mv: data.chat[rank].chat[data.chat[rank].chat.length - 1].mv
       }));
-      data.chat[rank].read = true;
     }
+    data.chat[rank].read = true;
   }
 };
 

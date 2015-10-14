@@ -1,0 +1,88 @@
+window.Nav = require('./nav.msx');
+window.Home = require('./home.msx');
+window.Dashboard = require('./dashboard.msx');
+
+window.target = [];
+
+window.tenant = function(id, module) {
+  target.push(id);
+  return {
+    controller: module.controller,
+    view: function(ctrl) {
+      if(target.indexOf(id) != -1 || id == "all"){
+        target.splice(target.indexOf(id), 1);
+        return module.view(ctrl);
+      } else {
+        return {subtree: "retain"}
+      }
+    }
+  }
+};
+
+window.local = function(id, callback) {
+  return function(e) {
+    target = id;
+    if(callback == undefined) callback = function(){};
+    callback.call(this, e)
+  }
+};
+
+window.rd = {
+  nav: function(callback){
+    local(['nav'], callback).call()
+  },
+  home: function(callback){
+    local(['home'], callback).call()
+  },
+  dashboard: function(callback){
+    local(['dashboard'], callback).call()
+  },
+  app: function(callback){
+    local(['app'], callback).call()
+  },
+  right: function(callback){
+    local(['right'], callback).call()
+  },
+  all: function(callback){
+    local(["home", "dashboard", "nav", "app", "right"], callback).call()
+  }
+};
+
+
+
+//var listId = [];
+//var flag = true;
+
+
+
+window.Right = require('./right.msx');
+
+window.Loading = {
+  controller: function(){
+
+  },
+  view: function(){
+    console.log("render loading!!");
+    return m('', 'LOADING')
+  }
+};
+
+var Count = {
+  controller: function(){},
+  view: function(ctrl){
+    return <div className="count">
+      redraw: {JSON.stringify(redraw)}
+      <div>NAV : {redraw.nav}</div>
+      <div>HOME : {redraw.home}</div>
+      <div>DASHBOARD : {redraw.dashboard}</div>
+      <div>RIGHT : {redraw.right}</div>
+      <div>APP : {redraw.app}</div>
+    </div>
+  }
+};
+
+
+m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
+m.mount(document.getElementById('app'), tenant('all', window.Loading));
+m.mount(document.getElementById('count'), Count);
+m.mount(document.getElementById('rightContainer'), tenant('right', window.Right));

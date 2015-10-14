@@ -1,4 +1,3 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var wsCtrl = {}
 
 var sri = Math.random().toString(36).substring(2);
@@ -13,7 +12,13 @@ wsCtrl.mRVersion = parseInt(document.body.getAttribute("mv"));
 var mRVersion = wsCtrl.mRVersion
 
 
-window.redraw = 0;
+window.redraw = {
+  nav: 0,
+  home: 0,
+  dashboard: 0,
+  right: 0,
+  app: 0
+}
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
@@ -27,15 +32,16 @@ var pingData = function() {
   });
 };
 
-var sendData = function(t, d){
+wsCtrl.sendData = function(t, d){
   return JSON.stringify({
     t: t,
     d: d
   })
 };
+var sendData = wsCtrl.sendData;
 
 
-var send = function (message, callback) {
+    wsCtrl.send = function (message, callback) {
   waitForConnection(function () {
     ws.send(message);
     if (typeof callback !== 'undefined') {
@@ -43,6 +49,7 @@ var send = function (message, callback) {
     }
   }, 1000);
 };
+var send = wsCtrl.send;
 
 var waitForConnection = function (callback, interval) {
   if (ws.readyState === 1) {
@@ -75,7 +82,6 @@ ws.onerror = function(){
   console.log("socket error")
 }
 
-var ctrl = {};
 wsCtrl.data = {
   userOnline: [],
   user: {},
@@ -90,7 +96,7 @@ wsCtrl.data = {
 var data = wsCtrl.data;
 
 
-var getPosChat = function(user, mv){
+wsCtrl.getPosChat = function(user, mv){
   var cv = (mv == undefined)?0:mv;
   var read = (mv == undefined);
   pos = -1;
@@ -101,20 +107,21 @@ var getPosChat = function(user, mv){
     }
   }
   if(pos = -1){
-    console.log("send inti_chat form getPosChat");
     data.chat.push({user: user, display: true, input: m.prop(''), init: false, hide: false, read: read, chat: []});
     send(sendData("init_chat", {w: user.id, cv: cv}));
     return (data.chat.length - 1)
   }
 };
+var getPosChat = wsCtrl.getPosChat;
 
+
+var ctrl = {};
 ctrl.listen = function(d){
-
   if(d.t === "n"){
     if(!data.notify.display) {
       var preNotify = data.notify.n;
       if (data.notify.display == false) data.notify.n = d.d;
-      if (preNotify !== data.notify.n) m.redraw()
+      if (preNotify !== data.notify.n) rd.nav(function(){m.redraw()})
     }
   }
 
@@ -124,25 +131,22 @@ ctrl.listen = function(d){
         data.userOnline.push(user);
       }
     });
-    m.redraw();
+    rd.right(function(){m.redraw()})
   }
 
   if(d.t === "following_leaves"){
     data.userOnline.splice(data.userOnline.indexOf(d.d), 1);
-    m.redraw();
+    rd.right(function(){m.redraw()})
   }
 
   if(d.t === "following_enters"){
     if(data.userOnline.indexOf(d.d) < 0) {
       data.userOnline.push(d.d);
-      m.redraw();
+      rd.right(function(){m.redraw()})
     }
   }
 
-  if(d.t === "nu"){
-    data.user[d.d.id].name = d.d.n
-    m.redraw();
-  }
+
 
   if(d.t === "mes"){
     if(mVersion >= (d.d.v-1)){
@@ -197,7 +201,7 @@ ctrl.listen = function(d){
         })
       }
       data.chat[pos].chat.sort(sortByVer);
-      m.redraw()
+      rd.right(function(){m.redraw()})
     }
   }
 
@@ -218,13 +222,14 @@ ctrl.listen = function(d){
       if(mRVersion == d.d.f -1 ) mRVersion = d.d.t;
      });
 
-      m.redraw()
+      rd.right(function(){m.redraw()})
   }
 
   if(d.t === "init_notify") {
     data.notify.notifyMessage = d.d;
     data.notify.init = true;
-    m.redraw()
+    console.log(target);
+    rd.nav(function(){m.redraw();});
   }
 };
 
@@ -258,7 +263,7 @@ var doMes = function(d){
     if(userId !== d.d.f.id) {
       data.chat[pos].read = false;
     } else data.chat[pos].read = true;
-    m.redraw();
+    rd.right(function(){m.redraw()})
 };
 
 $('body').on('click', '.relation_actions a.relation', function() {
@@ -276,4 +281,3 @@ $('body').on('click', '.relation_actions a.relation', function() {
 
 
 module.exports = wsCtrl;
-},{}]},{},[1])

@@ -1,0 +1,31 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+var Dashboard = {
+  controller: function() {
+    console.log("run controller Dashboard");
+    var ctrl = this;
+    ctrl.server = initData.dashboard || {server: false};
+    ctrl.request = (!ctrl.server.server)? api.requestWithFeedback({method: "GET", url: "/json"}) : {
+      ready: function(){return true},
+      data: m.prop(initData.dashboard.data)
+    };
+    ctrl.server.server = false;
+  },
+  view: function(ctrl) {
+    api.rd("dashBoard");
+    redraw.dashboard++;
+    if(!ctrl.request.ready()) {
+      return m('div', "LOADING !!!")
+    } else {
+      return [
+        ctrl.request.data().map(function (u) {
+          return m('div', u.name)
+        })
+      ]
+    }
+  }
+};
+
+
+module.exports = Dashboard;

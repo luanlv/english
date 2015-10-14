@@ -6,6 +6,8 @@ var userName = document.body.getAttribute("name");
 var mVersion = parseInt(document.body.getAttribute("mv"));
 var mRVersion = parseInt(document.body.getAttribute("mv"));
 
+var redraw = 0;
+
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
@@ -245,7 +247,9 @@ var doMes = function(d){
       data.chat[pos].display = true;
       data.chat[pos].hide = false;
     }
-    if(userId !== d.d.f.id) data.chat[pos].read = false;
+    if(userId !== d.d.f.id) {
+      data.chat[pos].read = false;
+    } else data.chat[pos].read = true;
     m.redraw();
 };
 

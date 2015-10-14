@@ -13,6 +13,7 @@
 		name="@ctx.username.getOrElse("")"
 		mv = "@mVersion(ctx.userId)"
 	>
+
 		<div class="relation_actions">
 		<a class="relation button" href="@routes.Relation.follow("luan2")?mini=1">
 			<span data-icon="h">&nbsp;@trans.follow()</span>
@@ -22,7 +23,7 @@
 			<span data-icon="h">&nbsp;@trans.following()</span>
 		</a>
 		</div>
-
+	<div id="count"></div>
 	<div id="nav"> </div>
 	<div id="app"> </div>
 	<div id="rightContainer"></div>
@@ -32,15 +33,15 @@
 	@jsTag("jquery.textarea_autosize.js")
 	@jsTag("attrchange.js")
 	@jsTag("main.js")
-	@jsTag("ws.js")
-	@jsTag("app.js")
+	@jsTag("app2.js")
 
 
 	<script >
+
 		m.route.mode = "pathname";
 		m.route(document.getElementById('app'), "/", {
-		  "/": route(Home),
-		  "/dashboard": route(Dashboard),
+		  "/": tenant('home', route(Home)),
+//		  "/dashboard": tenant('dashboard', route(Dashboard)),
 		});
 	</script>
 	</body>

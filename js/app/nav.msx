@@ -1,0 +1,73 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var Nav = {
+  controller: function(){
+    var ctrl = this;
+    ctrl.displayNofity = function(){
+      //if(wsCtrl.data.notify.notifyMessage.length < 1){
+      if(wsCtrl.data.notify.display == false ) {
+        wsCtrl.data.notify.init = false;
+        wsCtrl.send(wsCtrl.sendData("gnm", 0))
+      }
+      //}
+      wsCtrl.data.notify.n = 0;
+      wsCtrl.data.notify.display = !wsCtrl.data.notify.display
+    };
+  },
+  view: function(ctrl){
+    api.rd("nav: " + redraw.nav);
+    redraw.nav++;
+    return [
+      m("a", {href: "/", onclick:{function(){rd.all(function(){m.redraw()})}} , config: m.route}, " Home |"),
+      (wsCtrl.userId.length>0)?(" ---Hello:" + wsCtrl.userId) + "--- |":"",
+      (wsCtrl.userId.length>0)?m("a", {href: "/logout"}, "Logout"):"",
+      (!wsCtrl.userId.length>0)?m("a", {href: "/login"}, "Sign in |"):"",
+      (!wsCtrl.userId.length>0)?m("a", {href: "/signup"}, " Sign up"):"",
+      (wsCtrl.userId.length>0)?m('.notify', [
+        m('.numNotify',{
+          onclick: function(){
+            ctrl.displayNofity();
+            rd.nav();
+          }
+        }, wsCtrl.data.notify.n),
+
+        m('.notifyWr', [
+          !wsCtrl.data.notify.display?"":m('.inNotify', !wsCtrl.data.notify.init?"LOADING":[
+            wsCtrl.data.notify.notifyMessage.map(function(mes){
+              return m('.notifyMes', {
+                config: function(el){
+                  $(el).click(function(){
+                    local(['nav', 'right'], function(){
+                      console.log("click")
+                      wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
+                      var pos = wsCtrl.getPosChat(mes.user);
+                      console.log(wsCtrl.data.chat[pos]);
+                      if(wsCtrl.data.chat[pos].display == false){
+                        wsCtrl.data.chat[pos].display = true;
+                        wsCtrl.data.chat[pos].hide = false;
+                      } else if(wsCtrl.data.chat[pos].hide == true){
+                        wsCtrl.data.chat[pos].hide = false;
+                      } else {
+                      }
+                      if(mes.n > 0) wsCtrl.data.chat[pos].read = false;
+                      api.focusById(wsCtrl.data.chat[pos].user.id);
+                      m.redraw();
+                    }).call()
+                  });
+                }
+              }, [
+                m('.notifyName', mes.user.name),
+                m('.mesNumber', " (" + mes.n+ ") "),
+                m('.lastMes', mes.lm.mes)
+              ])
+            })
+          ])
+        ])
+      ]):"",
+    ]
+  }
+};
+
+module.exports = Nav;
