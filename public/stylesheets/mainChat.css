@@ -159,7 +159,7 @@ textarea {
 
 .userOnline{
   cursor: pointer;
-  margin-bottom: 5px;
+  padding: 7px;
 }
 
 .close-chat{
@@ -210,23 +210,24 @@ textarea {
 .inNotify {
   z-index: 10;
   position: absolute;
-  top: 18px;
-  right: -18px;
+  top: 9px;
+  right: -16px;
   width: 400px;
   max-height: 450px;
 }
 .inUser {
   z-index: 10;
   position: absolute;
-  top: 18px;
-  right: -10px;
+  top: 9px;
+  right: -16px;
 }
 
 .notifyMes{
   text-align: left;
-  border-top: 1px solid rgba(255,127,80, 0.3);
+  border-top: 1px solid rgba(0,0,0, 0.2);
   cursor: pointer;
   height:36px;
+  padding: 10px;
 }
 
 .notifyName {
@@ -246,6 +247,7 @@ textarea {
   display: inline-block;
   color: #333;
   font-weight: lighter;
+  overflow: hidden;
 }
 
 .haveNotify {
@@ -282,14 +284,7 @@ textarea {
   padding: 3px;
   min-height: 30px;
 }
-.buttonPost{
-  text-align: center;
-  background: indianred;
-  width: 50px;
-  float: right;
-  margin-right: 20px;
-  cursor: pointer;
-}
+
 
 .clear{
   clear: both;
@@ -337,9 +332,12 @@ textarea {
 .corner-right{
   width: 70px;
   position: absolute;
-  top: 2px;
+  top: 1px;
   right: -30px;
   z-index: 99;
+}
+.inUser .corner-right{
+  right: -20px;
 }
 
 .inLogin .corner-right{
@@ -357,28 +355,51 @@ textarea {
   position:relative;
   overflow:hidden;
 }
+
+
 .tr:before{
   content:'';
   position:absolute;
   top:0; left:0;
   width:100%; height:100%;
-  background-color : white;
-  border-left: 2px solid #F2711C;
-  border-top: 2px solid #F2711C;
+  background: #2185D0;
+  border-left: 1px solid #666;
+  border-top: 1px solid #666;
   transform-origin:0 100%;
   transform: rotate(45deg);
 }
 
-.inLogin .tr:before, .inUser .tr:before{
-  background: #2185D0;
-  border-left: 2px solid #2185D0;
-  border-top: 2px solid #2185D0;
+/*.inLogin .tr:before, .inUser .tr:before{*/
+  /*background: #2185D0;*/
+  /*border-left: 1px solid #666;*/
+  /*border-top: 1px solid #666;*/
+/*}*/
+
+.notify-content{
+  box-shadow: 3px 5px 3px -3px #777 !important;
+}
+
+.sha{
+  box-shadow: 0px 5px 3px -3px #444 !important;
 }
 
 .inNotify .notify-content{
-  border-left: 1px solid #F2711C !important;
-  border-right: 1px solid #F2711C !important;
-  border-bottom: 1px solid #F2711C !important;
+  border-radius: 0 0 5px 5px!important;
+  border: 1px solid rgba(0,0,0, 0.2) !important;
+}
+
+.inLogin .notify-content{
+  border-radius: 0 0 5px 5px!important;
+  width: 300px;
+  min-height: 150px;
+  border: 1px solid rgba(0,0,0, 0.2) !important;
+}
+
+.inUser .notify-content{
+  border-radius: 0 0 5px 5px!important;
+  width: 135px;
+  min-height: 50px;
+  border: 1px solid rgba(0,0,0, 0.2) !important;
 }
 
 .search-friend{
@@ -429,22 +450,8 @@ textarea {
 .inLogin{
   z-index: 10;
   position: absolute;
-  top: 18px;
-  right: 0px;
+  top: 9px;
+  right: -16px;
 }
 
-.inLogin .notify-content{
-  width: 300px;
-  min-height: 150px;
-  border-left: 1px solid #2185D0 !important;
-  border-right: 1px solid #2185D0 !important;
-  border-bottom: 1px solid #2185D0 !important;
-}
 
-.inUser .notify-content{
-  width: 135px;
-  min-height: 50px;
-  border-left: 1px solid #2185D0 !important;
-  border-right: 1px solid #2185D0 !important;
-  border-bottom: 1px solid #2185D0 !important;
-}

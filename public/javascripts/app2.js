@@ -490,6 +490,7 @@ var Nav = {
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
       ctrl.displayUser = !ctrl.displayUser
+      wsCtrl.data.notify.display = false
     };
     ctrl.displayLogin = false;
     ctrl.toggleLogin = function(){
@@ -504,6 +505,7 @@ var Nav = {
       //}
       wsCtrl.data.notify.n = 0;
       wsCtrl.data.notify.display = !wsCtrl.data.notify.display
+      ctrl.displayUser = false
     };
   },
   view: function(ctrl){
@@ -511,7 +513,7 @@ var Nav = {
     redraw.nav++;
     console.log("::::" + wsCtrl.data.notify.display)
     return (
-        {tag: "div", attrs: {className:"ui top blue inverted fixed menu"}, children: [
+        {tag: "div", attrs: {className:"ui top blue inverted fixed menu sha"}, children: [
           {tag: "a", attrs: {href:"/", 
              className:"active item", 
              config:m.route
@@ -555,7 +557,7 @@ var Nav = {
                     {tag: "div", attrs: {className:"inNotify"}, children: [
                       {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
 
-                      {tag: "div", attrs: {className:"ui raised orange segment pad0 notify-content"}, children: [
+                      {tag: "div", attrs: {className:"ui raised inverted blue attracted segment notify-content pad0"}, children: [
                         {tag: "div", attrs: {className:"ui top attracted label tran"}, children: [
                         "Inbox(", wsCtrl.data.notify.n, ")"
                       ]}, 
@@ -618,7 +620,7 @@ var Nav = {
                 ctrl.displayUser?({tag: "div", attrs: {className:"inUser"}, children: [
                   {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
 
-                  {tag: "div", attrs: {className:"ui raised inverted blue segment notify-content"}, children: [
+                  {tag: "div", attrs: {className:"ui raised inverted blue attracted segment notify-content"}, children: [
                     {tag: "a", attrs: {href:"/logout", class:"ui red small button"}, children: [
                       {tag: "i", attrs: {class:"sign out icon"}}, 
                       "Logout"
