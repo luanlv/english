@@ -4,21 +4,79 @@ var div = [{id: "div 1", v: 1},{id: "div 2", v: 5} ,{id:"div 3", v: 10}];
 
 var Home = {
   controller: function() {
+    console.log("redraw home controller!!");
     var ctrl = this;
     ctrl.divs = m.prop([]);
     ctrl.divs(div);
+    ctrl.add = function(input){
+      ctrl.inputPost('')
+    };
+    ctrl.inputPost = m.prop('');
     rd.home(function(){m.redraw()});
   },
   view: function(ctrl) {
     api.rd("home:" + redraw.home);
     redraw.home++;
     return (
-        <div>
-          {ctrl.divs().map(function(item){
-              return <div className="config"
-                          id={item.id}
-                          v={item.v}>{item.id}</div>
-              })}
+        <div className="ui grid main-content">
+          <div className="eleven wide column main-left border-right">
+              <div className="ui form postWr postContainer">
+                <div className="field">
+                  <textarea className="auto-size new-post"
+                            rows="2"
+                            placeholder="What's on your mind?"
+                            config={function (element, isInit, ctx) {
+                                        if(!isInit) {
+                                          $(element).textareaAutoSize();
+                                        }
+                                        element.value = ctrl.inputPost();
+                                        if(element.value.length<1){
+
+                                          //$(element).css('height', '41px')
+                                        }
+                                      }
+                                    }
+                            onkeypress={function(e){
+                                                if(e.keyCode == 13 && !e.shiftKey) {
+                                                  m.redraw.strategy("none");
+                                                  if (ctrl.inputPost().length < 1) {
+                                                    return false;
+                                                  }
+                                                }else{
+                                                  m.redraw.strategy("none");
+                                                  if(e.keyCode == 13 && e.shiftKey && ctrl.inputPost().length < 1){
+                                                    return false;
+                                                  }
+                                                }
+                                            }
+                                        }
+                            value={ctrl.inputPost()}
+                            oninput={function(){rd.home(api.setsVal(ctrl.inputPost))}}
+                  >{}</textarea>
+                </div>
+                <div className="post">
+                  <button className="ui blue mini right floated button"
+                       onclick={function(e){
+                        m.redraw.strategy("none");
+                        ctrl.add(ctrl.inputPost())
+                        //$('.new-post').attr('disabled', true);
+                        $('.postWr').addClass('loading');
+
+                       }}
+                  >Post</button>
+                  <span className="clear"></span>
+                </div>
+              </div>
+
+              <div class="ui section divider"></div>
+
+              {ctrl.divs().map(function(item){
+                  return <div className="ui postContainer postDemo"
+                              id={item.id}
+                              v={item.v}>{item.id}</div>
+                  })}
+          </div>
+          <div className="three wide column">right</div>
         </div>
     )
   }

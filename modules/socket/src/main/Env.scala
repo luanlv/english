@@ -20,12 +20,10 @@ final class Env(
   private val PopulationName = config getString "population.name"
 
   private val socketHub = {
-    println("=============================== socketHub:" + HubName + " ====================================")
     system.actorOf(Props[SocketHub], name = HubName)
   }
 
   private val population = {
-    println("=============================== population:"+ PopulationName +" ====================================")
   system.actorOf(Props[Population], name = PopulationName)
   }
 

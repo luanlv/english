@@ -1,11 +1,27 @@
-body {
+html,body {
   min-height: 3000px;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.fixed.body {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 960px;
+}
+
+#app{
+  min-height: 1000px;
+  margin-top: 47px;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  padding-top: 10px;
 }
 
 .config{
-  background-color: #3c7b9b;
   height:100px;
-  width:300px;
 }
 
 #appeared {
@@ -19,12 +35,11 @@ body {
   right: 0;
 }
 
-.right {
+.right-dock {
   width: 260px;
   height: 280px;
   position: fixed;
   /*right: 300px;*/
-  border: 1px solid black;
 }
 
 
@@ -53,15 +68,16 @@ body {
 }
 
 textarea {
-  resize: none;
+  resize: none !important;
 }
 
 #dock-bot{
   position: fixed;
-  height: 28px;
+  height: 24px;
+  padding: 0;
   left: auto;
   line-height: 16px;
-  right: 250px;
+  right: 190px;
   text-align: left;
   bottom: 0;
 }
@@ -69,7 +85,7 @@ textarea {
 .chatWr{
   position: relative;
   height: 28px;
-  margin-right: 5px;
+  margin-right: 10px;
   float: right;
 }
 .w1{
@@ -83,7 +99,7 @@ textarea {
   /*background: cadetblue;*/
   right: 0;
   width: 260px;
-  height: 300px;
+  height: 305px;
   position: absolute;
   bottom: 0;
 }
@@ -92,40 +108,48 @@ textarea {
   width: 100%;
   overflow:auto;
   overflow-x:hidden;
-  height: 250px;
+  height: 243px;
   position:relative;
-  background: aliceblue;
+  background: rgb(233, 234, 237);;
 }
 
 .new-comment{
   width: 98%;
   box-sizing: border-box;
-  min-height: 21px;
+  min-height: 30px;
+  height: 30px;
   max-height: 66px;
   overflow-x: hidden;
+  padding: 5px !important;
 }
 
 .chat-title{
   text-align: center;
-  background: dodgerblue;
+  background: #2185D0!important;
   cursor: pointer;
-  height: 22px;
+  height: 26px !important;
+  padding: 3px 3px 3px 10px !important;
   position: relative;
 }
 
 .chat-title2{
-  text-align: center;
-  background: dodgerblue;
+  text-align: left;
+  background: #2185D0!important;
   cursor: pointer;
-  height: 28px;
+  height: 26px !important;
+  padding: 3px !important;
+  position: relative;
 }
 
 #user-list{
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  max-height: calc(100% - 47px);
   position: fixed;
   bottom: 0;
   right: 0;
-  width: 250px;
-  border-left: 1px solid #ddd;
+  width: 190px;
 }
 
 .title-user-list{
@@ -134,55 +158,69 @@ textarea {
 }
 
 .userOnline{
-  border-bottom: 1px solid #ddd;
   cursor: pointer;
+  margin-bottom: 5px;
 }
 
 .close-chat{
-  background: cadetblue;
-  color: red;
   position: absolute;
-  top: 0;
-  right: 0;
-  height: 22px;
-  width: 22px;
+  top: 2px;
+  right: 2px;
+  margin: 0 !important;
+  font-size: 1.1em !important;
+  color: lightsteelblue !important;
+}
+.close-chat:hover{
+  color: white!important;
+}
+
+.setting-chat{
+  position: absolute;
+  top: 2px;
+  right: 23px;
+  margin: 0 !important;
+  font-size: 1.1em !important;
+  color: lightsteelblue !important;
+}
+.setting-chat:hover{
+  color: white!important;
 }
 
 .notify {
-  background: #ddd;
-  width: 30px;
-  height: 20px;
-  position: fixed;
-  right: 300px;
-  top: 0;
-  color: red;
-  text-align: center;
-  font-weight: bold;
+  /*background: #ddd;*/
+  /*width: 30px;*/
+  /*height: 20px;*/
+  /*position: fixed;*/
+  /*right: 300px;*/
+  /*top: 0;*/
+  /*color: red;*/
+  /*text-align: center;*/
+  /*font-weight: bold;*/
 }
 
 .unread{
-  background: red;
+  background: #db2828!important;
 }
 
 .notifyWr{
   position: relative;
+
 }
 
 .inNotify {
+  z-index: 10;
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 350px;
-  height: 380px;
-  background: greenyellow;
-  border:1px solid #333;
+  top: 18px;
+  right: -18px;
+  width: 400px;
+  max-height: 450px;
 }
 
 .notifyMes{
   text-align: left;
-  border-bottom: 1px solid #999;
+  border-top: 1px solid rgba(255,127,80, 0.3);
   cursor: pointer;
-  background: #ddd;
+  height:36px;
 }
 
 .notifyName {
@@ -218,4 +256,154 @@ textarea {
   left: 20px;
   color: blue;
   background: darkseagreen;
+}
+
+.new-post{
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 41px;
+  height: 41px;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  /*border: none !important;*/
+}
+.post{
+  box-sizing: border-box;
+  background: white;
+  height: 24px;
+  
+  padding: 3px;
+  min-height: 30px;
+}
+.buttonPost{
+  text-align: center;
+  background: indianred;
+  width: 50px;
+  float: right;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.clear{
+  clear: both;
+}
+
+.chatboxWr .segment{
+  padding: 0 !important;
+}
+
+.mes-icon, .users-icon{
+  margin-right: 0!important;
+}
+
+.num-label{
+  top: 7px!important;
+  left: 45px!important;
+  font-size: 10px  !important;
+  padding-left: 3px!important;
+  padding-right: 3px!important;
+}
+
+#search{
+  width: 400px;
+}
+
+.pad0{
+  padding: 0!important;
+}
+
+.higher{
+  border-left: 1px solid #ddd !important;
+  border-right: 1px solid #ddd !important;
+}
+
+.color-white{
+  color: white !important;
+}
+
+.tran {
+  background: transparent!important;
+  /*color: rgba(0, 0, 0, 0)!important;*/
+  border: 0!important;
+}
+
+.corner-right{
+  width: 70px;
+  position: absolute;
+  top: 2px;
+  right: -30px;
+  z-index: 99;
+}
+
+.pointingWr{
+  position: relative;
+  min-height:10px;
+}
+
+.tr{
+  width:30%;
+  padding-bottom:21.27%; /* = width / 1.41 */
+  position:relative;
+  overflow:hidden;
+}
+.tr:before{
+  content:'';
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  background-color : white;
+  border-left: 2px solid #F2711C;
+  border-top: 2px solid #F2711C;
+  transform-origin:0 100%;
+  transform: rotate(45deg);
+}
+
+.inNotify .notify-content{
+  border-left: 1px solid #F2711C !important;
+  border-right: 1px solid #F2711C !important;
+  border-bottom: 1px solid #F2711C !important;
+}
+
+.search-friend{
+  padding: 3px!important;
+  width: 98%;
+}
+
+.border-right{
+  border-right: 1px solid #ddd;
+}
+
+.border-left{
+  border-left: 1px solid #ddd;
+}
+
+.main-content{
+  min-height: 1000px;
+  padding-left: 10px!important;
+  padding-right: 10px!important;
+}
+
+.postContainer{
+  padding: 5px;
+}
+
+.postDemo{
+  min-height: 200px;
+}
+
+
+.postWr textarea{
+  border: none!important;
+}
+
+.postWr .field{
+  margin-bottom: 0!important;
+}
+
+.postWr {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
 }

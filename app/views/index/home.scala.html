@@ -4,7 +4,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>English site !!</title>
+		<title>Demo</title>
 		@cssTag("mainChat.css")
 	</head>
 
@@ -13,23 +13,18 @@
 		name="@ctx.username.getOrElse("")"
 		mv = "@mVersion(ctx.userId)"
 	>
-
-		<div class="relation_actions">
-		<a class="relation button" href="@routes.Relation.follow("luan2")?mini=1">
-			<span data-icon="h">&nbsp;@trans.follow()</span>
-		</a>
-
-		<a class="relation button hint--bottom" data-hint="@trans.unfollow()" href="@routes.Relation.unfollow("luan2")?mini=1">
-			<span data-icon="h">&nbsp;@trans.following()</span>
-		</a>
-		</div>
+		<div id="nav"> </div>
 	<div id="count"></div>
-	<div id="nav"> </div>
-	<div id="app"> </div>
+	<div class="fixed body">
+		<div id="app"> </div>
+	</div>
+
 	<div id="rightContainer"></div>
 
+	@cssAt("semantic/semantic.min.css")
 	@jsTag("mithril.js")
 	@jQueryTag
+	@jsAt("semantic/semantic.min.js")
 	@jsTag("jquery.textarea_autosize.js")
 	@jsTag("attrchange.js")
 	@jsTag("main.js")

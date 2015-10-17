@@ -37,7 +37,6 @@ private[userMessage] final class UserMessageActor(
 
     case InitChat(fromId, toId, cv) => {
       val mesId = if(fromId < toId) fromId + toId else toId + fromId
-      println("send to handler")
       sender ! api.getInitMes(mesId, cv).map(_.map(Json.toJson(_)))
     }
 

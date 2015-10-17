@@ -18,7 +18,6 @@ trait SocketMember extends Ordered[SocketMember] {
   }
 
   def end {
-    println("CHANNEL END:" + userId)
     channel.end
   }
 }

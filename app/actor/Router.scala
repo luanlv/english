@@ -14,8 +14,6 @@ private[app] final class Router(
     protocol: String,
     domain: String) extends Actor {
 
-  println("router actor initial <==================")
-
   import makeTimeout.large
 
     def receive = {

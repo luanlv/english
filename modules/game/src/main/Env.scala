@@ -46,7 +46,6 @@ final class Env(
   // load captcher actor
 
   val captcher = {
-    println("********************CAPTCHER***********************************************************")
     system.actorOf(Props(new Captcher), name = CaptcherName)
   }
 

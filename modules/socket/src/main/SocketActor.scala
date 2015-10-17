@@ -168,7 +168,6 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
   }
 
   def sendOnlineFriend(uid: String, listUser: List[LightUser]) {
-    println(listUser)
     withMember(uid)(_ push makeMessage("ul", listUser))
   }
 

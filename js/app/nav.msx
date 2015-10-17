@@ -6,6 +6,7 @@ var Nav = {
   controller: function(){
     var ctrl = this;
     ctrl.displayNofity = function(){
+      console.log("run displaynofity")
       //if(wsCtrl.data.notify.notifyMessage.length < 1){
       if(wsCtrl.data.notify.display == false ) {
         wsCtrl.data.notify.init = false;
@@ -19,54 +20,119 @@ var Nav = {
   view: function(ctrl){
     api.rd("nav: " + redraw.nav);
     redraw.nav++;
-    return [
-      m("a", {href: "/", config: m.route}, " Home |"),
-      m("a", {href: "/dashboard",  config: m.route}, " Dashboard |"),
-      (wsCtrl.userId.length>0)?(" ---Hello:" + wsCtrl.userId) + "--- |":"",
-      (wsCtrl.userId.length>0)?m("a", {href: "/logout"}, "Logout"):"",
-      (!wsCtrl.userId.length>0)?m("a", {href: "/login"}, "Sign in |"):"",
-      (!wsCtrl.userId.length>0)?m("a", {href: "/signup"}, " Sign up"):"",
-      (wsCtrl.userId.length>0)?m('.notify', [
-        m('.numNotify',{
-          onclick: function(){
-            ctrl.displayNofity();
-            rd.nav();
-          }
-        }, wsCtrl.data.notify.n),
+    console.log("::::" + wsCtrl.data.notify.display)
+    return (
+        <div className="ui top blue inverted fixed menu">
+          <a href="/"
+             className="active item"
+             config={m.route}
+          ><i  className="large icon home users-icon"></i></a>
+          <a href="/dashboard"
+             className="item"
+             config={m.route}
+          >
+            <i className="large icon newspaper"></i>
+            Articles
+          </a>
+          <a className="item">
+            <i className="large icon comments"></i>
+            Chat rooms
+          </a>
+          <div className="item">
+            <div id="search" className="ui icon input">
+              <input type="text" placeholder="Search..."/>
+                <i className="search link icon"></i>
+            </div>
+          </div>
 
-        m('.notifyWr', [
-          !wsCtrl.data.notify.display?"":m('.inNotify', !wsCtrl.data.notify.init?"LOADING":[
-            wsCtrl.data.notify.notifyMessage.map(function(mes){
-              return m('.notifyMes', {
-                config: function(el){
-                  $(el).click(function(){
-                    local(['nav', 'right'], function(){
-                      console.log("click")
-                      wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
-                      var pos = wsCtrl.getPosChat(mes.user);
-                      if(wsCtrl.data.chat[pos].display == false){
-                        wsCtrl.data.chat[pos].display = true;
-                        wsCtrl.data.chat[pos].hide = false;
-                      } else if(wsCtrl.data.chat[pos].hide == true){
-                        wsCtrl.data.chat[pos].hide = false;
-                      } else {
-                      }
-                      if(mes.n > 0) wsCtrl.data.chat[pos].read = false;
-                      api.focusById(wsCtrl.data.chat[pos].user.id);
-                      m.redraw();
-                    }).call()
-                  });
-                }
-              }, [
-                m('.notifyName', mes.user.name),
-                m('.mesNumber', " (" + mes.n+ ") "),
-                m('.lastMes', mes.lm.mes)
-              ])
-            })
-          ])
-        ])
-      ]):"",
-    ]
+          {(wsCtrl.userId.length>0)?(<div className="right menu">
+            <a href="#"  className="item">
+              <i className="large icon add user users-icon"></i>
+              <div class="floating ui red label num-label">2</div>
+            </a>
+            <div
+               className="item nofity"
+            >
+              <a href="#"><i className="large inverted mail icon mes-icon"
+                 onclick={
+                    function(){
+                      ctrl.displayNofity();
+                      rd.nav();
+                    }
+                  }
+              ></i></a>
+              {(wsCtrl.data.notify.n>0)?(<div class="floating ui red label num-label">{wsCtrl.data.notify.n}</div>):""}
+              <div className="notifyWr">
+                {!wsCtrl.data.notify.display?"":(
+                    <div className="inNotify">
+                      <div className="corner-right"><div className="tr"></div></div>
+
+                      <div className="ui raised orange segment pad0 notify-content">
+                        <div className="ui top attracted label tran">
+                        Inbox({wsCtrl.data.notify.n})
+                      </div>
+                      {!wsCtrl.data.notify.init?"LOADING":(
+                          <div>
+                            {
+                                wsCtrl.data.notify.notifyMessage.map(function(mes){
+                                return (
+                                    <div className="notifyMes"
+                                         config={
+                                            function(el){
+                                              $(el).click(function(){
+                                                local(['nav', 'right'], function(){
+                                                  console.log("click")
+                                                  wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
+                                                  var pos = wsCtrl.getPosChat(mes.user);
+                                                  if(wsCtrl.data.chat[pos].display == false){
+                                                    wsCtrl.data.chat[pos].display = true;
+                                                    wsCtrl.data.chat[pos].hide = false;
+                                                  } else if(wsCtrl.data.chat[pos].hide == true){
+                                                    wsCtrl.data.chat[pos].hide = false;
+                                                  } else {
+                                                  }
+                                                  if(mes.n > 0) wsCtrl.data.chat[pos].read = false;
+                                                  api.focusById(wsCtrl.data.chat[pos].user.id);
+                                                  m.redraw();
+                                                }).call()
+                                              });
+                                            }
+                                         }
+                                    >
+                                      <div className="notifyName">
+                                        {mes.user.name}
+                                      </div>
+                                      <div className="mesNumber">
+                                        ({mes.n})
+                                      </div>
+                                      <div className="lastMes">
+                                        {mes.lm.mes}
+                                      </div>
+                                    </div>
+                                    )
+                                })
+                            }
+                          </div>
+                          )}
+                      </div>
+                    </div>
+                    )}
+              </div>
+            </div>
+            <a href="#" className="item">
+              <i class="large inverted  settings icon mes-icon"></i>
+            </a>
+          </div>):(
+              <div className="right menu">
+                <a className="item">
+                  <i className="large icon user"></i>
+                  Login
+                </a>
+              </div>
+              )}
+
+        </div>
+    )
   }
 };
 

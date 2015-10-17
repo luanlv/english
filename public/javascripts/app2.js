@@ -5,7 +5,7 @@ var api = api || {};
 api.data = "hello"
 
 api.rd = function(name){
-  console.log("redraw " + name)
+  //console.log("redraw " + name)
 };
 
 api.requestWithFeedback = function(args) {
@@ -78,6 +78,200 @@ module.exports = api;
 },{"../ws/_wsCtrl.js":7}],2:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
+
+var Chat = {
+  controller: function(){
+    var ctrl = this;
+    m.redraw.strategy("diff");
+    ctrl.showChatDock = true;
+    ctrl.toggleChatDock = function(){
+      ctrl.showChatDock = !ctrl.showChatDock;
+    };
+    ctrl.makechat = function(user) {
+      rd.right(function(){
+        var pos = wsCtrl.getPosChat(user);
+        wsCtrl.data.chat[pos].display = true;
+        wsCtrl.data.chat[pos].hide = false;
+        api.focusById(wsCtrl.data.chat[pos].user.id);
+        m.redraw()
+      })
+    };
+
+    ctrl.toggleChat = function(num){
+      wsCtrl.data.chat[num].hide = !wsCtrl.data.chat[num].hide;
+    };
+
+    ctrl.stopChat = function(num){
+      wsCtrl.data.chat[num].display = false;
+      wsCtrl.data.chat[num].input('');
+    };
+
+    ctrl.add = function (num) {
+      var input = wsCtrl.data.chat[num].input().trim();
+      //input = input.replace(/\n/g, '');
+      if (input) {
+        wsCtrl.send(wsCtrl.sendData("m", {to: wsCtrl.data.chat[num].user.id, mes: input}));
+
+        //wsCtrl.data.chat[num].chat.push({f: "u0", mes: input});
+        //wsCtrl.data.chat[num].chat.push({f: "u1", mes: "received: " + input});
+      }
+      wsCtrl.data.chat[num].input('');
+    };
+
+    ctrl.save = function(e) {
+      if (e.keyCode == 13) {
+        //this causes a redraw, since event handlers active auto-redrawing by default
+        ctrl.add()
+      }
+      else {
+        //we don't care about other keys, so don't redraw
+        m.redraw.strategy("none")
+      }
+    };
+
+  },
+  view: function(ctrl){
+    api.rd("right: " + redraw.right);
+    //console.log("right");
+    redraw.right++;
+    console.log(ctrl.showChatDock)
+    return (
+        {tag: "div", attrs: {}, children: [
+          ctrl.showChatDock?({tag: "div", attrs: {id:"user-list"}, children: [
+            {tag: "div", attrs: {className:"ui segment pad0"}, children: [
+            {tag: "div", attrs: {className:"ui top attached inverted header chat-title", 
+                 onclick:function(){rd.right(ctrl.toggleChatDock())}
+            }, children: ["Chat"]}, 
+              wsCtrl.data.userOnline.map(function(user){
+                  return {tag: "div", attrs: {className:"userOnline", 
+                              config:function(el){
+                                  $(el).click(function(){
+                                    if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
+                                  });
+                                }
+                              
+                          }, children: [user.name + ((wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id)?"":" (you)")]}
+                  }), 
+            {tag: "div", attrs: {className:"ui search"}, children: [
+              {tag: "div", attrs: {className:"ui left icon input"}, children: [
+                {tag: "input", attrs: {className:"search-friend", type:"text", placeholder:"Search"}}, 
+                  {tag: "i", attrs: {className:"search icon"}}
+              ]}
+            ]}
+            ]}
+          ]}):({tag: "div", attrs: {id:"user-list"}, children: [
+            {tag: "div", attrs: {className:"ui top attached inverted header chat-title", 
+                 onclick:function(){rd.right(ctrl.toggleChatDock())}
+            }, children: ["Chat"]}
+          ]}), 
+          {tag: "div", attrs: {id:"dock-bot"}, children: [
+            wsCtrl.data.chat.map(function(chat, rank){
+                return (!chat.display)?"":(
+                    {tag: "div", attrs: {className:"chatWr " + (chat.hide?"w2":"w1")}, children: [
+                      {tag: "div", attrs: {className:"ui top attached blue inverted header chat-title2" + (chat.read?"":" unread"), 
+                           style:!chat.hide?"display: none":"", 
+                           onclick:function(){rd.right(ctrl.toggleChat(rank))}
+                      }, children: [chat.user.name, 
+                        {tag: "i", attrs: {className:"remove icon close-chat", 
+                           onclick:function(){rd.right(ctrl.stopChat(rank))}
+                        }}
+                      ]}, 
+
+                      {tag: "div", attrs: {className:"chatboxWr", 
+                           style:chat.hide?"display: none":""}, children: [" ", {tag: "div", attrs: {className:"ui raised segment"}, children: [
+                          {tag: "div", attrs: {className:"ui top attached inverted header chat-title" + (chat.read?"":" unread"), 
+                               onclick:function(){rd.right(ctrl.toggleChat(rank))}
+                          }, children: [
+                            chat.user.name, 
+                            {tag: "i", attrs: {className:"setting icon setting-chat"}}, 
+                            {tag: "i", attrs: {className:"remove icon close-chat", 
+                               onclick:function(){rd.right(ctrl.stopChat(rank))}
+                            }}
+                          ]}, 
+                        {tag: "div", attrs: {className:"ui form"}, children: [
+                          {tag: "div", attrs: {className:"field"}, children: [
+
+                            {tag: "div", attrs: {className:"chat-box", 
+                                 config:api.scrollBottom, 
+                                 onclick:local(['nav', 'right'],function(){api.markRead(rank)})
+                            }, children: [
+                              chat.chat.map(function(item, num){
+                                  return {tag: "div", attrs: {}, children: [
+                                    chat.init?({tag: "div", attrs: {className:"loading_chat"}, children: ["\"Loading previous ...\""]}):"", 
+                                    {tag: "div", attrs: {className:(item.f.id == wsCtrl.userId)?"comment-left": "comment-right"}, children: [
+                                      {tag: "div", attrs: {className:"mes"}, children: [item.mes]}
+                                    ]}
+                                  ]}
+                                  })
+                            ]}, 
+
+                            {tag: "textarea", attrs: {className:"auto-size new-comment", id:chat.user.id, rows:"1", 
+                                      onfocus:function(){rd.right(function(){api.markRead(rank)})}, 
+                                      config:function (element, isInit, ctx) {
+                                          if(!isInit) {
+                                            $(element).textareaAutoSize();
+                                            $(element).attrchange({
+                                              //trackValues: true,
+                                              callback: function (event) {
+                                                var prev = element.previousSibling;
+                                                var $prev = $(prev);
+                                                if ($prev.scrollTop() + $prev.innerHeight() >= element.previousSibling.scrollHeight) {
+                                                  $prev.css('height', 273 - $(element).outerHeight());
+                                                  prev.scrollTop = prev.scrollHeight;
+                                                } else {
+                                                  $prev.css('height', 273 - $(element).outerHeight())
+                                                }
+                                              }
+                                            });
+                                          }
+                                          element.value = wsCtrl.data.chat[rank].input();
+                                          if(element.value.length<1){
+                                            $(element).css('height', '30px')
+                                          }
+                                        }, 
+                                      
+                                      onkeypress:function(e){
+                                            if(e.keyCode == 13 && !e.shiftKey) {
+                                              m.redraw.strategy("none");
+                                              if(wsCtrl.data.chat[rank].input() != undefined) console.log(wsCtrl.data.chat[rank].input().length + "=====")
+                                              if (wsCtrl.data.chat[rank].input().length < 1) {
+                                                console.log("length < 1")
+                                                return false;
+                                              } else {
+                                                var source = e.target || e.srcElement;
+                                                var prev = source.previousSibling;
+                                                prev.scrollTop = prev.scrollHeight;
+                                                ctrl.add(rank);
+                                                //$(source).val = '';
+                                                return false;
+                                              }
+                                            }else{
+                                              m.redraw.strategy("none");
+                                              if(e.keyCode == 13 && e.shiftKey && wsCtrl.data.chat[rank].input().length < 1){
+                                                return false;
+                                              }
+                                            }
+                                        }, 
+                                      
+                                      oninput:function(){rd.right(api.setsVal(wsCtrl.data.chat[rank].input))}
+                            }}
+                          ]}
+                        ]}
+                      ]}]}
+                    ]}
+                    )
+                })
+          ]}
+        ]}
+    )
+  }
+};
+
+module.exports = Chat;
+
+},{"../ws/_wsCtrl.js":7,"./api.msx":1}],3:[function(require,module,exports){
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
 var initData = {}
 //initData.dashboard = {}
 //initData.dashboard.data = {}
@@ -109,7 +303,7 @@ var Dashboard = {
 
 
 module.exports = Dashboard;
-},{"../ws/_wsCtrl.js":7,"./api.msx":1}],3:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":7,"./api.msx":1}],4:[function(require,module,exports){
 window.Nav = require('./nav.msx');
 window.Home = require('./home.msx');
 window.Dashboard = require('./dashboard.msx');
@@ -167,7 +361,7 @@ window.rd = {
 
 
 
-window.Right = require('./right.msx');
+window.Chat = require('./chat.msx');
 
 window.Loading = {
   controller: function(){
@@ -196,38 +390,96 @@ var Count = {
 window.initComponent = function() {
   m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
   //m.mount(document.getElementById('app'), tenant('all', window.Loading));
-  m.mount(document.getElementById('count'), Count);
-  m.mount(document.getElementById('rightContainer'), tenant('right', window.Right));
+  //m.mount(document.getElementById('count'), Count);
+  m.mount(document.getElementById('rightContainer'), tenant('right', window.Chat));
 }
-},{"./dashboard.msx":2,"./home.msx":4,"./nav.msx":5,"./right.msx":6}],4:[function(require,module,exports){
+},{"./chat.msx":2,"./dashboard.msx":3,"./home.msx":5,"./nav.msx":6}],5:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var div = [{id: "div 1", v: 1},{id: "div 2", v: 5} ,{id:"div 3", v: 10}];
 
 var Home = {
   controller: function() {
+    console.log("redraw home controller!!");
     var ctrl = this;
     ctrl.divs = m.prop([]);
     ctrl.divs(div);
+    ctrl.add = function(input){
+      ctrl.inputPost('')
+    };
+    ctrl.inputPost = m.prop('');
     rd.home(function(){m.redraw()});
   },
   view: function(ctrl) {
     api.rd("home:" + redraw.home);
     redraw.home++;
     return (
-        {tag: "div", attrs: {}, children: [
-          ctrl.divs().map(function(item){
-              return {tag: "div", attrs: {className:"config", 
-                          id:item.id, 
-                          v:item.v}, children: [item.id]}
-              })
+        {tag: "div", attrs: {className:"ui grid main-content"}, children: [
+          {tag: "div", attrs: {className:"eleven wide column main-left border-right"}, children: [
+              {tag: "div", attrs: {className:"ui form postWr postContainer"}, children: [
+                {tag: "div", attrs: {className:"field"}, children: [
+                  {tag: "textarea", attrs: {className:"auto-size new-post", 
+                            rows:"2", 
+                            placeholder:"What's on your mind?", 
+                            config:function (element, isInit, ctx) {
+                                        if(!isInit) {
+                                          $(element).textareaAutoSize();
+                                        }
+                                        element.value = ctrl.inputPost();
+                                        if(element.value.length<1){
+
+                                          //$(element).css('height', '41px')
+                                        }
+                                      }, 
+                                    
+                            onkeypress:function(e){
+                                                if(e.keyCode == 13 && !e.shiftKey) {
+                                                  m.redraw.strategy("none");
+                                                  if (ctrl.inputPost().length < 1) {
+                                                    return false;
+                                                  }
+                                                }else{
+                                                  m.redraw.strategy("none");
+                                                  if(e.keyCode == 13 && e.shiftKey && ctrl.inputPost().length < 1){
+                                                    return false;
+                                                  }
+                                                }
+                                            }, 
+                                        
+                            value:ctrl.inputPost(), 
+                            oninput:function(){rd.home(api.setsVal(ctrl.inputPost))}
+                  }}
+                ]}, 
+                {tag: "div", attrs: {className:"post"}, children: [
+                  {tag: "button", attrs: {className:"ui blue mini right floated button", 
+                       onclick:function(e){
+                        m.redraw.strategy("none");
+                        ctrl.add(ctrl.inputPost())
+                        //$('.new-post').attr('disabled', true);
+                        $('.postWr').addClass('loading');
+
+                       }
+                  }, children: ["Post"]}, 
+                  {tag: "span", attrs: {className:"clear"}}
+                ]}
+              ]}, 
+
+              {tag: "div", attrs: {class:"ui section divider"}}, 
+
+              ctrl.divs().map(function(item){
+                  return {tag: "div", attrs: {className:"ui postContainer postDemo", 
+                              id:item.id, 
+                              v:item.v}, children: [item.id]}
+                  })
+          ]}, 
+          {tag: "div", attrs: {className:"three wide column"}, children: ["right"]}
         ]}
     )
   }
 };
 
 module.exports = Home;
-},{"../ws/_wsCtrl.js":7,"./api.msx":1}],5:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":7,"./api.msx":1}],6:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -236,6 +488,7 @@ var Nav = {
   controller: function(){
     var ctrl = this;
     ctrl.displayNofity = function(){
+      console.log("run displaynofity")
       //if(wsCtrl.data.notify.notifyMessage.length < 1){
       if(wsCtrl.data.notify.display == false ) {
         wsCtrl.data.notify.init = false;
@@ -249,223 +502,123 @@ var Nav = {
   view: function(ctrl){
     api.rd("nav: " + redraw.nav);
     redraw.nav++;
-    return [
-      m("a", {href: "/", config: m.route}, " Home |"),
-      m("a", {href: "/dashboard",  config: m.route}, " Dashboard |"),
-      (wsCtrl.userId.length>0)?(" ---Hello:" + wsCtrl.userId) + "--- |":"",
-      (wsCtrl.userId.length>0)?m("a", {href: "/logout"}, "Logout"):"",
-      (!wsCtrl.userId.length>0)?m("a", {href: "/login"}, "Sign in |"):"",
-      (!wsCtrl.userId.length>0)?m("a", {href: "/signup"}, " Sign up"):"",
-      (wsCtrl.userId.length>0)?m('.notify', [
-        m('.numNotify',{
-          onclick: function(){
-            ctrl.displayNofity();
-            rd.nav();
-          }
-        }, wsCtrl.data.notify.n),
-
-        m('.notifyWr', [
-          !wsCtrl.data.notify.display?"":m('.inNotify', !wsCtrl.data.notify.init?"LOADING":[
-            wsCtrl.data.notify.notifyMessage.map(function(mes){
-              return m('.notifyMes', {
-                config: function(el){
-                  $(el).click(function(){
-                    local(['nav', 'right'], function(){
-                      console.log("click")
-                      wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
-                      var pos = wsCtrl.getPosChat(mes.user);
-                      if(wsCtrl.data.chat[pos].display == false){
-                        wsCtrl.data.chat[pos].display = true;
-                        wsCtrl.data.chat[pos].hide = false;
-                      } else if(wsCtrl.data.chat[pos].hide == true){
-                        wsCtrl.data.chat[pos].hide = false;
-                      } else {
-                      }
-                      if(mes.n > 0) wsCtrl.data.chat[pos].read = false;
-                      api.focusById(wsCtrl.data.chat[pos].user.id);
-                      m.redraw();
-                    }).call()
-                  });
-                }
-              }, [
-                m('.notifyName', mes.user.name),
-                m('.mesNumber', " (" + mes.n+ ") "),
-                m('.lastMes', mes.lm.mes)
-              ])
-            })
-          ])
-        ])
-      ]):"",
-    ]
-  }
-};
-
-module.exports = Nav;
-},{"../ws/_wsCtrl.js":7,"./api.msx":1}],6:[function(require,module,exports){
-var wsCtrl = require('../ws/_wsCtrl.js');
-var api = require('./api.msx');
-
-var Right = {
-  controller: function(){
-    var ctrl = this;
-    m.redraw.strategy("diff");
-
-    ctrl.makechat = function(user) {
-      rd.right(function(){
-        var pos = wsCtrl.getPosChat(user);
-        wsCtrl.data.chat[pos].display = true;
-        wsCtrl.data.chat[pos].hide = false;
-        api.focusById(wsCtrl.data.chat[pos].user.id);
-        m.redraw()
-      })
-    };
-
-    ctrl.toggleChat = function(num){
-      wsCtrl.data.chat[num].hide = !wsCtrl.data.chat[num].hide;
-    };
-
-    ctrl.stopChat = function(num){
-      wsCtrl.data.chat[num].display = false;
-      wsCtrl.data.chat[num].input('');
-    };
-
-    ctrl.add = function (num) {
-      var input = wsCtrl.data.chat[num].input().trim();
-      //input = input.replace(/\n/g, '');
-      if (input) {
-        wsCtrl.send(wsCtrl.sendData("m", {to: wsCtrl.data.chat[num].user.id, mes: input}));
-
-        //wsCtrl.data.chat[num].chat.push({f: "u0", mes: input});
-        //wsCtrl.data.chat[num].chat.push({f: "u1", mes: "received: " + input});
-      }
-      wsCtrl.data.chat[num].input('');
-      console.log(wsCtrl.data.chat[num].input())
-    };
-
-    ctrl.save = function(e) {
-      if (e.keyCode == 13) {
-        //this causes a redraw, since event handlers active auto-redrawing by default
-        ctrl.add()
-      }
-      else {
-        //we don't care about other keys, so don't redraw
-        m.redraw.strategy("none")
-      }
-    };
-
-  },
-  view: function(ctrl){
-    api.rd("right: " + redraw.right);
-    //console.log("right");
-    redraw.right++;
+    console.log("::::" + wsCtrl.data.notify.display)
     return (
-        {tag: "div", attrs: {}, children: [
-          {tag: "div", attrs: {id:"user-list"}, children: [
-            {tag: "div", attrs: {className:"title-user-list"}, children: ["USER ONLINE"]}, 
-            wsCtrl.data.userOnline.map(function(user){
-                return {tag: "div", attrs: {className:"userOnline", 
-                            config:function(el){
-                                $(el).click(function(){
-                                  if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
-                                });
-                              }
-                            
-                        }, children: [user.name + ((wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id)?"":" (you)")]}
-                }), 
-            {tag: "div", attrs: {className:"title-user-list"}, children: ["USER ONLINE"]}
+        {tag: "div", attrs: {className:"ui top blue inverted fixed menu"}, children: [
+          {tag: "a", attrs: {href:"/", 
+             className:"active item", 
+             config:m.route
+          }, children: [{tag: "i", attrs: {className:"large icon home users-icon"}}]}, 
+          {tag: "a", attrs: {href:"/dashboard", 
+             className:"item", 
+             config:m.route
+          }, children: [
+            {tag: "i", attrs: {className:"large icon newspaper"}}, 
+            "Articles"
+          ]}, 
+          {tag: "a", attrs: {className:"item"}, children: [
+            {tag: "i", attrs: {className:"large icon comments"}}, 
+            "Chat rooms"
+          ]}, 
+          {tag: "div", attrs: {className:"item"}, children: [
+            {tag: "div", attrs: {id:"search", className:"ui icon input"}, children: [
+              {tag: "input", attrs: {type:"text", placeholder:"Search..."}}, 
+                {tag: "i", attrs: {className:"search link icon"}}
+            ]}
           ]}, 
 
-          {tag: "div", attrs: {id:"dock-bot"}, children: [
-            wsCtrl.data.chat.map(function(chat, rank){
-                return (!chat.display)?"":(
-                    {tag: "div", attrs: {className:"chatWr " + (chat.hide?"w2":"w1")}, children: [
-                      {tag: "div", attrs: {className:"chat-title2" + (chat.read?"":" unread"), 
-                           style:!chat.hide?"display: none":"", 
-                           onclick:function(){rd.right(ctrl.toggleChat(rank))}
-                      }, children: [chat.user.name]}, 
+          (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
+            {tag: "a", attrs: {href:"#", className:"item"}, children: [
+              {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
+              {tag: "div", attrs: {class:"floating ui red label num-label"}, children: ["2"]}
+            ]}, 
+            {tag: "div", attrs: {
+               className:"item nofity"
+            }, children: [
+              {tag: "a", attrs: {href:"#"}, children: [{tag: "i", attrs: {className:"large inverted mail icon mes-icon", 
+                 onclick:
+                    function(){
+                      ctrl.displayNofity();
+                      rd.nav();
+                    }
+                  
+              }}]}, 
+              (wsCtrl.data.notify.n>0)?({tag: "div", attrs: {class:"floating ui red label num-label"}, children: [wsCtrl.data.notify.n]}):"", 
+              {tag: "div", attrs: {className:"notifyWr"}, children: [
+                !wsCtrl.data.notify.display?"":(
+                    {tag: "div", attrs: {className:"inNotify"}, children: [
+                      {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
 
-                      {tag: "div", attrs: {className:"chatboxWr", 
-                           style:chat.hide?"display: none":""}, children: [
-                          {tag: "div", attrs: {className:"chat-title" + (chat.read?"":" unread"), 
-                               onclick:function(){rd.right(ctrl.toggleChat(rank))}
-                          }, children: [
-                            chat.user.name, 
-                            {tag: "span", attrs: {className:"close-chat", 
-                                  onclick:function(){rd.right(ctrl.stopChat(rank))}
-                            }, children: ["X"]}
-                          ]}, 
-
-                          {tag: "div", attrs: {className:"chat-box", 
-                               config:api.scrollBottom, 
-                               onclick:local(['nav', 'right'],function(){api.markRead(rank)})
-                          }, children: [
-                            chat.chat.map(function(item, num){
-                                return {tag: "div", attrs: {}, children: [
-                                  chat.init?({tag: "div", attrs: {className:"loading_chat"}, children: ["\"Loading previous ...\""]}):"", 
-                                  {tag: "div", attrs: {className:(item.f.id == wsCtrl.userId)?"comment-left": "comment-right"}, children: [
-                                    {tag: "div", attrs: {className:"mes"}, children: [item.mes]}
-                                  ]}
-                                ]}
-                                })
-                          ]}, 
-
-                        {tag: "textarea", attrs: {className:"auto-size new-comment", id:chat.user.id, rows:"1", 
-                                  onfocus:function(){rd.right(function(){api.markRead(rank)})}, 
-                                  config:function (element, isInit, ctx) {
-                                      if(!isInit) {
-                                        $(element).textareaAutoSize();
-                                        $(element).attrchange({
-                                          //trackValues: true,
-                                          callback: function (event) {
-                                            var prev = element.previousSibling;
-                                            var $prev = $(prev);
-                                            if ($prev.scrollTop() + $prev.innerHeight() >= element.previousSibling.scrollHeight) {
-                                              $prev.css('height', 271 - $(element).outerHeight());
-                                              prev.scrollTop = prev.scrollHeight;
-                                            } else {
-                                              $prev.css('height', 271 - $(element).outerHeight())
+                      {tag: "div", attrs: {className:"ui raised orange segment pad0 notify-content"}, children: [
+                        {tag: "div", attrs: {className:"ui top attracted label tran"}, children: [
+                        "Inbox(", wsCtrl.data.notify.n, ")"
+                      ]}, 
+                      !wsCtrl.data.notify.init?"LOADING":(
+                          {tag: "div", attrs: {}, children: [
+                            
+                                wsCtrl.data.notify.notifyMessage.map(function(mes){
+                                return (
+                                    {tag: "div", attrs: {className:"notifyMes", 
+                                         config:
+                                            function(el){
+                                              $(el).click(function(){
+                                                local(['nav', 'right'], function(){
+                                                  console.log("click")
+                                                  wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
+                                                  var pos = wsCtrl.getPosChat(mes.user);
+                                                  if(wsCtrl.data.chat[pos].display == false){
+                                                    wsCtrl.data.chat[pos].display = true;
+                                                    wsCtrl.data.chat[pos].hide = false;
+                                                  } else if(wsCtrl.data.chat[pos].hide == true){
+                                                    wsCtrl.data.chat[pos].hide = false;
+                                                  } else {
+                                                  }
+                                                  if(mes.n > 0) wsCtrl.data.chat[pos].read = false;
+                                                  api.focusById(wsCtrl.data.chat[pos].user.id);
+                                                  m.redraw();
+                                                }).call()
+                                              });
                                             }
-                                          }
-                                        });
-                                      }
-                                      element.value = wsCtrl.data.chat[rank].input();
-                                    }, 
-                                  
-                                  onkeypress:function(e){
-                                        if(e.keyCode == 13 && !e.shiftKey) {
-                                          if(wsCtrl.data.chat[rank].input() != undefined) console.log(wsCtrl.data.chat[rank].input().length + "=====")
-                                          if (wsCtrl.data.chat[rank].input().length < 1) {
-                                            console.log("length < 1")
-                                            return false;
-                                          } else {
-                                            var source = e.target || e.srcElement;
-                                            var prev = source.previousSibling;
-                                            prev.scrollTop = prev.scrollHeight;
-                                            ctrl.add(rank);
-                                            return false;
-                                          }
-                                        }else{
-                                          m.redraw.strategy("none")
-                                          if(e.keyCode == 13 && e.shiftKey && wsCtrl.data.chat[rank].input().length < 1){
-                                            return false;
-                                          }
-                                        }
-                                    }, 
-                                  
-                                  oninput:function(){rd.right(api.setsVal(wsCtrl.data.chat[rank].input))}
-                        }}
+                                         
+                                    }, children: [
+                                      {tag: "div", attrs: {className:"notifyName"}, children: [
+                                        mes.user.name
+                                      ]}, 
+                                      {tag: "div", attrs: {className:"mesNumber"}, children: [
+                                        "(", mes.n, ")"
+                                      ]}, 
+                                      {tag: "div", attrs: {className:"lastMes"}, children: [
+                                        mes.lm.mes
+                                      ]}
+                                    ]}
+                                    )
+                                })
+                            
+                          ]}
+                          )
                       ]}
                     ]}
                     )
-                })
-          ]}
+              ]}
+            ]}, 
+            {tag: "a", attrs: {href:"#", className:"item"}, children: [
+              {tag: "i", attrs: {class:"large inverted  settings icon mes-icon"}}
+            ]}
+          ]}):(
+              {tag: "div", attrs: {className:"right menu"}, children: [
+                {tag: "a", attrs: {className:"item"}, children: [
+                  {tag: "i", attrs: {className:"large icon user"}}, 
+                  "Login"
+                ]}
+              ]}
+              )
+
         ]}
     )
   }
 };
 
-module.exports = Right;
-
+module.exports = Nav;
 },{"../ws/_wsCtrl.js":7,"./api.msx":1}],7:[function(require,module,exports){
 var wsCtrl = {}
 
@@ -750,4 +903,4 @@ $('body').on('click', '.relation_actions a.relation', function() {
 
 
 module.exports = wsCtrl;
-},{}]},{},[3])
+},{}]},{},[4])

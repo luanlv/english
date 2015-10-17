@@ -4,7 +4,7 @@ var api = api || {};
 api.data = "hello"
 
 api.rd = function(name){
-  console.log("redraw " + name)
+  //console.log("redraw " + name)
 };
 
 api.requestWithFeedback = function(args) {

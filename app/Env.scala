@@ -19,7 +19,6 @@ final class Env(
 
 
   val testActor = {
-    println("********************Renderder***********************************************************")
     system.actorOf(Props(new actor.Renderer), name = RendererName)
   }
 

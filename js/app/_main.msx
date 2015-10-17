@@ -55,7 +55,7 @@ window.rd = {
 
 
 
-window.Right = require('./right.msx');
+window.Chat = require('./chat.msx');
 
 window.Loading = {
   controller: function(){
@@ -84,6 +84,6 @@ var Count = {
 window.initComponent = function() {
   m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
   //m.mount(document.getElementById('app'), tenant('all', window.Loading));
-  m.mount(document.getElementById('count'), Count);
-  m.mount(document.getElementById('rightContainer'), tenant('right', window.Right));
+  //m.mount(document.getElementById('count'), Count);
+  m.mount(document.getElementById('rightContainer'), tenant('right', window.Chat));
 }
