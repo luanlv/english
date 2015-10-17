@@ -132,9 +132,8 @@ var Chat = {
   },
   view: function(ctrl){
     api.rd("right: " + redraw.right);
-    //console.log("right");
+    if(wsCtrl.data.chat[0] != undefined) console.log(wsCtrl.data.chat);
     redraw.right++;
-    console.log(ctrl.showChatDock)
     return (
         {tag: "div", attrs: {}, children: [
           ctrl.showChatDock?({tag: "div", attrs: {id:"user-list"}, children: [
@@ -209,6 +208,9 @@ var Chat = {
                                       onfocus:function(){rd.right(function(){api.markRead(rank)})}, 
                                       config:function (element, isInit, ctx) {
                                           if(!isInit) {
+                                            $(element).on('input', function(){
+                                              wsCtrl.data.chat[rank].input($(element).val())
+                                            })
                                             $(element).textareaAutoSize();
                                             $(element).attrchange({
                                               //trackValues: true,
@@ -251,10 +253,9 @@ var Chat = {
                                                 return false;
                                               }
                                             }
-                                        }, 
+                                        }
                                       
-                                      oninput:function(){rd.right(api.setsVal(wsCtrl.data.chat[rank].input))}
-                            }}
+                            }, children: [wsCtrl.data.chat[rank].input()]}
                           ]}
                         ]}
                       ]}]}
@@ -424,6 +425,9 @@ var Home = {
                             config:function (element, isInit, ctx) {
                                         if(!isInit) {
                                           $(element).textareaAutoSize();
+                                          $(element).on('input', function(){
+                                              ctrl.inputPost($(element).val())
+                                          })
                                         }
                                         element.value = ctrl.inputPost();
                                         if(element.value.length<1){
@@ -444,11 +448,9 @@ var Home = {
                                                     return false;
                                                   }
                                                 }
-                                            }, 
+                                            }
                                         
-                            value:ctrl.inputPost(), 
-                            oninput:function(){rd.home(api.setsVal(ctrl.inputPost))}
-                  }}
+                  }, children: [ctrl.inputPost()]}
                 ]}, 
                 {tag: "div", attrs: {className:"post"}, children: [
                   {tag: "button", attrs: {className:"ui blue mini right floated button", 
@@ -463,8 +465,6 @@ var Home = {
                   {tag: "span", attrs: {className:"clear"}}
                 ]}
               ]}, 
-
-              {tag: "div", attrs: {class:"ui section divider"}}, 
 
               ctrl.divs().map(function(item){
                   return {tag: "div", attrs: {className:"ui postContainer postDemo", 

@@ -54,9 +54,8 @@ var Chat = {
   },
   view: function(ctrl){
     api.rd("right: " + redraw.right);
-    //console.log("right");
+    if(wsCtrl.data.chat[0] != undefined) console.log(wsCtrl.data.chat);
     redraw.right++;
-    console.log(ctrl.showChatDock)
     return (
         <div>
           {ctrl.showChatDock?(<div id="user-list">
@@ -131,6 +130,9 @@ var Chat = {
                                       onfocus={function(){rd.right(function(){api.markRead(rank)})}}
                                       config={function (element, isInit, ctx) {
                                           if(!isInit) {
+                                            $(element).on('input', function(){
+                                              wsCtrl.data.chat[rank].input($(element).val())
+                                            })
                                             $(element).textareaAutoSize();
                                             $(element).attrchange({
                                               //trackValues: true,
@@ -175,8 +177,7 @@ var Chat = {
                                             }
                                         }
                                       }
-                                      oninput={function(){rd.right(api.setsVal(wsCtrl.data.chat[rank].input))}}
-                            >{}</textarea>
+                            >{wsCtrl.data.chat[rank].input()}</textarea>
                           </div>
                         </div>
                       </div></div>

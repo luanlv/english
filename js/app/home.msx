@@ -28,6 +28,9 @@ var Home = {
                             config={function (element, isInit, ctx) {
                                         if(!isInit) {
                                           $(element).textareaAutoSize();
+                                          $(element).on('input', function(){
+                                              ctrl.inputPost($(element).val())
+                                          })
                                         }
                                         element.value = ctrl.inputPost();
                                         if(element.value.length<1){
@@ -50,9 +53,7 @@ var Home = {
                                                 }
                                             }
                                         }
-                            value={ctrl.inputPost()}
-                            oninput={function(){rd.home(api.setsVal(ctrl.inputPost))}}
-                  >{}</textarea>
+                  >{ctrl.inputPost()}</textarea>
                 </div>
                 <div className="post">
                   <button className="ui blue mini right floated button"
@@ -67,8 +68,6 @@ var Home = {
                   <span className="clear"></span>
                 </div>
               </div>
-
-              <div class="ui section divider"></div>
 
               {ctrl.divs().map(function(item){
                   return <div className="ui postContainer postDemo"
