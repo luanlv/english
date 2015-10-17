@@ -32,13 +32,19 @@
 
 
 	<script >
+		(function() {
+			var state = document.readyState;
+			if(state === 'interactive' || state === 'complete') {
+				m.route.mode = "pathname";
+				m.route(document.getElementById('app'), "/", {
+					"/": tenant('home', route(Home)),
+					"/dashboard": tenant('dashboard', route(Dashboard)),
+				});
 
-		m.route.mode = "pathname";
-		m.route(document.getElementById('app'), "/", {
-		  "/": tenant('home', route(Home)),
-		  "/dashboard": tenant('dashboard', route(Dashboard)),
-		});
-		initComponent();
+				initComponent();
+			}
+			else setTimeout(arguments.callee, 100);
+		})();
 	</script>
 	</body>
 </html>

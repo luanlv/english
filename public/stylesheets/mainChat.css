@@ -15,8 +15,8 @@ html,body {
 #app{
   min-height: 1000px;
   margin-top: 47px;
-  border-right: 1px solid #ddd;
-  border-left: 1px solid #ddd;
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
   padding-top: 10px;
 }
 
@@ -215,6 +215,12 @@ textarea {
   width: 400px;
   max-height: 450px;
 }
+.inUser {
+  z-index: 10;
+  position: absolute;
+  top: 18px;
+  right: -10px;
+}
 
 .notifyMes{
   text-align: left;
@@ -336,6 +342,10 @@ textarea {
   z-index: 99;
 }
 
+.inLogin .corner-right{
+  top: 1px;
+}
+
 .pointingWr{
   position: relative;
   min-height:10px;
@@ -359,6 +369,12 @@ textarea {
   transform: rotate(45deg);
 }
 
+.inLogin .tr:before, .inUser .tr:before{
+  background: #2185D0;
+  border-left: 2px solid #2185D0;
+  border-top: 2px solid #2185D0;
+}
+
 .inNotify .notify-content{
   border-left: 1px solid #F2711C !important;
   border-right: 1px solid #F2711C !important;
@@ -371,11 +387,11 @@ textarea {
 }
 
 .border-right{
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #ccc;
 }
 
 .border-left{
-  border-left: 1px solid #ddd;
+  border-left: 1px solid #ccc;
 }
 
 .main-content{
@@ -386,7 +402,7 @@ textarea {
 
 .postContainer{
   padding: 5px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #ccc;
   margin-top: 15px;
 }
 
@@ -407,5 +423,28 @@ textarea {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
+}
+
+.inLogin{
+  z-index: 10;
+  position: absolute;
+  top: 18px;
+  right: 0px;
+}
+
+.inLogin .notify-content{
+  width: 300px;
+  min-height: 150px;
+  border-left: 1px solid #2185D0 !important;
+  border-right: 1px solid #2185D0 !important;
+  border-bottom: 1px solid #2185D0 !important;
+}
+
+.inUser .notify-content{
+  width: 135px;
+  min-height: 50px;
+  border-left: 1px solid #2185D0 !important;
+  border-right: 1px solid #2185D0 !important;
+  border-bottom: 1px solid #2185D0 !important;
 }

@@ -487,8 +487,15 @@ var api = require('./api.msx');
 var Nav = {
   controller: function(){
     var ctrl = this;
+    ctrl.displayUser = false;
+    ctrl.toggleUser = function(){
+      ctrl.displayUser = !ctrl.displayUser
+    };
+    ctrl.displayLogin = false;
+    ctrl.toggleLogin = function(){
+      ctrl.displayLogin = !ctrl.displayLogin
+    };
     ctrl.displayNofity = function(){
-      console.log("run displaynofity")
       //if(wsCtrl.data.notify.notifyMessage.length < 1){
       if(wsCtrl.data.notify.display == false ) {
         wsCtrl.data.notify.init = false;
@@ -530,7 +537,7 @@ var Nav = {
           (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
             {tag: "a", attrs: {href:"#", className:"item"}, children: [
               {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
-              {tag: "div", attrs: {class:"floating ui red label num-label"}, children: ["2"]}
+              {tag: "div", attrs: {className:"floating ui red label num-label"}, children: ["2"]}
             ]}, 
             {tag: "div", attrs: {
                className:"item nofity"
@@ -538,12 +545,11 @@ var Nav = {
               {tag: "a", attrs: {href:"#"}, children: [{tag: "i", attrs: {className:"large inverted mail icon mes-icon", 
                  onclick:
                     function(){
-                      ctrl.displayNofity();
-                      rd.nav();
+                      rd.nav(ctrl.displayNofity());
                     }
                   
               }}]}, 
-              (wsCtrl.data.notify.n>0)?({tag: "div", attrs: {class:"floating ui red label num-label"}, children: [wsCtrl.data.notify.n]}):"", 
+              (wsCtrl.data.notify.n>0)?({tag: "div", attrs: {className:"floating ui red label num-label"}, children: [wsCtrl.data.notify.n]}):"", 
               {tag: "div", attrs: {className:"notifyWr"}, children: [
                 !wsCtrl.data.notify.display?"":(
                     {tag: "div", attrs: {className:"inNotify"}, children: [
@@ -602,13 +608,63 @@ var Nav = {
               ]}
             ]}, 
             {tag: "a", attrs: {href:"#", className:"item"}, children: [
-              {tag: "i", attrs: {class:"large inverted  settings icon mes-icon"}}
+              {tag: "div", attrs: {
+                onclick:function(){rd.nav(ctrl.toggleUser())}
+              }, children: [
+                {tag: "i", attrs: {className:"large user icon"}}, 
+                wsCtrl.userName
+              ]}, 
+              {tag: "div", attrs: {className:"notifyWr"}, children: [
+                ctrl.displayUser?({tag: "div", attrs: {className:"inUser"}, children: [
+                  {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
+
+                  {tag: "div", attrs: {className:"ui raised inverted blue segment notify-content"}, children: [
+                    {tag: "a", attrs: {href:"/logout", class:"ui red small button"}, children: [
+                      {tag: "i", attrs: {class:"sign out icon"}}, 
+                      "Logout"
+                    ]}
+                  ]}
+                ]}):""
+              ]}
+
             ]}
           ]}):(
               {tag: "div", attrs: {className:"right menu"}, children: [
                 {tag: "a", attrs: {className:"item"}, children: [
-                  {tag: "i", attrs: {className:"large icon user"}}, 
-                  "Login"
+                  {tag: "div", attrs: {
+                      onclick:function(){rd.nav(ctrl.toggleLogin())}
+                  }, children: [
+                    {tag: "i", attrs: {className:"large icon user"}}, 
+                    "Login"
+                  ]}, 
+                  {tag: "div", attrs: {className:"notifyWr"}, children: [
+                    ctrl.displayLogin?({tag: "div", attrs: {className:"inLogin"}, children: [
+                      {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
+
+                      {tag: "div", attrs: {className:"ui raised inverted blue segment notify-content"}, children: [
+
+                        {tag: "form", attrs: {className:"ui small form", action:"/login?referrer=", method:"POST"}, children: [
+                          {tag: "div", attrs: {className:"field"}, children: [
+                            {tag: "div", attrs: {className:"ui left icon input"}, children: [
+                              {tag: "i", attrs: {className:"user icon"}}, 
+                              {tag: "input", attrs: {type:"text", pattern:"^[\\w-]+$", required:"required", name:"username", id:"username", placeholder:"User name"}}
+                            ]}
+                          ]}, 
+                          {tag: "div", attrs: {className:"field"}, children: [
+                            {tag: "div", attrs: {className:"ui left icon input"}, children: [
+                              {tag: "i", attrs: {className:"lock icon"}}, 
+                              {tag: "input", attrs: {type:"password", required:"required", name:"password", id:"password", placeholder:"Password"}}
+                            ]}
+                          ]}, 
+                          {tag: "div", attrs: {className:"ui right floated tiny buttons"}, children: [
+                            {tag: "button", attrs: {className:"ui button", type:"submit"}, children: ["Login"]}, 
+                            {tag: "div", attrs: {className:"or", "data-text":"Or"}}, 
+                            {tag: "a", attrs: {className:"ui positive button"}, children: ["Signup"]}
+                          ]}
+                        ]}
+                      ]}
+                    ]}):""
+                  ]}
                 ]}
               ]}
               )

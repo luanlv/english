@@ -5,8 +5,15 @@ var api = require('./api.msx');
 var Nav = {
   controller: function(){
     var ctrl = this;
+    ctrl.displayUser = false;
+    ctrl.toggleUser = function(){
+      ctrl.displayUser = !ctrl.displayUser
+    };
+    ctrl.displayLogin = false;
+    ctrl.toggleLogin = function(){
+      ctrl.displayLogin = !ctrl.displayLogin
+    };
     ctrl.displayNofity = function(){
-      console.log("run displaynofity")
       //if(wsCtrl.data.notify.notifyMessage.length < 1){
       if(wsCtrl.data.notify.display == false ) {
         wsCtrl.data.notify.init = false;
@@ -48,7 +55,7 @@ var Nav = {
           {(wsCtrl.userId.length>0)?(<div className="right menu">
             <a href="#"  className="item">
               <i className="large icon add user users-icon"></i>
-              <div class="floating ui red label num-label">2</div>
+              <div className="floating ui red label num-label">2</div>
             </a>
             <div
                className="item nofity"
@@ -56,12 +63,11 @@ var Nav = {
               <a href="#"><i className="large inverted mail icon mes-icon"
                  onclick={
                     function(){
-                      ctrl.displayNofity();
-                      rd.nav();
+                      rd.nav(ctrl.displayNofity());
                     }
                   }
               ></i></a>
-              {(wsCtrl.data.notify.n>0)?(<div class="floating ui red label num-label">{wsCtrl.data.notify.n}</div>):""}
+              {(wsCtrl.data.notify.n>0)?(<div className="floating ui red label num-label">{wsCtrl.data.notify.n}</div>):""}
               <div className="notifyWr">
                 {!wsCtrl.data.notify.display?"":(
                     <div className="inNotify">
@@ -120,13 +126,63 @@ var Nav = {
               </div>
             </div>
             <a href="#" className="item">
-              <i class="large inverted  settings icon mes-icon"></i>
+              <div
+                onclick={function(){rd.nav(ctrl.toggleUser())}}
+              >
+                <i className="large user icon"></i>
+                {wsCtrl.userName}
+              </div>
+              <div className="notifyWr">
+                {ctrl.displayUser?(<div className="inUser">
+                  <div className="corner-right"><div className="tr"></div></div>
+
+                  <div className="ui raised inverted blue segment notify-content">
+                    <a href="/logout" class="ui red small button">
+                      <i class="sign out icon"></i>
+                      Logout
+                    </a>
+                  </div>
+                </div>):""}
+              </div>
+
             </a>
           </div>):(
               <div className="right menu">
                 <a className="item">
-                  <i className="large icon user"></i>
-                  Login
+                  <div
+                      onclick={function(){rd.nav(ctrl.toggleLogin())}}
+                  >
+                    <i className="large icon user"></i>
+                    Login
+                  </div>
+                  <div className="notifyWr">
+                    {ctrl.displayLogin?(<div className="inLogin">
+                      <div className="corner-right"><div className="tr"></div></div>
+
+                      <div className="ui raised inverted blue segment notify-content">
+
+                        <form className="ui small form" action="/login?referrer=" method="POST">
+                          <div className="field">
+                            <div className="ui left icon input">
+                              <i className="user icon"></i>
+                              <input type="text" pattern="^[\w-]+$" required="required" name="username" id="username" placeholder="User name"/>
+                            </div>
+                          </div>
+                          <div className="field">
+                            <div className="ui left icon input">
+                              <i className="lock icon"></i>
+                              <input type="password" required="required" name="password" id="password" placeholder="Password"/>
+                            </div>
+                          </div>
+                          <div className="ui right floated tiny buttons">
+                            <button className="ui button" type="submit">Login</button>
+                            <div className="or" data-text="Or"></div>
+                            <a className="ui positive button">Signup</a>
+                          </div>
+                        </form>
+                      </div>
+                    </div>):""}
+                  </div>
                 </a>
               </div>
               )}
