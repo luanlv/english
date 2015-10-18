@@ -897,7 +897,8 @@ function calcPing(){
 
 var pingSchedule = function(){
   setTimeout(function(){
-    calcPing()
+    calcPing();
+    pingSchedule
   },1000)
 }
 
