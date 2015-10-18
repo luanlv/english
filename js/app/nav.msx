@@ -12,7 +12,7 @@ var Nav = {
     ctrl.ping = m.prop(0);
     setInterval(function(){
       rd.nav(function(){ctrl.ping(wsCtrl.ping); m.redraw();})
-    }, 1500);
+    }, 1000);
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
       ctrl.displayUser = !ctrl.displayUser

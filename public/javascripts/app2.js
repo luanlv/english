@@ -686,7 +686,7 @@ var Nav = {
     ctrl.ping = m.prop(0);
     setInterval(function(){
       rd.nav(function(){ctrl.ping(wsCtrl.ping); m.redraw();})
-    }, 1500);
+    }, 1000);
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
       ctrl.displayUser = !ctrl.displayUser
@@ -783,17 +783,20 @@ window.redraw = {
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var reconnect;
 
+
 var ws;
 function initWs(){
-  if(ws){
-    ws.close();
-  }
+
   var sri = Math.random().toString(36).substring(2);
   ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
   reconnect = setTimeout(function(){
     console.log("reconnecting !!");
+    if(ws){
+      ws.close();
+    }
     initWs();
   }, 8000)
+
 }
 initWs();
 
@@ -896,6 +899,7 @@ wsCtrl.getPosChat = function(user, mv){
 var getPosChat = wsCtrl.getPosChat;
 
 function calcPing(){
+  var now = Date.now();
   wsCtrl.ping = Math.ceil(0.25*(now - prevTime) + wsCtrl.ping*0.75);
   rd.nav(function(){m.redraw()})
 }
@@ -910,9 +914,18 @@ var pingSchedule = function(){
 var ctrl = {};
 ctrl.listen = function(d){
   if(d.t === "n"){
-    clearTimeout(pingSchedule);
-    clearTimeout(reconnect);
-    reconnect;
+  clearTimeout(pingSchedule);
+
+  clearTimeout(reconnect);
+
+  reconnect = setTimeout(function(){
+    console.log("reconnecting !!");
+    if(ws){
+      ws.close();
+    }
+    initWs();
+  }, 8000);
+
     var now = Date.now();
     if(wsCtrl.ping){
       wsCtrl.ping =  now - prevTime;
@@ -978,7 +991,7 @@ ctrl.listen = function(d){
         }else{
           setTimeout(delayDoMes, 200);
         }
-      }, 100);
+      }, 1500);
 
       console.log("SEEND REQUEST GET MISSING MESS: " + sendMes.f + "=>" + sendMes.t);
       send(sendData("gmm", sendMes));
