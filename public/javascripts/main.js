@@ -1,10 +1,3 @@
-route = function( sub ){
-  return {
-    controller : function(){
-      m.redraw.strategy( 'diff' );
-
-      return new sub.controller();
-    },
-    view : sub.view
-  }
-}
+$(document).on('click', '.route-button', function(){
+  local(['nav', 'home'], function(){m.redraw()}).call()
+});

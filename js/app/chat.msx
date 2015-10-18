@@ -54,7 +54,7 @@ var Chat = {
   },
   view: function(ctrl){
     api.rd("right: " + redraw.right);
-    if(wsCtrl.data.chat[0] != undefined) console.log(wsCtrl.data.chat);
+    //if(wsCtrl.data.chat[0] != undefined) console.log(wsCtrl.data.chat);
     redraw.right++;
     return (
         <div>
@@ -71,7 +71,7 @@ var Chat = {
                                   });
                                 }
                               }
-                          >{user.name + ((wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id)?"":" (you)")}</div>
+                          >{user.name + ((wsCtrl.userId.length > 0 && wsCtrl.userId == user.id)?" (you)":"")}</div>
                   })}
             <div className="ui search">
               <div className="ui left icon input">
@@ -98,8 +98,8 @@ var Chat = {
                         ></i>
                       </div>
 
-                      <div className="chatboxWr"
-                           style={chat.hide?"display: none":""}> <div className="ui raised segment">
+                      <div className="raised chatboxWr"
+                           style={chat.hide?"display: none":""}> <div className="ui segment noSha">
                           <div className={"ui top attached inverted header chat-title" + (chat.read?"":" unread")}
                                onclick={function(){rd.right(ctrl.toggleChat(rank))}}
                           >
@@ -157,9 +157,9 @@ var Chat = {
                                       onkeypress={function(e){
                                             if(e.keyCode == 13 && !e.shiftKey) {
                                               m.redraw.strategy("none");
-                                              if(wsCtrl.data.chat[rank].input() != undefined) console.log(wsCtrl.data.chat[rank].input().length + "=====")
+                                              //if(wsCtrl.data.chat[rank].input() != undefined) console.log(wsCtrl.data.chat[rank].input().length + "=====")
                                               if (wsCtrl.data.chat[rank].input().length < 1) {
-                                                console.log("length < 1")
+                                                //console.log("length < 1")
                                                 return false;
                                               } else {
                                                 var source = e.target || e.srcElement;

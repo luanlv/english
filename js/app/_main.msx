@@ -2,8 +2,18 @@ window.Nav = require('./nav.msx');
 window.Home = require('./home.msx');
 window.Dashboard = require('./dashboard.msx');
 
-window.target = [];
+window.route = function( sub ){
+  return {
+    controller : function(){
+      m.redraw.strategy( 'diff' );
 
+      return new sub.controller();
+    },
+    view : sub.view
+  }
+}
+
+window.target = [];
 window.tenant = function(id, module) {
   target.push(id);
   return {

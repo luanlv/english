@@ -1,6 +1,9 @@
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
+var UserButton = require('./menu_button/User.msx');
+var LoginButton = require('./menu_button/Login.msx');
+var MessageButton = require('./menu_button/Message.msx');
 
 var Nav = {
   controller: function(){
@@ -8,7 +11,6 @@ var Nav = {
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
       ctrl.displayUser = !ctrl.displayUser
-      wsCtrl.data.notify.display = false
     };
     ctrl.displayLogin = false;
     ctrl.toggleLogin = function(){
@@ -23,27 +25,26 @@ var Nav = {
       //}
       wsCtrl.data.notify.n = 0;
       wsCtrl.data.notify.display = !wsCtrl.data.notify.display
-      ctrl.displayUser = false
     };
+
   },
   view: function(ctrl){
     api.rd("nav: " + redraw.nav);
     redraw.nav++;
-    console.log("::::" + wsCtrl.data.notify.display)
     return (
-        <div className="ui top blue inverted fixed menu sha">
+        <div className="ui top small blue inverted fixed  menu sha">
           <a href="/"
-             className="active item"
+             className={((m.route() == "/")?"active":"") + " item route-button"}
              config={m.route}
           ><i  className="large icon home users-icon"></i></a>
           <a href="/dashboard"
-             className="item"
+             className={((m.route() == "/dashboard")?"active":"") + " item route-button"}
              config={m.route}
           >
             <i className="large icon newspaper"></i>
             Articles
           </a>
-          <a className="item">
+          <a className="item route-button">
             <i className="large icon comments"></i>
             Chat rooms
           </a>
@@ -59,133 +60,11 @@ var Nav = {
               <i className="large icon add user users-icon"></i>
               <div className="floating ui red label num-label">2</div>
             </a>
-            <div
-               className="item nofity"
-            >
-              <a href="#"><i className="large inverted mail icon mes-icon"
-                 onclick={
-                    function(){
-                      rd.nav(ctrl.displayNofity());
-                    }
-                  }
-              ></i></a>
-              {(wsCtrl.data.notify.n>0)?(<div className="floating ui red label num-label">{wsCtrl.data.notify.n}</div>):""}
-              <div className="notifyWr">
-                {!wsCtrl.data.notify.display?"":(
-                    <div className="inNotify">
-                      <div className="corner-right"><div className="tr"></div></div>
-
-                      <div className="ui raised inverted blue attracted segment notify-content pad0">
-                        <div className="ui top attracted label tran">
-                        Inbox({wsCtrl.data.notify.n})
-                      </div>
-                      {!wsCtrl.data.notify.init?"LOADING":(
-                          <div>
-                            {
-                                wsCtrl.data.notify.notifyMessage.map(function(mes){
-                                return (
-                                    <div className="notifyMes"
-                                         config={
-                                            function(el){
-                                              $(el).click(function(){
-                                                local(['nav', 'right'], function(){
-                                                  console.log("click")
-                                                  wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
-                                                  var pos = wsCtrl.getPosChat(mes.user);
-                                                  if(wsCtrl.data.chat[pos].display == false){
-                                                    wsCtrl.data.chat[pos].display = true;
-                                                    wsCtrl.data.chat[pos].hide = false;
-                                                  } else if(wsCtrl.data.chat[pos].hide == true){
-                                                    wsCtrl.data.chat[pos].hide = false;
-                                                  } else {
-                                                  }
-                                                  if(mes.n > 0) wsCtrl.data.chat[pos].read = false;
-                                                  api.focusById(wsCtrl.data.chat[pos].user.id);
-                                                  m.redraw();
-                                                }).call()
-                                              });
-                                            }
-                                         }
-                                    >
-                                      <div className="notifyName">
-                                        {mes.user.name}
-                                      </div>
-                                      <div className="mesNumber">
-                                        ({mes.n})
-                                      </div>
-                                      <div className="lastMes">
-                                        {mes.lm.mes}
-                                      </div>
-                                    </div>
-                                    )
-                                })
-                            }
-                          </div>
-                          )}
-                      </div>
-                    </div>
-                    )}
-              </div>
-            </div>
-            <a href="#" className="item">
-              <div
-                onclick={function(){rd.nav(ctrl.toggleUser())}}
-              >
-                <i className="large user icon"></i>
-                {wsCtrl.userName}
-              </div>
-              <div className="notifyWr">
-                {ctrl.displayUser?(<div className="inUser">
-                  <div className="corner-right"><div className="tr"></div></div>
-
-                  <div className="ui raised inverted blue attracted segment notify-content">
-                    <a href="/logout" class="ui red small button">
-                      <i class="sign out icon"></i>
-                      Logout
-                    </a>
-                  </div>
-                </div>):""}
-              </div>
-
-            </a>
+            {MessageButton(ctrl)}
+            {UserButton(ctrl)}
           </div>):(
               <div className="right menu">
-                <a className="item">
-                  <div
-                      onclick={function(){rd.nav(ctrl.toggleLogin())}}
-                  >
-                    <i className="large icon user"></i>
-                    Login
-                  </div>
-                  <div className="notifyWr">
-                    {ctrl.displayLogin?(<div className="inLogin">
-                      <div className="corner-right"><div className="tr"></div></div>
-
-                      <div className="ui raised inverted blue segment notify-content">
-
-                        <form className="ui small form" action="/login?referrer=" method="POST">
-                          <div className="field">
-                            <div className="ui left icon input">
-                              <i className="user icon"></i>
-                              <input type="text" pattern="^[\w-]+$" required="required" name="username" id="username" placeholder="User name"/>
-                            </div>
-                          </div>
-                          <div className="field">
-                            <div className="ui left icon input">
-                              <i className="lock icon"></i>
-                              <input type="password" required="required" name="password" id="password" placeholder="Password"/>
-                            </div>
-                          </div>
-                          <div className="ui right floated tiny buttons">
-                            <button className="ui button" type="submit">Login</button>
-                            <div className="or" data-text="Or"></div>
-                            <a className="ui positive button">Signup</a>
-                          </div>
-                        </form>
-                      </div>
-                    </div>):""}
-                  </div>
-                </a>
+                {LoginButton(ctrl)}
               </div>
               )}
 

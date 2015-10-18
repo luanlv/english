@@ -228,7 +228,6 @@ ctrl.listen = function(d){
   if(d.t === "init_notify") {
     data.notify.notifyMessage = d.d;
     data.notify.init = true;
-    console.log(target);
     rd.nav(function(){m.redraw();});
   }
 };

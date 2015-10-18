@@ -75,7 +75,7 @@ api.focusById = function(uid){
 };
 
 module.exports = api;
-},{"../ws/_wsCtrl.js":7}],2:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":10}],2:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -132,7 +132,7 @@ var Chat = {
   },
   view: function(ctrl){
     api.rd("right: " + redraw.right);
-    if(wsCtrl.data.chat[0] != undefined) console.log(wsCtrl.data.chat);
+    //if(wsCtrl.data.chat[0] != undefined) console.log(wsCtrl.data.chat);
     redraw.right++;
     return (
         {tag: "div", attrs: {}, children: [
@@ -149,7 +149,7 @@ var Chat = {
                                   });
                                 }
                               
-                          }, children: [user.name + ((wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id)?"":" (you)")]}
+                          }, children: [user.name + ((wsCtrl.userId.length > 0 && wsCtrl.userId == user.id)?" (you)":"")]}
                   }), 
             {tag: "div", attrs: {className:"ui search"}, children: [
               {tag: "div", attrs: {className:"ui left icon input"}, children: [
@@ -176,8 +176,8 @@ var Chat = {
                         }}
                       ]}, 
 
-                      {tag: "div", attrs: {className:"chatboxWr", 
-                           style:chat.hide?"display: none":""}, children: [" ", {tag: "div", attrs: {className:"ui raised segment"}, children: [
+                      {tag: "div", attrs: {className:"raised chatboxWr", 
+                           style:chat.hide?"display: none":""}, children: [" ", {tag: "div", attrs: {className:"ui segment noSha"}, children: [
                           {tag: "div", attrs: {className:"ui top attached inverted header chat-title" + (chat.read?"":" unread"), 
                                onclick:function(){rd.right(ctrl.toggleChat(rank))}
                           }, children: [
@@ -235,9 +235,9 @@ var Chat = {
                                       onkeypress:function(e){
                                             if(e.keyCode == 13 && !e.shiftKey) {
                                               m.redraw.strategy("none");
-                                              if(wsCtrl.data.chat[rank].input() != undefined) console.log(wsCtrl.data.chat[rank].input().length + "=====")
+                                              //if(wsCtrl.data.chat[rank].input() != undefined) console.log(wsCtrl.data.chat[rank].input().length + "=====")
                                               if (wsCtrl.data.chat[rank].input().length < 1) {
-                                                console.log("length < 1")
+                                                //console.log("length < 1")
                                                 return false;
                                               } else {
                                                 var source = e.target || e.srcElement;
@@ -270,7 +270,7 @@ var Chat = {
 
 module.exports = Chat;
 
-},{"../ws/_wsCtrl.js":7,"./api.msx":1}],3:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":10,"./api.msx":1}],3:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var initData = {}
@@ -304,13 +304,23 @@ var Dashboard = {
 
 
 module.exports = Dashboard;
-},{"../ws/_wsCtrl.js":7,"./api.msx":1}],4:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":10,"./api.msx":1}],4:[function(require,module,exports){
 window.Nav = require('./nav.msx');
 window.Home = require('./home.msx');
 window.Dashboard = require('./dashboard.msx');
 
-window.target = [];
+window.route = function( sub ){
+  return {
+    controller : function(){
+      m.redraw.strategy( 'diff' );
 
+      return new sub.controller();
+    },
+    view : sub.view
+  }
+}
+
+window.target = [];
 window.tenant = function(id, module) {
   target.push(id);
   return {
@@ -394,7 +404,7 @@ window.initComponent = function() {
   //m.mount(document.getElementById('count'), Count);
   m.mount(document.getElementById('rightContainer'), tenant('right', window.Chat));
 }
-},{"./chat.msx":2,"./dashboard.msx":3,"./home.msx":5,"./nav.msx":6}],5:[function(require,module,exports){
+},{"./chat.msx":2,"./dashboard.msx":3,"./home.msx":5,"./nav.msx":9}],5:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var div = [{id: "div 1", v: 1},{id: "div 2", v: 5} ,{id:"div 3", v: 10}];
@@ -479,10 +489,195 @@ var Home = {
 };
 
 module.exports = Home;
-},{"../ws/_wsCtrl.js":7,"./api.msx":1}],6:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":10,"./api.msx":1}],6:[function(require,module,exports){
+var wsCtrl = require('../../ws/_wsCtrl.js');
+var api = require('.././api.msx');
+
+
+var LoginButton = function(ctrl){ return(
+    {tag: "div", attrs: {className:"border-left login-button"}, children: [
+      {tag: "a", attrs: {className:"item", 
+         onclick:function(){rd.nav(ctrl.toggleLogin())}
+      }, children: [
+        {tag: "i", attrs: {className:"large icon user"}}, 
+        "Login"
+      ]}, 
+      {tag: "div", attrs: {className:"notifyWr"}, children: [
+        ctrl.displayLogin?(
+        {tag: "div", attrs: {className:"inLogin", 
+             config:function(el, isInit, ctx){
+               if(!isInit){
+                 function loginClick(){
+                    if(!$(el).is(':hover') && !$('.login-button').is(':hover')){
+                      ctrl.displayLogin = false;
+                      $(document).unbind("click", loginClick);
+                      rd.nav(function(){m.redraw()})
+                    }
+                 }
+                 $(document).on('click', loginClick)
+               }
+             }
+        }, children: [
+          {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
+
+          {tag: "div", attrs: {className:"ui segment notify-content sha3"}, children: [
+
+            {tag: "form", attrs: {className:"ui small form", action:"/login?referrer=", method:"POST"}, children: [
+              {tag: "div", attrs: {className:"field"}, children: [
+                {tag: "div", attrs: {className:"ui left icon input"}, children: [
+                  {tag: "i", attrs: {className:"user icon"}}, 
+                  {tag: "input", attrs: {type:"text", pattern:"^[\\w-]+$", required:"required", name:"username", id:"username", placeholder:"User name"}}
+                ]}
+              ]}, 
+              {tag: "div", attrs: {className:"field"}, children: [
+                {tag: "div", attrs: {className:"ui left icon input"}, children: [
+                  {tag: "i", attrs: {className:"lock icon"}}, 
+                  {tag: "input", attrs: {type:"password", required:"required", name:"password", id:"password", placeholder:"Password"}}
+                ]}
+              ]}, 
+              {tag: "div", attrs: {className:"ui right floated tiny buttons"}, children: [
+                {tag: "button", attrs: {className:"ui positive button", type:"submit"}, children: ["Login"]}, 
+                {tag: "div", attrs: {className:"or", "data-text":"Or"}}, 
+                {tag: "a", attrs: {className:"ui teal button"}, children: ["Signup"]}
+              ]}
+            ]}
+          ]}
+        ]}):""
+      ]}
+    ]}
+)}
+
+module.exports = LoginButton;
+},{"../../ws/_wsCtrl.js":10,".././api.msx":1}],7:[function(require,module,exports){
+var wsCtrl = require('../../ws/_wsCtrl.js');
+var api = require('.././api.msx');
+
+var MessageButton = function(ctrl){ return (
+    {tag: "div", attrs: {}, children: [
+      {tag: "a", attrs: {className:"item nofity border-left message-button", 
+         onclick:function(){rd.nav(ctrl.displayNofity());}
+      }, children: [
+        {tag: "a", attrs: {href:"#"}, children: [{tag: "i", attrs: {className:"large mail icon"}}]}, 
+        (wsCtrl.data.notify.n>0)?({tag: "div", attrs: {className:"floating ui red label num-label"}, children: [wsCtrl.data.notify.n]}):""
+      ]}, 
+      {tag: "div", attrs: {className:"notifyWr"}, children: [
+        !wsCtrl.data.notify.display?"":(
+        {tag: "div", attrs: {className:"inNotify"}, children: [
+          {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
+          {tag: "div", attrs: {className:"ui raised  attracted segment notify-content sha3 pad0"}, children: [
+            {tag: "div", attrs: {className:"ui top attracted label tran"}, children: [
+              "Inbox(", wsCtrl.data.notify.n, ")"
+            ]}, 
+            !wsCtrl.data.notify.init?"LOADING":(
+            {tag: "div", attrs: {}, children: [
+              
+                  wsCtrl.data.notify.notifyMessage.map(function(mes){
+                      return (
+                      {tag: "div", attrs: {className:"notifyMes", 
+                           config:
+                                    function(el, isInit, ctx){
+                                      if(!isInit){
+                                         function mesClick(){
+                                            if(!$(el).is(':hover') && !$('.message-button').is(':hover')){
+                                              wsCtrl.data.notify.display = false;
+                                              $(document).unbind("click", mesClick);
+                                              rd.nav(function(){m.redraw()})
+                                            }
+                                         }
+                                         $(document).on('click', mesClick)
+                                      }
+
+                                      $(el).click(function(){
+                                        local(['nav', 'right'], function(){
+                                          wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
+                                          var pos = wsCtrl.getPosChat(mes.user);
+                                          if(wsCtrl.data.chat[pos].display == false){
+                                            wsCtrl.data.chat[pos].display = true;
+                                            wsCtrl.data.chat[pos].hide = false;
+                                          } else if(wsCtrl.data.chat[pos].hide == true){
+                                            wsCtrl.data.chat[pos].hide = false;
+                                          } else {
+                                          }
+                                          if(mes.n > 0) wsCtrl.data.chat[pos].read = false;
+                                          api.focusById(wsCtrl.data.chat[pos].user.id);
+                                          m.redraw();
+                                        }).call()
+                                      });
+                                    }
+                                 
+                      }, children: [
+                        {tag: "div", attrs: {className:"notifyName"}, children: [
+                          mes.user.name
+                        ]}, 
+                        {tag: "div", attrs: {className:"mesNumber"}, children: [
+                          "(", mes.n, ")"
+                        ]}, 
+                        {tag: "div", attrs: {className:"lastMes"}, children: [
+                          mes.lm.mes
+                        ]}
+                      ]}
+                          )
+                      })
+                  
+            ]}
+                )
+          ]}
+        ]}
+            )
+      ]}
+    ]}
+) }
+
+module.exports = MessageButton;
+},{"../../ws/_wsCtrl.js":10,".././api.msx":1}],8:[function(require,module,exports){
+var wsCtrl = require('../../ws/_wsCtrl.js');
+var api = require('.././api.msx');
+
+var UserButton = function(ctrl){ return (
+    {tag: "div", attrs: {}, children: [
+      {tag: "a", attrs: {href:"#", className:"item user-button", 
+         onclick:function(){rd.nav(ctrl.toggleUser())}
+      }, children: [
+        {tag: "i", attrs: {className:"large user icon"}}, 
+        wsCtrl.userName
+      ]}, 
+      {tag: "div", attrs: {className:"notifyWr"}, children: [
+        ctrl.displayUser?(
+        {tag: "div", attrs: {className:"inUser", 
+             config:function(el, isInit, ctx){
+               if(!isInit){
+                 function userClick(){
+                    if(!$(el).is(':hover') && !$('.user-button').is(':hover')){
+                      ctrl.displayUser = false;
+                      $(document).unbind("click", userClick);
+                      rd.nav(function(){m.redraw()})
+                    }
+                 }
+                 $(document).on('click', userClick)
+               }
+             }
+        }, children: [
+          {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
+
+          {tag: "div", attrs: {className:"ui  attracted segment notify-content sha3"}, children: [
+            {tag: "a", attrs: {href:"/logout", class:"ui small button"}, children: [
+              {tag: "i", attrs: {class:"sign out icon"}}, 
+              "Logout"
+            ]}
+          ]}
+        ]}):""
+      ]}
+    ]}
+) }
+
+module.exports = UserButton;
+},{"../../ws/_wsCtrl.js":10,".././api.msx":1}],9:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
+var UserButton = require('./menu_button/User.msx');
+var LoginButton = require('./menu_button/Login.msx');
+var MessageButton = require('./menu_button/Message.msx');
 
 var Nav = {
   controller: function(){
@@ -490,7 +685,6 @@ var Nav = {
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
       ctrl.displayUser = !ctrl.displayUser
-      wsCtrl.data.notify.display = false
     };
     ctrl.displayLogin = false;
     ctrl.toggleLogin = function(){
@@ -505,27 +699,26 @@ var Nav = {
       //}
       wsCtrl.data.notify.n = 0;
       wsCtrl.data.notify.display = !wsCtrl.data.notify.display
-      ctrl.displayUser = false
     };
+
   },
   view: function(ctrl){
     api.rd("nav: " + redraw.nav);
     redraw.nav++;
-    console.log("::::" + wsCtrl.data.notify.display)
     return (
-        {tag: "div", attrs: {className:"ui top blue inverted fixed menu sha"}, children: [
+        {tag: "div", attrs: {className:"ui top small blue inverted fixed  menu sha"}, children: [
           {tag: "a", attrs: {href:"/", 
-             className:"active item", 
+             className:((m.route() == "/")?"active":"") + " item route-button", 
              config:m.route
           }, children: [{tag: "i", attrs: {className:"large icon home users-icon"}}]}, 
           {tag: "a", attrs: {href:"/dashboard", 
-             className:"item", 
+             className:((m.route() == "/dashboard")?"active":"") + " item route-button", 
              config:m.route
           }, children: [
             {tag: "i", attrs: {className:"large icon newspaper"}}, 
             "Articles"
           ]}, 
-          {tag: "a", attrs: {className:"item"}, children: [
+          {tag: "a", attrs: {className:"item route-button"}, children: [
             {tag: "i", attrs: {className:"large icon comments"}}, 
             "Chat rooms"
           ]}, 
@@ -541,133 +734,11 @@ var Nav = {
               {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
               {tag: "div", attrs: {className:"floating ui red label num-label"}, children: ["2"]}
             ]}, 
-            {tag: "div", attrs: {
-               className:"item nofity"
-            }, children: [
-              {tag: "a", attrs: {href:"#"}, children: [{tag: "i", attrs: {className:"large inverted mail icon mes-icon", 
-                 onclick:
-                    function(){
-                      rd.nav(ctrl.displayNofity());
-                    }
-                  
-              }}]}, 
-              (wsCtrl.data.notify.n>0)?({tag: "div", attrs: {className:"floating ui red label num-label"}, children: [wsCtrl.data.notify.n]}):"", 
-              {tag: "div", attrs: {className:"notifyWr"}, children: [
-                !wsCtrl.data.notify.display?"":(
-                    {tag: "div", attrs: {className:"inNotify"}, children: [
-                      {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
-
-                      {tag: "div", attrs: {className:"ui raised inverted blue attracted segment notify-content pad0"}, children: [
-                        {tag: "div", attrs: {className:"ui top attracted label tran"}, children: [
-                        "Inbox(", wsCtrl.data.notify.n, ")"
-                      ]}, 
-                      !wsCtrl.data.notify.init?"LOADING":(
-                          {tag: "div", attrs: {}, children: [
-                            
-                                wsCtrl.data.notify.notifyMessage.map(function(mes){
-                                return (
-                                    {tag: "div", attrs: {className:"notifyMes", 
-                                         config:
-                                            function(el){
-                                              $(el).click(function(){
-                                                local(['nav', 'right'], function(){
-                                                  console.log("click")
-                                                  wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
-                                                  var pos = wsCtrl.getPosChat(mes.user);
-                                                  if(wsCtrl.data.chat[pos].display == false){
-                                                    wsCtrl.data.chat[pos].display = true;
-                                                    wsCtrl.data.chat[pos].hide = false;
-                                                  } else if(wsCtrl.data.chat[pos].hide == true){
-                                                    wsCtrl.data.chat[pos].hide = false;
-                                                  } else {
-                                                  }
-                                                  if(mes.n > 0) wsCtrl.data.chat[pos].read = false;
-                                                  api.focusById(wsCtrl.data.chat[pos].user.id);
-                                                  m.redraw();
-                                                }).call()
-                                              });
-                                            }
-                                         
-                                    }, children: [
-                                      {tag: "div", attrs: {className:"notifyName"}, children: [
-                                        mes.user.name
-                                      ]}, 
-                                      {tag: "div", attrs: {className:"mesNumber"}, children: [
-                                        "(", mes.n, ")"
-                                      ]}, 
-                                      {tag: "div", attrs: {className:"lastMes"}, children: [
-                                        mes.lm.mes
-                                      ]}
-                                    ]}
-                                    )
-                                })
-                            
-                          ]}
-                          )
-                      ]}
-                    ]}
-                    )
-              ]}
-            ]}, 
-            {tag: "a", attrs: {href:"#", className:"item"}, children: [
-              {tag: "div", attrs: {
-                onclick:function(){rd.nav(ctrl.toggleUser())}
-              }, children: [
-                {tag: "i", attrs: {className:"large user icon"}}, 
-                wsCtrl.userName
-              ]}, 
-              {tag: "div", attrs: {className:"notifyWr"}, children: [
-                ctrl.displayUser?({tag: "div", attrs: {className:"inUser"}, children: [
-                  {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
-
-                  {tag: "div", attrs: {className:"ui raised inverted blue attracted segment notify-content"}, children: [
-                    {tag: "a", attrs: {href:"/logout", class:"ui red small button"}, children: [
-                      {tag: "i", attrs: {class:"sign out icon"}}, 
-                      "Logout"
-                    ]}
-                  ]}
-                ]}):""
-              ]}
-
-            ]}
+            MessageButton(ctrl), 
+            UserButton(ctrl)
           ]}):(
               {tag: "div", attrs: {className:"right menu"}, children: [
-                {tag: "a", attrs: {className:"item"}, children: [
-                  {tag: "div", attrs: {
-                      onclick:function(){rd.nav(ctrl.toggleLogin())}
-                  }, children: [
-                    {tag: "i", attrs: {className:"large icon user"}}, 
-                    "Login"
-                  ]}, 
-                  {tag: "div", attrs: {className:"notifyWr"}, children: [
-                    ctrl.displayLogin?({tag: "div", attrs: {className:"inLogin"}, children: [
-                      {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
-
-                      {tag: "div", attrs: {className:"ui raised inverted blue segment notify-content"}, children: [
-
-                        {tag: "form", attrs: {className:"ui small form", action:"/login?referrer=", method:"POST"}, children: [
-                          {tag: "div", attrs: {className:"field"}, children: [
-                            {tag: "div", attrs: {className:"ui left icon input"}, children: [
-                              {tag: "i", attrs: {className:"user icon"}}, 
-                              {tag: "input", attrs: {type:"text", pattern:"^[\\w-]+$", required:"required", name:"username", id:"username", placeholder:"User name"}}
-                            ]}
-                          ]}, 
-                          {tag: "div", attrs: {className:"field"}, children: [
-                            {tag: "div", attrs: {className:"ui left icon input"}, children: [
-                              {tag: "i", attrs: {className:"lock icon"}}, 
-                              {tag: "input", attrs: {type:"password", required:"required", name:"password", id:"password", placeholder:"Password"}}
-                            ]}
-                          ]}, 
-                          {tag: "div", attrs: {className:"ui right floated tiny buttons"}, children: [
-                            {tag: "button", attrs: {className:"ui button", type:"submit"}, children: ["Login"]}, 
-                            {tag: "div", attrs: {className:"or", "data-text":"Or"}}, 
-                            {tag: "a", attrs: {className:"ui positive button"}, children: ["Signup"]}
-                          ]}
-                        ]}
-                      ]}
-                    ]}):""
-                  ]}
-                ]}
+                LoginButton(ctrl)
               ]}
               )
 
@@ -677,7 +748,7 @@ var Nav = {
 };
 
 module.exports = Nav;
-},{"../ws/_wsCtrl.js":7,"./api.msx":1}],7:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":10,"./api.msx":1,"./menu_button/Login.msx":6,"./menu_button/Message.msx":7,"./menu_button/User.msx":8}],10:[function(require,module,exports){
 var wsCtrl = {}
 
 var sri = Math.random().toString(36).substring(2);
@@ -908,7 +979,6 @@ ctrl.listen = function(d){
   if(d.t === "init_notify") {
     data.notify.notifyMessage = d.d;
     data.notify.init = true;
-    console.log(target);
     rd.nav(function(){m.redraw();});
   }
 };
