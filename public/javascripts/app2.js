@@ -734,8 +734,8 @@ var Nav = {
             ]}
           ]}, 
           {tag: "div", attrs: {className:"item"}, children: [
-            {tag: "i", attrs: {className:"large icon wifi"}}, 
-            {tag: "div", attrs: {className:"bold " + ((ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red"))}, children: [ctrl.ping(), " ms"]}
+            {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}}, 
+            {tag: "div", attrs: {className:"bold"}, children: [ctrl.ping(), " ms"]}
           ]}, 
 
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [

@@ -60,8 +60,8 @@ var Nav = {
             </div>
           </div>
           <div className="item">
-            <i className="large icon wifi"></i>
-            <div className={"bold " + ((ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red"))}>{ctrl.ping()} ms</div>
+            <i className={"large " + ((ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}></i>
+            <div className="bold">{ctrl.ping()} ms</div>
           </div>
 
            {(wsCtrl.userId.length>0)?(<div className="right menu">
