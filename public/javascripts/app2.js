@@ -728,8 +728,12 @@ var Nav = {
                 {tag: "i", attrs: {className:"search link icon"}}
             ]}
           ]}, 
+          {tag: "div", attrs: {className:"item"}, children: [
+            {tag: "i", attrs: {className:"large icon wifi"}}, 
+            wsCtrl.ping, " ms"
+          ]}, 
 
-          (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
+           (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
               {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
               {tag: "div", attrs: {className:"floating ui red label num-label"}, children: ["2"]}
@@ -750,9 +754,6 @@ var Nav = {
 module.exports = Nav;
 },{"../ws/_wsCtrl.js":10,"./api.msx":1,"./menu_button/Login.msx":6,"./menu_button/Message.msx":7,"./menu_button/User.msx":8}],10:[function(require,module,exports){
 var wsCtrl = {}
-
-var sri = Math.random().toString(36).substring(2);
-
 wsCtrl.userId = document.body.getAttribute("id");
 var userId = wsCtrl.userId;
 wsCtrl.userName = document.body.getAttribute("name");
@@ -764,6 +765,7 @@ var mRVersion = wsCtrl.mRVersion
 
 var prevTime;
 
+wsCtrl.ping = 0;
 
 window.redraw = {
   nav: 0,
@@ -774,7 +776,18 @@ window.redraw = {
 }
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
-var ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
+var reconnect;
+
+var ws;
+function initWs(){
+  var sri = Math.random().toString(36).substring(2);
+  ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
+  reconnect = setTimeout(function(){
+    initWs();
+  }, 8000)
+}
+initWs();
+
 //var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://192.168.1.25:9000/socket?sri=" + sri);
 
@@ -800,8 +813,7 @@ wsCtrl.sendData = function(t, d){
 };
 var sendData = wsCtrl.sendData;
 
-
-    wsCtrl.send = function (message, callback) {
+wsCtrl.send = function (message, callback) {
   waitForConnection(function () {
     ws.send(message);
     if (typeof callback !== 'undefined') {
@@ -821,18 +833,16 @@ var waitForConnection = function (callback, interval) {
   }
 };
 
-setInterval(function(){
-  send(pingData());
-}, 1000);
+//setInterval(function(){
+//  send(pingData());
+//}, 1000);
 
-var reconnect;
 
 ws.onopen = function(){
   console.log('WebSocket ok');
+  send(pingData());
+  prevTime = Date.now();
   send(sendData("get_onlines", ""));
-  reconnect = setTimeout(function(){
-    location.reload();
-  }, 8000)
 };
 
 
@@ -882,11 +892,27 @@ ctrl.listen = function(d){
   if(d.t === "n"){
     clearTimeout(reconnect);
     reconnect;
+    var now = Date.now();
+    if(wsCtrl.ping){
+      wsCtrl.ping =  now - prevTime;
+    } else {
+      wsCtrl.ping = Math.ceil(0.25*(now - prevTime) + wsCtrl.ping*0.75);
+    }
+    if(wsCtrl.ping<1000){
+      setTimeout(function(){
+        prevTime = Date.now();
+        send(pingData());
+      }, 1000)
+    } else {
+      prevTime = Date.now();
+      send(pingData());
+    }
     if(!data.notify.display) {
       var preNotify = data.notify.n;
       if (data.notify.display == false) data.notify.n = d.d;
-      if (preNotify !== data.notify.n) rd.nav(function(){m.redraw()})
+      //if (preNotify !== data.notify.n)
     }
+    rd.nav(function(){m.redraw()})
   }
 
   if(d.t === "ul"){
