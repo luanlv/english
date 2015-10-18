@@ -53,8 +53,8 @@ gulp.task('serve', function () {
 });
 
 gulp.task('watchjsx', ['app'], function () {
-  gulp.watch('js/{,*/}*.msx', ['app']);
-  gulp.watch('js/{,*/}*.js', ['app']);
+  gulp.watch('js/{,*/}{,*/}*.msx', ['app']);
+  gulp.watch('js/{,*/}{,*/}*.js', ['app']);
 });
 
 // Creating the default gulp task

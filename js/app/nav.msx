@@ -60,7 +60,7 @@ var Nav = {
             </div>
           </div>
           <div className="item">
-            <i className={"large " + ((ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}></i>
+            <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}></i>
             <div className="bold">{ctrl.ping()} ms</div>
           </div>
 

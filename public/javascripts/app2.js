@@ -734,7 +734,7 @@ var Nav = {
             ]}
           ]}, 
           {tag: "div", attrs: {className:"item"}, children: [
-            {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}}, 
+            {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}}, 
             {tag: "div", attrs: {className:"bold"}, children: [ctrl.ping(), " ms"]}
           ]}, 
 
