@@ -735,7 +735,7 @@ var Nav = {
           ]}, 
           {tag: "div", attrs: {className:"item"}, children: [
             {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}}, 
-            {tag: "div", attrs: {className:"bold " + (ctrl.ping()>4000)?"red":""}, children: [(ctrl.ping()<=4000)?(ctrl.ping() + " ms"):"Reconnecting..."]}
+            {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()<=4000)?(ctrl.ping() + " ms"):"Reconnecting..."]}
           ]}, 
 
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
