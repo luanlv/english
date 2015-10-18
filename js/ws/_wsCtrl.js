@@ -44,10 +44,17 @@ function initWs(){
 
   ws.onopen = function(){
     console.log('WebSocket ok');
+    wsCtrl.ping = 0;
     send(pingData());
     prevTime = Date.now();
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
+
+  };
+
+  ws.onmessage = function (e) {
+    var m = JSON.parse(e.data);
+    ctrl.listen(m)
   };
 
 
@@ -60,14 +67,14 @@ function initWs(){
   };
 
   reconnect = setTimeout(function(){
-    console.log("reconnecting !!");
+    console.log("reconnecting initWs !!");
     if(ws){
       ws.close();
     }
     initWs();
   }, 4000)
 
-}
+};
 initWs();
 
 //var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
@@ -143,48 +150,57 @@ var getPosChat = wsCtrl.getPosChat;
 
 function calcPing(){
   var now = Date.now();
-  wsCtrl.ping = Math.ceil(0.25*(now - prevTime) + wsCtrl.ping*0.75);
+  wsCtrl.ping = Math.ceil(0.75*(now - prevTime) + wsCtrl.ping*0.25);
   rd.nav(function(){m.redraw()})
 }
 
-var pingSchedule = function(){
-  setTimeout(function(){
-    calcPing();
-    pingSchedule
-  },1000)
-};
+var calcTimeOut;
+var pingSchedule;
+pingSchedule = setTimeout(function pingScheduleFn(){
+    console.log("run ping Schedule");
+    if(wsCtrl.ping <= 4000) {
+      calcPing();
+      setTimeout(pingScheduleFn, 1000);
+    }
+
+}, 1000);
 
 var ctrl = {};
 ctrl.listen = function(d){
   if(d.t === "n"){
   clearTimeout(pingSchedule);
-
   clearTimeout(reconnect);
-
   reconnect = setTimeout(function(){
-    console.log("reconnecting !!");
+    console.log("reconnecting listen !!");
+    clearTimeout(pingSchedule);
     if(ws){
       ws.close();
     }
     initWs();
-  }, 8000);
+  }, 4000);
 
     var now = Date.now();
     if(wsCtrl.ping){
       wsCtrl.ping =  now - prevTime;
     } else {
-      wsCtrl.ping = Math.ceil(0.25*(now - prevTime) + wsCtrl.ping*0.75);
+      wsCtrl.ping = Math.ceil(0.75*(now - prevTime) + wsCtrl.ping*0.25);
     }
     if(wsCtrl.ping <= 1000){
       setTimeout(function(){
         prevTime = Date.now();
         send(pingData());
-        pingSchedule
+        pingSchedule = setTimeout(function pingScheduleFn(){
+          calcPing();
+          setTimeout(pingScheduleFn, 1000)
+        }, 1000);
       }, 1000)
     } else {
       prevTime = Date.now();
       send(pingData());
-      pingSchedule
+      pingSchedule = setTimeout(function pingScheduleFn(){
+        calcPing();
+        setTimeout(pingScheduleFn, 1000)
+      }, 1000);
     }
     if(!data.notify.display) {
       var preNotify = data.notify.n;
@@ -311,12 +327,6 @@ function sortByVer(a,b) {
 }
 
 
-
-
-ws.onmessage = function (e) {
-  var m = JSON.parse(e.data);
-  ctrl.listen(m)
-};
 
 var doMes = function(d){
     var user = (userId == d.d.f.id)? d.d.t: d.d.f;
