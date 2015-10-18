@@ -735,7 +735,7 @@ var Nav = {
           ]}, 
           {tag: "div", attrs: {className:"item"}, children: [
             {tag: "i", attrs: {className:"large icon wifi"}}, 
-            ctrl.ping(), " ms"
+            {tag: "div", attrs: {className:"bold " + ((ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red"))}, children: [ctrl.ping(), " ms"]}
           ]}, 
 
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [

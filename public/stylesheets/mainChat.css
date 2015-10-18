@@ -464,3 +464,18 @@ textarea {
   top: -13px;
   right: -0px;
 }
+
+.red{
+  color: #DB2828!important;
+}
+
+.yellow{
+  color: #fbbd08!important
+}
+.green{
+  color: #21ba45!important;
+}
+
+.bold{
+  font-weight: bold;
+}
