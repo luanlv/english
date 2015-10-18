@@ -161,6 +161,7 @@ ctrl.listen = function(d){
     }
     if(wsCtrl.ping <= 1000){
       setTimeout(function(){
+        rd.nav(function(){m.redraw()})
         prevTime = Date.now();
         send(pingData());
         pingSchedule
@@ -173,9 +174,9 @@ ctrl.listen = function(d){
     if(!data.notify.display) {
       var preNotify = data.notify.n;
       if (data.notify.display == false) data.notify.n = d.d;
-      //if (preNotify !== data.notify.n)
+      if (preNotify !== data.notify.n) rd.nav(function(){m.redraw()})
     }
-    rd.nav(function(){m.redraw()})
+
   }
 
   if(d.t === "ul"){
