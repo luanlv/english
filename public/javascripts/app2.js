@@ -783,6 +783,9 @@ function initWs(){
   var sri = Math.random().toString(36).substring(2);
   ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
   reconnect = setTimeout(function(){
+    if(ws){
+      ws.close();
+    }
     initWs();
   }, 8000)
 }
