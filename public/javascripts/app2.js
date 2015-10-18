@@ -735,7 +735,7 @@ var Nav = {
           ]}, 
           {tag: "div", attrs: {className:"item"}, children: [
             {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}}, 
-            {tag: "div", attrs: {className:"bold"}, children: [ctrl.ping(), " ms"]}
+            {tag: "div", attrs: {className:"bold " + (ctrl.ping()>4000)?"red":""}, children: [(ctrl.ping()<=4000)?(ctrl.ping() + " ms"):"Reconnecting..."]}
           ]}, 
 
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
@@ -778,7 +778,20 @@ window.redraw = {
   dashboard: 0,
   right: 0,
   app: 0
-}
+};
+
+wsCtrl.data = {
+  userOnline: [],
+  user: {},
+  chat: [],
+  notify: {
+    n: 0,
+    notifyMessage: [],
+    init: false,
+    display: false
+  }
+};
+var data = wsCtrl.data;
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var reconnect;
@@ -786,16 +799,33 @@ var reconnect;
 
 var ws;
 function initWs(){
-
   var sri = Math.random().toString(36).substring(2);
   ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
+
+  ws.onopen = function(){
+    console.log('WebSocket ok');
+    send(pingData());
+    prevTime = Date.now();
+    wsCtrl.data.userOnline = [];
+    send(sendData("get_onlines", ""));
+  };
+
+
+  ws.onclose = function(){
+    console.log("socket closed")
+  };
+
+  ws.onerror = function(){
+    console.log("socket error")
+  };
+
   reconnect = setTimeout(function(){
     console.log("reconnecting !!");
     if(ws){
       ws.close();
     }
     initWs();
-  }, 8000)
+  }, 4000)
 
 }
 initWs();
@@ -850,34 +880,7 @@ var waitForConnection = function (callback, interval) {
 //}, 1000);
 
 
-ws.onopen = function(){
-  console.log('WebSocket ok');
-  send(pingData());
-  prevTime = Date.now();
-  send(sendData("get_onlines", ""));
-};
 
-
-ws.onclose = function(){
-  console.log("socket closed")
-};
-
-ws.onerror = function(){
-  console.log("socket error")
-};
-
-wsCtrl.data = {
-  userOnline: [],
-  user: {},
-  chat: [],
-  notify: {
-    n: 0,
-    notifyMessage: [],
-    init: false,
-    display: false
-  }
-};
-var data = wsCtrl.data;
 
 
 wsCtrl.getPosChat = function(user, mv){
