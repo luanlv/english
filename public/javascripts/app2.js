@@ -780,12 +780,13 @@ var reconnect;
 
 var ws;
 function initWs(){
+  if(ws){
+    ws.close();
+  }
   var sri = Math.random().toString(36).substring(2);
   ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
   reconnect = setTimeout(function(){
-    if(ws){
-      ws.close();
-    }
+    console.log("reconnecting !!");
     initWs();
   }, 8000)
 }
@@ -889,10 +890,21 @@ wsCtrl.getPosChat = function(user, mv){
 };
 var getPosChat = wsCtrl.getPosChat;
 
+function calcPing(){
+  wsCtrl.ping = Math.ceil(0.25*(now - prevTime) + wsCtrl.ping*0.75);
+  rd.nav(function(){m.redraw()})
+}
+
+var pingSchedule = function(){
+  setTimeout(function(){
+    calcPing()
+  },1000)
+}
 
 var ctrl = {};
 ctrl.listen = function(d){
   if(d.t === "n"){
+    clearTimeout(pingSchedule);
     clearTimeout(reconnect);
     reconnect;
     var now = Date.now();
@@ -901,14 +913,16 @@ ctrl.listen = function(d){
     } else {
       wsCtrl.ping = Math.ceil(0.25*(now - prevTime) + wsCtrl.ping*0.75);
     }
-    if(wsCtrl.ping<1000){
+    if(wsCtrl.ping <= 1000){
       setTimeout(function(){
         prevTime = Date.now();
         send(pingData());
-      }, 1000)
+        pingSchedule
+      }, 1000 - wsCtrl.ping)
     } else {
       prevTime = Date.now();
       send(pingData());
+      pingSchedule
     }
     if(!data.notify.display) {
       var preNotify = data.notify.n;
