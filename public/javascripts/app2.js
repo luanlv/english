@@ -399,6 +399,7 @@ var Count = {
 };
 
 window.initComponent = function() {
+  $('#initLoad').remove();
   m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
   //m.mount(document.getElementById('app'), tenant('all', window.Loading));
   //m.mount(document.getElementById('count'), Count);
@@ -684,8 +685,9 @@ var Nav = {
     var ctrl = this;
 
     ctrl.ping = m.prop(0);
+    ctrl.userNumber = m.prop(0);
     setInterval(function(){
-      rd.nav(function(){ctrl.ping(wsCtrl.ping); m.redraw();})
+      rd.nav(function(){ctrl.ping(wsCtrl.ping);ctrl.userNumber(wsCtrl.total); m.redraw();})
     }, 1000);
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
@@ -727,18 +729,25 @@ var Nav = {
             {tag: "i", attrs: {className:"large icon comments"}}, 
             "Chat rooms"
           ]}, 
-          {tag: "div", attrs: {className:"item"}, children: [
-            {tag: "div", attrs: {id:"search", className:"ui icon input"}, children: [
-              {tag: "input", attrs: {type:"text", placeholder:"Search..."}}, 
+          {tag: "div", attrs: {className:"ui category search item"}, children: [
+            {tag: "div", attrs: {className:"ui icon input"}, children: [
+              {tag: "input", attrs: {className:"", type:"text", placeholder:"Search ..."}}, 
                 {tag: "i", attrs: {className:"search link icon"}}
-            ]}
-          ]}, 
-          {tag: "div", attrs: {className:"item"}, children: [
-            {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}}, 
-            {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()<=4000)?(ctrl.ping() + " ms"):"Reconnecting..."]}
+            ]}, 
+            {tag: "div", attrs: {className:"results"}}
           ]}, 
 
+
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
+             {tag: "div", attrs: {className:"item"}, children: [
+               {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}}, 
+               {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
+             ]}, 
+
+             {tag: "div", attrs: {className:"item"}, children: [
+               {tag: "i", attrs: {className:"large icon users"}}, 
+               ctrl.userNumber()?((ctrl.userNumber() == 1)?(ctrl.userNumber() + " User"):(ctrl.userNumber() + " Users")):"? User(s)"
+             ]}, 
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
               {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
               {tag: "div", attrs: {className:"floating ui red label num-label"}, children: ["2"]}
@@ -771,6 +780,7 @@ var mRVersion = wsCtrl.mRVersion
 var prevTime;
 
 wsCtrl.ping = 0;
+wsCtrl.total = 0;
 
 window.redraw = {
   nav: 0,
@@ -910,7 +920,7 @@ var getPosChat = wsCtrl.getPosChat;
 
 function calcPing(){
   var now = Date.now();
-  wsCtrl.ping = Math.ceil(0.75*(now - prevTime) + wsCtrl.ping*0.25);
+  wsCtrl.ping = Math.ceil(0.75*(now - prevTime)/2 + wsCtrl.ping*0.25);
   rd.nav(function(){m.redraw()})
 }
 
@@ -941,9 +951,9 @@ ctrl.listen = function(d){
 
     var now = Date.now();
     if(wsCtrl.ping){
-      wsCtrl.ping =  now - prevTime;
+      wsCtrl.ping =  Math.ceil((now - prevTime)/2);
     } else {
-      wsCtrl.ping = Math.ceil(0.75*(now - prevTime) + wsCtrl.ping*0.25);
+      wsCtrl.ping = Math.ceil(0.75*(now - prevTime)/2 + wsCtrl.ping*0.25);
     }
     if(wsCtrl.ping <= 1000){
       setTimeout(function(){
@@ -962,11 +972,11 @@ ctrl.listen = function(d){
         setTimeout(pingScheduleFn, 1000)
       }, 1000);
     }
-    if(!data.notify.display) {
-      var preNotify = data.notify.n;
-      if (data.notify.display == false) data.notify.n = d.d;
-      if (preNotify !== data.notify.n) rd.nav(function(){m.redraw()})
-    }
+
+    var preNotify = data.notify.n;
+    data.notify.n = d.d.n;
+    if (preNotify !== data.notify.n) rd.nav(function(){m.redraw()})
+    wsCtrl.total = d.d.d;
 
   }
 

@@ -95,9 +95,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     member push makeMessage(t, data)
   }
 
-  def ping(uid: String, v: Int) {
+  def ping(uid: String, notify: Int) {
     setAlive(uid)
-    withMember(uid)(_ push makeMessage("n", v))
+    withMember(uid)(_ push makeMessage("n", pong.++(Json.obj("n" -> notify))))
   }
 
   def test2(uid: String, to: String, mes: String) {

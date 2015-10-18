@@ -10,8 +10,9 @@ var Nav = {
     var ctrl = this;
 
     ctrl.ping = m.prop(0);
+    ctrl.userNumber = m.prop(0);
     setInterval(function(){
-      rd.nav(function(){ctrl.ping(wsCtrl.ping); m.redraw();})
+      rd.nav(function(){ctrl.ping(wsCtrl.ping);ctrl.userNumber(wsCtrl.total); m.redraw();})
     }, 1000);
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
@@ -53,18 +54,25 @@ var Nav = {
             <i className="large icon comments"></i>
             Chat rooms
           </a>
-          <div className="item">
-            <div id="search" className="ui icon input">
-              <input type="text" placeholder="Search..."/>
+          <div className="ui category search item">
+            <div className="ui icon input">
+              <input className="" type="text" placeholder="Search ..."/>
                 <i className="search link icon"></i>
             </div>
-          </div>
-          <div className="item">
-            <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi"}></i>
-            <div className={"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}>{(ctrl.ping()<=4000)?(ctrl.ping() + " ms"):"Reconnecting..."}</div>
+            <div className="results"></div>
           </div>
 
+
            {(wsCtrl.userId.length>0)?(<div className="right menu">
+             <div className="item">
+               <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}></i>
+               <div className={"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}>{(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")}</div>
+             </div>
+
+             <div className="item">
+               <i className="large icon users"></i>
+               {ctrl.userNumber()?((ctrl.userNumber() == 1)?(ctrl.userNumber() + " User"):(ctrl.userNumber() + " Users")):"? User(s)"}
+             </div>
             <a href="javascript:void(0)"  className="item">
               <i className="large icon add user users-icon"></i>
               <div className="floating ui red label num-label">2</div>

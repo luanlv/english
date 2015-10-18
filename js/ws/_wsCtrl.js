@@ -11,6 +11,7 @@ var mRVersion = wsCtrl.mRVersion
 var prevTime;
 
 wsCtrl.ping = 0;
+wsCtrl.total = 0;
 
 window.redraw = {
   nav: 0,
@@ -150,7 +151,7 @@ var getPosChat = wsCtrl.getPosChat;
 
 function calcPing(){
   var now = Date.now();
-  wsCtrl.ping = Math.ceil(0.75*(now - prevTime) + wsCtrl.ping*0.25);
+  wsCtrl.ping = Math.ceil(0.75*(now - prevTime)/2 + wsCtrl.ping*0.25);
   rd.nav(function(){m.redraw()})
 }
 
@@ -181,9 +182,9 @@ ctrl.listen = function(d){
 
     var now = Date.now();
     if(wsCtrl.ping){
-      wsCtrl.ping =  now - prevTime;
+      wsCtrl.ping =  Math.ceil((now - prevTime)/2);
     } else {
-      wsCtrl.ping = Math.ceil(0.75*(now - prevTime) + wsCtrl.ping*0.25);
+      wsCtrl.ping = Math.ceil(0.75*(now - prevTime)/2 + wsCtrl.ping*0.25);
     }
     if(wsCtrl.ping <= 1000){
       setTimeout(function(){
@@ -202,11 +203,11 @@ ctrl.listen = function(d){
         setTimeout(pingScheduleFn, 1000)
       }, 1000);
     }
-    if(!data.notify.display) {
-      var preNotify = data.notify.n;
-      if (data.notify.display == false) data.notify.n = d.d;
-      if (preNotify !== data.notify.n) rd.nav(function(){m.redraw()})
-    }
+
+    var preNotify = data.notify.n;
+    data.notify.n = d.d.n;
+    if (preNotify !== data.notify.n) rd.nav(function(){m.redraw()})
+    wsCtrl.total = d.d.d;
 
   }
 

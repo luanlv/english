@@ -6,6 +6,7 @@
 		<meta charset="UTF-8">
 		<title>Demo</title>
 		@cssTag("mainChat.css")
+		@views.html.index.other.spinner()
 	</head>
 
 	<body
@@ -13,6 +14,16 @@
 		name="@ctx.username.getOrElse("")"
 		mv = "@mVersion(ctx.userId)"
 	>
+	<div id="initLoad">
+		<div class="cssload-dots">
+			<div class="cssload-dot"></div>
+			<div class="cssload-dot"></div>
+			<div class="cssload-dot"></div>
+			<div class="cssload-dot"></div>
+			<div class="cssload-dot"></div>
+		</div>
+	</div>
+
 		<div id="nav"> </div>
 	<div id="count"></div>
 	<div class="fixed body">
