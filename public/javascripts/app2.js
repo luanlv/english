@@ -557,7 +557,7 @@ var MessageButton = function(ctrl){ return (
       {tag: "a", attrs: {className:"item nofity border-left message-button", 
          onclick:function(){rd.nav(ctrl.displayNofity());}
       }, children: [
-        {tag: "a", attrs: {href:"#"}, children: [{tag: "i", attrs: {className:"large mail icon"}}]}, 
+        {tag: "a", attrs: {href:"javascript:void(0)"}, children: [{tag: "i", attrs: {className:"large mail icon"}}]}, 
         (wsCtrl.data.notify.n>0)?({tag: "div", attrs: {className:"floating ui red label num-label"}, children: [wsCtrl.data.notify.n]}):""
       ]}, 
       {tag: "div", attrs: {className:"notifyWr"}, children: [
@@ -635,7 +635,7 @@ var api = require('.././api.msx');
 
 var UserButton = function(ctrl){ return (
     {tag: "div", attrs: {}, children: [
-      {tag: "a", attrs: {href:"#", className:"item user-button", 
+      {tag: "a", attrs: {href:"javascript:void(0)", className:"item user-button", 
          onclick:function(){rd.nav(ctrl.toggleUser())}
       }, children: [
         {tag: "i", attrs: {className:"large user icon"}}, 
@@ -730,7 +730,7 @@ var Nav = {
           ]}, 
 
           (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
-            {tag: "a", attrs: {href:"#", className:"item"}, children: [
+            {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
               {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
               {tag: "div", attrs: {className:"floating ui red label num-label"}, children: ["2"]}
             ]}, 
@@ -762,6 +762,8 @@ var mVersion = wsCtrl.mVersion
 wsCtrl.mRVersion = parseInt(document.body.getAttribute("mv"));
 var mRVersion = wsCtrl.mRVersion
 
+var prevTime;
+
 
 window.redraw = {
   nav: 0,
@@ -782,6 +784,13 @@ var pingData = function() {
     v: mVersion
   });
 };
+
+function arrayObjectIndexOf(myArray, searchTerm, property) {
+  for(var i = 0, len = myArray.length; i < len; i++) {
+    if (myArray[i][property] === searchTerm) return i;
+  }
+  return -1;
+}
 
 wsCtrl.sendData = function(t, d){
   return JSON.stringify({
@@ -816,22 +825,24 @@ setInterval(function(){
   send(pingData());
 }, 1000);
 
+var reconnect;
 
 ws.onopen = function(){
   console.log('WebSocket ok');
   send(sendData("get_onlines", ""));
+  reconnect = setTimeout(function(){
+    location.reload();
+  }, 8000)
 };
 
 
 ws.onclose = function(){
-  alert("socket closed")
   console.log("socket closed")
 };
 
 ws.onerror = function(){
-  alert("socket error")
   console.log("socket error")
-}
+};
 
 wsCtrl.data = {
   userOnline: [],
@@ -869,6 +880,8 @@ var getPosChat = wsCtrl.getPosChat;
 var ctrl = {};
 ctrl.listen = function(d){
   if(d.t === "n"){
+    clearTimeout(reconnect);
+    reconnect;
     if(!data.notify.display) {
       var preNotify = data.notify.n;
       if (data.notify.display == false) data.notify.n = d.d;
@@ -878,7 +891,7 @@ ctrl.listen = function(d){
 
   if(d.t === "ul"){
     d.d.map(function(user){
-      if(data.userOnline.indexOf(user) < 0) {
+      if(arrayObjectIndexOf(data.userOnline, user.id, "id") < 0) {
         data.userOnline.push(user);
       }
     });
@@ -886,12 +899,12 @@ ctrl.listen = function(d){
   }
 
   if(d.t === "following_leaves"){
-    data.userOnline.splice(data.userOnline.indexOf(d.d), 1);
+    data.userOnline.splice(arrayObjectIndexOf(data.userOnline, d.d.in, "id"), 1);
     rd.right(function(){m.redraw()})
   }
 
   if(d.t === "following_enters"){
-    if(data.userOnline.indexOf(d.d) < 0) {
+    if(arrayObjectIndexOf(data.userOnline, d.d.id, "id") < 0) {
       data.userOnline.push(d.d);
       rd.right(function(){m.redraw()})
     }

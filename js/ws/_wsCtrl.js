@@ -11,6 +11,8 @@ var mVersion = wsCtrl.mVersion
 wsCtrl.mRVersion = parseInt(document.body.getAttribute("mv"));
 var mRVersion = wsCtrl.mRVersion
 
+var prevTime;
+
 
 window.redraw = {
   nav: 0,
@@ -31,6 +33,13 @@ var pingData = function() {
     v: mVersion
   });
 };
+
+function arrayObjectIndexOf(myArray, searchTerm, property) {
+  for(var i = 0, len = myArray.length; i < len; i++) {
+    if (myArray[i][property] === searchTerm) return i;
+  }
+  return -1;
+}
 
 wsCtrl.sendData = function(t, d){
   return JSON.stringify({
@@ -65,22 +74,24 @@ setInterval(function(){
   send(pingData());
 }, 1000);
 
+var reconnect;
 
 ws.onopen = function(){
   console.log('WebSocket ok');
   send(sendData("get_onlines", ""));
+  reconnect = setTimeout(function(){
+    location.reload();
+  }, 8000)
 };
 
 
 ws.onclose = function(){
-  alert("socket closed")
   console.log("socket closed")
 };
 
 ws.onerror = function(){
-  alert("socket error")
   console.log("socket error")
-}
+};
 
 wsCtrl.data = {
   userOnline: [],
@@ -118,6 +129,8 @@ var getPosChat = wsCtrl.getPosChat;
 var ctrl = {};
 ctrl.listen = function(d){
   if(d.t === "n"){
+    clearTimeout(reconnect);
+    reconnect;
     if(!data.notify.display) {
       var preNotify = data.notify.n;
       if (data.notify.display == false) data.notify.n = d.d;
@@ -127,7 +140,7 @@ ctrl.listen = function(d){
 
   if(d.t === "ul"){
     d.d.map(function(user){
-      if(data.userOnline.indexOf(user) < 0) {
+      if(arrayObjectIndexOf(data.userOnline, user.id, "id") < 0) {
         data.userOnline.push(user);
       }
     });
@@ -135,12 +148,12 @@ ctrl.listen = function(d){
   }
 
   if(d.t === "following_leaves"){
-    data.userOnline.splice(data.userOnline.indexOf(d.d), 1);
+    data.userOnline.splice(arrayObjectIndexOf(data.userOnline, d.d.in, "id"), 1);
     rd.right(function(){m.redraw()})
   }
 
   if(d.t === "following_enters"){
-    if(data.userOnline.indexOf(d.d) < 0) {
+    if(arrayObjectIndexOf(data.userOnline, d.d.id, "id") < 0) {
       data.userOnline.push(d.d);
       rd.right(function(){m.redraw()})
     }

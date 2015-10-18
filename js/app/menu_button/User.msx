@@ -3,7 +3,7 @@ var api = require('.././api.msx');
 
 var UserButton = function(ctrl){ return (
     <div>
-      <a href="#" className="item user-button"
+      <a href="javascript:void(0)" className="item user-button"
          onclick={function(){rd.nav(ctrl.toggleUser())}}
       >
         <i className="large user icon"></i>
