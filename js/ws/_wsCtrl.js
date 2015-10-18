@@ -145,7 +145,7 @@ var pingSchedule = function(){
     calcPing();
     pingSchedule
   },1000)
-}
+};
 
 var ctrl = {};
 ctrl.listen = function(d){
@@ -161,11 +161,10 @@ ctrl.listen = function(d){
     }
     if(wsCtrl.ping <= 1000){
       setTimeout(function(){
-        rd.nav(function(){m.redraw()})
         prevTime = Date.now();
         send(pingData());
         pingSchedule
-      }, 1000 - wsCtrl.ping)
+      }, 1000)
     } else {
       prevTime = Date.now();
       send(pingData());

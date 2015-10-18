@@ -682,6 +682,11 @@ var MessageButton = require('./menu_button/Message.msx');
 var Nav = {
   controller: function(){
     var ctrl = this;
+
+    ctrl.ping = m.prop(0);
+    setInterval(function(){
+      rd.nav(function(){ctrl.ping(wsCtrl.ping); m.redraw();})
+    }, 1500);
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
       ctrl.displayUser = !ctrl.displayUser
@@ -730,7 +735,7 @@ var Nav = {
           ]}, 
           {tag: "div", attrs: {className:"item"}, children: [
             {tag: "i", attrs: {className:"large icon wifi"}}, 
-            wsCtrl.ping, " ms"
+            ctrl.ping(), " ms"
           ]}, 
 
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
@@ -900,7 +905,7 @@ var pingSchedule = function(){
     calcPing();
     pingSchedule
   },1000)
-}
+};
 
 var ctrl = {};
 ctrl.listen = function(d){
@@ -916,11 +921,10 @@ ctrl.listen = function(d){
     }
     if(wsCtrl.ping <= 1000){
       setTimeout(function(){
-        rd.nav(function(){m.redraw()})
         prevTime = Date.now();
         send(pingData());
         pingSchedule
-      }, 1000 - wsCtrl.ping)
+      }, 1000)
     } else {
       prevTime = Date.now();
       send(pingData());
