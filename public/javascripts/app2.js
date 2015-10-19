@@ -5,7 +5,7 @@ var api = api || {};
 api.data = "hello"
 
 api.rd = function(name){
-  console.log("Debug: " + name)
+  //console.log("Debug: " + name)
 };
 
 api.requestWithFeedback = function(args) {
