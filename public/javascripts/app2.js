@@ -947,7 +947,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   console.log("run calc");
   var now = Date.now();
-  wsCtrl.ping = Math.ceil(0.8*(now - prevTime)/2);
+  wsCtrl.ping = Math.ceil(now - prevTime);
 }
 
 var calcTimeOut;
@@ -957,7 +957,7 @@ function initPingSchedule() {
   pingSchedule = setTimeout(function pingScheduleFn() {
     if (wsCtrl.ping <= 4000) {
       calcPing();
-      inPingSchedule = setTimeout(pingScheduleFn, 500);
+      inPingSchedule = setTimeout(pingScheduleFn, 100);
     }
   }, 1500);
 }
@@ -973,13 +973,13 @@ ctrl.listen = function(d){
 
     var now = Date.now();
 
-    wsCtrl.ping =  Math.ceil((now - prevTime)/2);
+    wsCtrl.ping =  Math.ceil(now - prevTime);
 
     if(wsCtrl.ping <= 1000){
       setTimeout(function(){
         prevTime = Date.now();
         send(pingData());
-      }, 1000)
+      }, 1000 - (wsCtrl.ping))
     } else {
       prevTime = Date.now();
       send(pingData());
