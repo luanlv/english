@@ -7,8 +7,8 @@ var MessageButton = require('./menu_button/Message.msx');
 
 var Nav = {
   controller: function(){
+    api.rd("Controller: nav");
     var ctrl = this;
-
     ctrl.ping = m.prop(0);
     ctrl.userNumber = m.prop(0);
     setInterval(function(){

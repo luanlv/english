@@ -3,6 +3,7 @@ var api = require('./api.msx');
 
 var Chat = {
   controller: function(){
+    api.rd("Controller: Chat");
     var ctrl = this;
     m.redraw.strategy("diff");
     ctrl.showChatDock = true;
@@ -53,7 +54,7 @@ var Chat = {
 
   },
   view: function(ctrl){
-    api.rd("right: " + redraw.right);
+    api.rd("redraw Chat: " + redraw.right);
     //if(wsCtrl.data.chat[0] != undefined) console.log(wsCtrl.data.chat);
     redraw.right++;
     return (

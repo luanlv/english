@@ -31,7 +31,9 @@ window.tenant = function(id, module) {
 
 window.local = function(id, callback) {
   return function(e) {
-    target = id;
+    id.map(function(component){
+      if(window.target.indexOf(component) < 0) window.target.push(component)
+    });
     if(callback == undefined) callback = function(){};
     callback.call(this, e)
   }
@@ -77,6 +79,13 @@ window.Loading = {
   }
 };
 
+vis(function(){
+  if(vis()){
+    console.log("visible")
+    rd.all(function(){m.redraw()});
+  }
+});
+
 var Count = {
   controller: function(){},
   view: function(ctrl){
@@ -90,6 +99,7 @@ var Count = {
     </div>
   }
 };
+
 
 window.initComponent = function() {
   m.mount(document.getElementById('nav'), tenant('nav', window.Nav));

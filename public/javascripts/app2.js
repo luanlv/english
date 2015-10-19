@@ -5,7 +5,7 @@ var api = api || {};
 api.data = "hello"
 
 api.rd = function(name){
-  //console.log("redraw " + name)
+  console.log("redraw " + name)
 };
 
 api.requestWithFeedback = function(args) {
@@ -81,6 +81,7 @@ var api = require('./api.msx');
 
 var Chat = {
   controller: function(){
+    api.rd("Controller: Chat");
     var ctrl = this;
     m.redraw.strategy("diff");
     ctrl.showChatDock = true;
@@ -131,7 +132,7 @@ var Chat = {
 
   },
   view: function(ctrl){
-    api.rd("right: " + redraw.right);
+    api.rd("redraw Chat: " + redraw.right);
     //if(wsCtrl.data.chat[0] != undefined) console.log(wsCtrl.data.chat);
     redraw.right++;
     return (
@@ -338,7 +339,9 @@ window.tenant = function(id, module) {
 
 window.local = function(id, callback) {
   return function(e) {
-    target = id;
+    id.map(function(component){
+      if(window.target.indexOf(component) < 0) window.target.push(component)
+    });
     if(callback == undefined) callback = function(){};
     callback.call(this, e)
   }
@@ -384,6 +387,13 @@ window.Loading = {
   }
 };
 
+vis(function(){
+  if(vis()){
+    console.log("visible")
+    rd.all(function(){m.redraw()});
+  }
+});
+
 var Count = {
   controller: function(){},
   view: function(ctrl){
@@ -398,6 +408,7 @@ var Count = {
   }
 };
 
+
 window.initComponent = function() {
   m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
   //m.mount(document.getElementById('app'), tenant('all', window.Loading));
@@ -411,6 +422,7 @@ var div = [{id: "div 1", v: 1},{id: "div 2", v: 5} ,{id:"div 3", v: 10}];
 
 var Home = {
   controller: function() {
+    api.rd("Controller: Home");
     var ctrl = this;
     ctrl.divs = m.prop([]);
     ctrl.divs(div);
@@ -422,6 +434,7 @@ var Home = {
   },
   view: function(ctrl) {
     api.rd("home:" + redraw.home);
+    console.log("rendering home!");
     redraw.home++;
     return (
         {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
@@ -680,8 +693,8 @@ var MessageButton = require('./menu_button/Message.msx');
 
 var Nav = {
   controller: function(){
+    api.rd("Controller: nav");
     var ctrl = this;
-
     ctrl.ping = m.prop(0);
     ctrl.userNumber = m.prop(0);
     setInterval(function(){
