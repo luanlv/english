@@ -39,6 +39,7 @@ var reconnect;
 
 function initReconnect(){
   reconnect = setTimeout(function(){
+    console.log("reconnecting ... ")
     clearTimeout(pingSchedule);
     if(ws){
       ws.onerror = $.noop;
@@ -58,14 +59,15 @@ function initWs(){
 
   ws.onopen = function(){
     console.log('WebSocket ok');
+    clearTimeout(reconnect);
+    initReconnect()
     wsCtrl.ping = 0;
     send(pingData());
     prevTime = Date.now();
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
-    clearTimeout(reconnect);
-    initReconnect()
   };
+
   ws.onmessage = function (e) {
     var m = JSON.parse(e.data);
     ctrl.listen(m)
@@ -77,6 +79,7 @@ function initWs(){
   ws.onerror = function(){
     console.log("socket error")
   };
+  initReconnect();
 };
 initWs();
 
