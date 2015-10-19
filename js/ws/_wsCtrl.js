@@ -60,7 +60,8 @@ function initWs(){
   ws.onopen = function(){
     console.log('WebSocket ok');
     clearTimeout(reconnect);
-    initReconnect()
+    initReconnect();
+    console.log("prev Ping:" + wsCtrl.ping)
     wsCtrl.ping = 0;
     send(pingData());
     prevTime = Date.now();
@@ -157,7 +158,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   console.log("run calc");
   var now = Date.now();
-  wsCtrl.ping = Math.ceil(0.8*(now - prevTime)/2 + wsCtrl.ping*0.2);
+  wsCtrl.ping = Math.ceil(0.8*(now - prevTime)/2);
 }
 
 var calcTimeOut;
@@ -169,7 +170,7 @@ function initPingSchedule() {
       calcPing();
       inPingSchedule = setTimeout(pingScheduleFn, 500);
     }
-  }, 2000);
+  }, 1500);
 }
 
 var ctrl = {};
@@ -182,11 +183,9 @@ ctrl.listen = function(d){
   initReconnect();
 
     var now = Date.now();
-    if(wsCtrl.ping){
-      wsCtrl.ping =  Math.ceil((now - prevTime)/2);
-    } else {
-      wsCtrl.ping = Math.ceil(0.8*(now - prevTime)/2 + wsCtrl.ping*0.2);
-    }
+
+    wsCtrl.ping =  Math.ceil((now - prevTime)/2);
+
     if(wsCtrl.ping <= 1000){
       setTimeout(function(){
         prevTime = Date.now();
