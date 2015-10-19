@@ -37,6 +37,15 @@ var data = wsCtrl.data;
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var reconnect;
 
+function initReconnect(){
+  reconnect = setTimeout(function(){
+    clearTimeout(pingSchedule);
+    if(ws){
+      ws.close();
+    }
+    initWs();
+  }, 4000);
+};
 
 var ws;
 function initWs(){
@@ -67,13 +76,7 @@ function initWs(){
     console.log("socket error")
   };
 
-  reconnect = setTimeout(function(){
-    console.log("reconnecting initWs !!");
-    if(ws){
-      ws.close();
-    }
-    initWs();
-  }, 4000)
+  initReconnect()
 
 };
 initWs();
@@ -150,58 +153,46 @@ wsCtrl.getPosChat = function(user, mv){
 var getPosChat = wsCtrl.getPosChat;
 
 function calcPing(){
+  console.log("run calc");
   var now = Date.now();
-  wsCtrl.ping = Math.ceil(0.75*(now - prevTime)/2 + wsCtrl.ping*0.25);
-  rd.nav(function(){m.redraw()})
+  wsCtrl.ping = Math.ceil(0.8*(now - prevTime)/2 + wsCtrl.ping*0.2);
 }
 
 var calcTimeOut;
 var pingSchedule;
-pingSchedule = setTimeout(function pingScheduleFn(){
-    console.log("run ping Schedule");
-    if(wsCtrl.ping <= 4000) {
+var inPingSchedule;
+function initPingSchedule() {
+  pingSchedule = setTimeout(function pingScheduleFn() {
+    if (wsCtrl.ping <= 4000) {
       calcPing();
-      setTimeout(pingScheduleFn, 1000);
+      inPingSchedule = setTimeout(pingScheduleFn, 500);
     }
-
-}, 1000);
+  }, 2000);
+}
 
 var ctrl = {};
 ctrl.listen = function(d){
   if(d.t === "n"){
   clearTimeout(pingSchedule);
+  clearTimeout(inPingSchedule);
+  initPingSchedule();
   clearTimeout(reconnect);
-  reconnect = setTimeout(function(){
-    console.log("reconnecting listen !!");
-    clearTimeout(pingSchedule);
-    if(ws){
-      ws.close();
-    }
-    initWs();
-  }, 4000);
+  initReconnect();
 
     var now = Date.now();
     if(wsCtrl.ping){
       wsCtrl.ping =  Math.ceil((now - prevTime)/2);
     } else {
-      wsCtrl.ping = Math.ceil(0.75*(now - prevTime)/2 + wsCtrl.ping*0.25);
+      wsCtrl.ping = Math.ceil(0.8*(now - prevTime)/2 + wsCtrl.ping*0.2);
     }
     if(wsCtrl.ping <= 1000){
       setTimeout(function(){
         prevTime = Date.now();
         send(pingData());
-        pingSchedule = setTimeout(function pingScheduleFn(){
-          calcPing();
-          setTimeout(pingScheduleFn, 1000)
-        }, 1000);
       }, 1000)
     } else {
       prevTime = Date.now();
       send(pingData());
-      pingSchedule = setTimeout(function pingScheduleFn(){
-        calcPing();
-        setTimeout(pingScheduleFn, 1000)
-      }, 1000);
     }
 
     var preNotify = data.notify.n;

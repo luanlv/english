@@ -4,7 +4,6 @@ var div = [{id: "div 1", v: 1},{id: "div 2", v: 5} ,{id:"div 3", v: 10}];
 
 var Home = {
   controller: function() {
-    console.log("redraw home controller!!");
     var ctrl = this;
     ctrl.divs = m.prop([]);
     ctrl.divs(div);
@@ -18,7 +17,7 @@ var Home = {
     api.rd("home:" + redraw.home);
     redraw.home++;
     return (
-        <div className="ui grid main-content">
+        <div className="ui grid main-content sha2">
           <div className="eleven wide column main-left border-right">
               <div className="ui form postWr postContainer">
                 <div className="field">

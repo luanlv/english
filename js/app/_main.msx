@@ -92,7 +92,6 @@ var Count = {
 };
 
 window.initComponent = function() {
-  $('#initLoad').remove();
   m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
   //m.mount(document.getElementById('app'), tenant('all', window.Loading));
   //m.mount(document.getElementById('count'), Count);
