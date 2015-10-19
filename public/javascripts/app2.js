@@ -750,15 +750,16 @@ var Nav = {
 
 
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
-             {tag: "div", attrs: {className:"item"}, children: [
-               {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}}, 
-               {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
-             ]}, 
 
              {tag: "div", attrs: {className:"item"}, children: [
                {tag: "i", attrs: {className:"large icon users"}}, 
                ctrl.userNumber()?((ctrl.userNumber() == 1)?(ctrl.userNumber() + " User"):(ctrl.userNumber() + " Users")):"? User(s)"
              ]}, 
+             {tag: "div", attrs: {className:"item"}, children: [
+               {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}}, 
+               {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
+             ]}, 
+
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
               {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
               {tag: "div", attrs: {className:"floating ui red label num-label"}, children: ["2"]}
@@ -767,6 +768,14 @@ var Nav = {
             UserButton(ctrl)
           ]}):(
               {tag: "div", attrs: {className:"right menu"}, children: [
+                {tag: "div", attrs: {className:"item"}, children: [
+                  {tag: "i", attrs: {className:"large icon users"}}, 
+                  ctrl.userNumber()?((ctrl.userNumber() == 1)?(ctrl.userNumber() + " User"):(ctrl.userNumber() + " Users")):"? User(s)"
+                ]}, 
+                {tag: "div", attrs: {className:"item"}, children: [
+                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}}, 
+                  {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
+                ]}, 
                 LoginButton(ctrl)
               ]}
               )
@@ -821,6 +830,10 @@ function initReconnect(){
   reconnect = setTimeout(function(){
     clearTimeout(pingSchedule);
     if(ws){
+      ws.onerror = $.noop;
+      ws.onclose = $.noop;
+      ws.onopen = $.noop;
+      ws.onmessage = $.noop;
       ws.close();
     }
     initWs();
@@ -839,25 +852,20 @@ function initWs(){
     prevTime = Date.now();
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
-
+    clearTimeout(reconnect);
+    initReconnect()
   };
-
   ws.onmessage = function (e) {
     var m = JSON.parse(e.data);
     ctrl.listen(m)
   };
 
-
   ws.onclose = function(){
     console.log("socket closed")
   };
-
   ws.onerror = function(){
     console.log("socket error")
   };
-
-  initReconnect()
-
 };
 initWs();
 

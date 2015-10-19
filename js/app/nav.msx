@@ -64,15 +64,16 @@ var Nav = {
 
 
            {(wsCtrl.userId.length>0)?(<div className="right menu">
-             <div className="item">
-               <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}></i>
-               <div className={"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}>{(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")}</div>
-             </div>
 
              <div className="item">
                <i className="large icon users"></i>
                {ctrl.userNumber()?((ctrl.userNumber() == 1)?(ctrl.userNumber() + " User"):(ctrl.userNumber() + " Users")):"? User(s)"}
              </div>
+             <div className="item">
+               <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}></i>
+               <div className={"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}>{(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")}</div>
+             </div>
+
             <a href="javascript:void(0)"  className="item">
               <i className="large icon add user users-icon"></i>
               <div className="floating ui red label num-label">2</div>
@@ -81,6 +82,14 @@ var Nav = {
             {UserButton(ctrl)}
           </div>):(
               <div className="right menu">
+                <div className="item">
+                  <i className="large icon users"></i>
+                  {ctrl.userNumber()?((ctrl.userNumber() == 1)?(ctrl.userNumber() + " User"):(ctrl.userNumber() + " Users")):"? User(s)"}
+                </div>
+                <div className="item">
+                  <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}></i>
+                  <div className={"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}>{(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")}</div>
+                </div>
                 {LoginButton(ctrl)}
               </div>
               )}
