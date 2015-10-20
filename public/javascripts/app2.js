@@ -761,8 +761,8 @@ var Nav = {
                {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):"?"]}
              ]}, 
              {tag: "div", attrs: {className:"item"}, children: [
-               {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<4000)?"red":"grey"))) + " icon feed zero-margin-right"}}, 
-               (ctrl.ping()>8000)?({tag: "i", attrs: {className:"spinner loading icon"}}):""
+               {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<8000)?"red":"grey"))) + " icon feed zero-margin-right"}}, 
+               (ctrl.ping()>8000 || ctrl.ping() == 0)?({tag: "i", attrs: {className:"spinner loading icon"}}):""
              ]}, 
 
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
@@ -778,8 +778,8 @@ var Nav = {
                   {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):"?"]}
                 ]}, 
                 {tag: "div", attrs: {className:"item"}, children: [
-                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<4000)?"red":"grey"))) + " icon feed zero-margin-right"}}, 
-                  (ctrl.ping()>8000)?({tag: "i", attrs: {className:"spinner loading icon"}}):""
+                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<8000)?"red":"grey"))) + " icon feed zero-margin-right"}}, 
+                  (ctrl.ping()>8000 || ctrl.ping() == 0)?({tag: "i", attrs: {className:"spinner loading icon"}}):""
                 ]}, 
                 LoginButton(ctrl)
               ]}

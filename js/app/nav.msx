@@ -70,8 +70,8 @@ var Nav = {
                <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):"?"}</div>
              </div>
              <div className="item">
-               <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<4000)?"red":"grey"))) + " icon feed zero-margin-right"}></i>
-               {(ctrl.ping()>8000)?(<i className="spinner loading icon"></i>):""}
+               <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<8000)?"red":"grey"))) + " icon feed zero-margin-right"}></i>
+               {(ctrl.ping()>8000 || ctrl.ping() == 0)?(<i className="spinner loading icon"></i>):""}
              </div>
 
             <a href="javascript:void(0)"  className="item">
@@ -87,8 +87,8 @@ var Nav = {
                   <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):"?"}</div>
                 </div>
                 <div className="item">
-                  <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<4000)?"red":"grey"))) + " icon feed zero-margin-right"}></i>
-                  {(ctrl.ping()>8000)?(<i className="spinner loading icon"></i>):""}
+                  <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<8000)?"red":"grey"))) + " icon feed zero-margin-right"}></i>
+                  {(ctrl.ping()>8000 || ctrl.ping() == 0)?(<i className="spinner loading icon"></i>):""}
                 </div>
                 {LoginButton(ctrl)}
               </div>
