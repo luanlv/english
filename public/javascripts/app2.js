@@ -827,6 +827,7 @@ var data = wsCtrl.data;
 var reconnect;
 
 function initReconnect(){
+  clearTimeout(reconnect)
   reconnect = setTimeout(function(){
     clearTimeout(pingSchedule);
     if(ws){
@@ -848,7 +849,6 @@ function initWs(){
 
   ws.onopen = function(){
     console.log('WebSocket ok');
-    clearTimeout(reconnect);
     initReconnect();
     console.log("prev Ping:" + wsCtrl.ping)
     wsCtrl.ping = 0;
@@ -968,7 +968,6 @@ ctrl.listen = function(d){
   clearTimeout(pingSchedule);
   clearTimeout(inPingSchedule);
   initPingSchedule();
-  clearTimeout(reconnect);
   initReconnect();
 
     var now = Date.now();
