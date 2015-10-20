@@ -67,11 +67,11 @@ var Nav = {
 
              <div className="item">
                <i className="large icon users"></i>
-               {ctrl.userNumber()?((ctrl.userNumber() == 1)?(ctrl.userNumber() + " User"):(ctrl.userNumber() + " Users")):"? User(s)"}
+               {ctrl.userNumber()?(ctrl.userNumber()+ " online"):"? online"}
              </div>
              <div className="item">
                <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}></i>
-               <div className={"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}>{(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")}</div>
+               <div className={"bold " + ((ctrl.ping()>8000)?"red":((ctrl.ping()>500)?"yellow":""))}>{(ctrl.ping()>8000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")}</div>
              </div>
 
             <a href="javascript:void(0)"  className="item">

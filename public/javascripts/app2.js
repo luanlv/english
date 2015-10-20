@@ -753,11 +753,11 @@ var Nav = {
 
              {tag: "div", attrs: {className:"item"}, children: [
                {tag: "i", attrs: {className:"large icon users"}}, 
-               ctrl.userNumber()?((ctrl.userNumber() == 1)?(ctrl.userNumber() + " User"):(ctrl.userNumber() + " Users")):"? User(s)"
+               ctrl.userNumber()?(ctrl.userNumber()+ " online"):"? online"
              ]}, 
              {tag: "div", attrs: {className:"item"}, children: [
                {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}}, 
-               {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
+               {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>8000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>8000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
              ]}, 
 
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
