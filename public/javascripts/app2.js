@@ -770,11 +770,11 @@ var Nav = {
               {tag: "div", attrs: {className:"right menu"}, children: [
                 {tag: "div", attrs: {className:"item"}, children: [
                   {tag: "i", attrs: {className:"large icon users"}}, 
-                  ctrl.userNumber()?((ctrl.userNumber() == 1)?(ctrl.userNumber() + " User"):(ctrl.userNumber() + " Users")):"? User(s)"
+                  ctrl.userNumber()?(ctrl.userNumber() + " online"):"? online"
                 ]}, 
                 {tag: "div", attrs: {className:"item"}, children: [
-                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}}, 
-                  {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>4000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>4000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
+                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<2000)?"yellow":"red")) + " icon feed"}}, 
+                  {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>8000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>8000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
                 ]}, 
                 LoginButton(ctrl)
               ]}
@@ -828,7 +828,6 @@ var reconnect;
 
 function initReconnect(){
   reconnect = setTimeout(function(){
-    console.log("reconnecting ... ")
     clearTimeout(pingSchedule);
     if(ws){
       ws.onerror = $.noop;
@@ -837,8 +836,9 @@ function initReconnect(){
       ws.onmessage = $.noop;
       ws.close();
     }
-    initWs();
-  }, 4000);
+    console.log("websocket will reconnect in 2 second ... ")
+    setInterval(initWs, 2000);
+  }, 8000);
 };
 
 var ws;
@@ -945,9 +945,9 @@ wsCtrl.getPosChat = function(user, mv){
 var getPosChat = wsCtrl.getPosChat;
 
 function calcPing(){
-  console.log("run calc");
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
+  console.log("run calc: " + wsCtrl.ping);
 }
 
 var calcTimeOut;
@@ -955,7 +955,7 @@ var pingSchedule;
 var inPingSchedule;
 function initPingSchedule() {
   pingSchedule = setTimeout(function pingScheduleFn() {
-    if (wsCtrl.ping <= 4000) {
+    if (wsCtrl.ping <= 8000) {
       calcPing();
       inPingSchedule = setTimeout(pingScheduleFn, 100);
     }

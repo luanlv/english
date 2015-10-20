@@ -39,7 +39,6 @@ var reconnect;
 
 function initReconnect(){
   reconnect = setTimeout(function(){
-    console.log("reconnecting ... ")
     clearTimeout(pingSchedule);
     if(ws){
       ws.onerror = $.noop;
@@ -48,8 +47,9 @@ function initReconnect(){
       ws.onmessage = $.noop;
       ws.close();
     }
-    initWs();
-  }, 4000);
+    console.log("websocket will reconnect in 2 second ... ")
+    setInterval(initWs, 2000);
+  }, 8000);
 };
 
 var ws;
@@ -156,9 +156,9 @@ wsCtrl.getPosChat = function(user, mv){
 var getPosChat = wsCtrl.getPosChat;
 
 function calcPing(){
-  console.log("run calc");
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
+  console.log("run calc: " + wsCtrl.ping);
 }
 
 var calcTimeOut;
@@ -166,7 +166,7 @@ var pingSchedule;
 var inPingSchedule;
 function initPingSchedule() {
   pingSchedule = setTimeout(function pingScheduleFn() {
-    if (wsCtrl.ping <= 4000) {
+    if (wsCtrl.ping <= 8000) {
       calcPing();
       inPingSchedule = setTimeout(pingScheduleFn, 100);
     }
