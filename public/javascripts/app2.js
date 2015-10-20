@@ -827,7 +827,16 @@ var data = wsCtrl.data;
 var reconnect;
 var delayInitws;
 
-function initReconnect(){
+function initReconnect(setTime){
+  var delayReconnect;
+  var delayInit;
+  if(setTime != undefined) {
+    delayReconnect = 8000;
+    delayInit = 2000;
+  } else {
+    delayReconnect = 4000;
+    delayInit = 0;
+  }
   clearTimeout(reconnect);
   reconnect = setTimeout(function(){
     console.log("run reconnect !!")
@@ -839,10 +848,10 @@ function initReconnect(){
       ws.onmessage = $.noop;
       ws.close();
     }
-    console.log("websocket will reconnect in 2 second ... ")
+    console.log("websocket will reconnect in " + delayInitWs +" ms !")
     clearTimeout(delayInitws);
-    delayInitws = setTimeout(initWs, 2000);
-  }, 8000);
+    delayInitws = setTimeout(initWs, delayInit);
+  }, delayReconnect);
 };
 
 var ws;
