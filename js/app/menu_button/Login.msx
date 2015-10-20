@@ -3,7 +3,7 @@ var api = require('.././api.msx');
 
 
 var LoginButton = function(ctrl){ return(
-    <div className="border-left login-button">
+    <div className="border-left-icon login-button">
       <a className="item"
          onclick={function(){rd.nav(ctrl.toggleLogin())}}
       >

@@ -512,7 +512,7 @@ var api = require('.././api.msx');
 
 
 var LoginButton = function(ctrl){ return(
-    {tag: "div", attrs: {className:"border-left login-button"}, children: [
+    {tag: "div", attrs: {className:"border-left-icon login-button"}, children: [
       {tag: "a", attrs: {className:"item", 
          onclick:function(){rd.nav(ctrl.toggleLogin())}
       }, children: [
@@ -758,11 +758,14 @@ var Nav = {
 
              {tag: "div", attrs: {className:"item"}, children: [
                {tag: "i", attrs: {className:"large icon users"}}, 
-               {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):"?"]}
+               {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):({tag: "i", attrs: {className:"tiny spinner loading icon zero-margin-right"}})]}
              ]}, 
              {tag: "div", attrs: {className:"item"}, children: [
-               {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<8000)?"red":"grey"))) + " icon feed zero-margin-right"}}, 
-               (ctrl.ping()>8000 || ctrl.ping() == 0)?({tag: "i", attrs: {className:"spinner loading icon"}}):""
+               (ctrl.ping()>8000 || ctrl.ping() == 0)?(
+                {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
+                   ):(
+                {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi zero-margin-right"}}
+                   )
              ]}, 
 
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
@@ -775,11 +778,14 @@ var Nav = {
               {tag: "div", attrs: {className:"right menu"}, children: [
                 {tag: "div", attrs: {className:"item"}, children: [
                   {tag: "i", attrs: {className:"large icon users"}}, 
-                  {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):"?"]}
+                  {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):({tag: "i", attrs: {className:"tiny spinner loading icon zero-margin-right"}})]}
                 ]}, 
                 {tag: "div", attrs: {className:"item"}, children: [
-                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<8000)?"red":"grey"))) + " icon feed zero-margin-right"}}, 
-                  (ctrl.ping()>8000 || ctrl.ping() == 0)?({tag: "i", attrs: {className:"spinner loading icon"}}):""
+                  (ctrl.ping()>8000 || ctrl.ping() == 0)?(
+                  {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
+                      ):(
+                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi zero-margin-right"}}
+                      )
                 ]}, 
                 LoginButton(ctrl)
               ]}
