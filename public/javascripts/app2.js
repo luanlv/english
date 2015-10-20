@@ -825,8 +825,18 @@ var data = wsCtrl.data;
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var reconnect;
+function initReconnect(time){
+  var delay;
+  var initTime
+  if(time === undefined) {
+    delay = 8000;
+    initTime = 2000;
+  }
+  else {
+    delay = time;
+    initTime = 0;
+  }
 
-function initReconnect(){
   clearTimeout(reconnect);
   reconnect = setTimeout(function(){
     clearTimeout(pingSchedule);
@@ -838,8 +848,8 @@ function initReconnect(){
       ws.close();
     }
     console.log("websocket will reconnect in 2 second ... ");
-    setInterval(initWs, 2000);
-  }, 8000);
+    setTimeout(initWs, initTime);
+  }, delay);
 };
 
 var ws;
@@ -869,7 +879,7 @@ function initWs(){
   ws.onerror = function(){
     console.log("socket error")
   };
-  initReconnect();
+  initReconnect(4000);
 };
 initWs();
 
