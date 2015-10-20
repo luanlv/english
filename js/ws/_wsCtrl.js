@@ -36,7 +36,7 @@ var data = wsCtrl.data;
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var reconnect;
-var delayInitws;
+var delayInitWs;
 
 function initReconnect(setTime){
   var delayReconnect;
@@ -60,7 +60,7 @@ function initReconnect(setTime){
       ws.close();
     }
     console.log("websocket will reconnect in " + delayInit +" ms !!")
-    clearTimeout(delayInitWs);
+    if(delayInitWs) clearTimeout(delayInitWs);
     delayInitWs = setTimeout(initWs, delayInit);
   }, delayReconnect);
 };
