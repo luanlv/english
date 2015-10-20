@@ -59,7 +59,7 @@ function initReconnect(setTime){
       ws.onmessage = $.noop;
       ws.close();
     }
-    console.log("websocket will reconnect in " + delayInit +" ms !")
+    console.log("websocket will reconnect in " + delayInit +" ms !!")
     clearTimeout(delayInitWs);
     delayInitWs = setTimeout(initWs, delayInit);
   }, delayReconnect);
