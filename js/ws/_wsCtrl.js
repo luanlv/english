@@ -41,11 +41,11 @@ var delayInitws;
 function initReconnect(setTime){
   var delayReconnect;
   var delayInit;
-  if(setTime != undefined) {
+  if(setTime === undefined) {
     delayReconnect = 8000;
     delayInit = 2000;
   } else {
-    delayReconnect = 4000;
+    delayReconnect = setTime;
     delayInit = 0;
   }
   clearTimeout(reconnect);
@@ -92,7 +92,7 @@ function initWs(){
   ws.onerror = function(){
     console.log("socket error")
   };
-  initReconnect();
+  initReconnect(4000);
 };
 initWs();
 
