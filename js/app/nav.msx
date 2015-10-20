@@ -67,11 +67,11 @@ var Nav = {
 
              <div className="item">
                <i className="large icon users"></i>
-               {ctrl.userNumber()?(ctrl.userNumber()+ " online"):"? online"}
+               <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):"?"}</div>
              </div>
              <div className="item">
-               <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}></i>
-               <div className={"bold " + ((ctrl.ping()>8000)?"red":((ctrl.ping()>500)?"yellow":""))}>{(ctrl.ping()>8000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")}</div>
+               <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<4000)?"red":"grey"))) + " icon feed zero-margin-right"}></i>
+               {(ctrl.ping()>8000)?(<i className="spinner loading icon"></i>):""}
              </div>
 
             <a href="javascript:void(0)"  className="item">
@@ -84,11 +84,11 @@ var Nav = {
               <div className="right menu">
                 <div className="item">
                   <i className="large icon users"></i>
-                  {ctrl.userNumber()?(ctrl.userNumber() + " online"):"? online"}
+                  <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):"?"}</div>
                 </div>
                 <div className="item">
-                  <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<2000)?"yellow":"red")) + " icon feed"}></i>
-                  <div className={"bold " + ((ctrl.ping()>8000)?"red":((ctrl.ping()>500)?"yellow":""))}>{(ctrl.ping()>8000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")}</div>
+                  <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<4000)?"red":"grey"))) + " icon feed zero-margin-right"}></i>
+                  {(ctrl.ping()>8000)?(<i className="spinner loading icon"></i>):""}
                 </div>
                 {LoginButton(ctrl)}
               </div>

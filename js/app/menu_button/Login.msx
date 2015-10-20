@@ -46,7 +46,7 @@ var LoginButton = function(ctrl){ return(
               <div className="ui right floated tiny buttons">
                 <button className="ui positive button" type="submit">Login</button>
                 <div className="or" data-text="Or"></div>
-                <a className="ui teal button">Signup</a>
+                <a href="/signup" className="ui teal button">Signup</a>
               </div>
             </form>
           </div>

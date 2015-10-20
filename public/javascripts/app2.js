@@ -418,7 +418,13 @@ window.initComponent = function() {
 },{"./chat.msx":2,"./dashboard.msx":3,"./home.msx":5,"./nav.msx":9}],5:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
-var div = [{id: "div 1", v: 1},{id: "div 2", v: 5} ,{id:"div 3", v: 10}];
+var div = [{id: "div 1", v: 1 ,
+  content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel."
+},{id: "div 2", v: 5,
+  content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae cumque molestias omnis. Dicta eius explicabo facere in libero neque non optio perferendis quos sunt. Aliquam laborum nostrum quasi voluptates voluptatum!\nLorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel.\nLorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel."
+} ,{id:"div 3", v: 10,
+  content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquid dolore fuga inventore labore nobis nulla quisquam reiciendis repudiandae unde. Corporis culpa, dolore ea explicabo maiores obcaecati optio quibusdam quos. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel."
+}];
 
 var Home = {
   controller: function() {
@@ -434,7 +440,6 @@ var Home = {
   },
   view: function(ctrl) {
     api.rd("home:" + redraw.home);
-    console.log("rendering home!");
     redraw.home++;
     return (
         {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
@@ -491,7 +496,7 @@ var Home = {
               ctrl.divs().map(function(item){
                   return {tag: "div", attrs: {className:"ui postContainer postDemo", 
                               id:item.id, 
-                              v:item.v}, children: [item.id]}
+                              v:item.v}, children: [item.content]}
                   })
           ]}, 
           {tag: "div", attrs: {className:"three wide column"}, children: ["right"]}
@@ -550,7 +555,7 @@ var LoginButton = function(ctrl){ return(
               {tag: "div", attrs: {className:"ui right floated tiny buttons"}, children: [
                 {tag: "button", attrs: {className:"ui positive button", type:"submit"}, children: ["Login"]}, 
                 {tag: "div", attrs: {className:"or", "data-text":"Or"}}, 
-                {tag: "a", attrs: {className:"ui teal button"}, children: ["Signup"]}
+                {tag: "a", attrs: {href:"/signup", className:"ui teal button"}, children: ["Signup"]}
               ]}
             ]}
           ]}
@@ -566,7 +571,7 @@ var api = require('.././api.msx');
 
 var MessageButton = function(ctrl){ return (
     {tag: "div", attrs: {}, children: [
-      {tag: "a", attrs: {className:"item nofity border-left message-button", 
+      {tag: "a", attrs: {className:"item nofity border-left-icon message-button", 
          onclick:function(){rd.nav(ctrl.displayNofity());}
       }, children: [
         {tag: "a", attrs: {href:"javascript:void(0)"}, children: [{tag: "i", attrs: {className:"large mail icon"}}]}, 
@@ -753,11 +758,11 @@ var Nav = {
 
              {tag: "div", attrs: {className:"item"}, children: [
                {tag: "i", attrs: {className:"large icon users"}}, 
-               ctrl.userNumber()?(ctrl.userNumber()+ " online"):"? online"
+               {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):"?"]}
              ]}, 
              {tag: "div", attrs: {className:"item"}, children: [
-               {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon feed"}}, 
-               {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>8000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>8000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
+               {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<4000)?"red":"grey"))) + " icon feed zero-margin-right"}}, 
+               (ctrl.ping()>8000)?({tag: "i", attrs: {className:"spinner loading icon"}}):""
              ]}, 
 
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
@@ -770,11 +775,11 @@ var Nav = {
               {tag: "div", attrs: {className:"right menu"}, children: [
                 {tag: "div", attrs: {className:"item"}, children: [
                   {tag: "i", attrs: {className:"large icon users"}}, 
-                  ctrl.userNumber()?(ctrl.userNumber() + " online"):"? online"
+                  {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):"?"]}
                 ]}, 
                 {tag: "div", attrs: {className:"item"}, children: [
-                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<2000)?"yellow":"red")) + " icon feed"}}, 
-                  {tag: "div", attrs: {className:"bold " + ((ctrl.ping()>8000)?"red":((ctrl.ping()>500)?"yellow":""))}, children: [(ctrl.ping()>8000)?"Reconnecting...":((ctrl.ping() >0)?(ctrl.ping() + " ms"):"? ms")]}
+                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":((ctrl.ping()<4000)?"red":"grey"))) + " icon feed zero-margin-right"}}, 
+                  (ctrl.ping()>8000)?({tag: "i", attrs: {className:"spinner loading icon"}}):""
                 ]}, 
                 LoginButton(ctrl)
               ]}
@@ -959,7 +964,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
-  console.log("run calc: " + wsCtrl);
+  console.log("run calc: " + wsCtrl.ping);
 }
 
 var calcTimeOut;

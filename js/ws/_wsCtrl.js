@@ -170,7 +170,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
-  console.log("run calc: " + wsCtrl);
+  console.log("run calc: " + wsCtrl.ping);
 }
 
 var calcTimeOut;

@@ -1,6 +1,12 @@
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
-var div = [{id: "div 1", v: 1},{id: "div 2", v: 5} ,{id:"div 3", v: 10}];
+var div = [{id: "div 1", v: 1 ,
+  content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel."
+},{id: "div 2", v: 5,
+  content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae cumque molestias omnis. Dicta eius explicabo facere in libero neque non optio perferendis quos sunt. Aliquam laborum nostrum quasi voluptates voluptatum!\nLorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel.\nLorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel."
+} ,{id:"div 3", v: 10,
+  content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquid dolore fuga inventore labore nobis nulla quisquam reiciendis repudiandae unde. Corporis culpa, dolore ea explicabo maiores obcaecati optio quibusdam quos. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel."
+}];
 
 var Home = {
   controller: function() {
@@ -16,7 +22,6 @@ var Home = {
   },
   view: function(ctrl) {
     api.rd("home:" + redraw.home);
-    console.log("rendering home!");
     redraw.home++;
     return (
         <div className="ui grid main-content sha2">
@@ -73,7 +78,7 @@ var Home = {
               {ctrl.divs().map(function(item){
                   return <div className="ui postContainer postDemo"
                               id={item.id}
-                              v={item.v}>{item.id}</div>
+                              v={item.v}>{item.content}</div>
                   })}
           </div>
           <div className="three wide column">right</div>

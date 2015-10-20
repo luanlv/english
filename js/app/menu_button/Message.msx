@@ -3,7 +3,7 @@ var api = require('.././api.msx');
 
 var MessageButton = function(ctrl){ return (
     <div>
-      <a className="item nofity border-left message-button"
+      <a className="item nofity border-left-icon message-button"
          onclick={function(){rd.nav(ctrl.displayNofity());}}
       >
         <a href="javascript:void(0)"><i className="large mail icon"></i></a>
