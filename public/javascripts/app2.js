@@ -825,10 +825,12 @@ var data = wsCtrl.data;
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var reconnect;
+var delayInitws;
 
 function initReconnect(){
-  clearTimeout(reconnect)
+  clearTimeout(reconnect);
   reconnect = setTimeout(function(){
+    console.log("run reconnect !!")
     clearTimeout(pingSchedule);
     if(ws){
       ws.onerror = $.noop;
@@ -838,7 +840,8 @@ function initReconnect(){
       ws.close();
     }
     console.log("websocket will reconnect in 2 second ... ")
-    setTimeout(initWs, 2000);
+    clearTimeout(delayInitws);
+    delayInitws = setTimeout(initWs, 2000);
   }, 8000);
 };
 
