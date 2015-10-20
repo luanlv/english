@@ -36,20 +36,8 @@ var data = wsCtrl.data;
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var reconnect;
-var delayInit;
-function initReconnect(time){
-  var delay;
-  var initTime;
-  if(time === undefined) {
-    delay = 8000;
-    initTime = 2000;
-  }
-  else {
-    delay = time;
-    initTime = 0;
-  }
 
-  clearTimeout(reconnect);
+function initReconnect(){
   reconnect = setTimeout(function(){
     clearTimeout(pingSchedule);
     if(ws){
@@ -59,10 +47,9 @@ function initReconnect(time){
       ws.onmessage = $.noop;
       ws.close();
     }
-    console.log("websocket will reconnect in 2 second ... ");
-    clearTimeout(delayInit);
-    delayInit = setTimeout(initWs, initTime);
-  }, delay);
+    console.log("websocket will reconnect in 2 second ... ")
+    setTimeout(initWs, 2000);
+  }, 8000);
 };
 
 var ws;
@@ -72,6 +59,7 @@ function initWs(){
 
   ws.onopen = function(){
     console.log('WebSocket ok');
+    clearTimeout(reconnect);
     initReconnect();
     console.log("prev Ping:" + wsCtrl.ping)
     wsCtrl.ping = 0;
@@ -92,7 +80,7 @@ function initWs(){
   ws.onerror = function(){
     console.log("socket error")
   };
-  initReconnect(4000);
+  initReconnect();
 };
 initWs();
 
@@ -170,7 +158,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
-  console.log("run calc: " + wsCtrl.ping);
+  console.log("run calc: " + wsCtrl);
 }
 
 var calcTimeOut;
@@ -191,6 +179,7 @@ ctrl.listen = function(d){
   clearTimeout(pingSchedule);
   clearTimeout(inPingSchedule);
   initPingSchedule();
+  clearTimeout(reconnect);
   initReconnect();
 
     var now = Date.now();
