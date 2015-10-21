@@ -419,11 +419,14 @@ window.initComponent = function() {
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var div = [{id: "div 1", v: 1 ,
-  content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel."
+  title: "How to Learn English Faster",
+  content: "We’ve all heard a thousand times that the only way to really learn English is to be totally immersed in the language, completely surrounded by it everywhere you go. But we wanted to go deeper than that and find quick and easy ways to start getting immersed. So our research team put together 10 steps that you can follow, in this order, to make learning English faster and a whole lot more fun. There are tons of podcasts about all topics imaginable these days: entertainment, politics, news. A good way to find one is to look for a podcast from a TV channel you usually watch in your cable TV. Look for one that interests you and listen to it in your car while driving. You’ll train your ear that way! Most of them are hilarious! It will be so worth it. Try looking at the comments to pick up some words and sentences you aren’t familiar with, but be careful there is all kinds of bizarre stuff in YouTube comments. When you are alone at home, or of course in the shower, start talking! Sing a song in English the way it sounds to you, talk about the weather or any other topic. Do this frequently and your pronunciation will drastically improve – guaranteed!"
 },{id: "div 2", v: 5,
-  content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae cumque molestias omnis. Dicta eius explicabo facere in libero neque non optio perferendis quos sunt. Aliquam laborum nostrum quasi voluptates voluptatum!\nLorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel.\nLorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel."
+  title: "Learn English quickly",
+  content: "So many of our students want to learn English fast. Some students are so busy that they only have a few minutes a day to study English. While other students need to improve their English skills in just a few weeks before an important deadline. To the first we say, even if you have only 5 minutes a day, you can still make progress in English. It's far better to spend a little time each day to learn a few new words than to give up entirely. Over time these study moments will accumulate. To the second we say, immerse yourself in the language as intensively as possible. If you can, go abroad. Living in an English-speaking environment will make you progress faster than any other method. Even at home, read and listen to English all day, study with a live teacher, and make English-speaking friends online. Create an English-speaking environment around yourself and you'll learn English much faster than by just attending a course."
 } ,{id:"div 3", v: 10,
-  content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquid dolore fuga inventore labore nobis nulla quisquam reiciendis repudiandae unde. Corporis culpa, dolore ea explicabo maiores obcaecati optio quibusdam quos. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid deleniti dignissimos dolorum nihil nulla quidem veniam. Accusantium alias consequatur dolores modi molestiae non repudiandae suscipit vel voluptates? Illo, temporibus, vel."
+  title: "Meet a Community Member",
+  content: "Meet Colie, a wikiHow Admin, New Article Booster, Welcomer, and Featured Author from the US who has been part of the community for over five years. She loves to write articles (she has started 55 of them herself!), fix grammar mistakes, organize and revamp articles, and help other wikiHowians. Her favorite wikiHow article is How to Make Chocolate Toffee Squares. She says that she’s learned communication and coaching skills through wikiHow, and enjoys the instant gratification of improving something and being productive online. She also loves how friendly, helpful, and personal everyone in the wikiHow community is."
 }];
 
 var Home = {
@@ -444,6 +447,7 @@ var Home = {
     return (
         {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
           {tag: "div", attrs: {className:"eleven wide column main-left border-right"}, children: [
+            {tag: "h1", attrs: {}, children: ["A trivial website for learning english !!!"]}, 
               {tag: "div", attrs: {className:"ui form postWr postContainer"}, children: [
                 {tag: "div", attrs: {className:"field"}, children: [
                   {tag: "textarea", attrs: {className:"auto-size new-post", 
@@ -496,7 +500,13 @@ var Home = {
               ctrl.divs().map(function(item){
                   return {tag: "div", attrs: {className:"ui postContainer postDemo", 
                               id:item.id, 
-                              v:item.v}, children: [item.content]}
+                              v:item.v
+                  }, children: [
+                  {tag: "h2", attrs: {}, children: [item.title]}, 
+                  {tag: "p", attrs: {}, children: [
+                    item.content
+                  ]}
+                  ]}
                   })
           ]}, 
           {tag: "div", attrs: {className:"three wide column"}, children: ["right"]}

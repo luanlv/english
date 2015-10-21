@@ -3,6 +3,7 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<meta name="fragment" content="!">
 		<meta charset="UTF-8">
 		<title>Demo</title>
 		@cssTag("mainChat.css")
@@ -13,7 +14,6 @@
 		name="@ctx.username.getOrElse("")"
 		mv = "@mVersion(ctx.userId)"
 	>
-
 		<div id="nav"> </div>
 	<div id="count"></div>
 	<div class="fixed body">

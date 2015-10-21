@@ -45,3 +45,4 @@ GET      /api/getGroup/:name         controllers.API.getGroup(name: String)
 # Assets
 GET       /assets/*file               controllers.Assets.at(path="/public", file)
 GET       /z/*file                    controllers.StaticFile.html(path="serve", file)
+GET      /favicon.ico                controllers.Assets.at(path="/public", file="favicon.ico")
