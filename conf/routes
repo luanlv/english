@@ -43,6 +43,7 @@ POST     /admin/image/upload          @controllers.ImageCtrl.upload
 GET      /api/getGroup/:name         controllers.API.getGroup(name: String)
 
 # Assets
-GET       /assets/*file               controllers.Assets.at(path="/public", file)
-GET       /z/*file                    controllers.StaticFile.html(path="serve", file)
+GET      //cdn.luanlv.info/assets/*file             controllers.Assets.at(path="/public", file)
+GET      /assets/*file               controllers.Assets.at(path="/public", file)
 GET      /favicon.ico                controllers.Assets.at(path="/public", file="favicon.ico")
+GET      /google5106a805f9682e1e.html                controllers.Assets.at(path="/public", file="google5106a805f9682e1e.html")
