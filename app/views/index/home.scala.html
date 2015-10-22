@@ -3,6 +3,7 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
 		<meta name="fragment" content="!">
 		<meta charset="UTF-8">
 		<title>Demo</title>
@@ -22,14 +23,14 @@
 
 	<div id="rightContainer"></div>
 
-  @*cssAt("semantic/semantic.min.css")*@
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css">
+  @cssAt("semantic/semantic.min.css")
+	@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css">*@
 	<script type="text/javascript"></script>
 	@jsTag("mithril.js")
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-	@*jQueryTag*@
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>
-	@*jsAt("semantic/semantic.min.js")*@
+	@*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>*@
+	@jQueryTag
+	@*<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>*@
+	@jsAt("semantic/semantic.min.js")
 	@jsTag("jquery.textarea_autosize.js")
 	@jsTag("attrchange.js")
 	@jsTag("main.js")
