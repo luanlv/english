@@ -9,7 +9,7 @@ var Nav = {
   controller: function(){
     api.rd("Controller: nav");
     var ctrl = this;
-    ctrl.ping = m.prop(0);
+    ctrl.ping = m.prop(wsCtrl.ping);
     ctrl.userNumber = m.prop(0);
     setInterval(function(){
       rd.nav(function(){ctrl.ping(wsCtrl.ping);ctrl.userNumber(wsCtrl.total); m.redraw();})
@@ -72,14 +72,24 @@ var Nav = {
                <i className="large icon users"></i>
                <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):(<i className="tiny spinner loading icon zero-margin-right"></i>)}</div>
              </div>
-             <div className="item">
+             <a href="javascript:void(0)" className="item"
+                config={function(el, isInit, ctx){
+                          if(!isInit){
+                            $(el).popup({
+                              popup : $('.ui.popup.show-ping'),
+                              position : 'bottom right',
+                              on    : 'hover'
+                            })
+                          }
+                      }
+                    }
+             >
                {(ctrl.ping()>8000 || ctrl.ping() == 0)?(
                 <i className={"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}></i>
                    ):(
                 <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi zero-margin-right"}></i>
                    )}
-             </div>
-
+             </a>
             <a href="javascript:void(0)"  className="item">
               <i className="large icon add user users-icon"></i>
               <div className="floating ui red label num-label">2</div>
@@ -92,20 +102,39 @@ var Nav = {
                   <i className="large icon users"></i>
                   <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):(<i className="tiny spinner loading icon zero-margin-right"></i>)}</div>
                 </div>
-                <div className="item">
+                <a href="javascript:void(0)" className="item"
+                   config={function(el, isInit, ctx){
+                          if(!isInit){
+                            $(el).popup({
+                              popup : $('.ui.popup.show-ping'),
+                              position : 'bottom right',
+                              on    : 'hover'
+                            })
+                          }
+                      }
+                    }
+                >
                   {(ctrl.ping()>8000 || ctrl.ping() == 0)?(
                   <i className={"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}></i>
                       ):(
                   <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi zero-margin-right"}></i>
                       )}
-                </div>
+                </a>
                 {LoginButton(ctrl)}
               </div>
               )}
-
+          {Ping(ctrl)}
         </div>
     )
   }
 };
+
+var Ping = function(ctrl){
+  return(
+      <div className="ui fluid popup show-ping">
+        <div className={(ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")}>{ctrl.ping()} ms</div>
+      </div>
+  )
+}
 
 module.exports = Nav;

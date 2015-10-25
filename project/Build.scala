@@ -27,8 +27,8 @@ object ApplicationBuild extends Build {
     // offline := true,
     libraryDependencies ++= Seq(
       scalaz, scalalib, hasher, config, apache,
-      jgit, elastic4s, findbugs, RM, PRM,
-      spray.caching, maxmind, prismic, scrimageCore,
+      jgit, findbugs, RM, PRM, akka.actor, akka.slf4j,
+      spray.caching, maxmind, scrimageCore,
       scrimageIo, batikCodec, bigPipe),
       TwirlKeys.templateImports ++= Seq(
         "lila.user.{ User, UserContext }",
@@ -57,7 +57,7 @@ object ApplicationBuild extends Build {
     .settings(
       libraryDependencies ++= provided(
         play.api, hasher, config, apache, jgit,
-        elastic4s, findbugs, RM)
+        findbugs, RM)
     ) aggregate (moduleRefs: _*)
 
 

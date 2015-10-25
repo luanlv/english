@@ -497,3 +497,8 @@ textarea {
 .bold{
   font-weight: bold;
 }
+
+.show-ping{
+  width: 100px !important;
+  text-align: center;
+}

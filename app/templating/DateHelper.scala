@@ -75,8 +75,8 @@ trait DateHelper { self: I18nHelper =>
 
   def secondsFromNow(seconds: Int) = momentFromNow(DateTime.now plusSeconds seconds)
 
-  private val atomDateFormatter = ISODateTimeFormat.dateTime
-  def atomDate(date: DateTime): String = atomDateFormatter print date
-  def atomDate(field: String)(doc: io.prismic.Document): Option[String] =
-    doc getDate field map (_.value.toDateTimeAtStartOfDay) map atomDate
+//  private val atomDateFormatter = ISODateTimeFormat.dateTime
+//  def atomDate(date: DateTime): String = atomDateFormatter print date
+//  def atomDate(field: String)(doc: io.prismic.Document): Option[String] =
+//    doc getDate field map (_.value.toDateTimeAtStartOfDay) map atomDate
 }

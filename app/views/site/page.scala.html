@@ -1,14 +1,14 @@
-@(doc: io.prismic.Document, resolver: io.prismic.DocumentLinkResolver)(implicit ctx: Context)
+@()(implicit ctx: Context)
 
 @site.layout(
-title = s"${~doc.getText("doc.title")}") {
+title = s"${}") {
 
 <div class="content_box small_box doc_box">
 
-  <h1 class="lichess_title">@doc.getText("doc.title")</h1>
+  <h1 class="lichess_title"></h1>
 
   <div class="body">
-    @Html(~doc.getHtml("doc.content", resolver))
+    @Html("")
   </div>
 </div>
 }

@@ -869,7 +869,7 @@ var Nav = {
   controller: function(){
     api.rd("Controller: nav");
     var ctrl = this;
-    ctrl.ping = m.prop(0);
+    ctrl.ping = m.prop(wsCtrl.ping);
     ctrl.userNumber = m.prop(0);
     setInterval(function(){
       rd.nav(function(){ctrl.ping(wsCtrl.ping);ctrl.userNumber(wsCtrl.total); m.redraw();})
@@ -932,14 +932,24 @@ var Nav = {
                {tag: "i", attrs: {className:"large icon users"}}, 
                {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):({tag: "i", attrs: {className:"tiny spinner loading icon zero-margin-right"}})]}
              ]}, 
-             {tag: "div", attrs: {className:"item"}, children: [
+             {tag: "a", attrs: {href:"javascript:void(0)", className:"item", 
+                config:function(el, isInit, ctx){
+                          if(!isInit){
+                            $(el).popup({
+                              popup : $('.ui.popup.show-ping'),
+                              position : 'bottom right',
+                              on    : 'hover'
+                            })
+                          }
+                      }
+                    
+             }, children: [
                (ctrl.ping()>8000 || ctrl.ping() == 0)?(
                 {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
                    ):(
                 {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi zero-margin-right"}}
                    )
              ]}, 
-
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
               {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
               {tag: "div", attrs: {className:"floating ui red label num-label"}, children: ["2"]}
@@ -952,7 +962,18 @@ var Nav = {
                   {tag: "i", attrs: {className:"large icon users"}}, 
                   {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):({tag: "i", attrs: {className:"tiny spinner loading icon zero-margin-right"}})]}
                 ]}, 
-                {tag: "div", attrs: {className:"item"}, children: [
+                {tag: "a", attrs: {href:"javascript:void(0)", className:"item", 
+                   config:function(el, isInit, ctx){
+                          if(!isInit){
+                            $(el).popup({
+                              popup : $('.ui.popup.show-ping'),
+                              position : 'bottom right',
+                              on    : 'hover'
+                            })
+                          }
+                      }
+                    
+                }, children: [
                   (ctrl.ping()>8000 || ctrl.ping() == 0)?(
                   {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
                       ):(
@@ -961,12 +982,20 @@ var Nav = {
                 ]}, 
                 LoginButton(ctrl)
               ]}
-              )
-
+              ), 
+          Ping(ctrl)
         ]}
     )
   }
 };
+
+var Ping = function(ctrl){
+  return(
+      {tag: "div", attrs: {className:"ui fluid popup show-ping"}, children: [
+        {tag: "div", attrs: {className:(ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")}, children: [ctrl.ping(), " ms"]}
+      ]}
+  )
+}
 
 module.exports = Nav;
 },{"../ws/_wsCtrl.js":11,"./api.msx":1,"./menu_button/Login.msx":7,"./menu_button/Message.msx":8,"./menu_button/User.msx":9}],11:[function(require,module,exports){
@@ -1051,6 +1080,8 @@ function initWs(){
     prevTime = Date.now();
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
+    wsCtrl.ping = 1;
+    rd.nav(function(){m.redraw()})
   };
 
   ws.onmessage = function (e) {
@@ -1142,7 +1173,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
-  console.log("run calc: " + wsCtrl.ping);
+  //console.log("run calc: " + wsCtrl.ping);
 }
 
 var calcTimeOut;

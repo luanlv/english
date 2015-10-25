@@ -35,12 +35,11 @@ object Dependencies {
   val hasher = "com.roundeights" %% "hasher" % "1.0.0"
   val jgit = "org.eclipse.jgit" % "org.eclipse.jgit" % "3.2.0.201312181205-r"
   val jodaTime = "joda-time" % "joda-time" % "2.8.1"
-  val elastic4s = "com.sksamuel.elastic4s" %% "elastic4s-core" % "1.7.0"
   val RM = "org.reactivemongo" %% "reactivemongo" % "0.11.4"
   val PRM = "org.reactivemongo" %% "play2-reactivemongo" % "0.11.4.play24"
   val maxmind = "com.sanoma.cda" %% "maxmind-geoip2-scala" % "1.2.3-THIB"
-  val prismic = "io.prismic" %% "scala-kit" % "1.3.4"
-  val akkaRemote = "com.typesafe.akka" %% "akka-remote" % "2.3.12"
+  //val prismic = "io.prismic" %% "scala-kit" % "1.3.4"
+  //val akkaRemote = "com.typesafe.akka" %% "akka-remote" % "2.3.12"
 
   val scrimageCore = "com.sksamuel.scrimage" %% "scrimage-core" % "2.1.0.M2"
   val scrimageIo = "com.sksamuel.scrimage" %% "scrimage-io" % "2.1.0.M2"
@@ -57,4 +56,10 @@ object Dependencies {
     val caching = "io.spray" %% "spray-caching" % version
     val util = "io.spray" %% "spray-util" % version
   }
+
+  object akka {
+      val version = "2.4.0"
+      val actor = "com.typesafe.akka" %% "akka-actor" % version
+      val slf4j = "com.typesafe.akka" %% "akka-slf4j" % version
+    }
 }
