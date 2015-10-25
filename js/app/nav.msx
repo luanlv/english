@@ -50,7 +50,10 @@ var Nav = {
             <i className="large icon newspaper"></i>
             Articles
           </a>
-          <a className="item route-button">
+          <a href="/chatroom"
+             className={((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button"}
+             config={m.route}
+          >
             <i className="large icon comments"></i>
             Chat rooms
           </a>

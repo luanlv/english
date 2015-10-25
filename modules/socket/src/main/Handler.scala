@@ -28,7 +28,7 @@ object Handler {
     userId: Option[String])(connecter: Connecter): Fu[JsSocketHandler] = {
 
     def baseController(member: SocketMember): Controller = {
-      case ("p", _) => {
+      case ("p", o) => {
         userId match {
           case None => socket ! Ping(uid, 0)
           case Some(user) => {
@@ -36,6 +36,26 @@ object Handler {
               case v: Int => socket ! Ping(uid, v)
               case _ => println("unhander !!!")
             }
+          }
+        }
+      }
+
+      case("sub", o) => {
+        println(o)
+        println(((o obj "d").get str "t").get)
+        ((o obj "d").get str "t").get match {
+          case "chatrooms" => {
+            socket ! Sub(uid, "chatrooms")
+          }
+          case _ =>
+        }
+      }
+
+      case("unSub", o) => {
+        println(o)
+        ((o obj "d").get str "t").get match {
+          case "chatrooms" => {
+            socket ! UnSub(uid, "chatrooms")
           }
         }
       }

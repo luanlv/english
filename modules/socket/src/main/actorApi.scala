@@ -40,3 +40,6 @@ case class SendMissingMes(uid: String, f: Int, t: Int, data: List[JsValue])
 case class SendInitMes(uid: String, data: List[JsValue])
 
 case class SendInitNotify(uid: String, data: List[JsValue])
+
+case class Sub(uid: String, s: String)
+case class UnSub(uid: String, s: String)

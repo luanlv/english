@@ -26,7 +26,6 @@ var UserButton = function(ctrl){ return (
              }}
         >
           <div className="corner-right"><div className="tr"></div></div>
-
           <div className="ui  attracted segment notify-content sha3">
             <a href="/logout" class="ui small button">
               <i class="sign out icon"></i>

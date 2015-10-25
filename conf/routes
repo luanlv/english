@@ -3,6 +3,7 @@
 
 GET /              controllers.Application.index
 GET /dashboard              controllers.Application.index
+GET /chatroom              controllers.Application.index
 GET /json              controllers.Application.json
 
 GET   /socket                          controllers.Main.websocket
@@ -46,6 +47,6 @@ GET      /api/getGroup/:name         controllers.API.getGroup(name: String)
 GET      /google5106a805f9682e1e.html                controllers.Assets.at(path="/public", file="google5106a805f9682e1e.html")
 GET      /robots.txt                                    controllers.Assets.at(path="/public", file="robots.txt")
 GET      /sitemap.xml                                controllers.Assets.at(path="/public", file="sitemap.xml")
-GET      //cdn.luanlv.info/assets/*file             controllers.Assets.at(path="/public", file)
+#GET      //cdn.luanlv.info/assets/*file             controllers.Assets.at(path="/public", file)
 GET      /assets/*file               controllers.Assets.at(path="/public", file)
 GET      /favicon.ico                controllers.Assets.at(path="/public", file="favicon.ico")

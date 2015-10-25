@@ -1,6 +1,7 @@
 window.Nav = require('./nav.msx');
 window.Home = require('./home.msx');
 window.Dashboard = require('./dashboard.msx');
+window.ChatRoom = require('./chatroom.msx');
 
 window.route = function( sub ){
   return {
@@ -54,6 +55,9 @@ window.rd = {
   },
   right: function(callback){
     local(['right'], callback).call()
+  },
+  chatroom: function(callback){
+    local(['chatroom', callback]).call()
   },
   all: function(callback){
     local(["home", "dashboard", "nav", "app", "right"], callback).call()

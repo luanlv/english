@@ -41,6 +41,7 @@
 		m.route(document.getElementById('app'), "/", {
 			"/": tenant('home', route(Home)),
 			"/dashboard": tenant('dashboard', route(Dashboard)),
+			"/chatroom?:roomId": tenant('chatroom', route(ChatRoom))
 		});
 		initComponent();
 	</script>

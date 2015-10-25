@@ -1,0 +1,124 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var ChatRoom = {
+  controller: function() {
+    var ctrl = this;
+
+    setInterval(function(){rd.chatroom(function(){m.redraw()})}, 100)
+
+    ctrl.param = m.prop(m.route.param("roomId")),
+
+
+    wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
+    var intervalChatRooms = setInterval(function(){
+      wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
+    }, 10000);
+    ctrl.onunload = function() {
+      wsCtrl.send(wsCtrl.sendData("unSub", {t: "chatrooms"}))
+      clearInterval(intervalChatRooms)
+    };
+
+    rd.chatroom();
+  },
+  view: function(ctrl) {
+    console.log('redraw: chat')
+    return (
+      <div className="ui grid main-content sha2">
+        <div className="eleven wide column main-left border-right">
+          <div className="ui" style="min-height: 50px">
+            <button className="ui right floated button create-button"
+                    config={function(el, isInit, ctx){
+                          if(!isInit){
+                            $('.ui.button.create-button').popup({
+                              popup : $('.ui.popup.create-room'),
+                              position : 'bottom right',
+                              on    : 'click'
+                            })
+                          }
+                      }
+                    }
+            >Create new room</button>
+            {Create()}
+          </div>
+          <table className="ui orange table">
+            <thead>
+            <tr>
+              <th className="four wide">Tên phòng</th>
+              <th className="four wide">Level</th>
+              <th className="six wide">Giới thiệu</th>
+              <th className="two wide">Online</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Room 1</td>
+              <td>Beginer</td>
+              <td>Room for beginer</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>Room 2</td>
+              <td>Advance</td>
+              <td>Room for advance</td>
+              <td>0</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="three wide column">right</div>
+      </div>
+    )
+  }
+};
+
+var Create = function(){
+  return (
+      <div className="ui form fluid popup create-room">
+        <div className="three fields">
+          <div className="field">
+            <label>First name</label>
+            <input type="text" placeholder="First Name"/>
+          </div>
+          <div className="field">
+            <label>Middle name</label>
+            <input type="text" placeholder="Middle Name"/>
+          </div>
+          <div className="field">
+            <label>Last name</label>
+            <input type="text" placeholder="Last Name"/>
+          </div>
+        </div>
+
+        <div className="grouped fields">
+          <div className="field">
+            <div className="ui radio checkbox">
+              <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Apples</label>
+            </div>
+          </div>
+          <div className="field">
+            <div className="ui radio checkbox">
+              <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Oranges</label>
+            </div>
+          </div>
+          <div className="field">
+            <div className="ui radio checkbox">
+              <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Pears</label>
+            </div>
+          </div>
+          <div className="field">
+            <div className="ui radio checkbox">
+              <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Grapefruit</label>
+            </div>
+          </div>
+        </div>
+      </div>
+  )
+}
+
+module.exports = ChatRoom;

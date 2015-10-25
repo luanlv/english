@@ -75,7 +75,7 @@ api.focusById = function(uid){
 };
 
 module.exports = api;
-},{"../ws/_wsCtrl.js":10}],2:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":11}],2:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -271,7 +271,132 @@ var Chat = {
 
 module.exports = Chat;
 
-},{"../ws/_wsCtrl.js":10,"./api.msx":1}],3:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":11,"./api.msx":1}],3:[function(require,module,exports){
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var ChatRoom = {
+  controller: function() {
+    var ctrl = this;
+
+    setInterval(function(){rd.chatroom(function(){m.redraw()})}, 100)
+
+    ctrl.param = m.prop(m.route.param("roomId")),
+
+
+    wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
+    var intervalChatRooms = setInterval(function(){
+      wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
+    }, 10000);
+    ctrl.onunload = function() {
+      wsCtrl.send(wsCtrl.sendData("unSub", {t: "chatrooms"}))
+      clearInterval(intervalChatRooms)
+    };
+
+    rd.chatroom();
+  },
+  view: function(ctrl) {
+    console.log('redraw: chat')
+    return (
+      {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
+        {tag: "div", attrs: {className:"eleven wide column main-left border-right"}, children: [
+          {tag: "div", attrs: {className:"ui", style:"min-height: 50px"}, children: [
+            {tag: "button", attrs: {className:"ui right floated button create-button", 
+                    config:function(el, isInit, ctx){
+                          if(!isInit){
+                            $('.ui.button.create-button').popup({
+                              popup : $('.ui.popup.create-room'),
+                              position : 'bottom right',
+                              on    : 'click'
+                            })
+                          }
+                      }
+                    
+            }, children: ["Create new room"]}, 
+            Create()
+          ]}, 
+          {tag: "table", attrs: {className:"ui orange table"}, children: [
+            {tag: "thead", attrs: {}, children: [
+            {tag: "tr", attrs: {}, children: [
+              {tag: "th", attrs: {className:"four wide"}, children: ["Tên phòng"]}, 
+              {tag: "th", attrs: {className:"four wide"}, children: ["Level"]}, 
+              {tag: "th", attrs: {className:"six wide"}, children: ["Giới thiệu"]}, 
+              {tag: "th", attrs: {className:"two wide"}, children: ["Online"]}
+            ]}
+            ]}, 
+            {tag: "tbody", attrs: {}, children: [
+            {tag: "tr", attrs: {}, children: [
+              {tag: "td", attrs: {}, children: ["Room 1"]}, 
+              {tag: "td", attrs: {}, children: ["Beginer"]}, 
+              {tag: "td", attrs: {}, children: ["Room for beginer"]}, 
+              {tag: "td", attrs: {}, children: ["0"]}
+            ]}, 
+            {tag: "tr", attrs: {}, children: [
+              {tag: "td", attrs: {}, children: ["Room 2"]}, 
+              {tag: "td", attrs: {}, children: ["Advance"]}, 
+              {tag: "td", attrs: {}, children: ["Room for advance"]}, 
+              {tag: "td", attrs: {}, children: ["0"]}
+            ]}
+            ]}
+          ]}
+        ]}, 
+        {tag: "div", attrs: {className:"three wide column"}, children: ["right"]}
+      ]}
+    )
+  }
+};
+
+var Create = function(){
+  return (
+      {tag: "div", attrs: {className:"ui form fluid popup create-room"}, children: [
+        {tag: "div", attrs: {className:"three fields"}, children: [
+          {tag: "div", attrs: {className:"field"}, children: [
+            {tag: "label", attrs: {}, children: ["First name"]}, 
+            {tag: "input", attrs: {type:"text", placeholder:"First Name"}}
+          ]}, 
+          {tag: "div", attrs: {className:"field"}, children: [
+            {tag: "label", attrs: {}, children: ["Middle name"]}, 
+            {tag: "input", attrs: {type:"text", placeholder:"Middle Name"}}
+          ]}, 
+          {tag: "div", attrs: {className:"field"}, children: [
+            {tag: "label", attrs: {}, children: ["Last name"]}, 
+            {tag: "input", attrs: {type:"text", placeholder:"Last Name"}}
+          ]}
+        ]}, 
+
+        {tag: "div", attrs: {className:"grouped fields"}, children: [
+          {tag: "div", attrs: {className:"field"}, children: [
+            {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+              {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Apples"]}
+            ]}
+          ]}, 
+          {tag: "div", attrs: {className:"field"}, children: [
+            {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+              {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Oranges"]}
+            ]}
+          ]}, 
+          {tag: "div", attrs: {className:"field"}, children: [
+            {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+              {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Pears"]}
+            ]}
+          ]}, 
+          {tag: "div", attrs: {className:"field"}, children: [
+            {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+              {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Grapefruit"]}
+            ]}
+          ]}
+        ]}
+      ]}
+  )
+}
+
+module.exports = ChatRoom;
+},{"../ws/_wsCtrl.js":11,"./api.msx":1}],4:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var initData = {}
@@ -305,10 +430,11 @@ var Dashboard = {
 
 
 module.exports = Dashboard;
-},{"../ws/_wsCtrl.js":10,"./api.msx":1}],4:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":11,"./api.msx":1}],5:[function(require,module,exports){
 window.Nav = require('./nav.msx');
 window.Home = require('./home.msx');
 window.Dashboard = require('./dashboard.msx');
+window.ChatRoom = require('./chatroom.msx');
 
 window.route = function( sub ){
   return {
@@ -363,6 +489,9 @@ window.rd = {
   right: function(callback){
     local(['right'], callback).call()
   },
+  chatroom: function(callback){
+    local(['chatroom', callback]).call()
+  },
   all: function(callback){
     local(["home", "dashboard", "nav", "app", "right"], callback).call()
   }
@@ -415,7 +544,7 @@ window.initComponent = function() {
   //m.mount(document.getElementById('count'), Count);
   m.mount(document.getElementById('rightContainer'), tenant('right', window.Chat));
 }
-},{"./chat.msx":2,"./dashboard.msx":3,"./home.msx":5,"./nav.msx":9}],5:[function(require,module,exports){
+},{"./chat.msx":2,"./chatroom.msx":3,"./dashboard.msx":4,"./home.msx":6,"./nav.msx":10}],6:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var div = [{id: "div 1", v: 1 ,
@@ -516,7 +645,7 @@ var Home = {
 };
 
 module.exports = Home;
-},{"../ws/_wsCtrl.js":10,"./api.msx":1}],6:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":11,"./api.msx":1}],7:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -565,17 +694,48 @@ var LoginButton = function(ctrl){ return(
               {tag: "div", attrs: {className:"ui right floated tiny buttons"}, children: [
                 {tag: "button", attrs: {className:"ui positive button", type:"submit"}, children: ["Login"]}, 
                 {tag: "div", attrs: {className:"or", "data-text":"Or"}}, 
-                {tag: "a", attrs: {href:"/signup", className:"ui teal button"}, children: ["Signup"]}
+                {tag: "a", attrs: {href:"javascript:void(0)", className:"ui teal button", 
+                   config:function(ele, isInit, ctx){
+                    if(!isInit){
+                      $(ele).on('click', function(){
+
+                          $('.ui.modal.sign-up').modal({
+                              onShow: function(){
+                                var contentWr = $(this).children().first();
+                                contentWr.load('/signup', function(res, status, xhr){
+                                  if(status == "success"){
+                                    contentWr.removeClass('loading')
+                                  }
+                                })
+                              },
+                              onHide: function(){
+                                var contentWr = $(this).children().first();
+                                contentWr.addClass('loading')
+                              }
+                            })
+                            .modal('show')
+
+                             rd.nav(function(){ctrl.displayLogin = false;m.redraw()})
+                        })
+
+                      }
+                    }
+                  
+                }, children: ["Signup"]}
               ]}
             ]}
           ]}
         ]}):""
+      ]}, 
+      {tag: "div", attrs: {className:"ui modal sign-up"}, children: [
+        {tag: "div", attrs: {className:"ui segment loading", style:"min-height: 500px;"}
+        }
       ]}
     ]}
 )}
 
 module.exports = LoginButton;
-},{"../../ws/_wsCtrl.js":10,".././api.msx":1}],7:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":11,".././api.msx":1}],8:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -656,7 +816,7 @@ var MessageButton = function(ctrl){ return (
 ) }
 
 module.exports = MessageButton;
-},{"../../ws/_wsCtrl.js":10,".././api.msx":1}],8:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":11,".././api.msx":1}],9:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -685,7 +845,6 @@ var UserButton = function(ctrl){ return (
              }
         }, children: [
           {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
-
           {tag: "div", attrs: {className:"ui  attracted segment notify-content sha3"}, children: [
             {tag: "a", attrs: {href:"/logout", class:"ui small button"}, children: [
               {tag: "i", attrs: {class:"sign out icon"}}, 
@@ -698,7 +857,7 @@ var UserButton = function(ctrl){ return (
 ) }
 
 module.exports = UserButton;
-},{"../../ws/_wsCtrl.js":10,".././api.msx":1}],9:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":11,".././api.msx":1}],10:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -751,7 +910,10 @@ var Nav = {
             {tag: "i", attrs: {className:"large icon newspaper"}}, 
             "Articles"
           ]}, 
-          {tag: "a", attrs: {className:"item route-button"}, children: [
+          {tag: "a", attrs: {href:"/chatroom", 
+             className:((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button", 
+             config:m.route
+          }, children: [
             {tag: "i", attrs: {className:"large icon comments"}}, 
             "Chat rooms"
           ]}, 
@@ -807,7 +969,7 @@ var Nav = {
 };
 
 module.exports = Nav;
-},{"../ws/_wsCtrl.js":10,"./api.msx":1,"./menu_button/Login.msx":6,"./menu_button/Message.msx":7,"./menu_button/User.msx":8}],10:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":11,"./api.msx":1,"./menu_button/Login.msx":7,"./menu_button/Message.msx":8,"./menu_button/User.msx":9}],11:[function(require,module,exports){
 var wsCtrl = {}
 wsCtrl.userId = document.body.getAttribute("id");
 var userId = wsCtrl.userId;
@@ -1173,4 +1335,4 @@ $('body').on('click', '.relation_actions a.relation', function() {
 
 
 module.exports = wsCtrl;
-},{}]},{},[4])
+},{}]},{},[5])

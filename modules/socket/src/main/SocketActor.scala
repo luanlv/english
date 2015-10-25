@@ -2,6 +2,7 @@ package lila.socket
 
 import lila.common.LightUser
 
+import scala.concurrent.{Future, Await}
 import scala.concurrent.duration._
 import scala.util.Random
 
@@ -14,6 +15,15 @@ import lila.hub.actorApi.{ Deploy, GetUids, GetUserIds }
 import lila.memo.ExpireSetMemo
 
 abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket with Actor {
+
+  val x = "abc"
+  val roomMember = scala.collection.mutable.Map.empty[String, ExpireSetMemo]
+  def roomById(s: String) = {
+    roomMember.get(s) match {
+      case None => val memo = new ExpireSetMemo(15 second); roomMember += (s -> memo); memo
+      case Some(memo) => memo
+    }
+  }
 
   val members = scala.collection.mutable.Map.empty[String, M]
   val aliveUids = new ExpireSetMemo(uidTtl)
@@ -61,6 +71,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case Test2(uid, to, mes)   => test2(uid, to, mes)
 
+    case Sub(uid, s) => sub(uid, s)
+
+    case UnSub(uid, s) => unSub(uid, s)
+
     case Broom                 => broom
 
     // when a member quits
@@ -107,6 +121,13 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     }
   }
 
+  def sub(uid: String, s: String) = {
+    roomById(s) put uid
+  }
+
+  def unSub(uid: String, s: String) = {
+    roomById(s) remove  uid
+  }
 
 
   def uidByUserId(userId: String): Iterable[String] = members collect {
