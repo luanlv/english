@@ -36,7 +36,6 @@ var ChatRoom = {
                       }
                     }
             >Create new room</button>
-            {Create()}
           </div>
           <table className="ui orange table">
             <thead>
@@ -64,6 +63,8 @@ var ChatRoom = {
             </tr>
             </tbody>
           </table>
+
+          {Create()}
         </div>
         <div className="three wide column">right</div>
       </div>
@@ -74,47 +75,78 @@ var ChatRoom = {
 var Create = function(){
   return (
       <div className="ui form fluid popup create-room">
-        <div className="three fields">
+        <div className="two fields">
           <div className="field">
-            <label>First name</label>
-            <input type="text" placeholder="First Name"/>
+            <label>Tên phòng</label>
+            <input type="text" placeholder="Tên phòng"/>
           </div>
           <div className="field">
-            <label>Middle name</label>
-            <input type="text" placeholder="Middle Name"/>
-          </div>
-          <div className="field">
-            <label>Last name</label>
-            <input type="text" placeholder="Last Name"/>
+            <label>Mô tả</label>
+            <input type="text" placeholder="Mô tả"/>
           </div>
         </div>
 
-        <div className="grouped fields">
-          <div className="field">
-            <div className="ui radio checkbox">
-              <input type="radio" name="fruit" tabindex="0" className="hidden"/>
-                <label>Apples</label>
+        <div className="two fields">
+          <div className="grouped field">
+            <label>Level</label>
+            <div className="field">
+              <div className="ui radio checkbox">
+                <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Elementary</label>
+              </div>
+            </div>
+            <div className="field">
+              <div className="ui radio checkbox">
+                <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Intermediate</label>
+              </div>
+            </div>
+            <div className="field">
+              <div className="ui radio checkbox">
+                <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Advanced</label>
+              </div>
+            </div>
+            <div className="field">
+              <div className="ui radio checkbox">
+                <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Proficient</label>
+              </div>
             </div>
           </div>
-          <div className="field">
-            <div className="ui radio checkbox">
-              <input type="radio" name="fruit" tabindex="0" className="hidden"/>
-                <label>Oranges</label>
+          <div className="grouped field">
+            <label>Kỹ năng</label>
+            <div className="field">
+              <div className="ui radio checkbox">
+                <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Speaking</label>
+              </div>
             </div>
-          </div>
-          <div className="field">
-            <div className="ui radio checkbox">
-              <input type="radio" name="fruit" tabindex="0" className="hidden"/>
-                <label>Pears</label>
+            <div className="field">
+              <div className="ui radio checkbox">
+                <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Listening</label>
+              </div>
             </div>
-          </div>
-          <div className="field">
-            <div className="ui radio checkbox">
-              <input type="radio" name="fruit" tabindex="0" className="hidden"/>
-                <label>Grapefruit</label>
+            <div className="field">
+              <div className="ui radio checkbox">
+                <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Wriring</label>
+              </div>
+            </div>
+            <div className="field">
+              <div className="ui radio checkbox">
+                <input type="radio" name="fruit" tabindex="0" className="hidden"/>
+                <label>Reading</label>
+              </div>
             </div>
           </div>
         </div>
+  
+        <div className="field">
+          <button className="button">Create</button>
+        </div>
+
       </div>
   )
 }

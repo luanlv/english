@@ -446,15 +446,30 @@ textarea {
   width: 98%;
 }
 
+.light-border-top{
+  border-top: 1px solid #e9eaed!important;
+}
+
 .light-border-right{
   border-right: 1px solid #e9eaed!important;
+}
+.border-left{
+  border-left: 1px solid rgba(0,0,0, 0.25)!important;
 }
 
 .border-right{
   border-right: 1px solid rgba(0,0,0, 0.25)!important;
 }
 .border-both{
-  border: 1px solid rgba(0,0,0, 0.3)!important;
+  border-left: 1px solid rgba(0,0,0, 0.25)!important;
+  border-right: 1px solid rgba(0,0,0, 0.25)!important;
+}
+.border-bottom{
+  border-bottom: 1px solid rgba(0,0,0, 0.25)!important;
+}
+
+.border-top{
+  border-top: 1px solid rgba(0,0,0, 0.25)!important;
 }
 
 .border-left-icon{
@@ -523,7 +538,7 @@ textarea {
 }
 
 .room-box, .room-user{
-  min-height: 500px;
+  min-height: 510px;
 }
 
 .fr{

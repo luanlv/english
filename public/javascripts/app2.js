@@ -309,8 +309,7 @@ var ChatRoom = {
                           }
                       }
                     
-            }, children: ["Create new room"]}, 
-            Create()
+            }, children: ["Create new room"]}
           ]}, 
           {tag: "table", attrs: {className:"ui orange table"}, children: [
             {tag: "thead", attrs: {}, children: [
@@ -337,7 +336,9 @@ var ChatRoom = {
               {tag: "td", attrs: {}, children: ["0"]}
             ]}
             ]}
-          ]}
+          ]}, 
+
+          Create()
         ]}, 
         {tag: "div", attrs: {className:"three wide column"}, children: ["right"]}
       ]}
@@ -348,47 +349,78 @@ var ChatRoom = {
 var Create = function(){
   return (
       {tag: "div", attrs: {className:"ui form fluid popup create-room"}, children: [
-        {tag: "div", attrs: {className:"three fields"}, children: [
+        {tag: "div", attrs: {className:"two fields"}, children: [
           {tag: "div", attrs: {className:"field"}, children: [
-            {tag: "label", attrs: {}, children: ["First name"]}, 
-            {tag: "input", attrs: {type:"text", placeholder:"First Name"}}
+            {tag: "label", attrs: {}, children: ["Tên phòng"]}, 
+            {tag: "input", attrs: {type:"text", placeholder:"Tên phòng"}}
           ]}, 
           {tag: "div", attrs: {className:"field"}, children: [
-            {tag: "label", attrs: {}, children: ["Middle name"]}, 
-            {tag: "input", attrs: {type:"text", placeholder:"Middle Name"}}
-          ]}, 
-          {tag: "div", attrs: {className:"field"}, children: [
-            {tag: "label", attrs: {}, children: ["Last name"]}, 
-            {tag: "input", attrs: {type:"text", placeholder:"Last Name"}}
+            {tag: "label", attrs: {}, children: ["Mô tả"]}, 
+            {tag: "input", attrs: {type:"text", placeholder:"Mô tả"}}
           ]}
         ]}, 
 
-        {tag: "div", attrs: {className:"grouped fields"}, children: [
-          {tag: "div", attrs: {className:"field"}, children: [
-            {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
-              {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
-                {tag: "label", attrs: {}, children: ["Apples"]}
+        {tag: "div", attrs: {className:"two fields"}, children: [
+          {tag: "div", attrs: {className:"grouped field"}, children: [
+            {tag: "label", attrs: {}, children: ["Level"]}, 
+            {tag: "div", attrs: {className:"field"}, children: [
+              {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+                {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Elementary"]}
+              ]}
+            ]}, 
+            {tag: "div", attrs: {className:"field"}, children: [
+              {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+                {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Intermediate"]}
+              ]}
+            ]}, 
+            {tag: "div", attrs: {className:"field"}, children: [
+              {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+                {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Advanced"]}
+              ]}
+            ]}, 
+            {tag: "div", attrs: {className:"field"}, children: [
+              {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+                {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Proficient"]}
+              ]}
             ]}
           ]}, 
-          {tag: "div", attrs: {className:"field"}, children: [
-            {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
-              {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
-                {tag: "label", attrs: {}, children: ["Oranges"]}
-            ]}
-          ]}, 
-          {tag: "div", attrs: {className:"field"}, children: [
-            {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
-              {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
-                {tag: "label", attrs: {}, children: ["Pears"]}
-            ]}
-          ]}, 
-          {tag: "div", attrs: {className:"field"}, children: [
-            {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
-              {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
-                {tag: "label", attrs: {}, children: ["Grapefruit"]}
+          {tag: "div", attrs: {className:"grouped field"}, children: [
+            {tag: "label", attrs: {}, children: ["Kỹ năng"]}, 
+            {tag: "div", attrs: {className:"field"}, children: [
+              {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+                {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Speaking"]}
+              ]}
+            ]}, 
+            {tag: "div", attrs: {className:"field"}, children: [
+              {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+                {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Listening"]}
+              ]}
+            ]}, 
+            {tag: "div", attrs: {className:"field"}, children: [
+              {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+                {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Wriring"]}
+              ]}
+            ]}, 
+            {tag: "div", attrs: {className:"field"}, children: [
+              {tag: "div", attrs: {className:"ui radio checkbox"}, children: [
+                {tag: "input", attrs: {type:"radio", name:"fruit", tabindex:"0", className:"hidden"}}, 
+                {tag: "label", attrs: {}, children: ["Reading"]}
+              ]}
             ]}
           ]}
+        ]}, 
+  
+        {tag: "div", attrs: {className:"field"}, children: [
+          {tag: "button", attrs: {className:"button"}, children: ["Create"]}
         ]}
+
       ]}
   )
 }
@@ -1066,11 +1098,15 @@ var Room = {
               ]}
             ]}, 
             {tag: "div", attrs: {className:"ui padded grid"}, children: [
-              {tag: "div", attrs: {className:"twelve wide teal column "}, children: [
-                {tag: "textarea", attrs: {name:"", id:"", rows:"2"}}
+              {tag: "div", attrs: {className:"twelve wide column light-border-right pad0"}, children: [
+                {tag: "div", attrs: {className:"ui form"}, children: [
+                  {tag: "div", attrs: {className:"field"}, children: [
+                    {tag: "textarea", attrs: {name:"", id:"", rows:"2"}}
+                  ]}
+                ]}
               ]}, 
-              {tag: "div", attrs: {className:"four wide grey column"}, children: [
-                {tag: "div", attrs: {}, children: ["Support"]}
+              {tag: "div", attrs: {className:"four wide column  light-border-top"}, children: [
+                {tag: "div", attrs: {}}
               ]}
             ]}
           ]}, 

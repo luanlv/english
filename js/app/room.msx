@@ -33,11 +33,15 @@ var Room = {
               </div>
             </div>
             <div className="ui padded grid">
-              <div className="twelve wide teal column ">
-                <textarea name="" id=""  rows="2"></textarea>
+              <div className="twelve wide column light-border-right pad0">
+                <div className="ui form">
+                  <div className="field">
+                    <textarea name="" id=""  rows="2"></textarea>
+                  </div>
+                </div>
               </div>
-              <div className="four wide grey column">
-                <div>Support</div>
+              <div className="four wide column  light-border-top">
+                <div></div>
               </div>
             </div>
           </div>
