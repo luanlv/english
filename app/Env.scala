@@ -36,6 +36,7 @@ final class Env(
 
       Env.site,   //
       Env.userMessage,   //
+      Env.chatRoom,   //
       //Env.tournament,
       //Env.lobby,
       Env.game,
@@ -92,5 +93,6 @@ object Env {
   def monitor = lila.monitor.Env.current
   def userMessage = lila.userMessage.Env.current
   def relation = lila.relation.Env.current
+  def chatRoom = lila.chatRoom.Env.current
 
 }

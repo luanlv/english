@@ -1,5 +1,5 @@
 html,body {
-  min-height: 3000px;
+  /*min-height: 1000px;*/
   height: 100%;
   width: 100%;
   margin: 0;
@@ -18,10 +18,17 @@ body{
   max-width: 960px;
 }
 
-
+#footer{
+  margin-top: 30px;
+  width: 100%;
+  min-height: 100px;
+  text-align: center;
+  color: black;
+  background: #2185D0;
+}
 
 #app{
-  min-height: 1000px;
+  /*min-height: 1000px;*/
   width: 960px;
   padding: 0px;
   margin-top: 47px;
@@ -326,6 +333,10 @@ textarea {
   width: 400px;
 }
 
+.mar0{
+  margin: 0!important;
+}
+
 .pad0{
   padding: 0!important;
 }
@@ -435,10 +446,13 @@ textarea {
   width: 98%;
 }
 
-.border-right{
-  border-right: 1px solid rgba(0,0,0, 0.3)!important;
+.light-border-right{
+  border-right: 1px solid #e9eaed!important;
 }
 
+.border-right{
+  border-right: 1px solid rgba(0,0,0, 0.25)!important;
+}
 .border-both{
   border: 1px solid rgba(0,0,0, 0.3)!important;
 }
@@ -452,14 +466,12 @@ textarea {
 }
 
 .main-content{
-  min-height: 1000px;
-  padding-left: 10px!important;
-  padding-right: 10px!important;
+  min-height: 600px;
 }
 
 .postContainer{
   padding: 5px;
-  border-top: 1px solid rgba(0,0,0, 0.3);
+  border-top: 1px solid #e9eaed;
   margin-top: 15px;
 }
 
@@ -508,4 +520,20 @@ textarea {
 .show-ping{
   width: 100px !important;
   text-align: center;
+}
+
+.room-box, .room-user{
+  min-height: 500px;
+}
+
+.fr{
+  float: right;
+}
+
+.fl{
+  float: left;
+}
+
+.room-box{
+  font-size: 13px !important;
 }

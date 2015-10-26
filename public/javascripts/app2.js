@@ -75,7 +75,7 @@ api.focusById = function(uid){
 };
 
 module.exports = api;
-},{"../ws/_wsCtrl.js":11}],2:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":13}],2:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -271,7 +271,7 @@ var Chat = {
 
 module.exports = Chat;
 
-},{"../ws/_wsCtrl.js":11,"./api.msx":1}],3:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":13,"./api.msx":1}],3:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -279,9 +279,6 @@ var api = require('./api.msx');
 var ChatRoom = {
   controller: function() {
     var ctrl = this;
-
-    setInterval(function(){rd.chatroom(function(){m.redraw()})}, 100)
-
     ctrl.param = m.prop(m.route.param("roomId")),
 
 
@@ -297,7 +294,6 @@ var ChatRoom = {
     rd.chatroom();
   },
   view: function(ctrl) {
-    console.log('redraw: chat')
     return (
       {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
         {tag: "div", attrs: {className:"eleven wide column main-left border-right"}, children: [
@@ -327,7 +323,9 @@ var ChatRoom = {
             ]}, 
             {tag: "tbody", attrs: {}, children: [
             {tag: "tr", attrs: {}, children: [
-              {tag: "td", attrs: {}, children: ["Room 1"]}, 
+              {tag: "td", attrs: {}, children: [{tag: "a", attrs: {href:"/chatroom/123", 
+                    config:m.route
+              }, children: ["Room 1"]}]}, 
               {tag: "td", attrs: {}, children: ["Beginer"]}, 
               {tag: "td", attrs: {}, children: ["Room for beginer"]}, 
               {tag: "td", attrs: {}, children: ["0"]}
@@ -396,7 +394,7 @@ var Create = function(){
 }
 
 module.exports = ChatRoom;
-},{"../ws/_wsCtrl.js":11,"./api.msx":1}],4:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":13,"./api.msx":1}],4:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var initData = {}
@@ -419,22 +417,24 @@ var Dashboard = {
     api.rd("dashBoard:" + redraw.dashboard);
     redraw.dashboard++;
     if(!ctrl.request.ready()) {
-      return m('div', "LOADINGGG !!!")
+      return (
+          {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: ["LOADING !!! (delay 1s)"]}
+      )
     } else {
-      return {tag: "div", attrs: {}, children: [
-        ctrl.request.data().data
-      ]}
+      return {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [ctrl.request.data().data]}
     }
   }
 };
 
 
 module.exports = Dashboard;
-},{"../ws/_wsCtrl.js":11,"./api.msx":1}],5:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":13,"./api.msx":1}],5:[function(require,module,exports){
 window.Nav = require('./nav.msx');
 window.Home = require('./home.msx');
 window.Dashboard = require('./dashboard.msx');
 window.ChatRoom = require('./chatroom.msx');
+window.Room = require('./room.msx');
+window.Footer = require('./footer.msx');
 
 window.route = function( sub ){
   return {
@@ -492,8 +492,11 @@ window.rd = {
   chatroom: function(callback){
     local(['chatroom', callback]).call()
   },
+  room: function(callback){
+    local(['room', callback]).call()
+  },
   all: function(callback){
-    local(["home", "dashboard", "nav", "app", "right"], callback).call()
+    local(["home", "dashboard", "nav", "app", "right", "chatroom", "room"], callback).call()
   }
 };
 
@@ -540,11 +543,32 @@ var Count = {
 
 window.initComponent = function() {
   m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
+  m.mount(document.getElementById('footer'), tenant('footer', window.Footer));
   //m.mount(document.getElementById('app'), tenant('all', window.Loading));
   //m.mount(document.getElementById('count'), Count);
   m.mount(document.getElementById('rightContainer'), tenant('right', window.Chat));
 }
-},{"./chat.msx":2,"./chatroom.msx":3,"./dashboard.msx":4,"./home.msx":6,"./nav.msx":10}],6:[function(require,module,exports){
+},{"./chat.msx":2,"./chatroom.msx":3,"./dashboard.msx":4,"./footer.msx":6,"./home.msx":7,"./nav.msx":11,"./room.msx":12}],6:[function(require,module,exports){
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var Footer = {
+  controller: function() {
+
+  },
+  view: function(ctrl) {
+    return (
+        {tag: "div", attrs: {className:""}, children: [
+          "FOOTER !"
+        ]}
+    )
+  }
+};
+
+
+module.exports = Footer;
+},{"../ws/_wsCtrl.js":13,"./api.msx":1}],7:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var div = [{id: "div 1", v: 1 ,
@@ -645,7 +669,7 @@ var Home = {
 };
 
 module.exports = Home;
-},{"../ws/_wsCtrl.js":11,"./api.msx":1}],7:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":13,"./api.msx":1}],8:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -735,7 +759,7 @@ var LoginButton = function(ctrl){ return(
 )}
 
 module.exports = LoginButton;
-},{"../../ws/_wsCtrl.js":11,".././api.msx":1}],8:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":13,".././api.msx":1}],9:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -816,7 +840,7 @@ var MessageButton = function(ctrl){ return (
 ) }
 
 module.exports = MessageButton;
-},{"../../ws/_wsCtrl.js":11,".././api.msx":1}],9:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":13,".././api.msx":1}],10:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -857,7 +881,7 @@ var UserButton = function(ctrl){ return (
 ) }
 
 module.exports = UserButton;
-},{"../../ws/_wsCtrl.js":11,".././api.msx":1}],10:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":13,".././api.msx":1}],11:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -1006,7 +1030,114 @@ var Ping = function(ctrl){
 }
 
 module.exports = Nav;
-},{"../ws/_wsCtrl.js":11,"./api.msx":1,"./menu_button/Login.msx":7,"./menu_button/Message.msx":8,"./menu_button/User.msx":9}],11:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":13,"./api.msx":1,"./menu_button/Login.msx":8,"./menu_button/Message.msx":9,"./menu_button/User.msx":10}],12:[function(require,module,exports){
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var Room = {
+  controller: function() {
+    var ctrl = this;
+    ctrl.param = m.prop(m.route.param("roomId"));
+
+    wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
+    var intervalRoom = setInterval(function(){
+      wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
+    }, 10000);
+    ctrl.onunload = function() {
+      wsCtrl.send(wsCtrl.sendData("unSub", {t: "room", v: ctrl.param()}));
+      clearInterval(intervalRoom)
+    };
+
+    rd.room();
+  },
+  view: function(ctrl) {
+    return (
+        {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [
+          {tag: "div", attrs: {className:"eleven wide column main-left border-right pad0 "}, children: [
+            {tag: "div", attrs: {className:"ui padded grid"}, children: [
+              {tag: "div", attrs: {className:"twelve wide column light-border-right"}, children: [
+                Comments()
+              ]}, 
+              {tag: "div", attrs: {className:"four wide column"}, children: [
+                {tag: "div", attrs: {className:"room-user"}, children: [
+                  {tag: "h5", attrs: {className:"ui dividing header"}, children: ["User online!"]}
+                ]}
+              ]}
+            ]}, 
+            {tag: "div", attrs: {className:"ui padded grid"}, children: [
+              {tag: "div", attrs: {className:"twelve wide teal column "}, children: [
+                {tag: "textarea", attrs: {name:"", id:"", rows:"2"}}
+              ]}, 
+              {tag: "div", attrs: {className:"four wide grey column"}, children: [
+                {tag: "div", attrs: {}, children: ["Support"]}
+              ]}
+            ]}
+          ]}, 
+          {tag: "div", attrs: {className:"three  wide column"}, children: ["right"]}
+        ]}
+    )
+  }
+};
+
+var Comments = function(){
+  return (
+      {tag: "div", attrs: {className:"ui comments room-box"}, children: [
+        {tag: "h5", attrs: {className:"ui dividing header"}, children: ["Comments"]}, 
+        {tag: "div", attrs: {className:"comment"}, children: [
+          {tag: "a", attrs: {className:"avatar"}, children: [
+            {tag: "img", attrs: {src:"/assets/avatar/1.jpg"}}
+          ]}, 
+          {tag: "div", attrs: {className:"content"}, children: [
+            {tag: "a", attrs: {className:"author"}, children: ["Matt"]}, 
+            {tag: "div", attrs: {className:" metadata fr"}, children: [
+              {tag: "span", attrs: {className:"date"}, children: ["5:42PM"]}
+            ]}, 
+            {tag: "div", attrs: {className:"text"}, children: [
+              "How artistic!"
+            ]}
+
+          ]}
+        ]}, 
+
+        {tag: "div", attrs: {className:"comment"}, children: [
+          {tag: "a", attrs: {className:"avatar"}, children: [
+            {tag: "img", attrs: {src:"/assets/avatar/2.jpg"}}
+          ]}, 
+          {tag: "div", attrs: {className:"content"}, children: [
+            {tag: "a", attrs: {className:"author"}, children: ["Matt"]}, 
+            {tag: "div", attrs: {className:" metadata fr"}, children: [
+              {tag: "span", attrs: {className:"date"}, children: ["5:42PM"]}
+            ]}, 
+            {tag: "div", attrs: {className:"text"}, children: [
+              "This has been very useful for my research. Thanks as well!"
+            ]}
+
+          ]}
+        ]}, 
+
+
+        {tag: "div", attrs: {className:"comment"}, children: [
+          {tag: "a", attrs: {className:"avatar"}, children: [
+            {tag: "img", attrs: {src:"/assets/avatar/3.jpg"}}
+          ]}, 
+          {tag: "div", attrs: {className:"content"}, children: [
+            {tag: "a", attrs: {className:"author"}, children: ["Matt"]}, 
+            {tag: "div", attrs: {className:"metadata fr"}, children: [
+              {tag: "span", attrs: {className:"date"}, children: ["5:42PM"]}
+            ]}, 
+            {tag: "div", attrs: {className:"text"}, children: [
+              "Dude, this is awesome. Thanks so much"
+            ]}
+
+          ]}
+        ]}
+      ]}
+  )
+}
+
+module.exports = Room;
+},{"../ws/_wsCtrl.js":13,"./api.msx":1}],13:[function(require,module,exports){
 var wsCtrl = {}
 wsCtrl.userId = document.body.getAttribute("id");
 var userId = wsCtrl.userId;

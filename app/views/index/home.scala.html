@@ -20,6 +20,7 @@
 	<div class="fixed body">
 		<div id="app"> </div>
 	</div>
+	<div id="footer"></div>
 
 	<div id="rightContainer"></div>
 
@@ -41,7 +42,8 @@
 		m.route(document.getElementById('app'), "/", {
 			"/": tenant('home', route(Home)),
 			"/dashboard": tenant('dashboard', route(Dashboard)),
-			"/chatroom?:roomId": tenant('chatroom', route(ChatRoom))
+			"/chatroom": tenant('chatroom', route(ChatRoom)),
+			"/chatroom/:roomId": tenant('room', route(Room)),
 		});
 		initComponent();
 	</script>
@@ -54,7 +56,6 @@
 
 			ga('create', 'UA-69170503-1', 'auto');
 			ga('send', 'pageview');
-
 		</script>
 
 	</body>

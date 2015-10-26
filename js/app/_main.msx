@@ -2,6 +2,8 @@ window.Nav = require('./nav.msx');
 window.Home = require('./home.msx');
 window.Dashboard = require('./dashboard.msx');
 window.ChatRoom = require('./chatroom.msx');
+window.Room = require('./room.msx');
+window.Footer = require('./footer.msx');
 
 window.route = function( sub ){
   return {
@@ -59,8 +61,11 @@ window.rd = {
   chatroom: function(callback){
     local(['chatroom', callback]).call()
   },
+  room: function(callback){
+    local(['room', callback]).call()
+  },
   all: function(callback){
-    local(["home", "dashboard", "nav", "app", "right"], callback).call()
+    local(["home", "dashboard", "nav", "app", "right", "chatroom", "room"], callback).call()
   }
 };
 
@@ -107,6 +112,7 @@ var Count = {
 
 window.initComponent = function() {
   m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
+  m.mount(document.getElementById('footer'), tenant('footer', window.Footer));
   //m.mount(document.getElementById('app'), tenant('all', window.Loading));
   //m.mount(document.getElementById('count'), Count);
   m.mount(document.getElementById('rightContainer'), tenant('right', window.Chat));

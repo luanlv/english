@@ -1,0 +1,106 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var Room = {
+  controller: function() {
+    var ctrl = this;
+    ctrl.param = m.prop(m.route.param("roomId"));
+
+    wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
+    var intervalRoom = setInterval(function(){
+      wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
+    }, 10000);
+    ctrl.onunload = function() {
+      wsCtrl.send(wsCtrl.sendData("unSub", {t: "room", v: ctrl.param()}));
+      clearInterval(intervalRoom)
+    };
+
+    rd.room();
+  },
+  view: function(ctrl) {
+    return (
+        <div className="ui grid main-content sha2 ">
+          <div className="eleven wide column main-left border-right pad0 ">
+            <div className="ui padded grid">
+              <div className="twelve wide column light-border-right">
+                {Comments()}
+              </div>
+              <div className="four wide column">
+                <div className="room-user">
+                  <h5 className="ui dividing header">User online!</h5>
+                </div>
+              </div>
+            </div>
+            <div className="ui padded grid">
+              <div className="twelve wide teal column ">
+                <textarea name="" id=""  rows="2"></textarea>
+              </div>
+              <div className="four wide grey column">
+                <div>Support</div>
+              </div>
+            </div>
+          </div>
+          <div className="three  wide column">right</div>
+        </div>
+    )
+  }
+};
+
+var Comments = function(){
+  return (
+      <div className="ui comments room-box">
+        <h5 className="ui dividing header">Comments</h5>
+        <div className="comment">
+          <a className="avatar">
+            <img src="/assets/avatar/1.jpg"/>
+          </a>
+          <div className="content">
+            <a className="author">Matt</a>
+            <div className=" metadata fr">
+              <span className="date">5:42PM</span>
+            </div>
+            <div className="text">
+              How artistic!
+            </div>
+
+          </div>
+        </div>
+
+        <div className="comment">
+          <a className="avatar">
+            <img src="/assets/avatar/2.jpg"/>
+          </a>
+          <div className="content">
+            <a className="author">Matt</a>
+            <div className=" metadata fr">
+              <span className="date">5:42PM</span>
+            </div>
+            <div className="text">
+              This has been very useful for my research. Thanks as well!
+            </div>
+
+          </div>
+        </div>
+
+
+        <div className="comment">
+          <a className="avatar">
+            <img src="/assets/avatar/3.jpg"/>
+          </a>
+          <div className="content">
+            <a className="author">Matt</a>
+            <div className="metadata fr">
+              <span className="date">5:42PM</span>
+            </div>
+            <div className="text">
+              Dude, this is awesome. Thanks so much
+            </div>
+
+          </div>
+        </div>
+      </div>
+  )
+}
+
+module.exports = Room;

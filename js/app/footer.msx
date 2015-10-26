@@ -1,0 +1,19 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var Footer = {
+  controller: function() {
+
+  },
+  view: function(ctrl) {
+    return (
+        <div className="">
+          FOOTER !
+        </div>
+    )
+  }
+};
+
+
+module.exports = Footer;

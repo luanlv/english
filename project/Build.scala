@@ -48,7 +48,7 @@ object ApplicationBuild extends Build {
   lazy val modules = Seq(
     common, db, hub, memo, user, image,
     security, i18n, notification, pref, game,
-    socket, monitor, site, userMessage, socketMessage, relation)
+    socket, monitor, site, userMessage, chatRoom, relation)
 
   lazy val moduleRefs = modules map projectToRef
   lazy val moduleCPDeps = moduleRefs map { new sbt.ClasspathDependency(_, None) }
@@ -85,9 +85,10 @@ object ApplicationBuild extends Build {
     libraryDependencies ++= provided(play.api, play.test, RM, PRM)
   )
 
-  lazy val socketMessage = project("socketMessage", Seq(common, db, memo, hub)).settings(
+  lazy val chatRoom = project("chatRoom", Seq(common, db, memo, hub, user)).settings(
     libraryDependencies ++= provided(play.api, play.test, RM, PRM)
   )
+
 
   lazy val security = project("security", Seq(common, hub, db, user)).settings(
     libraryDependencies ++= provided(play.api, RM, PRM, maxmind, hasher)

@@ -19,7 +19,7 @@ import reactivemongo.bson.BSONDocument
 private[userMessage] final class UserMessageActor(
                                                getOnlineUserIds: () => Set[String],
                                                lightUser: String => Option[LightUser],
-                                               api: MessageApi) extends Actor {
+                                               api: Api) extends Actor {
 
   private val bus = context.system.lilaBus
 

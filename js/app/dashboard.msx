@@ -20,11 +20,11 @@ var Dashboard = {
     api.rd("dashBoard:" + redraw.dashboard);
     redraw.dashboard++;
     if(!ctrl.request.ready()) {
-      return m('div', "LOADINGGG !!!")
+      return (
+          <div className="ui grid main-content sha2 ">LOADING !!! (delay 1s)</div>
+      )
     } else {
-      return <div>
-        {ctrl.request.data().data}
-      </div>
+      return <div className="ui grid main-content sha2 ">{ctrl.request.data().data}</div>
     }
   }
 };

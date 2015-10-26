@@ -5,9 +5,6 @@ var api = require('./api.msx');
 var ChatRoom = {
   controller: function() {
     var ctrl = this;
-
-    setInterval(function(){rd.chatroom(function(){m.redraw()})}, 100)
-
     ctrl.param = m.prop(m.route.param("roomId")),
 
 
@@ -23,7 +20,6 @@ var ChatRoom = {
     rd.chatroom();
   },
   view: function(ctrl) {
-    console.log('redraw: chat')
     return (
       <div className="ui grid main-content sha2">
         <div className="eleven wide column main-left border-right">
@@ -53,7 +49,9 @@ var ChatRoom = {
             </thead>
             <tbody>
             <tr>
-              <td>Room 1</td>
+              <td><a href="/chatroom/123"
+                    config={m.route}
+              >Room 1</a></td>
               <td>Beginer</td>
               <td>Room for beginer</td>
               <td>0</td>

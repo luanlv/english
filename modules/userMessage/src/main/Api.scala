@@ -12,17 +12,17 @@ import lila.hub.actorApi.relation.ReloadOnlineFriends
 import lila.hub.actorApi.timeline.{ Propagate, Follow => FollowUser }
 //import lila.usrMessage.MessageRepo
 
-final class MessageApi(
-                           //cached: Cached,
+final class Api(
+                           cached: Cached,
                            actor: ActorSelection,
                            bus: lila.common.Bus) {
 
   def findLastMesVersion(chatId: String) = {
-    Env.current.cached.chatVersion(chatId)
+    cached.chatVersion(chatId)
   }
 
   def findLastesUserMesVersion(userId: String) = {
-    Env.current.cached.userChatVersion(userId)
+    cached.userChatVersion(userId)
   }
 
   def insert(mv: Int, fromId: LightUser, toId: LightUser, mes: String, time: DateTime) = {
