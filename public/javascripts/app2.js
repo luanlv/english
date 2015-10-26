@@ -871,6 +871,14 @@ var Nav = {
     var ctrl = this;
     ctrl.ping = m.prop(wsCtrl.ping);
     ctrl.userNumber = m.prop(0);
+
+    var initPing = setInterval(function(){
+      if(wsCtrl.ping) {
+        clearInterval(initPing);
+        rd.nav(function(){ctrl.ping(wsCtrl.ping);ctrl.userNumber(wsCtrl.total); m.redraw();})
+      }
+    }, 200);
+
     setInterval(function(){
       rd.nav(function(){ctrl.ping(wsCtrl.ping);ctrl.userNumber(wsCtrl.total); m.redraw();})
     }, 1000);
@@ -1081,7 +1089,6 @@ function initWs(){
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
     wsCtrl.ping = 1;
-    rd.nav(function(){m.redraw()})
   };
 
   ws.onmessage = function (e) {
@@ -1173,7 +1180,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
-  //console.log("run calc: " + wsCtrl.ping);
+  console.log("run calc: " + wsCtrl.ping);
 }
 
 var calcTimeOut;

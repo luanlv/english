@@ -34,15 +34,13 @@ object Handler {
           case Some(user) => {
             (hub.actor.userMessage ? PingVersion(user)) foreach {
               case v: Int => socket ! Ping(uid, v)
-              case _ => println("unhander !!!")
+              case _ => //println("unhander !!!")
             }
           }
         }
       }
 
       case("sub", o) => {
-        println(o)
-        println(((o obj "d").get str "t").get)
         ((o obj "d").get str "t").get match {
           case "chatrooms" => {
             socket ! Sub(uid, "chatrooms")
@@ -52,7 +50,6 @@ object Handler {
       }
 
       case("unSub", o) => {
-        println(o)
         ((o obj "d").get str "t").get match {
           case "chatrooms" => {
             socket ! UnSub(uid, "chatrooms")
@@ -69,7 +66,7 @@ object Handler {
       case ("gn", o) => userId foreach { u =>
         val id = (o\"d").as[String]
         (hub.actor.userMessage ? GetName(id)) foreach {
-          case "error" => println("errror:" +id)
+          case "error" => //println("errror:" +id)
           case name:String  => socket ! SendName(uid, id, name)
         }
       }
@@ -82,7 +79,7 @@ object Handler {
             case dataFu: Future[List[JsValue]] => dataFu.map{
               data => socket ! SendMissingMes(uid, f, t, data)
             }
-            case _ => println("gmm from " + userId + " error!")
+            case _ => //println("gmm from " + userId + " error!")
           }
         }
       }
@@ -102,7 +99,7 @@ object Handler {
               case data => {
                 socket ! SendInitMes(uid, data)
               }
-              case _ => println("init_chat from " + userId + " error!")
+              case _ => //println("init_chat from " + userId + " error!")
             }
           }
         }
@@ -113,7 +110,7 @@ object Handler {
           (hub.actor.userMessage ? InitNotify(userId)) foreach {
             case dataFu: Future[List[JsValue]] => dataFu.map{
               case data => socket ! SendInitNotify(uid, data)
-              case _ => println("gnm from" + userId + " error!")
+              case _ => //println("gnm from" + userId + " error!")
             }
 
           }

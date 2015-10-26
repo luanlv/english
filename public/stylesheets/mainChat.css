@@ -4,10 +4,12 @@ html,body {
   width: 100%;
   margin: 0;
   padding: 0;
+  background: #e9eaed!important;
 }
 
 body{
   overflow-y: scroll!important;
+
 }
 
 .fixed.body {
@@ -18,12 +20,14 @@ body{
 
 #app{
   min-height: 1000px;
+  padding: 0px;
   margin-top: 47px;
   padding-top: 10px;
 }
 
 .main-content{
-  padding: 0;
+  background: white;
+  padding: 0!important;
 }
 
 .config{

@@ -123,11 +123,11 @@ private[userMessage] final class UserMessageActor(
                 Env.current.cached.setNewVersion("notify:" + toId, newNotify)
                 bus.publish(SendTo(toId, "n", newNotify), 'users)
               } else {
-                println("not update!")
+                //println("not update!")
               }
 
             }
-            case error         => println("save mes ERROR!")
+            case error         => //println("save mes ERROR!")
           }
         }
       }

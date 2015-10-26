@@ -80,7 +80,6 @@ function initWs(){
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
     wsCtrl.ping = 1;
-    rd.nav(function(){m.redraw()})
   };
 
   ws.onmessage = function (e) {
@@ -172,7 +171,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
-  //console.log("run calc: " + wsCtrl.ping);
+  console.log("run calc: " + wsCtrl.ping);
 }
 
 var calcTimeOut;

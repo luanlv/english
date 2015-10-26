@@ -14,7 +14,7 @@ object Dependencies {
     val awesomepom = "awesomepom" at "https://raw.github.com/jibs/maven-repo-scala/master"
     val sprayRepo = "spray repo" at "http://repo.spray.io"
     val roundeights = "RoundEights" at "http://maven.spikemark.net/roundeights"
-    val prismic = "Prismic.io kits" at "https://s3.amazonaws.com/prismic-maven-kits/repository/maven/"
+    //val prismic = "Prismic.io kits" at "https://s3.amazonaws.com/prismic-maven-kits/repository/maven/"
 
     val commons = Seq(
       sonatypeS,
@@ -22,7 +22,7 @@ object Dependencies {
       awesomepom,
       typesafe,
       roundeights,
-      prismic,
+      //prismic,
       t2v, jgitMaven, sprayRepo)
   }
 

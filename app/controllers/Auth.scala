@@ -32,7 +32,6 @@ object Auth extends LilaController {
 
   private def authenticateUser(u: UserModel)(implicit ctx: Context) = {
     implicit val req = ctx.req
-    println("run authenticateUser ====================: " + u.id)
     u.ipBan.fold(
       Env.security.firewall.blockIp(req.remoteAddress) inject BadRequest("blocked by firewall"),
       api.saveAuthentication(u.id, ctx.mobileApiVersion) flatMap { sessionId =>
@@ -43,11 +42,9 @@ object Auth extends LilaController {
           api = _ => mobileUserOk(u)
         ) map {
           _ withCookies {
-            val x = LilaCookie.withSession { session =>
+            LilaCookie.withSession { session =>
               session + ("sessionId" -> sessionId) - api.AccessUri
             }
-            println(x.toString)
-            x
             //Cookie("PLAY_SESSION","9d9007c3e2b1b2e4b577f9b6cc4e793328772b89-sessionId=CjNUzMDIuZ1B",Some(86400),"/",Some("localhost:9000"),false,false)
           }
         }
@@ -78,7 +75,6 @@ object Auth extends LilaController {
       implicit val req = ctx.body
       api.loginForm.bindFromRequest.fold(
         err => {
-          println("case Error authenticate =====================")
           negotiate(
             html = Unauthorized(html.auth.login(err, get("referrer"))).fuccess,
             api = _ => Unauthorized(err.errorsAsJson).fuccess

@@ -11,6 +11,14 @@ var Nav = {
     var ctrl = this;
     ctrl.ping = m.prop(wsCtrl.ping);
     ctrl.userNumber = m.prop(0);
+
+    var initPing = setInterval(function(){
+      if(wsCtrl.ping) {
+        clearInterval(initPing);
+        rd.nav(function(){ctrl.ping(wsCtrl.ping);ctrl.userNumber(wsCtrl.total); m.redraw();})
+      }
+    }, 200);
+
     setInterval(function(){
       rd.nav(function(){ctrl.ping(wsCtrl.ping);ctrl.userNumber(wsCtrl.total); m.redraw();})
     }, 1000);
