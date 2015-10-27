@@ -23,20 +23,14 @@ private[security] final class Api(firewall: Firewall, tor: Tor) {
     if (tor isExitNode req.remoteAddress) fufail(Api.AuthFromTorExitNode)
     else UserRepo mustConfirmEmail userId flatMap {
       case true => {
-        println("case true saveAuthentication:=============: " + userId)
         fufail(Api MustConfirmEmail userId)
       }
       case false =>
-        println("case false saveAuthentication:=============: " + userId)
         val sessionId = Random nextStringUppercase 12
         println("sessionId saveAuthentication:=============: " + sessionId)
-        val x = Store.save(
+        Store.save(
           sessionId, userId, req, apiVersion, tor isExitNode req.remoteAddress
         ) inject sessionId
-        x map {
-          s => println("sessionId saveAuthentication:=============: " + s)
-        }
-        x
     }
 
   // blocking function, required by Play2 form
@@ -90,7 +84,6 @@ private[security] final class Api(firewall: Firewall, tor: Tor) {
 }
 
 object Api {
-
   case object AuthFromTorExitNode extends Exception
   case class MustConfirmEmail(userId: String) extends Exception
 }

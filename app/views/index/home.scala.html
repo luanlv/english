@@ -3,11 +3,9 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
 		<meta name="fragment" content="!">
 		<meta charset="UTF-8">
 		<title>Demo</title>
-		@cssTag("mainChat.css")
 		@views.html.index.other.spinner()
 	</head>
 
@@ -33,21 +31,35 @@
 
 	@jsTag("head.load.min.js")
 	<script>
-			head.load(
-				"/assets/javascripts/mithril.js?v=3",
-				"/assets/javascripts/vendor/jquery.min.js",
-				"/assets/semantic/semantic.min.js?v=3",
-				"/assets/javascripts/jquery.textarea_autosize.js?v=3",
-				"/assets/javascripts/attrchange.js?v=3",
-				"/assets/javascripts/main.js?v=3",
-				"/assets/javascripts/app2.js?v=3",
-				"/assets/semantic/semantic.min.css?v=3",
-				function() {
-					$('.loaderWr').remove();
-					m.route.mode = "pathname";
-					initRoute();
-					initComponent();
-				});
+
+		  head.load(
+			  "/assets/stylesheets/mainChat.css?v=3",
+			  "/assets/semantic/semantic.min.css?v=3");
+
+			head.load("/assets/javascripts/vendor/jquery.min.js")
+				.js("/assets/semantic/semantic.min.js?v=3")
+				.js("/assets/javascripts/jquery.textarea_autosize.js?v=3")
+				.js("/assets/javascripts/attrchange.js?v=3")
+				.js("/assets/javascripts/mithril.js?v=3")
+				.js("/assets/javascripts/main.js?v=3")
+				.js({app: "/assets/javascripts/app2.js?v=3"})
+			head.ready('app', function() {
+				  var body = $(document.body)
+				  var oldColor = body.css('color');
+				  console.log(oldColor)
+				  var f1 = function(){
+					  if(typeof(initRoute) == "function" && body.css('color') != 'rgb(0, 0, 0)'){
+						  initRoute();
+						  initComponent();
+						  $('.loaderWr').remove();
+					  } else {
+						  setTimeout(f1, 10)
+					  }
+				  };
+					f1()
+
+			});
+
 	</script>
 
 	@*<script >*@

@@ -1158,3 +1158,5 @@ var m = (function app(window, undefined) {
 if (typeof module != "undefined" && module !== null && module.exports) module.exports = m;
 else if (typeof define === "function" && define.amd) define(function() {return m});
 
+m.route.mode = "pathname";
+console.log('mithril.js ok ! ' + Date.now())
