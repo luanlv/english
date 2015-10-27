@@ -1086,7 +1086,7 @@ var Room = {
   view: function(ctrl) {
     return (
         {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [
-          {tag: "div", attrs: {className:"eleven wide column main-left border-right pad0 "}, children: [
+          {tag: "div", attrs: {className:"eleven wide column room-chat border-right pad0 "}, children: [
             {tag: "div", attrs: {className:"ui padded grid"}, children: [
               {tag: "div", attrs: {className:"twelve wide column light-border-right"}, children: [
                 Comments()
@@ -1097,15 +1097,24 @@ var Room = {
                 ]}
               ]}
             ]}, 
-            {tag: "div", attrs: {className:"ui padded grid"}, children: [
-              {tag: "div", attrs: {className:"twelve wide column light-border-right pad0"}, children: [
-                {tag: "div", attrs: {className:"ui form"}, children: [
-                  {tag: "div", attrs: {className:"field"}, children: [
-                    {tag: "textarea", attrs: {name:"", id:"", rows:"2"}}
+            {tag: "div", attrs: {className:"ui padded grid "}, children: [
+              {tag: "div", attrs: {className:"twelve wide column light-border-right"}, children: [
+                {tag: "div", attrs: {class:"ui divider"}}, 
+                {tag: "div", attrs: {className:"ui comments mar0"}, children: [
+                  {tag: "div", attrs: {className:"comment"}, children: [
+                    {tag: "a", attrs: {className:"avatar"}, children: [
+                      {tag: "img", attrs: {src:"/assets/avatar/4.jpg"}}
+                    ]}, 
+                    {tag: "div", attrs: {className:"ui form content"}, children: [
+                      {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
+                        {tag: "textarea", attrs: {name:"", id:"", rows:"1", placeholder:"Click here to type a chat message"}}
+                      ]}
+                    ]}
                   ]}
                 ]}
               ]}, 
-              {tag: "div", attrs: {className:"four wide column  light-border-top"}, children: [
+              {tag: "div", attrs: {className:"four wide column "}, children: [
+                {tag: "div", attrs: {class:"ui divider "}}, 
                 {tag: "div", attrs: {}}
               ]}
             ]}
@@ -1143,9 +1152,10 @@ var Comments = function(){
           {tag: "div", attrs: {className:"content"}, children: [
             {tag: "a", attrs: {className:"author"}, children: ["Matt"]}, 
             {tag: "div", attrs: {className:" metadata fr"}, children: [
-              {tag: "span", attrs: {className:"date"}, children: ["5:42PM"]}
+              {tag: "span", attrs: {className:"date"}, children: ["5:44PM"]}
             ]}, 
             {tag: "div", attrs: {className:"text"}, children: [
+              "This has been very useful for my research. Thanks as well! ", {tag: "br", attrs: {}}, 
               "This has been very useful for my research. Thanks as well!"
             ]}
 
@@ -1158,9 +1168,9 @@ var Comments = function(){
             {tag: "img", attrs: {src:"/assets/avatar/3.jpg"}}
           ]}, 
           {tag: "div", attrs: {className:"content"}, children: [
-            {tag: "a", attrs: {className:"author"}, children: ["Matt"]}, 
+            {tag: "a", attrs: {className:"author"}, children: ["John"]}, 
             {tag: "div", attrs: {className:"metadata fr"}, children: [
-              {tag: "span", attrs: {className:"date"}, children: ["5:42PM"]}
+              {tag: "span", attrs: {className:"date"}, children: ["5:45PM"]}
             ]}, 
             {tag: "div", attrs: {className:"text"}, children: [
               "Dude, this is awesome. Thanks so much"

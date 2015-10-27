@@ -18,6 +18,17 @@ body{
   max-width: 960px;
 }
 
+input:focus::-webkit-input-placeholder { color:transparent!important; }
+input:focus:-moz-placeholder { color:transparent!important; } /* FF 4-18 */
+input:focus::-moz-placeholder { color:transparent!important; } /* FF 19+ */
+input:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ */
+
+textarea:focus::-webkit-input-placeholder { color:transparent!important; }
+textarea:focus:-moz-placeholder { color:transparent!important; } /* FF 4-18 */
+textarea:focus::-moz-placeholder { color:transparent!important; } /* FF 19+ */
+textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ */
+
+
 #footer{
   margin-top: 30px;
   width: 100%;
@@ -82,6 +93,12 @@ body{
   margin: 5px;
   padding: 5px;
   background: lightblue;
+  overflow: auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.room-box text {
   overflow: auto;
   word-wrap: break-word;
   white-space: pre-wrap;
@@ -551,4 +568,8 @@ textarea {
 
 .room-box{
   font-size: 13px !important;
+}
+
+.room-chat textarea{
+  border: none!important;
 }

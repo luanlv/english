@@ -21,7 +21,7 @@ var Room = {
   view: function(ctrl) {
     return (
         <div className="ui grid main-content sha2 ">
-          <div className="eleven wide column main-left border-right pad0 ">
+          <div className="eleven wide column room-chat border-right pad0 ">
             <div className="ui padded grid">
               <div className="twelve wide column light-border-right">
                 {Comments()}
@@ -32,15 +32,24 @@ var Room = {
                 </div>
               </div>
             </div>
-            <div className="ui padded grid">
-              <div className="twelve wide column light-border-right pad0">
-                <div className="ui form">
-                  <div className="field">
-                    <textarea name="" id=""  rows="2"></textarea>
+            <div className="ui padded grid ">
+              <div className="twelve wide column light-border-right">
+                <div class="ui divider"></div>
+                <div className="ui comments mar0">
+                  <div className="comment">
+                    <a className="avatar">
+                      <img src="/assets/avatar/4.jpg"/>
+                    </a>
+                    <div className="ui form content">
+                      <div className="field" style="display:inline">
+                        <textarea name="" id="" rows="1" placeholder="Click here to type a chat message"></textarea>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="four wide column  light-border-top">
+              <div className="four wide column ">
+                <div class="ui divider "></div>
                 <div></div>
               </div>
             </div>
@@ -78,9 +87,10 @@ var Comments = function(){
           <div className="content">
             <a className="author">Matt</a>
             <div className=" metadata fr">
-              <span className="date">5:42PM</span>
+              <span className="date">5:44PM</span>
             </div>
             <div className="text">
+              This has been very useful for my research. Thanks as well! <br/>
               This has been very useful for my research. Thanks as well!
             </div>
 
@@ -93,9 +103,9 @@ var Comments = function(){
             <img src="/assets/avatar/3.jpg"/>
           </a>
           <div className="content">
-            <a className="author">Matt</a>
+            <a className="author">John</a>
             <div className="metadata fr">
-              <span className="date">5:42PM</span>
+              <span className="date">5:45PM</span>
             </div>
             <div className="text">
               Dude, this is awesome. Thanks so much
