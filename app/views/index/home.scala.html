@@ -8,6 +8,7 @@
 		<meta charset="UTF-8">
 		<title>Demo</title>
 		@cssTag("mainChat.css")
+		@views.html.index.other.spinner()
 	</head>
 
 	<body
@@ -15,38 +16,43 @@
 		name="@ctx.username.getOrElse("")"
 		mv = "@mVersion(ctx.userId)"
 	>
-		<div id="nav"> </div>
+	<div class="loaderWr">
+		<div class="loaderPos">
+			<div class="ball-loader">
+	      Loading…
+			</div>
+		</div>
+	</div>
+	<div id="nav"> </div>
 	<div id="count"></div>
 	<div class="fixed body">
 		<div id="app"> </div>
 	</div>
 	<div id="footer"></div>
-
 	<div id="rightContainer"></div>
 
-  @cssAt("semantic/semantic.min.css")
-	@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.css">*@
-	<script type="text/javascript"></script>
-	@jsTag("mithril.js")
-	@*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>*@
-	@jQueryTag
-	@*<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>*@
-	@jsAt("semantic/semantic.min.js")
-	@jsTag("jquery.textarea_autosize.js")
-	@jsTag("attrchange.js")
-	@jsTag("main.js")
-	@jsTag("app2.js")
-
-	<script >
-		m.route.mode = "pathname";
-		m.route(document.getElementById('app'), "/", {
-			"/": tenant('home', route(Home)),
-			"/dashboard": tenant('dashboard', route(Dashboard)),
-			"/chatroom": tenant('chatroom', route(ChatRoom)),
-			"/chatroom/:roomId": tenant('room', route(Room)),
-		});
-		initComponent();
+	@jsTag("head.load.min.js")
+	<script>
+			head.load(
+				"/assets/javascripts/mithril.js?v=3",
+				"/assets/javascripts/vendor/jquery.min.js",
+				"/assets/semantic/semantic.min.js?v=3",
+				"/assets/javascripts/jquery.textarea_autosize.js?v=3",
+				"/assets/javascripts/attrchange.js?v=3",
+				"/assets/javascripts/main.js?v=3",
+				"/assets/javascripts/app2.js?v=3",
+				"/assets/semantic/semantic.min.css?v=3",
+				function() {
+					$('.loaderWr').remove();
+					m.route.mode = "pathname";
+					initRoute();
+					initComponent();
+				});
 	</script>
+
+	@*<script >*@
+
+	@*</script>*@
 
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

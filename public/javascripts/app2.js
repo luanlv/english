@@ -461,12 +461,12 @@ var Dashboard = {
 
 module.exports = Dashboard;
 },{"../ws/_wsCtrl.js":13,"./api.msx":1}],5:[function(require,module,exports){
-window.Nav = require('./nav.msx');
-window.Home = require('./home.msx');
-window.Dashboard = require('./dashboard.msx');
-window.ChatRoom = require('./chatroom.msx');
-window.Room = require('./room.msx');
-window.Footer = require('./footer.msx');
+Nav = require('./nav.msx');
+Home = require('./home.msx');
+Dashboard = require('./dashboard.msx');
+ChatRoom = require('./chatroom.msx');
+Room = require('./room.msx');
+Footer = require('./footer.msx');
 
 window.route = function( sub ){
   return {
@@ -572,13 +572,19 @@ var Count = {
   }
 };
 
+window.initRoute = function(){
+  m.route(document.getElementById('app'), "/", {
+    "/": tenant('home', route(Home)),
+    "/dashboard": tenant('dashboard', route(Dashboard)),
+    "/chatroom": tenant('chatroom', route(ChatRoom)),
+    "/chatroom/:roomId": tenant('room', route(Room)),
+  });
+};
 
 window.initComponent = function() {
-  m.mount(document.getElementById('nav'), tenant('nav', window.Nav));
-  m.mount(document.getElementById('footer'), tenant('footer', window.Footer));
-  //m.mount(document.getElementById('app'), tenant('all', window.Loading));
-  //m.mount(document.getElementById('count'), Count);
-  m.mount(document.getElementById('rightContainer'), tenant('right', window.Chat));
+  m.mount(document.getElementById('nav'), tenant('nav', Nav));
+  m.mount(document.getElementById('footer'), tenant('footer', Footer));
+  m.mount(document.getElementById('rightContainer'), tenant('right', Chat));
 }
 },{"./chat.msx":2,"./chatroom.msx":3,"./dashboard.msx":4,"./footer.msx":6,"./home.msx":7,"./nav.msx":11,"./room.msx":12}],6:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
@@ -591,7 +597,7 @@ var Footer = {
   },
   view: function(ctrl) {
     return (
-        {tag: "div", attrs: {className:""}, children: [
+        {tag: "div", attrs: {className:"footer"}, children: [
           "FOOTER !"
         ]}
     )

@@ -32,18 +32,23 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
 #footer{
   margin-top: 30px;
   width: 100%;
+
+
+}
+.footer{
+  width: 100%;
   min-height: 100px;
-  text-align: center;
   color: black;
+  text-align: center;
   background: #2185D0;
 }
 
 #app{
   /*min-height: 1000px;*/
+  z-index: 1;
   width: 960px;
-  padding: 0px;
+  padding: 10px 0 0 0;
   margin-top: 47px;
-  padding-top: 10px;
 }
 
 .main-content{
@@ -566,10 +571,13 @@ textarea {
   float: left;
 }
 
-.room-box{
-  font-size: 13px !important;
+.room-chat{
+  font-size: 13dpx !important;
 }
 
 .room-chat textarea{
+  font-size: 13px !important;
   border: none!important;
+  padding-left: 0!important;
+  padding-right: 0!important;
 }
