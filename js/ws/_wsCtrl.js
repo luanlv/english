@@ -73,7 +73,7 @@ function initWs(){
   ws.onopen = function(){
     console.log('WebSocket ok');
     initReconnect();
-    console.log("prev Ping:" + wsCtrl.ping)
+    //console.log("prev Ping:" + wsCtrl.ping)
     wsCtrl.ping = 0;
     send(pingData());
     prevTime = Date.now();

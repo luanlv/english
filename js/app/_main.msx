@@ -116,6 +116,7 @@ window.initRoute = function(){
     "/chatroom": tenant('chatroom', route(ChatRoom)),
     "/chatroom/:roomId": tenant('room', route(Room)),
   });
+  $('.loaderWr').remove();
 };
 
 window.initComponent = function() {

@@ -13,22 +13,26 @@
 		id="@ctx.userId.getOrElse("")"
 		name="@ctx.username.getOrElse("")"
 		mv = "@mVersion(ctx.userId)"
+		style="background: #e8eaed"
 	>
 	<div class="loaderWr">
 		<div class="loaderPos">
-			<div class="ball-loader">
-	      Loading…
+			<div class="spinner">
+				<div class="rect1"></div>
+				<div class="rect2"></div>
+				<div class="rect3"></div>
+				<div class="rect4"></div>
+				<div class="rect5"></div>
 			</div>
 		</div>
 	</div>
 	<div id="nav"> </div>
 	<div id="count"></div>
-	<div class="fixed body">
-		<div id="app"> </div>
-	</div>
+	<div id="app"> </div>
 	<div id="footer"></div>
 	<div id="rightContainer"></div>
 
+	<div class="red"></div>
 	@jsTag("head.load.min.js")
 	<script>
 
@@ -44,14 +48,11 @@
 				.js("/assets/javascripts/main.js?v=3")
 				.js({app: "/assets/javascripts/app2.js?v=3"})
 			head.ready('app', function() {
-				  var body = $(document.body)
-				  var oldColor = body.css('color');
-				  console.log(oldColor)
+				  var color = $('.red');
 				  var f1 = function(){
-					  if(typeof(initRoute) == "function" && body.css('color') != 'rgb(0, 0, 0)'){
+					  if(typeof(initRoute) == "function" && typeof($) == "function" && color.css('color') != 'rgb(0, 0, 0)'){
 						  initRoute();
 						  initComponent();
-						  $('.loaderWr').remove();
 					  } else {
 						  setTimeout(f1, 10)
 					  }
