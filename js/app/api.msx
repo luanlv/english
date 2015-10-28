@@ -43,6 +43,16 @@ api.scrollBottom = function(element, isInit, context) {
   context.prevHeight = element.scrollHeight
 }
 
+api.scrollBottom2 = function(element, isInit, context) {
+  if(!isInit){
+    element.scrollTop = element.scrollHeight;
+  }
+  var addLegth = (element.scrollHeight - context.prevHeight) || 0;
+  if( element.scrollHeight - element.clientHeight - element.scrollTop < addLegth +  + 40)
+    element.scrollTop = element.scrollHeight;
+  context.prevHeight = element.scrollHeight
+};
+
 api.setsVal = function(callback) {
   return function(e) {
     m.withAttr("value", callback)(e);

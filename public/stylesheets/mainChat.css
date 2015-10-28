@@ -367,6 +367,13 @@ textarea {
 .pad0{
   padding: 0!important;
 }
+.pad-bot0{
+  padding-bottom: 0!important;
+}
+
+.pad-top0{
+  padding-top: 0!important;
+}
 
 .higher{
   border-left: 1px solid #ddd !important;
@@ -565,7 +572,12 @@ textarea {
 }
 
 .room-box, .room-user{
-  min-height: 510px;
+  min-height: 0px;
+}
+
+.box-comment{
+  height: 490px;
+  overflow-y: auto;
 }
 
 .fr{

@@ -64,7 +64,7 @@ var Room = {
         <div className="ui grid main-content sha2 ">
           <div className="eleven wide column room-chat border-right pad0 ">
             <div className="ui padded grid">
-              <div className="twelve wide  column light-border-right">
+              <div className="twelve wide  column light-border-right pad-bot0">
                 {Comments(ctrl)}
               </div>
               <div className="four wide column">
@@ -96,7 +96,7 @@ var Room = {
               </div>
             </div>
             <div className="ui padded grid ">
-              <div className="twelve wide column light-border-right">
+              <div className="twelve wide column light-border-right pad-top0">
                 <div className="ui divider"></div>
                 <div className="ui comments mar0">
                   <div className="comment">
@@ -105,10 +105,9 @@ var Room = {
                     </a>
                     <div className="ui form content">
                       <div className="field" style="display:inline">
-                        <textarea rows="1"
+                        <textarea rows="1" style="max-height: 150px"
                                   config={function (element, isInit, ctx) {
                                           if(!isInit) {
-
                                             if(wsCtrl.userId.length == 0){
                                               $(element).on('click input', function(){
                                                 api.signin()
@@ -119,6 +118,27 @@ var Room = {
                                                 wsCtrl.inputChat(ctrl.id)($(element).val())
                                               });
                                             }
+
+                                            $(element).textareaAutoSize();
+                                            $(element).attrchange({
+                                              //trackValues: true,
+                                              callback: function (event) {
+                                                var boxNode = document.getElementsByClassName('box-comment')[0];
+                                                var box = $('.box-comment');
+                                                var input = $(element)
+
+
+                                                if (box.scrollTop() + box.innerHeight() >= box.prop('scrollHeight')) {
+                                                  box.css('height', 490 + 36 - $(element).outerHeight());
+                                                  boxNode.scrollTop = boxNode.scrollHeight;
+                                                } else {
+                                                  box.css('height', 490 + 36 - $(element).outerHeight());
+                                                }
+
+                                              }
+                                            });
+
+
                                           }
                                           element.value = wsCtrl.inputChat(ctrl.id)();
                                         }
@@ -149,7 +169,7 @@ var Room = {
                   </div>
                 </div>
               </div>
-              <div className="four wide column ">
+              <div className="four wide column pad-top0">
                 <div className="ui divider "></div>
                 <div></div>
               </div>
@@ -165,12 +185,14 @@ var Comments = function(ctrl){
   return (
       <div className="ui comments room-box">
         <h5 className="ui dividing header">Comments</h5>
-
-        <div>
+        <div className="box-comment"
+             config={api.scrollBottom2}
+        >
           {(!wsCtrl.getRoom(ctrl.id).initOk)?(
           <div className="ui active loader"></div>
               ):(
-              <div>
+              <div
+              >
                 {wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
                     return (
                     <div className="comment">

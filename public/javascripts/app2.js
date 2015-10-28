@@ -44,6 +44,16 @@ api.scrollBottom = function(element, isInit, context) {
   context.prevHeight = element.scrollHeight
 }
 
+api.scrollBottom2 = function(element, isInit, context) {
+  if(!isInit){
+    element.scrollTop = element.scrollHeight;
+  }
+  var addLegth = (element.scrollHeight - context.prevHeight) || 0;
+  if( element.scrollHeight - element.clientHeight - element.scrollTop < addLegth +  + 40)
+    element.scrollTop = element.scrollHeight;
+  context.prevHeight = element.scrollHeight
+};
+
 api.setsVal = function(callback) {
   return function(e) {
     m.withAttr("value", callback)(e);
@@ -1168,7 +1178,7 @@ var Room = {
         {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [
           {tag: "div", attrs: {className:"eleven wide column room-chat border-right pad0 "}, children: [
             {tag: "div", attrs: {className:"ui padded grid"}, children: [
-              {tag: "div", attrs: {className:"twelve wide  column light-border-right"}, children: [
+              {tag: "div", attrs: {className:"twelve wide  column light-border-right pad-bot0"}, children: [
                 Comments(ctrl)
               ]}, 
               {tag: "div", attrs: {className:"four wide column"}, children: [
@@ -1200,7 +1210,7 @@ var Room = {
               ]}
             ]}, 
             {tag: "div", attrs: {className:"ui padded grid "}, children: [
-              {tag: "div", attrs: {className:"twelve wide column light-border-right"}, children: [
+              {tag: "div", attrs: {className:"twelve wide column light-border-right pad-top0"}, children: [
                 {tag: "div", attrs: {className:"ui divider"}}, 
                 {tag: "div", attrs: {className:"ui comments mar0"}, children: [
                   {tag: "div", attrs: {className:"comment"}, children: [
@@ -1209,10 +1219,9 @@ var Room = {
                     ]}, 
                     {tag: "div", attrs: {className:"ui form content"}, children: [
                       {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
-                        {tag: "textarea", attrs: {rows:"1", 
+                        {tag: "textarea", attrs: {rows:"1", style:"max-height: 150px", 
                                   config:function (element, isInit, ctx) {
                                           if(!isInit) {
-
                                             if(wsCtrl.userId.length == 0){
                                               $(element).on('click input', function(){
                                                 api.signin()
@@ -1223,6 +1232,27 @@ var Room = {
                                                 wsCtrl.inputChat(ctrl.id)($(element).val())
                                               });
                                             }
+
+                                            $(element).textareaAutoSize();
+                                            $(element).attrchange({
+                                              //trackValues: true,
+                                              callback: function (event) {
+                                                var boxNode = document.getElementsByClassName('box-comment')[0];
+                                                var box = $('.box-comment');
+                                                var input = $(element)
+
+
+                                                if (box.scrollTop() + box.innerHeight() >= box.prop('scrollHeight')) {
+                                                  box.css('height', 490 + 36 - $(element).outerHeight());
+                                                  boxNode.scrollTop = boxNode.scrollHeight;
+                                                } else {
+                                                  box.css('height', 490 + 36 - $(element).outerHeight());
+                                                }
+
+                                              }
+                                            });
+
+
                                           }
                                           element.value = wsCtrl.inputChat(ctrl.id)();
                                         }, 
@@ -1253,7 +1283,7 @@ var Room = {
                   ]}
                 ]}
               ]}, 
-              {tag: "div", attrs: {className:"four wide column "}, children: [
+              {tag: "div", attrs: {className:"four wide column pad-top0"}, children: [
                 {tag: "div", attrs: {className:"ui divider "}}, 
                 {tag: "div", attrs: {}}
               ]}
@@ -1269,12 +1299,14 @@ var Comments = function(ctrl){
   return (
       {tag: "div", attrs: {className:"ui comments room-box"}, children: [
         {tag: "h5", attrs: {className:"ui dividing header"}, children: ["Comments"]}, 
-
-        {tag: "div", attrs: {}, children: [
+        {tag: "div", attrs: {className:"box-comment", 
+             config:api.scrollBottom2
+        }, children: [
           (!wsCtrl.getRoom(ctrl.id).initOk)?(
           {tag: "div", attrs: {className:"ui active loader"}}
               ):(
-              {tag: "div", attrs: {}, children: [
+              {tag: "div", attrs: {}
+              , children: [
                 wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
                     return (
                     {tag: "div", attrs: {className:"comment"}, children: [
