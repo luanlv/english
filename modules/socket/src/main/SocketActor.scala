@@ -155,9 +155,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
   def initChat(uid: String, roomId: String, userId:Option[String]) = {
     sub(uid, roomId, userId)
     (lila.hub.Env.current.actor.chatRoom ? GetInitChatRoom(roomId)) foreach {
-      case listUser: Set[String] => {
-        val mes = Json.obj("room" -> roomId, "t" -> "initChat", "lu" -> listUser)
-        withMember(uid)(_ push makeMessage("chatNotify", mes))
+      case data: JsObject => {
+        withMember(uid)(_ push makeMessage("chatNotify", data))
       }
     }
 

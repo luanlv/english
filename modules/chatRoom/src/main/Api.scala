@@ -18,4 +18,12 @@ final class Api(
                    bus: lila.common.Bus) {
 
 
+  def insertChat(roomId: String, user: LightUser, chat: String, time: DateTime) = {
+    RoomMessageRepo.insert(roomId, user, chat, time)
+  }
+
+  def initChatByRoom(roomId: String) = {
+    RoomMessageRepo.initChatByRoom(roomId)
+  }
+
 }

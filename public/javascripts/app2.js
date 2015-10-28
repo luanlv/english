@@ -75,6 +75,45 @@ api.focusById = function(uid){
   }, 100);
 };
 
+api.signin = function(){
+  $('.ui.modal.sign-in').modal({
+    onShow: function(){
+      var contentWr = $(this).children().first();
+      contentWr.load('/login', function(res, status, xhr){
+        if(status == "success"){
+          contentWr.removeClass('loading')
+          $('.sign-in .referrer').attr('value', window.location.pathname)
+        }
+      })
+    },
+    onHide: function(){
+      var contentWr = $(this).children().first();
+      contentWr.addClass('loading')
+    }
+  })
+  .modal('show');
+};
+window.signin = api.signin
+
+api.signup = function(){
+  $('.ui.modal.sign-up').modal({
+        onShow: function(){
+          var contentWr = $(this).children().first();
+          contentWr.load('/signup', function(res, status, xhr){
+            if(status == "success"){
+              contentWr.removeClass('loading')
+              $('.sign-up .referrer').attr('value', window.location.pathname)
+            }
+          })
+        },
+        onHide: function(){
+          var contentWr = $(this).children().first();
+          contentWr.addClass('loading')
+        }
+      })
+    .modal('show');
+}
+window.signup = api.signup;
 
 
 
@@ -767,24 +806,8 @@ var LoginButton = function(ctrl){ return(
                    config:function(ele, isInit, ctx){
                     if(!isInit){
                       $(ele).on('click', function(){
-
-                          $('.ui.modal.sign-up').modal({
-                              onShow: function(){
-                                var contentWr = $(this).children().first();
-                                contentWr.load('/signup', function(res, status, xhr){
-                                  if(status == "success"){
-                                    contentWr.removeClass('loading')
-                                  }
-                                })
-                              },
-                              onHide: function(){
-                                var contentWr = $(this).children().first();
-                                contentWr.addClass('loading')
-                              }
-                            })
-                            .modal('show')
-
-                             rd.nav(function(){ctrl.displayLogin = false;m.redraw()})
+                           api.signup()
+                           rd.nav(function(){ctrl.displayLogin = false;m.redraw()})
                         })
 
                       }
@@ -795,10 +818,6 @@ var LoginButton = function(ctrl){ return(
             ]}
           ]}
         ]}):""
-      ]}, 
-      {tag: "div", attrs: {className:"ui modal sign-up"}, children: [
-        {tag: "div", attrs: {className:"ui segment loading", style:"min-height: 500px;"}
-        }
       ]}
     ]}
 )}
@@ -1060,7 +1079,15 @@ var Nav = {
                 LoginButton(ctrl)
               ]}
               ), 
-          Ping(ctrl)
+          Ping(ctrl), 
+          {tag: "div", attrs: {className:"ui modal sign-up"}, children: [
+            {tag: "div", attrs: {className:"ui segment loading", style:"min-height: 500px;"}
+            }
+          ]}, 
+          {tag: "div", attrs: {className:"ui modal sign-in"}, children: [
+            {tag: "div", attrs: {className:"ui segment loading", style:"min-height: 300px;"}
+            }
+          ]}
         ]}
     )
   }
@@ -1072,7 +1099,7 @@ var Ping = function(ctrl){
         {tag: "div", attrs: {className:(ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")}, children: [ctrl.ping(), " ms"]}
       ]}
   )
-}
+};
 
 module.exports = Nav;
 },{"../ws/_wsCtrl.js":13,"./api.msx":1,"./menu_button/Login.msx":8,"./menu_button/Message.msx":9,"./menu_button/User.msx":10}],12:[function(require,module,exports){
@@ -1115,10 +1142,6 @@ var Room = {
     ctrl.id = m.route.param("roomId");
     ctrl.param = m.prop(m.route.param("roomId"));
 
-    comments.map(function(comment){
-      wsCtrl.commentsInRoom(ctrl.id).push(comment)
-    });
-
     ctrl.add = function () {
       var input = wsCtrl.inputChat(ctrl.id)().trim();
       //input = input.replace(/\n/g, '');
@@ -1146,23 +1169,33 @@ var Room = {
         {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [
           {tag: "div", attrs: {className:"eleven wide column room-chat border-right pad0 "}, children: [
             {tag: "div", attrs: {className:"ui padded grid"}, children: [
-              {tag: "div", attrs: {className:"twelve wide column light-border-right"}, children: [
+              {tag: "div", attrs: {className:"twelve wide  column light-border-right"}, children: [
                 Comments(ctrl)
               ]}, 
               {tag: "div", attrs: {className:"four wide column"}, children: [
                 {tag: "div", attrs: {className:"room-user"}, children: [
                   {tag: "h5", attrs: {className:"ui dividing header"}, children: ["User online!"]}, 
-                  {tag: "div", attrs: {class:"ui list"}, children: [
-                    wsCtrl.userInRoom(ctrl.id).map(function(user){
-                        return (
-                        {tag: "div", attrs: {class:"item"}, children: [
-                          {tag: "i", attrs: {class:"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}}, 
-                          {tag: "div", attrs: {class:"content"}, children: [
-                            user.name
+                  {tag: "div", attrs: {}, children: [
+                    {tag: "div", attrs: {}, children: [
+                      (!wsCtrl.getRoom(ctrl.id).initOk)?(
+                           {tag: "div", attrs: {class:"ui active loader"}}
+                        ):(
+                          {tag: "div", attrs: {className:"ui list"}, children: [
+                            wsCtrl.userInRoom(ctrl.id).map(function(user){
+                                return (
+                                {tag: "div", attrs: {class:"item"}, children: [
+                                  {tag: "i", attrs: {class:"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}}, 
+                                  {tag: "div", attrs: {class:"content"}, children: [
+                                    user.name
+                                  ]}
+                                ]}
+                                    )
+                                })
                           ]}
-                        ]}
-                            )
-                        })
+                        )
+                      
+                    ]}
+
                   ]}
                 ]}
               ]}
@@ -1173,37 +1206,41 @@ var Room = {
                 {tag: "div", attrs: {className:"ui comments mar0"}, children: [
                   {tag: "div", attrs: {className:"comment"}, children: [
                     {tag: "a", attrs: {className:"avatar"}, children: [
-                      {tag: "img", attrs: {src:"/assets/avatar/4.jpg"}}
+                      {tag: "img", attrs: {src:"/assets/avatar/2.jpg"}}
                     ]}, 
                     {tag: "div", attrs: {className:"ui form content"}, children: [
                       {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
                         {tag: "textarea", attrs: {rows:"1", 
                                   config:function (element, isInit, ctx) {
                                           if(!isInit) {
-                                            $(element).on('input', function(){
-                                              wsCtrl.inputChat(ctrl.id)($(element).val())
-                                            })
+
+                                            if(wsCtrl.userId.length == 0){
+                                              $(element).on('click input', function(){
+                                                api.signin()
+                                                element.value = ''
+                                              })
+                                            } else {
+                                              $(element).on('input', function(){
+                                                wsCtrl.inputChat(ctrl.id)($(element).val())
+                                              });
+                                            }
                                           }
-                                          console.log("init ok!")
                                           element.value = wsCtrl.inputChat(ctrl.id)();
                                         }, 
                                       
                                   onkeypress:function(e){
                                           if(e.keyCode == 13 && !e.shiftKey) {
-                                          console.log("enter")
                                             m.redraw.strategy("none");
                                             if (wsCtrl.inputChat(ctrl.id)().length < 1) {
                                              console.log("chat length < 1")
                                               return false;
                                             } else {
-                                             console.log("enter ok")
                                               var source = e.target || e.srcElement;
                                               ctrl.add();
                                               return false;
                                             }
                                           }else{
                                             m.redraw.strategy("none");
-                                            console.log("case 2")
                                             if(e.keyCode == 13 && e.shiftKey && wsCtrl.inputChat(ctrl.id)().length < 1){
                                               return false;
                                             }
@@ -1234,26 +1271,36 @@ var Comments = function(ctrl){
       {tag: "div", attrs: {className:"ui comments room-box"}, children: [
         {tag: "h5", attrs: {className:"ui dividing header"}, children: ["Comments"]}, 
 
-        wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
-              return (
-              {tag: "div", attrs: {className:"comment"}, children: [
-                {tag: "a", attrs: {className:"avatar"}, children: [
-                  {tag: "img", attrs: {src:comment.avatar}}
-                ]}, 
-                {tag: "div", attrs: {className:"content"}, children: [
-                  {tag: "a", attrs: {className:"author"}, children: [comment.user]}, 
-                  {tag: "div", attrs: {className:" metadata fr"}, children: [
-                    {tag: "span", attrs: {className:"date"}, children: [comment.time]}
-                  ]}, 
-                  {tag: "div", attrs: {className:"text"}, children: [
-                    comment.comment
-                  ]}
+        {tag: "div", attrs: {}, children: [
+          (!wsCtrl.getRoom(ctrl.id).initOk)?(
+          {tag: "div", attrs: {class:"ui active loader"}}
+              ):(
+              {tag: "div", attrs: {}, children: [
+                wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
+                    return (
+                    {tag: "div", attrs: {className:"comment"}, children: [
+                      {tag: "a", attrs: {className:"avatar"}, children: [
+                        {tag: "img", attrs: {src:comment.avatar}}
+                      ]}, 
+                      {tag: "div", attrs: {className:"content"}, children: [
+                        {tag: "a", attrs: {className:"author"}, children: [comment.user]}, 
+                        {tag: "div", attrs: {className:" metadata fr"}, children: [
+                          {tag: "span", attrs: {className:"date"}, children: [comment.time]}
+                        ]}, 
+                        {tag: "div", attrs: {className:"text"}, children: [
+                          comment.comment
+                        ]}
 
-                ]}
+                      ]}
+                    ]}
+                        )
+                    })
+                
               ]}
-                  )
-            })
+              )
           
+        ]}
+
 
       ]}
   )
@@ -1605,13 +1652,26 @@ ctrl.listen = function(d){
     }
 
     if(d.d.t === "initChat") {
-      var users = d.d.lu
+      var users = d.d.lu;
+      var listChats = d.d.lc;
       users.map(function(user){
         if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
           var u = {avatar: "/assets/avatar/1.jpg", name: user, role: "user"}
           wsCtrl.userInRoom(roomId).push(u)
         }
       })
+
+      listChats.map(function(chat){
+        wsCtrl.commentsInRoom(roomId).push(
+            {
+              avatar: '/assets/avatar/' + Math.ceil(Math.random()*3 + 1) + '.jpg',
+              user: chat.user.name,
+              time: chat.time,
+              comment: chat.chat
+            }
+        )
+      })
+      wsCtrl.getRoom(roomId).initOk = true;
     }
     if(d.d.t === "chat") {
       var mes = d.d.d
@@ -1659,7 +1719,10 @@ var doMes = function(d){
 };
 
 wsCtrl.getRoom = function(id){
-  if(wsCtrl.data.chatroom[id] == undefined) wsCtrl.data.chatroom[id] = {};
+  if(wsCtrl.data.chatroom[id] == undefined) {
+    wsCtrl.data.chatroom[id] = {};
+    wsCtrl.data.chatroom[id].initOk = false;
+  }
   return wsCtrl.data.chatroom[id]
 };
 var getRoom = wsCtrl.getRoom;
@@ -1682,7 +1745,7 @@ wsCtrl.inputChat = function(id){
 };
 
 wsCtrl.clearOldRoom = function(id){
-  wsCtrl.data.chatroom[id] = {}
+  wsCtrl.data.chatroom[id] = undefined
 };
 
 $('body').on('click', '.relation_actions a.relation', function() {

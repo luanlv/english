@@ -342,13 +342,26 @@ ctrl.listen = function(d){
     }
 
     if(d.d.t === "initChat") {
-      var users = d.d.lu
+      var users = d.d.lu;
+      var listChats = d.d.lc;
       users.map(function(user){
         if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
           var u = {avatar: "/assets/avatar/1.jpg", name: user, role: "user"}
           wsCtrl.userInRoom(roomId).push(u)
         }
       })
+
+      listChats.map(function(chat){
+        wsCtrl.commentsInRoom(roomId).push(
+            {
+              avatar: '/assets/avatar/' + Math.ceil(Math.random()*3 + 1) + '.jpg',
+              user: chat.user.name,
+              time: chat.time,
+              comment: chat.chat
+            }
+        )
+      })
+      wsCtrl.getRoom(roomId).initOk = true;
     }
     if(d.d.t === "chat") {
       var mes = d.d.d
@@ -396,7 +409,10 @@ var doMes = function(d){
 };
 
 wsCtrl.getRoom = function(id){
-  if(wsCtrl.data.chatroom[id] == undefined) wsCtrl.data.chatroom[id] = {};
+  if(wsCtrl.data.chatroom[id] == undefined) {
+    wsCtrl.data.chatroom[id] = {};
+    wsCtrl.data.chatroom[id].initOk = false;
+  }
   return wsCtrl.data.chatroom[id]
 };
 var getRoom = wsCtrl.getRoom;
@@ -419,7 +435,7 @@ wsCtrl.inputChat = function(id){
 };
 
 wsCtrl.clearOldRoom = function(id){
-  wsCtrl.data.chatroom[id] = {}
+  wsCtrl.data.chatroom[id] = undefined
 };
 
 $('body').on('click', '.relation_actions a.relation', function() {

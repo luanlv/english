@@ -17,11 +17,16 @@
 						@errMsg(form)
 						<div class="field" data-icon="!">&nbsp;
 							<small>
-								By registering, you agree to be bound by our
+								By registering, you agree to ....
 							</small>
 						</div>
 						<div>
 							<button type="submit" class="ui teal button" data-icon="F"> @trans.signUp()</button>
+						</div>
+						<div>
+							<br>
+							Already Have an Account?
+								<a href="javascript:void(0)" onclick="signin()"> @trans.signIn()</a>
 						</div>
 					</div>
 					<input type="hidden" class="referrer" name="_referrer" value="@currentUrl" />

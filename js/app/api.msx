@@ -74,6 +74,45 @@ api.focusById = function(uid){
   }, 100);
 };
 
+api.signin = function(){
+  $('.ui.modal.sign-in').modal({
+    onShow: function(){
+      var contentWr = $(this).children().first();
+      contentWr.load('/login', function(res, status, xhr){
+        if(status == "success"){
+          contentWr.removeClass('loading')
+          $('.sign-in .referrer').attr('value', window.location.pathname)
+        }
+      })
+    },
+    onHide: function(){
+      var contentWr = $(this).children().first();
+      contentWr.addClass('loading')
+    }
+  })
+  .modal('show');
+};
+window.signin = api.signin
+
+api.signup = function(){
+  $('.ui.modal.sign-up').modal({
+        onShow: function(){
+          var contentWr = $(this).children().first();
+          contentWr.load('/signup', function(res, status, xhr){
+            if(status == "success"){
+              contentWr.removeClass('loading')
+              $('.sign-up .referrer').attr('value', window.location.pathname)
+            }
+          })
+        },
+        onHide: function(){
+          var contentWr = $(this).children().first();
+          contentWr.addClass('loading')
+        }
+      })
+    .modal('show');
+}
+window.signup = api.signup;
 
 
 

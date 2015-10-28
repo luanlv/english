@@ -132,6 +132,14 @@ var Nav = {
               </div>
               )}
           {Ping(ctrl)}
+          <div className="ui modal sign-up" >
+            <div className="ui segment loading" style="min-height: 500px;">
+            </div>
+          </div>
+          <div className="ui modal sign-in" >
+            <div className="ui segment loading" style="min-height: 300px;">
+            </div>
+          </div>
         </div>
     )
   }
@@ -143,6 +151,6 @@ var Ping = function(ctrl){
         <div className={(ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")}>{ctrl.ping()} ms</div>
       </div>
   )
-}
+};
 
 module.exports = Nav;

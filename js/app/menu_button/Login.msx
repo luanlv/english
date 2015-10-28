@@ -50,24 +50,8 @@ var LoginButton = function(ctrl){ return(
                    config={function(ele, isInit, ctx){
                     if(!isInit){
                       $(ele).on('click', function(){
-
-                          $('.ui.modal.sign-up').modal({
-                              onShow: function(){
-                                var contentWr = $(this).children().first();
-                                contentWr.load('/signup', function(res, status, xhr){
-                                  if(status == "success"){
-                                    contentWr.removeClass('loading')
-                                  }
-                                })
-                              },
-                              onHide: function(){
-                                var contentWr = $(this).children().first();
-                                contentWr.addClass('loading')
-                              }
-                            })
-                            .modal('show')
-
-                             rd.nav(function(){ctrl.displayLogin = false;m.redraw()})
+                           api.signup()
+                           rd.nav(function(){ctrl.displayLogin = false;m.redraw()})
                         })
 
                       }
@@ -78,10 +62,6 @@ var LoginButton = function(ctrl){ return(
             </form>
           </div>
         </div>):""}
-      </div>
-      <div className="ui modal sign-up" >
-        <div className="ui segment loading" style="min-height: 500px;">
-        </div>
       </div>
     </div>
 )}

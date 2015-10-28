@@ -37,10 +37,6 @@ var Room = {
     ctrl.id = m.route.param("roomId");
     ctrl.param = m.prop(m.route.param("roomId"));
 
-    comments.map(function(comment){
-      wsCtrl.commentsInRoom(ctrl.id).push(comment)
-    });
-
     ctrl.add = function () {
       var input = wsCtrl.inputChat(ctrl.id)().trim();
       //input = input.replace(/\n/g, '');
@@ -68,23 +64,33 @@ var Room = {
         <div className="ui grid main-content sha2 ">
           <div className="eleven wide column room-chat border-right pad0 ">
             <div className="ui padded grid">
-              <div className="twelve wide column light-border-right">
+              <div className="twelve wide  column light-border-right">
                 {Comments(ctrl)}
               </div>
               <div className="four wide column">
                 <div className="room-user">
                   <h5 className="ui dividing header">User online!</h5>
-                  <div class="ui list">
-                    {wsCtrl.userInRoom(ctrl.id).map(function(user){
-                        return (
-                        <div class="item">
-                          <i class={"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}></i>
-                          <div class="content">
-                            {user.name}
+                  <div>
+                    <div>
+                      {(!wsCtrl.getRoom(ctrl.id).initOk)?(
+                           <div class="ui active loader"></div>
+                        ):(
+                          <div className="ui list">
+                            {wsCtrl.userInRoom(ctrl.id).map(function(user){
+                                return (
+                                <div class="item">
+                                  <i class={"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}></i>
+                                  <div class="content">
+                                    {user.name}
+                                  </div>
+                                </div>
+                                    )
+                                })}
                           </div>
-                        </div>
-                            )
-                        })}
+                        )
+                      }
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -95,37 +101,41 @@ var Room = {
                 <div className="ui comments mar0">
                   <div className="comment">
                     <a className="avatar">
-                      <img src="/assets/avatar/4.jpg"/>
+                      <img src="/assets/avatar/2.jpg"/>
                     </a>
                     <div className="ui form content">
                       <div className="field" style="display:inline">
                         <textarea rows="1"
                                   config={function (element, isInit, ctx) {
                                           if(!isInit) {
-                                            $(element).on('input', function(){
-                                              wsCtrl.inputChat(ctrl.id)($(element).val())
-                                            })
+
+                                            if(wsCtrl.userId.length == 0){
+                                              $(element).on('click input', function(){
+                                                api.signin()
+                                                element.value = ''
+                                              })
+                                            } else {
+                                              $(element).on('input', function(){
+                                                wsCtrl.inputChat(ctrl.id)($(element).val())
+                                              });
+                                            }
                                           }
-                                          console.log("init ok!")
                                           element.value = wsCtrl.inputChat(ctrl.id)();
                                         }
                                       }
                                   onkeypress={function(e){
                                           if(e.keyCode == 13 && !e.shiftKey) {
-                                          console.log("enter")
                                             m.redraw.strategy("none");
                                             if (wsCtrl.inputChat(ctrl.id)().length < 1) {
                                              console.log("chat length < 1")
                                               return false;
                                             } else {
-                                             console.log("enter ok")
                                               var source = e.target || e.srcElement;
                                               ctrl.add();
                                               return false;
                                             }
                                           }else{
                                             m.redraw.strategy("none");
-                                            console.log("case 2")
                                             if(e.keyCode == 13 && e.shiftKey && wsCtrl.inputChat(ctrl.id)().length < 1){
                                               return false;
                                             }
@@ -156,26 +166,36 @@ var Comments = function(ctrl){
       <div className="ui comments room-box">
         <h5 className="ui dividing header">Comments</h5>
 
-        {wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
-              return (
-              <div className="comment">
-                <a className="avatar">
-                  <img src={comment.avatar}/>
-                </a>
-                <div className="content">
-                  <a className="author">{comment.user}</a>
-                  <div className=" metadata fr">
-                    <span className="date">{comment.time}</span>
-                  </div>
-                  <div className="text">
-                    {comment.comment}
-                  </div>
+        <div>
+          {(!wsCtrl.getRoom(ctrl.id).initOk)?(
+          <div class="ui active loader"></div>
+              ):(
+              <div>
+                {wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
+                    return (
+                    <div className="comment">
+                      <a className="avatar">
+                        <img src={comment.avatar}/>
+                      </a>
+                      <div className="content">
+                        <a className="author">{comment.user}</a>
+                        <div className=" metadata fr">
+                          <span className="date">{comment.time}</span>
+                        </div>
+                        <div className="text">
+                          {comment.comment}
+                        </div>
 
-                </div>
+                      </div>
+                    </div>
+                        )
+                    })
+                }
               </div>
-                  )
-            })
+              )
           }
+        </div>
+
 
       </div>
   )

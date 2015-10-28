@@ -36,7 +36,7 @@ private[chatRoom] final class ChatRoomActor(
   def receive = {
     case UserSubscribe(u, roomId) => subscribeUser(u, roomId);
     case UserUnSubscribe(u, roomId) => unSubscribleUser(u, roomId)
-    case GetInitChatRoom(roomId) => sender ! initChat(roomId)
+    case GetInitChatRoom(roomId) => sender ! initChat(roomId).await
     case ChatRoomMessage(userId, roomId, chat) => doChat(userId, roomId, chat)
     case _ =>
   }
@@ -56,11 +56,16 @@ private[chatRoom] final class ChatRoomActor(
   }
 
   def initChat(roomId: String) = {
-    roomById(roomId).keySet
+    api.initChatByRoom(roomId).map{
+      lc => Json.obj("room" -> roomId, "t" -> "initChat", "lu" -> roomById(roomId).keySet, "lc" -> lc)
+    }
   }
 
   def doChat(userId: String, roomId: String, chat: String) ={
+    val time = DateTime.now()
+    api.insertChat(roomId, lightUser(userId).head, chat, time)
     val jsonChat = Json.obj("t" -> "chat", "room" -> roomId, "d" -> Json.obj("user" -> userId, "chat" -> chat))
     lila.hub.Env.current.socket.site ! DoChat(jsonChat, roomId)
   }
+
 }
