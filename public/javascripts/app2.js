@@ -1255,6 +1255,9 @@ var Room = {
 
                                           }
                                           element.value = wsCtrl.inputChat(ctrl.id)();
+                                          if(element.value.length<1){
+                                            $(element).css('height', '36.4286px')
+                                          }
                                         }, 
                                       
                                   onkeypress:function(e){
