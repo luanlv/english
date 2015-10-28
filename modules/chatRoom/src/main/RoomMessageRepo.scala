@@ -30,7 +30,7 @@ object RoomMessageRepo {
   def initChatByRoom(roomId: String) = {
     val bs = BSONDocument("roomId" -> roomId)
     coll.find(bs)
-      .sort(BSONDocument("time" -> 1))
+      .sort(BSONDocument("time" -> -1))
       .cursor[RoomMessage]()
       .collect[List](10)
   }

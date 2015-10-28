@@ -62,7 +62,6 @@ window.rd = {
     local(['chatroom'], callback).call()
   },
   room: function(callback){
-    console.log(window.target)
     local(['room'], callback).call()
   },
   all: function(callback){

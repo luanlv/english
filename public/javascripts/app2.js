@@ -569,7 +569,6 @@ window.rd = {
     local(['chatroom'], callback).call()
   },
   room: function(callback){
-    console.log(window.target)
     local(['room'], callback).call()
   },
   all: function(callback){
@@ -1178,14 +1177,14 @@ var Room = {
                   {tag: "div", attrs: {}, children: [
                     {tag: "div", attrs: {}, children: [
                       (!wsCtrl.getRoom(ctrl.id).initOk)?(
-                           {tag: "div", attrs: {class:"ui active loader"}}
+                           {tag: "div", attrs: {className:"ui active loader"}}
                         ):(
                           {tag: "div", attrs: {className:"ui list"}, children: [
                             wsCtrl.userInRoom(ctrl.id).map(function(user){
                                 return (
-                                {tag: "div", attrs: {class:"item"}, children: [
-                                  {tag: "i", attrs: {class:"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}}, 
-                                  {tag: "div", attrs: {class:"content"}, children: [
+                                {tag: "div", attrs: {className:"item"}, children: [
+                                  {tag: "i", attrs: {className:"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}}, 
+                                  {tag: "div", attrs: {className:"content"}, children: [
                                     user.name
                                   ]}
                                 ]}
@@ -1202,7 +1201,7 @@ var Room = {
             ]}, 
             {tag: "div", attrs: {className:"ui padded grid "}, children: [
               {tag: "div", attrs: {className:"twelve wide column light-border-right"}, children: [
-                {tag: "div", attrs: {class:"ui divider"}}, 
+                {tag: "div", attrs: {className:"ui divider"}}, 
                 {tag: "div", attrs: {className:"ui comments mar0"}, children: [
                   {tag: "div", attrs: {className:"comment"}, children: [
                     {tag: "a", attrs: {className:"avatar"}, children: [
@@ -1248,14 +1247,14 @@ var Room = {
                                         }, 
                                       
                                   placeholder:"Click here to type a chat message"
-                        }, children: [wsCtrl.inputChat(ctrl.id)()]}
+                        }}
                       ]}
                     ]}
                   ]}
                 ]}
               ]}, 
               {tag: "div", attrs: {className:"four wide column "}, children: [
-                {tag: "div", attrs: {class:"ui divider "}}, 
+                {tag: "div", attrs: {className:"ui divider "}}, 
                 {tag: "div", attrs: {}}
               ]}
             ]}
@@ -1273,7 +1272,7 @@ var Comments = function(ctrl){
 
         {tag: "div", attrs: {}, children: [
           (!wsCtrl.getRoom(ctrl.id).initOk)?(
-          {tag: "div", attrs: {class:"ui active loader"}}
+          {tag: "div", attrs: {className:"ui active loader"}}
               ):(
               {tag: "div", attrs: {}, children: [
                 wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
@@ -1285,7 +1284,17 @@ var Comments = function(ctrl){
                       {tag: "div", attrs: {className:"content"}, children: [
                         {tag: "a", attrs: {className:"author"}, children: [comment.user]}, 
                         {tag: "div", attrs: {className:" metadata fr"}, children: [
-                          {tag: "span", attrs: {className:"date"}, children: [comment.time]}
+                          {tag: "span", attrs: {className:"date", datetime:comment.time, 
+                                config:function(ele, isInit, ctx){
+                                    if(!isInit){
+                                      var timestamp = $(ele).attr('datetime')
+                                      console.log($(ele).val())
+                                      ele.innerHTML = moment.unix(timestamp/1000).fromNow();
+                                      console.log($(ele).val())
+                                    }
+                                 }
+                                
+                          }, children: [comment.time]}
                         ]}, 
                         {tag: "div", attrs: {className:"text"}, children: [
                           comment.comment
@@ -1300,8 +1309,6 @@ var Comments = function(ctrl){
               )
           
         ]}
-
-
       ]}
   )
 }
@@ -1636,7 +1643,6 @@ ctrl.listen = function(d){
   if(d.t === "chatNotify") {
 
     var roomId = d.d.room;
-    console.log("room id = " + roomId)
 
     if(d.d.t == "userEnter"){
 
@@ -1653,7 +1659,7 @@ ctrl.listen = function(d){
 
     if(d.d.t === "initChat") {
       var users = d.d.lu;
-      var listChats = d.d.lc;
+      var listChats = d.d.lc.reverse();
       users.map(function(user){
         if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
           var u = {avatar: "/assets/avatar/1.jpg", name: user, role: "user"}
@@ -1669,8 +1675,8 @@ ctrl.listen = function(d){
               time: chat.time,
               comment: chat.chat
             }
-        )
-      })
+        );
+      });
       wsCtrl.getRoom(roomId).initOk = true;
     }
     if(d.d.t === "chat") {

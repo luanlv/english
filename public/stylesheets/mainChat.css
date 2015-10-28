@@ -91,6 +91,12 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
   float: left;
 }
 
+.text{
+  overflow: auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
 .mes{
   border: 1px solid #ddd;
   border-radius: 3px 3px 3px 3px;
@@ -580,3 +586,5 @@ textarea {
   padding-left: 0!important;
   padding-right: 0!important;
 }
+
+

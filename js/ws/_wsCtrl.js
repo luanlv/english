@@ -326,7 +326,6 @@ ctrl.listen = function(d){
   if(d.t === "chatNotify") {
 
     var roomId = d.d.room;
-    console.log("room id = " + roomId)
 
     if(d.d.t == "userEnter"){
 
@@ -343,7 +342,7 @@ ctrl.listen = function(d){
 
     if(d.d.t === "initChat") {
       var users = d.d.lu;
-      var listChats = d.d.lc;
+      var listChats = d.d.lc.reverse();
       users.map(function(user){
         if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
           var u = {avatar: "/assets/avatar/1.jpg", name: user, role: "user"}
@@ -359,8 +358,8 @@ ctrl.listen = function(d){
               time: chat.time,
               comment: chat.chat
             }
-        )
-      })
+        );
+      });
       wsCtrl.getRoom(roomId).initOk = true;
     }
     if(d.d.t === "chat") {

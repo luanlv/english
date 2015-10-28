@@ -73,14 +73,14 @@ var Room = {
                   <div>
                     <div>
                       {(!wsCtrl.getRoom(ctrl.id).initOk)?(
-                           <div class="ui active loader"></div>
+                           <div className="ui active loader"></div>
                         ):(
                           <div className="ui list">
                             {wsCtrl.userInRoom(ctrl.id).map(function(user){
                                 return (
-                                <div class="item">
-                                  <i class={"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}></i>
-                                  <div class="content">
+                                <div className="item">
+                                  <i className={"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}></i>
+                                  <div className="content">
                                     {user.name}
                                   </div>
                                 </div>
@@ -97,7 +97,7 @@ var Room = {
             </div>
             <div className="ui padded grid ">
               <div className="twelve wide column light-border-right">
-                <div class="ui divider"></div>
+                <div className="ui divider"></div>
                 <div className="ui comments mar0">
                   <div className="comment">
                     <a className="avatar">
@@ -143,14 +143,14 @@ var Room = {
                                         }
                                       }
                                   placeholder="Click here to type a chat message"
-                        >{wsCtrl.inputChat(ctrl.id)()}</textarea>
+                        >{}</textarea>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="four wide column ">
-                <div class="ui divider "></div>
+                <div className="ui divider "></div>
                 <div></div>
               </div>
             </div>
@@ -168,7 +168,7 @@ var Comments = function(ctrl){
 
         <div>
           {(!wsCtrl.getRoom(ctrl.id).initOk)?(
-          <div class="ui active loader"></div>
+          <div className="ui active loader"></div>
               ):(
               <div>
                 {wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
@@ -180,7 +180,17 @@ var Comments = function(ctrl){
                       <div className="content">
                         <a className="author">{comment.user}</a>
                         <div className=" metadata fr">
-                          <span className="date">{comment.time}</span>
+                          <span className="date" datetime={comment.time}
+                                config={function(ele, isInit, ctx){
+                                    if(!isInit){
+                                      var timestamp = $(ele).attr('datetime')
+                                      console.log($(ele).val())
+                                      ele.innerHTML = moment.unix(timestamp/1000).fromNow();
+                                      console.log($(ele).val())
+                                    }
+                                 }
+                                }
+                          >{comment.time}</span>
                         </div>
                         <div className="text">
                           {comment.comment}
@@ -195,8 +205,6 @@ var Comments = function(ctrl){
               )
           }
         </div>
-
-
       </div>
   )
 }
