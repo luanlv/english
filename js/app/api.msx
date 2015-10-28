@@ -1,7 +1,9 @@
 var wsCtrl = require('../ws/_wsCtrl.js');
+
+console.log(wsCtrl.data)
+
 var api = api || {};
 
-api.data = "hello"
 
 api.rd = function(name){
   //console.log("Debug: " + name)
@@ -72,5 +74,8 @@ api.focusById = function(uid){
     }
   }, 100);
 };
+
+
+
 
 module.exports = api;

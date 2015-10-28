@@ -4,6 +4,7 @@ import akka.actor.ActorRef
 import akka.pattern.{ ask, pipe }
 import lila.common.LightUser
 import lila.hub.actorApi.userMessage._
+import lila.hub.actorApi.chatRoom._
 import play.api.libs.iteratee.{ Iteratee, Enumerator }
 import play.api.libs.json._
 
@@ -40,10 +41,41 @@ object Handler {
         }
       }
 
-      case("sub", o) => {
-        ((o obj "d").get str "t").get match {
+      case("initChat", o) => {
+        val obj = (o obj "d").get
+        (obj str "t").get match {
           case "chatrooms" => {
-            socket ! Sub(uid, "chatrooms")
+            socket ! Sub(uid, "chatrooms", userId)
+            userId foreach { userId =>
+              if(userId.length() > 0) hub.actor.chatRoom ! UserSubscribe(userId, "chatrooms")
+            }
+          }
+          case "room" => {
+            val roomId = (obj str "v").get
+            userId foreach { userId =>
+              if(userId.length()>0) hub.actor.chatRoom ! UserSubscribe(userId, roomId)
+            }
+            socket ! InitChatRoom(uid, roomId, userId)
+          }
+          case _ =>
+        }
+      }
+
+      case("sub", o) => {
+        val obj = (o obj "d").get
+        (obj str "t").get match {
+          case "chatrooms" => {
+            socket ! Sub(uid, "chatrooms", userId)
+            userId foreach { userId =>
+              if(userId.length() > 0) hub.actor.chatRoom ! UserSubscribe(userId, "chatrooms")
+            }
+          }
+          case "room" => {
+            val roomId = (obj str "v").get
+            socket ! Sub(uid, roomId, userId)
+            userId foreach { userId =>
+              if(userId.length()>0) hub.actor.chatRoom ! UserSubscribe(userId, roomId)
+            }
           }
           case _ =>
         }
@@ -54,12 +86,16 @@ object Handler {
           case "chatrooms" => {
             socket ! UnSub(uid, "chatrooms")
           }
+          case "room" => socket ! UnSub(uid, ((o obj "d").get str "v").get)
+
+          case _ =>
         }
       }
 
       case ("get_onlines", _) => userId foreach { u =>
         (hub.actor.userMessage ? GetOnlineUser(u)) foreach {
           case data: List[LightUser] => socket ! OnlineFriends(uid, data)
+          case _ =>
         }
       }
 
@@ -68,6 +104,7 @@ object Handler {
         (hub.actor.userMessage ? GetName(id)) foreach {
           case "error" => //println("errror:" +id)
           case name:String  => socket ! SendName(uid, id, name)
+          case _ =>
         }
       }
 
@@ -75,7 +112,7 @@ object Handler {
         if(u.length > 0){
           val f = ((o\"d").as[JsObject]\"f").as[Int]
           val t = ((o\"d").as[JsObject]\"t").as[Int]
-          (hub.actor.userMessage ? MissingMes(u, f, t)) foreach{
+          (hub.actor.userMessage ? MissingMes(u, f, t)) foreach {
             case dataFu: Future[List[JsValue]] => dataFu.map{
               data => socket ! SendMissingMes(uid, f, t, data)
             }

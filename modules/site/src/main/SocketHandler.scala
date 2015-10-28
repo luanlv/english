@@ -23,7 +23,6 @@ private[site] final class SocketHandler(
       case ("startWatching", o) => o str "d" foreach { ids =>
         hub.actor.moveBroadcast ! StartWatching(uid, member, ids.split(' ').toSet)
       }
-
     }
 
     Handler(hub, socket, uid, Join(uid, userId, flag), userId) {

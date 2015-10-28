@@ -41,5 +41,6 @@ case class SendInitMes(uid: String, data: List[JsValue])
 
 case class SendInitNotify(uid: String, data: List[JsValue])
 
-case class Sub(uid: String, s: String)
+case class Sub(uid: String, s: String, userId: Option[String])
 case class UnSub(uid: String, s: String)
+case class InitChatRoom(uid: String, roomId: String, userId: Option[String])

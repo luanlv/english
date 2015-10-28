@@ -9,9 +9,10 @@ var ChatRoom = {
 
 
     wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
+
     var intervalChatRooms = setInterval(function(){
       wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
-    }, 10000);
+    }, 30000);
     ctrl.onunload = function() {
       wsCtrl.send(wsCtrl.sendData("unSub", {t: "chatrooms"}))
       clearInterval(intervalChatRooms)

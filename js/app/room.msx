@@ -1,21 +1,54 @@
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
+var comments = [
+  {avatar: '/assets/avatar/2.jpg', user: 'Mot', time: "5H42", comment: "Hello world 1!"},
+  {avatar: '/assets/avatar/3.jpg', user: 'Hai', time: "5H49", comment: "Hello world 2!"},
+  {avatar: '/assets/avatar/1.jpg', user: 'Ba', time: "5H52", comment: "Hello world 3!"},
+  {avatar: '/assets/avatar/4.jpg', user: 'Bon', time: "6H42", comment: "Hello world 4!"}
+];
+
+var users = [
+  {
+  avatar: '/assets/avatar/2.jpg',
+  name: 'Mot',
+  role: 'Admin'
+  },
+  {
+    avatar: '/assets/avatar/3.jpg',
+    name: 'Hai',
+    role: 'User'
+  },
+  {
+    avatar: '/assets/avatar/1.jpg',
+    name: 'Ba',
+    role: 'User'
+  },
+  {
+    avatar: '/assets/avatar/4.jpg',
+    name: 'Bon',
+    role: 'Mod'
+  }
+];
 
 var Room = {
   controller: function() {
     var ctrl = this;
+    ctrl.id = m.route.param("roomId");
+
     ctrl.param = m.prop(m.route.param("roomId"));
 
-    wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
+
+    wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
+
     var intervalRoom = setInterval(function(){
       wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
-    }, 10000);
+    }, 30000);
     ctrl.onunload = function() {
       wsCtrl.send(wsCtrl.sendData("unSub", {t: "room", v: ctrl.param()}));
+      wsCtrl.clearOldRoom(ctrl.id);
       clearInterval(intervalRoom)
     };
-
     rd.room();
   },
   view: function(ctrl) {
@@ -29,6 +62,18 @@ var Room = {
               <div className="four wide column">
                 <div className="room-user">
                   <h5 className="ui dividing header">User online!</h5>
+                  <div class="ui list">
+                    {wsCtrl.userInRoom(ctrl.id).map(function(user){
+                        return (
+                        <div class="item">
+                          <i class={"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}></i>
+                          <div class="content">
+                            {user.name}
+                          </div>
+                        </div>
+                            )
+                        })}
+                  </div>
                 </div>
               </div>
             </div>
@@ -64,55 +109,28 @@ var Comments = function(){
   return (
       <div className="ui comments room-box">
         <h5 className="ui dividing header">Comments</h5>
-        <div className="comment">
-          <a className="avatar">
-            <img src="/assets/avatar/1.jpg"/>
-          </a>
-          <div className="content">
-            <a className="author">Matt</a>
-            <div className=" metadata fr">
-              <span className="date">5:42PM</span>
-            </div>
-            <div className="text">
-              How artistic!
-            </div>
 
-          </div>
-        </div>
+        {comments.map(function(comment){
+              return (
+              <div className="comment">
+                <a className="avatar">
+                  <img src={comment.avatar}/>
+                </a>
+                <div className="content">
+                  <a className="author">{comment.user}</a>
+                  <div className=" metadata fr">
+                    <span className="date">{comment.time}</span>
+                  </div>
+                  <div className="text">
+                    {comment.comment}
+                  </div>
 
-        <div className="comment">
-          <a className="avatar">
-            <img src="/assets/avatar/2.jpg"/>
-          </a>
-          <div className="content">
-            <a className="author">Matt</a>
-            <div className=" metadata fr">
-              <span className="date">5:44PM</span>
-            </div>
-            <div className="text">
-              This has been very useful for my research. Thanks as well! <br/>
-              This has been very useful for my research. Thanks as well!
-            </div>
+                </div>
+              </div>
+                  )
+            })
+          }
 
-          </div>
-        </div>
-
-
-        <div className="comment">
-          <a className="avatar">
-            <img src="/assets/avatar/3.jpg"/>
-          </a>
-          <div className="content">
-            <a className="author">John</a>
-            <div className="metadata fr">
-              <span className="date">5:45PM</span>
-            </div>
-            <div className="text">
-              Dude, this is awesome. Thanks so much
-            </div>
-
-          </div>
-        </div>
       </div>
   )
 }

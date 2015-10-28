@@ -1,8 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
+
+console.log(wsCtrl.data)
+
 var api = api || {};
 
-api.data = "hello"
 
 api.rd = function(name){
   //console.log("Debug: " + name)
@@ -73,6 +75,9 @@ api.focusById = function(uid){
     }
   }, 100);
 };
+
+
+
 
 module.exports = api;
 },{"../ws/_wsCtrl.js":13}],2:[function(require,module,exports){
@@ -283,9 +288,10 @@ var ChatRoom = {
 
 
     wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
+
     var intervalChatRooms = setInterval(function(){
       wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
-    }, 10000);
+    }, 30000);
     ctrl.onunload = function() {
       wsCtrl.send(wsCtrl.sendData("unSub", {t: "chatrooms"}))
       clearInterval(intervalChatRooms)
@@ -1073,21 +1079,54 @@ module.exports = Nav;
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
+var comments = [
+  {avatar: '/assets/avatar/2.jpg', user: 'Mot', time: "5H42", comment: "Hello world 1!"},
+  {avatar: '/assets/avatar/3.jpg', user: 'Hai', time: "5H49", comment: "Hello world 2!"},
+  {avatar: '/assets/avatar/1.jpg', user: 'Ba', time: "5H52", comment: "Hello world 3!"},
+  {avatar: '/assets/avatar/4.jpg', user: 'Bon', time: "6H42", comment: "Hello world 4!"}
+];
+
+var users = [
+  {
+  avatar: '/assets/avatar/2.jpg',
+  name: 'Mot',
+  role: 'Admin'
+  },
+  {
+    avatar: '/assets/avatar/3.jpg',
+    name: 'Hai',
+    role: 'User'
+  },
+  {
+    avatar: '/assets/avatar/1.jpg',
+    name: 'Ba',
+    role: 'User'
+  },
+  {
+    avatar: '/assets/avatar/4.jpg',
+    name: 'Bon',
+    role: 'Mod'
+  }
+];
 
 var Room = {
   controller: function() {
     var ctrl = this;
+    ctrl.id = m.route.param("roomId");
+
     ctrl.param = m.prop(m.route.param("roomId"));
 
-    wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
+
+    wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
+
     var intervalRoom = setInterval(function(){
       wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
-    }, 10000);
+    }, 30000);
     ctrl.onunload = function() {
       wsCtrl.send(wsCtrl.sendData("unSub", {t: "room", v: ctrl.param()}));
+      wsCtrl.clearOldRoom(ctrl.id);
       clearInterval(intervalRoom)
     };
-
     rd.room();
   },
   view: function(ctrl) {
@@ -1100,7 +1139,19 @@ var Room = {
               ]}, 
               {tag: "div", attrs: {className:"four wide column"}, children: [
                 {tag: "div", attrs: {className:"room-user"}, children: [
-                  {tag: "h5", attrs: {className:"ui dividing header"}, children: ["User online!"]}
+                  {tag: "h5", attrs: {className:"ui dividing header"}, children: ["User online!"]}, 
+                  {tag: "div", attrs: {class:"ui list"}, children: [
+                    wsCtrl.userInRoom(ctrl.id).map(function(user){
+                        return (
+                        {tag: "div", attrs: {class:"item"}, children: [
+                          {tag: "i", attrs: {class:"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}}, 
+                          {tag: "div", attrs: {class:"content"}, children: [
+                            user.name
+                          ]}
+                        ]}
+                            )
+                        })
+                  ]}
                 ]}
               ]}
             ]}, 
@@ -1136,55 +1187,28 @@ var Comments = function(){
   return (
       {tag: "div", attrs: {className:"ui comments room-box"}, children: [
         {tag: "h5", attrs: {className:"ui dividing header"}, children: ["Comments"]}, 
-        {tag: "div", attrs: {className:"comment"}, children: [
-          {tag: "a", attrs: {className:"avatar"}, children: [
-            {tag: "img", attrs: {src:"/assets/avatar/1.jpg"}}
-          ]}, 
-          {tag: "div", attrs: {className:"content"}, children: [
-            {tag: "a", attrs: {className:"author"}, children: ["Matt"]}, 
-            {tag: "div", attrs: {className:" metadata fr"}, children: [
-              {tag: "span", attrs: {className:"date"}, children: ["5:42PM"]}
-            ]}, 
-            {tag: "div", attrs: {className:"text"}, children: [
-              "How artistic!"
-            ]}
 
-          ]}
-        ]}, 
+        comments.map(function(comment){
+              return (
+              {tag: "div", attrs: {className:"comment"}, children: [
+                {tag: "a", attrs: {className:"avatar"}, children: [
+                  {tag: "img", attrs: {src:comment.avatar}}
+                ]}, 
+                {tag: "div", attrs: {className:"content"}, children: [
+                  {tag: "a", attrs: {className:"author"}, children: [comment.user]}, 
+                  {tag: "div", attrs: {className:" metadata fr"}, children: [
+                    {tag: "span", attrs: {className:"date"}, children: [comment.time]}
+                  ]}, 
+                  {tag: "div", attrs: {className:"text"}, children: [
+                    comment.comment
+                  ]}
 
-        {tag: "div", attrs: {className:"comment"}, children: [
-          {tag: "a", attrs: {className:"avatar"}, children: [
-            {tag: "img", attrs: {src:"/assets/avatar/2.jpg"}}
-          ]}, 
-          {tag: "div", attrs: {className:"content"}, children: [
-            {tag: "a", attrs: {className:"author"}, children: ["Matt"]}, 
-            {tag: "div", attrs: {className:" metadata fr"}, children: [
-              {tag: "span", attrs: {className:"date"}, children: ["5:44PM"]}
-            ]}, 
-            {tag: "div", attrs: {className:"text"}, children: [
-              "This has been very useful for my research. Thanks as well! ", {tag: "br", attrs: {}}, 
-              "This has been very useful for my research. Thanks as well!"
-            ]}
+                ]}
+              ]}
+                  )
+            })
+          
 
-          ]}
-        ]}, 
-
-
-        {tag: "div", attrs: {className:"comment"}, children: [
-          {tag: "a", attrs: {className:"avatar"}, children: [
-            {tag: "img", attrs: {src:"/assets/avatar/3.jpg"}}
-          ]}, 
-          {tag: "div", attrs: {className:"content"}, children: [
-            {tag: "a", attrs: {className:"author"}, children: ["John"]}, 
-            {tag: "div", attrs: {className:"metadata fr"}, children: [
-              {tag: "span", attrs: {className:"date"}, children: ["5:45PM"]}
-            ]}, 
-            {tag: "div", attrs: {className:"text"}, children: [
-              "Dude, this is awesome. Thanks so much"
-            ]}
-
-          ]}
-        ]}
       ]}
   )
 }
@@ -1215,6 +1239,7 @@ window.redraw = {
 };
 
 wsCtrl.data = {
+  chatroom: {},
   userOnline: [],
   user: {},
   chat: [],
@@ -1513,6 +1538,41 @@ ctrl.listen = function(d){
     data.notify.init = true;
     rd.nav(function(){m.redraw();});
   }
+
+
+  if(d.t === "chatNotify") {
+    console.log("chat notify")
+    var roomId = d.d.room;
+    console.log("room id = " + roomId)
+
+    if(d.d.t == "userEnter"){
+      console.log("userEnter");
+      var user = d.d.u;
+      if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user.name, "name") < 0){
+        wsCtrl.userInRoom(roomId).push(user)
+      }
+    }
+    if(d.d.t == "userLeaves"){
+      console.log("userLeave");
+      var user = d.d.u;
+      data.userOnline.splice(wsCtrl.userInRoom(roomId), user.name, "name", 1);
+    }
+
+    if(d.d.t === "initChat") {
+      console.log("init chat room!!!!!!!!!!!!!!!")
+      var users = d.d.lu
+      users.map(function(user){
+        if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
+          var u = {avatar: "/assets/avatar/1.jpg", name: user, role: "user"}
+          wsCtrl.userInRoom(roomId).push(u)
+        }
+      })
+    }
+
+    rd.room(function(){m.redraw()})
+  }
+
+
 };
 
 function sortByVer(a,b) {
@@ -1540,6 +1600,28 @@ var doMes = function(d){
       data.chat[pos].read = false;
     } else data.chat[pos].read = true;
     rd.right(function(){m.redraw()})
+};
+
+wsCtrl.getRoom = function(id){
+  if(wsCtrl.data.chatroom[id] == undefined) wsCtrl.data.chatroom[id] = {};
+  return wsCtrl.data.chatroom[id]
+};
+var getRoom = wsCtrl.getRoom;
+
+wsCtrl.userInRoom = function(id){
+  if(wsCtrl.getRoom(id).users == undefined) wsCtrl.getRoom(id).users = [];
+  return wsCtrl.getRoom(id).users
+};
+var userInRoom = wsCtrl.userInRoom;
+
+wsCtrl.commentsInRoom = function(id){
+  if(wsCtrl.getRoom(id).comments == undefined) wsCtrl.getRoom(id).comments = []
+  return wsCtrl.getRoom(id).comments
+};
+var commentsInRoom = wsCtrl.commentsInRoom
+
+wsCtrl.clearOldRoom = function(id){
+  wsCtrl.data.chatroom[id] = {}
 };
 
 $('body').on('click', '.relation_actions a.relation', function() {
