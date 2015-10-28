@@ -324,25 +324,24 @@ ctrl.listen = function(d){
 
 
   if(d.t === "chatNotify") {
-    console.log("chat notify")
+
     var roomId = d.d.room;
     console.log("room id = " + roomId)
 
     if(d.d.t == "userEnter"){
-      console.log("userEnter");
+
       var user = d.d.u;
       if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user.name, "name") < 0){
         wsCtrl.userInRoom(roomId).push(user)
       }
     }
     if(d.d.t == "userLeaves"){
-      console.log("userLeave");
+
       var user = d.d.u;
       data.userOnline.splice(wsCtrl.userInRoom(roomId), user.name, "name", 1);
     }
 
     if(d.d.t === "initChat") {
-      console.log("init chat room!!!!!!!!!!!!!!!")
       var users = d.d.lu
       users.map(function(user){
         if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
@@ -350,6 +349,17 @@ ctrl.listen = function(d){
           wsCtrl.userInRoom(roomId).push(u)
         }
       })
+    }
+    if(d.d.t === "chat") {
+      var mes = d.d.d
+      wsCtrl.commentsInRoom(roomId).push(
+          {
+            avatar: '/assets/avatar/2.jpg',
+            user: mes.user,
+            time: Date.now(),
+            comment: mes.chat
+          }
+      )
     }
 
     rd.room(function(){m.redraw()})
@@ -401,7 +411,12 @@ wsCtrl.commentsInRoom = function(id){
   if(wsCtrl.getRoom(id).comments == undefined) wsCtrl.getRoom(id).comments = []
   return wsCtrl.getRoom(id).comments
 };
-var commentsInRoom = wsCtrl.commentsInRoom
+var commentsInRoom = wsCtrl.commentsInRoom;
+
+wsCtrl.inputChat = function(id){
+  if(wsCtrl.getRoom(id).input == undefined) wsCtrl.getRoom(id).input = m.prop('');
+  return wsCtrl.getRoom(id).input
+};
 
 wsCtrl.clearOldRoom = function(id){
   wsCtrl.data.chatroom[id] = {}

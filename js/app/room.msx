@@ -35,9 +35,21 @@ var Room = {
   controller: function() {
     var ctrl = this;
     ctrl.id = m.route.param("roomId");
-
     ctrl.param = m.prop(m.route.param("roomId"));
 
+    comments.map(function(comment){
+      wsCtrl.commentsInRoom(ctrl.id).push(comment)
+    });
+
+    ctrl.add = function () {
+      var input = wsCtrl.inputChat(ctrl.id)().trim();
+      //input = input.replace(/\n/g, '');
+      if (input) {
+        wsCtrl.send(wsCtrl.sendData("chat", {room: ctrl.id, d: input}));
+        wsCtrl.inputChat(ctrl.id)('');
+      }
+      rd.room(function(){m.redraw()})
+    };
 
     wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
 
@@ -57,7 +69,7 @@ var Room = {
           <div className="eleven wide column room-chat border-right pad0 ">
             <div className="ui padded grid">
               <div className="twelve wide column light-border-right">
-                {Comments()}
+                {Comments(ctrl)}
               </div>
               <div className="four wide column">
                 <div className="room-user">
@@ -87,7 +99,41 @@ var Room = {
                     </a>
                     <div className="ui form content">
                       <div className="field" style="display:inline">
-                        <textarea name="" id="" rows="1" placeholder="Click here to type a chat message"></textarea>
+                        <textarea rows="1"
+                                  config={function (element, isInit, ctx) {
+                                          if(!isInit) {
+                                            $(element).on('input', function(){
+                                              wsCtrl.inputChat(ctrl.id)($(element).val())
+                                            })
+                                          }
+                                          console.log("init ok!")
+                                          element.value = wsCtrl.inputChat(ctrl.id)();
+                                        }
+                                      }
+                                  onkeypress={function(e){
+                                          if(e.keyCode == 13 && !e.shiftKey) {
+                                          console.log("enter")
+                                            m.redraw.strategy("none");
+                                            if (wsCtrl.inputChat(ctrl.id)().length < 1) {
+                                             console.log("chat length < 1")
+                                              return false;
+                                            } else {
+                                             console.log("enter ok")
+                                              var source = e.target || e.srcElement;
+                                              ctrl.add();
+                                              return false;
+                                            }
+                                          }else{
+                                            m.redraw.strategy("none");
+                                            console.log("case 2")
+                                            if(e.keyCode == 13 && e.shiftKey && wsCtrl.inputChat(ctrl.id)().length < 1){
+                                              return false;
+                                            }
+                                          }
+                                        }
+                                      }
+                                  placeholder="Click here to type a chat message"
+                        >{wsCtrl.inputChat(ctrl.id)()}</textarea>
                       </div>
                     </div>
                   </div>
@@ -105,12 +151,12 @@ var Room = {
   }
 };
 
-var Comments = function(){
+var Comments = function(ctrl){
   return (
       <div className="ui comments room-box">
         <h5 className="ui dividing header">Comments</h5>
 
-        {comments.map(function(comment){
+        {wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
               return (
               <div className="comment">
                 <a className="avatar">

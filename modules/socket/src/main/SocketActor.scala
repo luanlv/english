@@ -75,6 +75,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case UserLeavesRoom(user, roomId) => notifyUserLeaveRoom(user, roomId)
 
+    case DoChat(chat, roomId) =>  sendChatRoom(chat, roomId)
+
     case Broom                 => {
       broom
     }
@@ -141,6 +143,12 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     val mes = Json.obj("room" -> roomId, "t" -> "userLeaves", "u" -> user)
     listUidInRoom(roomId) foreach {uid =>
       withMember(uid)(_ push makeMessage("chatNotify", mes))
+    }
+  }
+
+  def sendChatRoom(chat: JsObject, roomId: String) = {
+    listUidInRoom(roomId) foreach { uid =>
+      withMember(uid)(_ push makeMessage("chatNotify", chat))
     }
   }
 

@@ -1,7 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 
-console.log(wsCtrl.data)
 
 var api = api || {};
 
@@ -261,7 +260,7 @@ var Chat = {
                                             }
                                         }
                                       
-                            }, children: [wsCtrl.data.chat[rank].input()]}
+                            }}
                           ]}
                         ]}
                       ]}]}
@@ -528,10 +527,11 @@ window.rd = {
     local(['right'], callback).call()
   },
   chatroom: function(callback){
-    local(['chatroom', callback]).call()
+    local(['chatroom'], callback).call()
   },
   room: function(callback){
-    local(['room', callback]).call()
+    console.log(window.target)
+    local(['room'], callback).call()
   },
   all: function(callback){
     local(["home", "dashboard", "nav", "app", "right", "chatroom", "room"], callback).call()
@@ -1113,9 +1113,21 @@ var Room = {
   controller: function() {
     var ctrl = this;
     ctrl.id = m.route.param("roomId");
-
     ctrl.param = m.prop(m.route.param("roomId"));
 
+    comments.map(function(comment){
+      wsCtrl.commentsInRoom(ctrl.id).push(comment)
+    });
+
+    ctrl.add = function () {
+      var input = wsCtrl.inputChat(ctrl.id)().trim();
+      //input = input.replace(/\n/g, '');
+      if (input) {
+        wsCtrl.send(wsCtrl.sendData("chat", {room: ctrl.id, d: input}));
+        wsCtrl.inputChat(ctrl.id)('');
+      }
+      rd.room(function(){m.redraw()})
+    };
 
     wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
 
@@ -1135,7 +1147,7 @@ var Room = {
           {tag: "div", attrs: {className:"eleven wide column room-chat border-right pad0 "}, children: [
             {tag: "div", attrs: {className:"ui padded grid"}, children: [
               {tag: "div", attrs: {className:"twelve wide column light-border-right"}, children: [
-                Comments()
+                Comments(ctrl)
               ]}, 
               {tag: "div", attrs: {className:"four wide column"}, children: [
                 {tag: "div", attrs: {className:"room-user"}, children: [
@@ -1165,7 +1177,41 @@ var Room = {
                     ]}, 
                     {tag: "div", attrs: {className:"ui form content"}, children: [
                       {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
-                        {tag: "textarea", attrs: {name:"", id:"", rows:"1", placeholder:"Click here to type a chat message"}}
+                        {tag: "textarea", attrs: {rows:"1", 
+                                  config:function (element, isInit, ctx) {
+                                          if(!isInit) {
+                                            $(element).on('input', function(){
+                                              wsCtrl.inputChat(ctrl.id)($(element).val())
+                                            })
+                                          }
+                                          console.log("init ok!")
+                                          element.value = wsCtrl.inputChat(ctrl.id)();
+                                        }, 
+                                      
+                                  onkeypress:function(e){
+                                          if(e.keyCode == 13 && !e.shiftKey) {
+                                          console.log("enter")
+                                            m.redraw.strategy("none");
+                                            if (wsCtrl.inputChat(ctrl.id)().length < 1) {
+                                             console.log("chat length < 1")
+                                              return false;
+                                            } else {
+                                             console.log("enter ok")
+                                              var source = e.target || e.srcElement;
+                                              ctrl.add();
+                                              return false;
+                                            }
+                                          }else{
+                                            m.redraw.strategy("none");
+                                            console.log("case 2")
+                                            if(e.keyCode == 13 && e.shiftKey && wsCtrl.inputChat(ctrl.id)().length < 1){
+                                              return false;
+                                            }
+                                          }
+                                        }, 
+                                      
+                                  placeholder:"Click here to type a chat message"
+                        }, children: [wsCtrl.inputChat(ctrl.id)()]}
                       ]}
                     ]}
                   ]}
@@ -1183,12 +1229,12 @@ var Room = {
   }
 };
 
-var Comments = function(){
+var Comments = function(ctrl){
   return (
       {tag: "div", attrs: {className:"ui comments room-box"}, children: [
         {tag: "h5", attrs: {className:"ui dividing header"}, children: ["Comments"]}, 
 
-        comments.map(function(comment){
+        wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
               return (
               {tag: "div", attrs: {className:"comment"}, children: [
                 {tag: "a", attrs: {className:"avatar"}, children: [
@@ -1541,25 +1587,24 @@ ctrl.listen = function(d){
 
 
   if(d.t === "chatNotify") {
-    console.log("chat notify")
+
     var roomId = d.d.room;
     console.log("room id = " + roomId)
 
     if(d.d.t == "userEnter"){
-      console.log("userEnter");
+
       var user = d.d.u;
       if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user.name, "name") < 0){
         wsCtrl.userInRoom(roomId).push(user)
       }
     }
     if(d.d.t == "userLeaves"){
-      console.log("userLeave");
+
       var user = d.d.u;
       data.userOnline.splice(wsCtrl.userInRoom(roomId), user.name, "name", 1);
     }
 
     if(d.d.t === "initChat") {
-      console.log("init chat room!!!!!!!!!!!!!!!")
       var users = d.d.lu
       users.map(function(user){
         if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
@@ -1567,6 +1612,17 @@ ctrl.listen = function(d){
           wsCtrl.userInRoom(roomId).push(u)
         }
       })
+    }
+    if(d.d.t === "chat") {
+      var mes = d.d.d
+      wsCtrl.commentsInRoom(roomId).push(
+          {
+            avatar: '/assets/avatar/2.jpg',
+            user: mes.user,
+            time: Date.now(),
+            comment: mes.chat
+          }
+      )
     }
 
     rd.room(function(){m.redraw()})
@@ -1618,7 +1674,12 @@ wsCtrl.commentsInRoom = function(id){
   if(wsCtrl.getRoom(id).comments == undefined) wsCtrl.getRoom(id).comments = []
   return wsCtrl.getRoom(id).comments
 };
-var commentsInRoom = wsCtrl.commentsInRoom
+var commentsInRoom = wsCtrl.commentsInRoom;
+
+wsCtrl.inputChat = function(id){
+  if(wsCtrl.getRoom(id).input == undefined) wsCtrl.getRoom(id).input = m.prop('');
+  return wsCtrl.getRoom(id).input
+};
 
 wsCtrl.clearOldRoom = function(id){
   wsCtrl.data.chatroom[id] = {}

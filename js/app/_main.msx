@@ -59,10 +59,11 @@ window.rd = {
     local(['right'], callback).call()
   },
   chatroom: function(callback){
-    local(['chatroom', callback]).call()
+    local(['chatroom'], callback).call()
   },
   room: function(callback){
-    local(['room', callback]).call()
+    console.log(window.target)
+    local(['room'], callback).call()
   },
   all: function(callback){
     local(["home", "dashboard", "nav", "app", "right", "chatroom", "room"], callback).call()

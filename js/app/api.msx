@@ -1,6 +1,5 @@
 var wsCtrl = require('../ws/_wsCtrl.js');
 
-console.log(wsCtrl.data)
 
 var api = api || {};
 

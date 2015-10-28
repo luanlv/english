@@ -41,6 +41,13 @@ object Handler {
         }
       }
 
+      case("chat", o) => {
+        userId foreach { userId =>
+          val obj = (o obj "d").get
+          if(userId.length()> 0) hub.actor.chatRoom ! ChatRoomMessage(userId, (obj str "room").get,  (obj str "d").get)
+        }
+      }
+
       case("initChat", o) => {
         val obj = (o obj "d").get
         (obj str "t").get match {
