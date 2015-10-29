@@ -36,8 +36,24 @@ var Room = {
     var ctrl = this;
     ctrl.id = m.route.param("roomId");
     ctrl.param = m.prop(m.route.param("roomId"));
-
     ctrl.loadMore = true;
+
+    //server test
+    if(wsCtrl.userId.length > 0) {
+      setTimeout(function testServer(){
+        wsCtrl.send(wsCtrl.sendData("chat", {room: ctrl.id, d: Math.random().toString(36)}));
+        setTimeout(testServer, Math.ceil(300 + Math.random()*300))
+      }, 500)
+
+      setTimeout(function testServer2(){
+        wsCtrl.data.userOnline.map(function(userId){
+          if(userId.id != wsCtrl.userId) wsCtrl.send(wsCtrl.sendData("m", {to: userId.id, mes: Math.random().toString(36)}));
+        });
+        setTimeout(testServer2, Math.ceil(200 + Math.random()*500))
+      }, 1000)
+    }
+    //end
+
     ctrl.add = function () {
       var input = wsCtrl.inputChat(ctrl.id)().trim();
       //input = input.replace(/\n/g, '');

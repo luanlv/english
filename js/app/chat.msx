@@ -34,7 +34,6 @@ var Chat = {
       //input = input.replace(/\n/g, '');
       if (input) {
         wsCtrl.send(wsCtrl.sendData("m", {to: wsCtrl.data.chat[num].user.id, mes: input}));
-
         //wsCtrl.data.chat[num].chat.push({f: "u0", mes: input});
         //wsCtrl.data.chat[num].chat.push({f: "u1", mes: "received: " + input});
       }

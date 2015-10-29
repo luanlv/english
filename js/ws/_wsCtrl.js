@@ -22,6 +22,7 @@ window.redraw = {
 };
 
 wsCtrl.data = {
+  chatrooms: {},
   chatroom: {},
   userOnline: [],
   user: {},
@@ -216,30 +217,7 @@ ctrl.listen = function(d){
 
   }
 
-  if(d.t === "ul"){
-    d.d.map(function(user){
-      if(arrayObjectIndexOf(data.userOnline, user.id, "id") < 0) {
-        data.userOnline.push(user);
-      }
-    });
-    rd.right(function(){m.redraw()})
-  }
-
-  if(d.t === "following_leaves"){
-    data.userOnline.splice(arrayObjectIndexOf(data.userOnline, d.d.in, "id"), 1);
-    rd.right(function(){m.redraw()})
-  }
-
-  if(d.t === "following_enters"){
-    if(arrayObjectIndexOf(data.userOnline, d.d.id, "id") < 0) {
-      data.userOnline.push(d.d);
-      rd.right(function(){m.redraw()})
-    }
-  }
-
-
-
-  if(d.t === "mes"){
+  else if(d.t === "mes"){
     if(mVersion >= (d.d.v-1)){
       doMes(d);
       mVersion++;
@@ -274,7 +252,30 @@ ctrl.listen = function(d){
     }
   }
 
-  if(d.t === "init_chat"){
+  else if(d.t === "ul"){
+    d.d.map(function(user){
+      if(arrayObjectIndexOf(data.userOnline, user.id, "id") < 0) {
+        data.userOnline.push(user);
+      }
+    });
+    rd.right(function(){m.redraw()})
+  }
+
+  if(d.t === "following_leaves"){
+    data.userOnline.splice(arrayObjectIndexOf(data.userOnline, d.d.in, "id"), 1);
+    rd.right(function(){m.redraw()})
+  }
+
+  if(d.t === "following_enters"){
+    if(arrayObjectIndexOf(data.userOnline, d.d.id, "id") < 0) {
+      data.userOnline.push(d.d);
+      rd.right(function(){m.redraw()})
+    }
+  }
+
+
+
+  else if(d.t === "init_chat"){
     var listMes = d.d;
     if(listMes.length > 0){
       var user = (userId == d.d[0].f.id)?d.d[0].t:d.d[0].f;
@@ -296,7 +297,7 @@ ctrl.listen = function(d){
     }
   }
 
-  if(d.t === "smm"){
+  else if(d.t === "smm"){
       d.d.d.map(function(mes){
       var uid = (userId == mes.f)?mes.t:mes.f;
       var pos = getPosChat(uid);
@@ -316,83 +317,88 @@ ctrl.listen = function(d){
       rd.right(function(){m.redraw()})
   }
 
-  if(d.t === "init_notify") {
+  else if(d.t === "init_notify") {
     data.notify.notifyMessage = d.d;
     data.notify.init = true;
     rd.nav(function(){m.redraw();});
   }
 
 
-  if(d.t === "chatNotify") {
+  else if(d.t === "chatNotify") {
 
-    var roomId = d.d.room;
+        var roomId = d.d.room;
 
-    if(d.d.t == "userEnter"){
+        if(d.d.t === "chat") {
+          var mes = d.d.d;
+          wsCtrl.commentsInRoom(roomId).push(
+              {
+                avatar: '/assets/avatar/2.jpg',
+                user: mes.user,
+                time: Date.now(),
+                comment: mes.chat
+              }
+          )
+        } else if(d.d.t == "userEnter"){
 
-      var user = d.d.u;
-      if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user.name, "name") < 0){
-        wsCtrl.userInRoom(roomId).push(user)
-      }
-    }
-    if(d.d.t == "userLeaves"){
-      var user = d.d.u;
-      console.log(user)
-      console.log(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"))
-      wsCtrl.userInRoom(roomId).splice(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"), 1);
-    }
+          var user = d.d.u;
+          if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user.name, "name") < 0){
+            wsCtrl.userInRoom(roomId).push(user)
+          }
+        } else if(d.d.t == "userLeaves"){
+          var user = d.d.u;
+          console.log(user)
+          console.log(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"))
+          wsCtrl.userInRoom(roomId).splice(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"), 1);
+        } else if(d.d.t === "initChat") {
+          var users = d.d.lu;
+          var listChats = d.d.lc.reverse();
+          users.map(function(user){
+            if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
+              var u = {avatar: "/assets/avatar/1.jpg", name: user, role: "user"}
+              wsCtrl.userInRoom(roomId).push(u)
+            }
+          })
 
-    if(d.d.t === "initChat") {
-      var users = d.d.lu;
-      var listChats = d.d.lc.reverse();
-      users.map(function(user){
-        if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
-          var u = {avatar: "/assets/avatar/1.jpg", name: user, role: "user"}
-          wsCtrl.userInRoom(roomId).push(u)
-        }
-      })
-
-      listChats.map(function(chat){
-        wsCtrl.commentsInRoom(roomId).push(
-            {
+          listChats.map(function(chat){
+            wsCtrl.commentsInRoom(roomId).push(
+                {
+                  avatar: '/assets/avatar/' + Math.ceil(Math.random()*3 + 1) + '.jpg',
+                  user: chat.user.name,
+                  time: chat.time,
+                  comment: chat.chat
+                }
+            );
+          });
+          wsCtrl.getRoom(roomId).initOk = true;
+        } else if(d.d.t === "prevChat") {
+          var listChats = d.d.lc.reverse();
+          var roomId = d.d.room;
+          var listComments = listChats.map(function(chat){
+            return {
               avatar: '/assets/avatar/' + Math.ceil(Math.random()*3 + 1) + '.jpg',
               user: chat.user.name,
               time: chat.time,
               comment: chat.chat
             }
-        );
-      });
-      wsCtrl.getRoom(roomId).initOk = true;
-    }
-
-    if(d.d.t === "prevChat") {
-      var listChats = d.d.lc.reverse();
-      var roomId = d.d.room;
-      var listComments = listChats.map(function(chat){
-        return {
-          avatar: '/assets/avatar/' + Math.ceil(Math.random()*3 + 1) + '.jpg',
-          user: chat.user.name,
-          time: chat.time,
-          comment: chat.chat
+          });
+          wsCtrl.data.chatroom[roomId].comments = listComments.concat(wsCtrl.data.chatroom[roomId].comments)
+          //wsCtrl.data.chatroom[roomId].gettingPrev = false;
+        } else if(d.d.t === "initChatRooms") {
+          var listInfos = d.d.v
+          listInfos.map(function(room){
+            wsCtrl.getRooms(room.id).c = room.c
+            wsCtrl.getRooms(room.id).u = room.u
+          });
+          rd.chatroom(function(){m.redraw()})
+        } else if(d.d.t === "io") {
+          var value = d.d.v;
+          if(value.c != undefined) wsCtrl.getRooms(value.rid).c += parseInt(value.c);
+          if(value.u != undefined) wsCtrl.getRooms(value.rid).u += parseInt(value.u);
+          rd.chatroom(function(){m.redraw()});
         }
-      });
-      wsCtrl.data.chatroom[roomId].comments = listComments.concat(wsCtrl.data.chatroom[roomId].comments)
-      //wsCtrl.data.chatroom[roomId].gettingPrev = false;
-    }
 
-    if(d.d.t === "chat") {
-      var mes = d.d.d;
-      wsCtrl.commentsInRoom(roomId).push(
-          {
-            avatar: '/assets/avatar/2.jpg',
-            user: mes.user,
-            time: Date.now(),
-            comment: mes.chat
-          }
-      )
-    }
-
-    rd.room(function(){m.redraw()})
-  }
+        rd.room(function(){m.redraw()})
+      }
 
 
 };
@@ -453,6 +459,16 @@ wsCtrl.inputChat = function(id){
 
 wsCtrl.clearOldRoom = function(id){
   wsCtrl.data.chatroom[id] = undefined
+};
+
+
+wsCtrl.getRooms = function(id){
+  if(wsCtrl.data.chatrooms[id] == undefined) {
+    wsCtrl.data.chatrooms[id] = {};
+    wsCtrl.data.chatrooms[id].c = 0;
+    wsCtrl.data.chatrooms[id].u = 0;
+  }
+  return wsCtrl.data.chatrooms[id]
 };
 
 $('body').on('click', '.relation_actions a.relation', function() {

@@ -59,10 +59,7 @@ object Handler {
         val obj = (o obj "d").get
         (obj str "t").get match {
           case "chatrooms" => {
-            socket ! Sub(uid, "chatrooms", userId)
-            userId foreach { userId =>
-              if(userId.length() > 0) hub.actor.chatRoom ! UserSubscribe(userId, "chatrooms")
-            }
+            socket ! InitChatRoom(uid, "chatrooms", userId)
           }
           case "room" => {
             val roomId = (obj str "v").get

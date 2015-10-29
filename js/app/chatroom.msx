@@ -6,14 +6,13 @@ var ChatRoom = {
   controller: function() {
     var ctrl = this;
     ctrl.param = m.prop(m.route.param("roomId")),
-
-
-    wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
+    wsCtrl.send(wsCtrl.sendData("initChat", {t: "chatrooms"}));
 
     var intervalChatRooms = setInterval(function(){
       wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
     }, 30000);
     ctrl.onunload = function() {
+      wsCtrl.data.chatrooms = {}
       wsCtrl.send(wsCtrl.sendData("unSub", {t: "chatrooms"}))
       clearInterval(intervalChatRooms)
     };
@@ -45,11 +44,10 @@ var ChatRoom = {
                  config={m.route}
               >
                 <span className="fr">
-                  <div class="item">
-                    <i className="tiny users right middle aligned icon">1</i>
-
+                  <div className="item">
+                    <i className="tiny users right middle aligned icon">{wsCtrl.getRooms("123").u}</i>
                   </div>
-                  <i className="tiny plug right middle aligned icon">12</i>
+                  <i className="tiny plug right middle aligned icon">{wsCtrl.getRooms("123").c}</i>
                 </span>
                 <i className="large pointing right middle aligned icon"></i>
                 <div className="content">
