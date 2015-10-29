@@ -37,6 +37,7 @@ var Room = {
     ctrl.id = m.route.param("roomId");
     ctrl.param = m.prop(m.route.param("roomId"));
 
+    ctrl.loadMore = true;
     ctrl.add = function () {
       var input = wsCtrl.inputChat(ctrl.id)().trim();
       //input = input.replace(/\n/g, '');
@@ -193,8 +194,7 @@ var Comments = function(ctrl){
 
                       if(wsCtrl.getRoom(ctrl.id).gettingPrev == true){
                         element.scrollTop = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
-                        wsCtrl.getRoom(ctrl.id).gettingPrev = false
-
+                        wsCtrl.getRoom(ctrl.id).gettingPrev = false;
                       }
 
 
@@ -207,11 +207,12 @@ var Comments = function(ctrl){
                         context.run = true;
                         $(element).on('scroll', function(){
                           if(element.scrollTop < 100 && wsCtrl.getRoom(ctrl.id).gettingPrev == false){
+                            ctrl.loadMore = false;
                             wsCtrl.getRoom(ctrl.id).gettingPrev = true;
                             wsCtrl.send(wsCtrl.sendData("prevChat", {t: "room", v: ctrl.param(), lastTime: wsCtrl.commentsInRoom(ctrl.id)[0].time}));
                           }
                           context.prevScrollTop = element.scrollTop
-                        })
+                        });
                       }
 
                         var addLength = (element.scrollHeight - context.prevScrollHeight) || 0;
@@ -239,15 +240,7 @@ var Comments = function(ctrl){
                       <div className="content">
                         <a className="author">{comment.user}</a>
                         <div className=" metadata fr">
-                          <span className="date" datetime={comment.time}
-                                config={function(ele, isInit, ctx){
-                                    if(!isInit){
-                                      var timestamp = $(ele).attr('datetime');
-                                      ele.innerHTML = moment.unix(timestamp/1000).fromNow();
-                                    }
-                                 }
-                                }
-                          >{comment.time}</span>
+                          <span className="date">{api.time(comment.time)}</span>
                         </div>
                         <div className="text">
                           {comment.comment}

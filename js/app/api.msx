@@ -124,6 +124,9 @@ api.signup = function(){
 }
 window.signup = api.signup;
 
+api.time = function(timestamp){
+  return moment.unix(timestamp/1000).fromNow();
+};
 
 
 module.exports = api;

@@ -125,6 +125,9 @@ api.signup = function(){
 }
 window.signup = api.signup;
 
+api.time = function(timestamp){
+  return moment.unix(timestamp/1000).fromNow();
+};
 
 
 module.exports = api;
@@ -1151,6 +1154,7 @@ var Room = {
     ctrl.id = m.route.param("roomId");
     ctrl.param = m.prop(m.route.param("roomId"));
 
+    ctrl.loadMore = true;
     ctrl.add = function () {
       var input = wsCtrl.inputChat(ctrl.id)().trim();
       //input = input.replace(/\n/g, '');
@@ -1307,8 +1311,7 @@ var Comments = function(ctrl){
 
                       if(wsCtrl.getRoom(ctrl.id).gettingPrev == true){
                         element.scrollTop = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
-                        wsCtrl.getRoom(ctrl.id).gettingPrev = false
-
+                        wsCtrl.getRoom(ctrl.id).gettingPrev = false;
                       }
 
 
@@ -1321,11 +1324,12 @@ var Comments = function(ctrl){
                         context.run = true;
                         $(element).on('scroll', function(){
                           if(element.scrollTop < 100 && wsCtrl.getRoom(ctrl.id).gettingPrev == false){
+                            ctrl.loadMore = false;
                             wsCtrl.getRoom(ctrl.id).gettingPrev = true;
                             wsCtrl.send(wsCtrl.sendData("prevChat", {t: "room", v: ctrl.param(), lastTime: wsCtrl.commentsInRoom(ctrl.id)[0].time}));
                           }
                           context.prevScrollTop = element.scrollTop
-                        })
+                        });
                       }
 
                         var addLength = (element.scrollHeight - context.prevScrollHeight) || 0;
@@ -1353,15 +1357,7 @@ var Comments = function(ctrl){
                       {tag: "div", attrs: {className:"content"}, children: [
                         {tag: "a", attrs: {className:"author"}, children: [comment.user]}, 
                         {tag: "div", attrs: {className:" metadata fr"}, children: [
-                          {tag: "span", attrs: {className:"date", datetime:comment.time, 
-                                config:function(ele, isInit, ctx){
-                                    if(!isInit){
-                                      var timestamp = $(ele).attr('datetime');
-                                      ele.innerHTML = moment.unix(timestamp/1000).fromNow();
-                                    }
-                                 }
-                                
-                          }, children: [comment.time]}
+                          {tag: "span", attrs: {className:"date"}, children: [api.time(comment.time)]}
                         ]}, 
                         {tag: "div", attrs: {className:"text"}, children: [
                           comment.comment
