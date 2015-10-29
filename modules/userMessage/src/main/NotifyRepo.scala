@@ -22,7 +22,6 @@ object NotifyRepo {
   private lazy val coll = Env.current.notifyColl
 
   def notifyMessage(uid: String, chatId: String, mesId: String, mv: Int, mes: String, time: DateTime) = {
-    println("NotifyMessage")
     val bs = BSONDocument("_id" -> (mesId + "_" + mv), "mid" -> mesId, "mv" -> mv,  "f" -> chatId, "t" -> uid, "mes" -> mes, "time" -> time)
 
     if(mv == 1){
@@ -65,7 +64,6 @@ object NotifyRepo {
 
       val update = data.map{num =>
         if(num._1 == 0) {
-          println("LINE 147: " + num._1)
           coll.update(
             BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
             BSONDocument(
@@ -78,7 +76,6 @@ object NotifyRepo {
           )
           true
         } else if(num._1 > 0 && num._2.contains(chatId)) {
-          println("LINE 160: " + num._1 + " - " + num._2)
           coll.update(
             BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
             BSONDocument(
@@ -89,7 +86,6 @@ object NotifyRepo {
           )
           false
         } else {
-          println("LINE 170: " + num._1 + " - " + num._2)
           coll.update(
             BSONDocument("_id" -> uid, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> chatId))),
             BSONDocument(
@@ -152,9 +148,7 @@ object NotifyRepo {
       num => {
         val unread = num._2 - mv
         if(num._1 != 0 && unread == 0){
-          println("MARK READ: 1")
           if(num._3.contains(toId)){
-            println("MARK READ: 11")
             coll.update(
               BSONDocument("_id" -> userId, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> toId))),
               BSONDocument(
@@ -165,7 +159,6 @@ object NotifyRepo {
             )
             true
           } else {
-            println("MARK READ: 12")
             coll.update(
               BSONDocument("_id" -> userId, "m" -> BSONDocument("$elemMatch" -> BSONDocument("uid" -> toId))),
               BSONDocument(
@@ -175,7 +168,6 @@ object NotifyRepo {
             false
           }
         } else {
-          println("MARK READ: 2")
           false
         }
       }

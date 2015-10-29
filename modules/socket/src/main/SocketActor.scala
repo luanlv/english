@@ -69,7 +69,6 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     case SendInitNotify(uid, data) => sendInitNotify(uid, data)
 
     case InitChatRoom(uid, roomId, userId) => {
-      println(roomId)
       if(roomId != "chatrooms") initChat(uid, roomId, userId)
       else initChatRooms(uid, roomId, userId)
     }
