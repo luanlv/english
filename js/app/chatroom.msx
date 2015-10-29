@@ -38,32 +38,39 @@ var ChatRoom = {
                     }
             >Create new room</button>
           </div>
-          <table className="ui orange table">
-            <thead>
-            <tr>
-              <th className="four wide">Tên phòng</th>
-              <th className="four wide">Level</th>
-              <th className="six wide">Giới thiệu</th>
-              <th className="two wide">Online</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td><a href="/chatroom/123"
-                    config={m.route}
-              >Room 1</a></td>
-              <td>Beginer</td>
-              <td>Room for beginer</td>
-              <td>0</td>
-            </tr>
-            <tr>
-              <td>Room 2</td>
-              <td>Advance</td>
-              <td>Room for advance</td>
-              <td>0</td>
-            </tr>
-            </tbody>
-          </table>
+
+          <div className="ui segment">
+            <div className="ui relaxed divided list">
+              <a href="/chatroom/123" className="item"
+                 config={m.route}
+              >
+                <span className="fr">
+                  <div class="item">
+                    <i className="tiny users right middle aligned icon">1</i>
+
+                  </div>
+                  <i className="tiny plug right middle aligned icon">12</i>
+                </span>
+                <i className="large pointing right middle aligned icon"></i>
+                <div className="content">
+                  <div className="header">Room 1</div>
+                  <div className="description">Dành cho nguời mới học ( beginer )</div>
+                </div>
+              </a>
+              <a className="item">
+                <span className="fr">
+                  <i className="tiny users right middle aligned icon">0</i>
+                  <br/>
+                  <i className="tiny plug right middle aligned icon">0</i>
+                </span>
+                <i className="large pointing right middle aligned icon"></i>
+                <div className="content">
+                  <div className="header">Room 2</div>
+                  <div className="description">Dành cho ???</div>
+                </div>
+              </a>
+            </div>
+          </div>
 
           {Create()}
         </div>

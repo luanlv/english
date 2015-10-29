@@ -368,30 +368,37 @@ var ChatRoom = {
                     
             }, children: ["Create new room"]}
           ]}, 
-          {tag: "table", attrs: {className:"ui orange table"}, children: [
-            {tag: "thead", attrs: {}, children: [
-            {tag: "tr", attrs: {}, children: [
-              {tag: "th", attrs: {className:"four wide"}, children: ["Tên phòng"]}, 
-              {tag: "th", attrs: {className:"four wide"}, children: ["Level"]}, 
-              {tag: "th", attrs: {className:"six wide"}, children: ["Giới thiệu"]}, 
-              {tag: "th", attrs: {className:"two wide"}, children: ["Online"]}
-            ]}
-            ]}, 
-            {tag: "tbody", attrs: {}, children: [
-            {tag: "tr", attrs: {}, children: [
-              {tag: "td", attrs: {}, children: [{tag: "a", attrs: {href:"/chatroom/123", 
-                    config:m.route
-              }, children: ["Room 1"]}]}, 
-              {tag: "td", attrs: {}, children: ["Beginer"]}, 
-              {tag: "td", attrs: {}, children: ["Room for beginer"]}, 
-              {tag: "td", attrs: {}, children: ["0"]}
-            ]}, 
-            {tag: "tr", attrs: {}, children: [
-              {tag: "td", attrs: {}, children: ["Room 2"]}, 
-              {tag: "td", attrs: {}, children: ["Advance"]}, 
-              {tag: "td", attrs: {}, children: ["Room for advance"]}, 
-              {tag: "td", attrs: {}, children: ["0"]}
-            ]}
+
+          {tag: "div", attrs: {className:"ui segment"}, children: [
+            {tag: "div", attrs: {className:"ui relaxed divided list"}, children: [
+              {tag: "a", attrs: {href:"/chatroom/123", className:"item", 
+                 config:m.route
+              }, children: [
+                {tag: "span", attrs: {className:"fr"}, children: [
+                  {tag: "div", attrs: {class:"item"}, children: [
+                    {tag: "i", attrs: {className:"tiny users right middle aligned icon"}, children: ["1"]}
+
+                  ]}, 
+                  {tag: "i", attrs: {className:"tiny plug right middle aligned icon"}, children: ["12"]}
+                ]}, 
+                {tag: "i", attrs: {className:"large pointing right middle aligned icon"}}, 
+                {tag: "div", attrs: {className:"content"}, children: [
+                  {tag: "div", attrs: {className:"header"}, children: ["Room 1"]}, 
+                  {tag: "div", attrs: {className:"description"}, children: ["Dành cho nguời mới học ( beginer )"]}
+                ]}
+              ]}, 
+              {tag: "a", attrs: {className:"item"}, children: [
+                {tag: "span", attrs: {className:"fr"}, children: [
+                  {tag: "i", attrs: {className:"tiny users right middle aligned icon"}, children: ["0"]}, 
+                  {tag: "br", attrs: {}}, 
+                  {tag: "i", attrs: {className:"tiny plug right middle aligned icon"}, children: ["0"]}
+                ]}, 
+                {tag: "i", attrs: {className:"large pointing right middle aligned icon"}}, 
+                {tag: "div", attrs: {className:"content"}, children: [
+                  {tag: "div", attrs: {className:"header"}, children: ["Room 2"]}, 
+                  {tag: "div", attrs: {className:"description"}, children: ["Dành cho ???"]}
+                ]}
+              ]}
             ]}
           ]}, 
 

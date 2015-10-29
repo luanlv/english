@@ -601,3 +601,6 @@ textarea {
 }
 
 
+.inline {
+  display: inline-block!important;
+}
