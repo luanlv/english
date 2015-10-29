@@ -1224,7 +1224,7 @@ var Room = {
                                           if(!isInit) {
                                             if(wsCtrl.userId.length == 0){
                                               $(element).on('click input', function(){
-                                                api.signin()
+                                                api.signin();
                                                 element.value = ''
                                               })
                                             } else {
@@ -1239,7 +1239,7 @@ var Room = {
                                               callback: function (event) {
                                                 var boxNode = document.getElementsByClassName('box-comment')[0];
                                                 var box = $('.box-comment');
-                                                var input = $(element)
+                                                var input = $(element);
 
 
                                                 if (box.scrollTop() + box.innerHeight() >= box.prop('scrollHeight')) {
@@ -1303,7 +1303,41 @@ var Comments = function(ctrl){
       {tag: "div", attrs: {className:"ui comments room-box"}, children: [
         {tag: "h5", attrs: {className:"ui dividing header"}, children: ["Comments"]}, 
         {tag: "div", attrs: {className:"box-comment", 
-             config:api.scrollBottom2
+             config:function(element, isInit, context) {
+
+                      if(wsCtrl.getRoom(ctrl.id).gettingPrev == true){
+                        element.scrollTop = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
+                        wsCtrl.getRoom(ctrl.id).gettingPrev = false
+
+                      }
+
+
+                      if(context.run && wsCtrl.getRoom(ctrl.id).initOk){
+                         element.scrollTop = element.scrollHeight;
+                         context.run = false;
+                      }
+
+                      if(!isInit){
+                        context.run = true;
+                        $(element).on('scroll', function(){
+                          if(element.scrollTop < 100 && wsCtrl.getRoom(ctrl.id).gettingPrev == false){
+                            wsCtrl.getRoom(ctrl.id).gettingPrev = true;
+                            wsCtrl.send(wsCtrl.sendData("prevChat", {t: "room", v: ctrl.param(), lastTime: wsCtrl.commentsInRoom(ctrl.id)[0].time}));
+                          }
+                          context.prevScrollTop = element.scrollTop
+                        })
+                      }
+
+                        var addLength = (element.scrollHeight - context.prevScrollHeight) || 0;
+
+
+                        if( (element.scrollHeight - element.clientHeight - element.scrollTop < addLength + 40) && (element.scrollTop > (200 + element.scrollHeight - context.prevScrollHeight))){
+                          element.scrollTop = element.scrollHeight;
+                        }
+                      context.prevScrollTop = element.scrollTop
+                      context.prevScrollHeight = element.scrollHeight
+                    }
+                 
         }, children: [
           (!wsCtrl.getRoom(ctrl.id).initOk)?(
           {tag: "div", attrs: {className:"ui active loader"}}
@@ -1322,10 +1356,8 @@ var Comments = function(ctrl){
                           {tag: "span", attrs: {className:"date", datetime:comment.time, 
                                 config:function(ele, isInit, ctx){
                                     if(!isInit){
-                                      var timestamp = $(ele).attr('datetime')
-                                      console.log($(ele).val())
+                                      var timestamp = $(ele).attr('datetime');
                                       ele.innerHTML = moment.unix(timestamp/1000).fromNow();
-                                      console.log($(ele).val())
                                     }
                                  }
                                 
@@ -1687,9 +1719,10 @@ ctrl.listen = function(d){
       }
     }
     if(d.d.t == "userLeaves"){
-
       var user = d.d.u;
-      data.userOnline.splice(wsCtrl.userInRoom(roomId), user.name, "name", 1);
+      console.log(user)
+      console.log(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"))
+      wsCtrl.userInRoom(roomId).splice(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"), 1);
     }
 
     if(d.d.t === "initChat") {
@@ -1714,8 +1747,24 @@ ctrl.listen = function(d){
       });
       wsCtrl.getRoom(roomId).initOk = true;
     }
+
+    if(d.d.t === "prevChat") {
+      var listChats = d.d.lc.reverse();
+      var roomId = d.d.room;
+      var listComments = listChats.map(function(chat){
+        return {
+          avatar: '/assets/avatar/' + Math.ceil(Math.random()*3 + 1) + '.jpg',
+          user: chat.user.name,
+          time: chat.time,
+          comment: chat.chat
+        }
+      });
+      wsCtrl.data.chatroom[roomId].comments = listComments.concat(wsCtrl.data.chatroom[roomId].comments)
+      //wsCtrl.data.chatroom[roomId].gettingPrev = false;
+    }
+
     if(d.d.t === "chat") {
-      var mes = d.d.d
+      var mes = d.d.d;
       wsCtrl.commentsInRoom(roomId).push(
           {
             avatar: '/assets/avatar/2.jpg',
@@ -1763,6 +1812,7 @@ wsCtrl.getRoom = function(id){
   if(wsCtrl.data.chatroom[id] == undefined) {
     wsCtrl.data.chatroom[id] = {};
     wsCtrl.data.chatroom[id].initOk = false;
+    wsCtrl.data.chatroom[id].gettingPrev = false;
   }
   return wsCtrl.data.chatroom[id]
 };

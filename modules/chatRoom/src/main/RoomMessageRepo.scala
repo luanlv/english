@@ -32,7 +32,16 @@ object RoomMessageRepo {
     coll.find(bs)
       .sort(BSONDocument("time" -> -1))
       .cursor[RoomMessage]()
-      .collect[List](10)
+      .collect[List](20)
+  }
+
+  def getPrevChatByRoomWithTime(roomId: String, time: Long) = {
+    val datetime = new DateTime(time)
+    val bs = BSONDocument("roomId" -> roomId, "time" -> Json.obj("$lt" -> BSONDateTime(time)))
+    coll.find(bs)
+        .sort(BSONDocument("time" -> -1))
+        .cursor[RoomMessage]()
+        .collect[List](20)
   }
 
 }

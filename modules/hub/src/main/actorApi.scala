@@ -229,7 +229,7 @@ package chatRoom {
   case class UserEnterRoom(user: String, roomId: String)
   case class UserLeavesRoom(user: String, roomId: String)
   case class GetInitChatRoom(roomId: String)
-
   case class ChatRoomMessage(userId: String, roomId: String, mes: String)
   case class DoChat(chat: JsObject, roomId: String)
+  case class PrevChat(roomId: String, lastTime: Long)
 }

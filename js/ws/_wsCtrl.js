@@ -335,9 +335,10 @@ ctrl.listen = function(d){
       }
     }
     if(d.d.t == "userLeaves"){
-
       var user = d.d.u;
-      data.userOnline.splice(wsCtrl.userInRoom(roomId), user.name, "name", 1);
+      console.log(user)
+      console.log(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"))
+      wsCtrl.userInRoom(roomId).splice(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"), 1);
     }
 
     if(d.d.t === "initChat") {
@@ -362,8 +363,24 @@ ctrl.listen = function(d){
       });
       wsCtrl.getRoom(roomId).initOk = true;
     }
+
+    if(d.d.t === "prevChat") {
+      var listChats = d.d.lc.reverse();
+      var roomId = d.d.room;
+      var listComments = listChats.map(function(chat){
+        return {
+          avatar: '/assets/avatar/' + Math.ceil(Math.random()*3 + 1) + '.jpg',
+          user: chat.user.name,
+          time: chat.time,
+          comment: chat.chat
+        }
+      });
+      wsCtrl.data.chatroom[roomId].comments = listComments.concat(wsCtrl.data.chatroom[roomId].comments)
+      //wsCtrl.data.chatroom[roomId].gettingPrev = false;
+    }
+
     if(d.d.t === "chat") {
-      var mes = d.d.d
+      var mes = d.d.d;
       wsCtrl.commentsInRoom(roomId).push(
           {
             avatar: '/assets/avatar/2.jpg',
@@ -411,6 +428,7 @@ wsCtrl.getRoom = function(id){
   if(wsCtrl.data.chatroom[id] == undefined) {
     wsCtrl.data.chatroom[id] = {};
     wsCtrl.data.chatroom[id].initOk = false;
+    wsCtrl.data.chatroom[id].gettingPrev = false;
   }
   return wsCtrl.data.chatroom[id]
 };

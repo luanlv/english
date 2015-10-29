@@ -67,6 +67,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case InitChatRoom(uid, roomId, userId) => initChat(uid, roomId, userId)
 
+    case GetPrevChat(uid, roomId, lastTime) => getPrevChat(uid, roomId, lastTime)
+
     case Sub(uid, roomId, userId) => sub(uid, roomId, userId)
 
     case UnSub(uid, roomId) => unSub(uid, roomId)
@@ -159,7 +161,15 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
         withMember(uid)(_ push makeMessage("chatNotify", data))
       }
     }
+  }
 
+  def getPrevChat(uid: String, roomId: String, lastTime: Long) = {
+    (lila.hub.Env.current.actor.chatRoom ? PrevChat(roomId, lastTime)) foreach {
+      case data: JsValue => {
+        val mes = Json.obj("room" -> roomId, "t" -> "prevChat" , "lc" -> data)
+        withMember(uid)(_ push makeMessage("chatNotify", mes))
+      }
+    }
   }
 
 

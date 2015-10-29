@@ -110,7 +110,7 @@ var Room = {
                                           if(!isInit) {
                                             if(wsCtrl.userId.length == 0){
                                               $(element).on('click input', function(){
-                                                api.signin()
+                                                api.signin();
                                                 element.value = ''
                                               })
                                             } else {
@@ -125,7 +125,7 @@ var Room = {
                                               callback: function (event) {
                                                 var boxNode = document.getElementsByClassName('box-comment')[0];
                                                 var box = $('.box-comment');
-                                                var input = $(element)
+                                                var input = $(element);
 
 
                                                 if (box.scrollTop() + box.innerHeight() >= box.prop('scrollHeight')) {
@@ -189,7 +189,41 @@ var Comments = function(ctrl){
       <div className="ui comments room-box">
         <h5 className="ui dividing header">Comments</h5>
         <div className="box-comment"
-             config={api.scrollBottom2}
+             config={function(element, isInit, context) {
+
+                      if(wsCtrl.getRoom(ctrl.id).gettingPrev == true){
+                        element.scrollTop = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
+                        wsCtrl.getRoom(ctrl.id).gettingPrev = false
+
+                      }
+
+
+                      if(context.run && wsCtrl.getRoom(ctrl.id).initOk){
+                         element.scrollTop = element.scrollHeight;
+                         context.run = false;
+                      }
+
+                      if(!isInit){
+                        context.run = true;
+                        $(element).on('scroll', function(){
+                          if(element.scrollTop < 100 && wsCtrl.getRoom(ctrl.id).gettingPrev == false){
+                            wsCtrl.getRoom(ctrl.id).gettingPrev = true;
+                            wsCtrl.send(wsCtrl.sendData("prevChat", {t: "room", v: ctrl.param(), lastTime: wsCtrl.commentsInRoom(ctrl.id)[0].time}));
+                          }
+                          context.prevScrollTop = element.scrollTop
+                        })
+                      }
+
+                        var addLength = (element.scrollHeight - context.prevScrollHeight) || 0;
+
+
+                        if( (element.scrollHeight - element.clientHeight - element.scrollTop < addLength + 40) && (element.scrollTop > (200 + element.scrollHeight - context.prevScrollHeight))){
+                          element.scrollTop = element.scrollHeight;
+                        }
+                      context.prevScrollTop = element.scrollTop
+                      context.prevScrollHeight = element.scrollHeight
+                    }
+                 }
         >
           {(!wsCtrl.getRoom(ctrl.id).initOk)?(
           <div className="ui active loader"></div>
@@ -208,10 +242,8 @@ var Comments = function(ctrl){
                           <span className="date" datetime={comment.time}
                                 config={function(ele, isInit, ctx){
                                     if(!isInit){
-                                      var timestamp = $(ele).attr('datetime')
-                                      console.log($(ele).val())
+                                      var timestamp = $(ele).attr('datetime');
                                       ele.innerHTML = moment.unix(timestamp/1000).fromNow();
-                                      console.log($(ele).val())
                                     }
                                  }
                                 }

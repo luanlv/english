@@ -26,4 +26,8 @@ final class Api(
     RoomMessageRepo.initChatByRoom(roomId)
   }
 
+  def getPrevChatByRoomWithTime(roomId: String, lastTime: Long) = {
+    RoomMessageRepo.getPrevChatByRoomWithTime(roomId, lastTime)
+  }
+
 }

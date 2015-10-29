@@ -38,6 +38,7 @@ private[chatRoom] final class ChatRoomActor(
     case UserUnSubscribe(u, roomId) => unSubscribleUser(u, roomId)
     case GetInitChatRoom(roomId) => sender ! initChat(roomId).await
     case ChatRoomMessage(userId, roomId, chat) => doChat(userId, roomId, chat)
+    case PrevChat(roomId, lastTime) => sender ! Json.toJson(doPrevChat(roomId, lastTime).await)
     case _ =>
   }
   private def onlineIds: Set[ID] = onlines.keySet
@@ -66,6 +67,10 @@ private[chatRoom] final class ChatRoomActor(
     api.insertChat(roomId, lightUser(userId).head, chat, time)
     val jsonChat = Json.obj("t" -> "chat", "room" -> roomId, "d" -> Json.obj("user" -> userId, "chat" -> chat))
     lila.hub.Env.current.socket.site ! DoChat(jsonChat, roomId)
+  }
+
+  def doPrevChat(roomId: String, lastTime: Long) ={
+    api.getPrevChatByRoomWithTime(roomId, lastTime)
   }
 
 }
