@@ -1614,6 +1614,7 @@ var ctrl = {};
 var testInit = false
 var test1;
 var test2;
+var testDelay = 200;
 ctrl.listen = function(d){
   if(d.t === "n"){
   clearTimeout(pingSchedule);
@@ -1644,6 +1645,9 @@ ctrl.listen = function(d){
 
   else if(d.t === "mes"){
 
+    if(d.d.m.indexOf("Time:") != -1){
+      testDelay = parseInt(d.d.m.substring(5))
+    }
 
     if(d.d.m === 'startTest' && wsCtrl.userId !== 'luan' && !testInit){
       testInit = true
@@ -1651,7 +1655,7 @@ ctrl.listen = function(d){
         m.route('/chatroom/123');
         setTimeout(function testServer() {
           if(wsCtrl.getRoom("123").initOk) wsCtrl.send(wsCtrl.sendData("chat", {room: "123", d: Math.random().toString(36)}));
-          test1 = setTimeout(testServer, Math.ceil(100 + Math.random() * 200))
+          test1 = setTimeout(testServer, Math.ceil(testDelay + Math.random() * 200))
         }, 200);
 
         setTimeout(function testServer2(){
@@ -1659,7 +1663,7 @@ ctrl.listen = function(d){
           wsCtrl.send(wsCtrl.sendData("m", {to: "luan3", mes: Math.random().toString(36)}));
           wsCtrl.send(wsCtrl.sendData("m", {to: "luan4", mes: Math.random().toString(36)}));
           wsCtrl.send(wsCtrl.sendData("m", {to: "luan5", mes: Math.random().toString(36)}));
-          test2 = setTimeout(testServer2, Math.ceil(100 + Math.random()*200))
+          test2 = setTimeout(testServer2, Math.ceil(testDelay + Math.random()*200))
         }, 1000)
       }
     }
