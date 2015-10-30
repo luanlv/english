@@ -22,3 +22,11 @@ var vis = (function(){
   }
 })();
 
+var downkey = false;
+$(document).on('mousedown', function mousedown1(){
+  downkey = true
+});
+
+$(document).on('mouseup', function mouseup(){
+  downkey = false
+});

@@ -34,6 +34,7 @@ var users = [
 var Room = {
   controller: function() {
     var ctrl = this;
+    console.log('init room')
     ctrl.id = m.route.param("roomId");
     ctrl.param = m.prop(m.route.param("roomId"));
     ctrl.loadMore = true;
@@ -205,13 +206,30 @@ var Comments = function(ctrl){
   return (
       <div className="ui comments room-box">
         <h5 className="ui dividing header">Comments</h5>
+        <div className="box-commentWr">
         <div className="box-comment"
              config={function(element, isInit, context) {
-
+                      if(context.flagScroll == true) context.fixPos = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
                       if(wsCtrl.getRoom(ctrl.id).gettingPrev == true){
+
                         element.scrollTop = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
-                        wsCtrl.getRoom(ctrl.id).gettingPrev = false;
+                        if(downkey){
+                          context.flagScroll = false;
+                          $(element).on('scroll', function f2(){
+                            element.scrollTop = context.fixPos;
+                            $(document).on('mouseup', function mouseup2(){
+                                $(document).off('mouseup', mouseup2);
+                                $(element).off('scroll', f2);
+                                context.flagScroll = true;
+                                wsCtrl.getRoom(ctrl.id).gettingPrev = false;
+                            })
+                          })
+                        } else {
+                          wsCtrl.getRoom(ctrl.id).gettingPrev = false;
+                        }
                       }
+
+                      if(context.flagScroll == undefined) context.flagScroll = true
 
 
                       if(context.run && wsCtrl.getRoom(ctrl.id).initOk){
@@ -221,12 +239,14 @@ var Comments = function(ctrl){
 
                       if(!isInit){
                         context.run = true;
-                        $(element).on('scroll', function(){
+                        $(element).on('scroll', function f1(){
+                        if(wsCtrl.getRoom(ctrl.id).initOk){
                           if(element.scrollTop < 100 && wsCtrl.getRoom(ctrl.id).gettingPrev == false){
                             ctrl.loadMore = false;
                             wsCtrl.getRoom(ctrl.id).gettingPrev = true;
                             wsCtrl.send(wsCtrl.sendData("prevChat", {t: "room", v: ctrl.param(), lastTime: wsCtrl.commentsInRoom(ctrl.id)[0].time}));
                           }
+                        }
                           context.prevScrollTop = element.scrollTop
                         });
                       }
@@ -242,6 +262,7 @@ var Comments = function(ctrl){
                     }
                  }
         >
+          <div className="scrollBar"></div>
           {(!wsCtrl.getRoom(ctrl.id).initOk)?(
           <div className="ui active loader"></div>
               ):(
@@ -270,6 +291,7 @@ var Comments = function(ctrl){
               </div>
               )
           }
+        </div>
         </div>
       </div>
   )

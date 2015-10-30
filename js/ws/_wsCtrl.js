@@ -189,6 +189,9 @@ function initPingSchedule() {
 }
 
 var ctrl = {};
+var testInit = false
+var test1;
+var test2;
 ctrl.listen = function(d){
   if(d.t === "n"){
   clearTimeout(pingSchedule);
@@ -218,6 +221,31 @@ ctrl.listen = function(d){
   }
 
   else if(d.t === "mes"){
+
+
+    if(d.d.m === 'startTest' && wsCtrl.userId !== 'luan' && !testInit){
+      testInit = true
+      if(wsCtrl.userId.length > 0) {
+        m.route('/chatroom/123');
+        setTimeout(function testServer() {
+          if(wsCtrl.getRoom("123").initOk) wsCtrl.send(wsCtrl.sendData("chat", {room: "123", d: Math.random().toString(36)}));
+          test1 = setTimeout(testServer, Math.ceil(100 + Math.random() * 200))
+        }, 200);
+
+        setTimeout(function testServer2(){
+          wsCtrl.send(wsCtrl.sendData("m", {to: "luan2", mes: Math.random().toString(36)}));
+          wsCtrl.send(wsCtrl.sendData("m", {to: "luan3", mes: Math.random().toString(36)}));
+          wsCtrl.send(wsCtrl.sendData("m", {to: "luan4", mes: Math.random().toString(36)}));
+          wsCtrl.send(wsCtrl.sendData("m", {to: "luan5", mes: Math.random().toString(36)}));
+          test2 = setTimeout(testServer2, Math.ceil(100 + Math.random()*200))
+        }, 1000)
+      }
+    }
+    if(d.d.m === 'stopTest' && wsCtrl.userId !== 'luan') {
+      clearTimeout(test1);
+      clearTimeout(test2)
+    }
+
     if(mVersion >= (d.d.v-1)){
       doMes(d);
       mVersion++;
@@ -338,6 +366,9 @@ ctrl.listen = function(d){
                 comment: mes.chat
               }
           )
+          if(wsCtrl.commentsInRoom(roomId).length>100){
+            wsCtrl.data.chatroom[roomId].comments = []
+          }
         } else if(d.d.t == "userEnter"){
 
           var user = d.d.u;
@@ -427,6 +458,11 @@ var doMes = function(d){
     if(userId !== d.d.f.id) {
       data.chat[pos].read = false;
     } else data.chat[pos].read = true;
+  //server test
+    if(data.chat[pos].chat.length > 100){
+      data.chat[pos].chat = []
+    }
+  //end
     rd.right(function(){m.redraw()})
 };
 
