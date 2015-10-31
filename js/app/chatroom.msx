@@ -4,6 +4,7 @@ var api = require('./api.msx');
 
 var ChatRoom = {
   controller: function() {
+    m.redraw.strategy("diff")
     var ctrl = this;
     ctrl.param = m.prop(m.route.param("roomId")),
     wsCtrl.send(wsCtrl.sendData("initChat", {t: "chatrooms"}));

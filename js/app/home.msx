@@ -13,6 +13,7 @@ var div = [{id: "div 1", v: 1 ,
 
 var Home = {
   controller: function() {
+    m.redraw.strategy("diff")
     api.rd("Controller: Home");
     var ctrl = this;
     ctrl.divs = m.prop([]);

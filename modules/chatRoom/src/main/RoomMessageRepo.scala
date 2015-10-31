@@ -41,7 +41,7 @@ object RoomMessageRepo {
     coll.find(bs)
         .sort(BSONDocument("time" -> -1))
         .cursor[RoomMessage]()
-        .collect[List](20)
+          .collect[List](10)
   }
 
 }

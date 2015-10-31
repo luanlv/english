@@ -7,6 +7,7 @@ var MessageButton = require('./menu_button/Message.msx');
 
 var Nav = {
   controller: function(){
+    m.redraw.strategy("diff")
     api.rd("Controller: nav");
     var ctrl = this;
     ctrl.ping = m.prop(wsCtrl.ping);
@@ -56,14 +57,12 @@ var Nav = {
              config={m.route}
           >
             <i className="large icon newspaper"></i>
-            Articles
           </a>
           <a href="/chatroom"
              className={((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button"}
              config={m.route}
           >
             <i className="large icon comments"></i>
-            Chat rooms
           </a>
           <div className="ui category search item">
             <div className="ui icon input">
@@ -77,7 +76,16 @@ var Nav = {
            {(wsCtrl.userId.length>0)?(<div className="right menu">
 
              <div className="item">
-               <i className="large icon users"></i>
+               <i className="large icon  heart"
+                  config={function(element, isInit, ctx){
+                      if(!isInit){
+                        setInterval(function(){
+                        $(element).transition('jiggle')
+                        }, 1000);
+                      }
+                   }
+                  }
+               >{}</i>
                <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):(<i className="tiny spinner loading icon zero-margin-right"></i>)}</div>
              </div>
              <a href="javascript:void(0)" className="item"

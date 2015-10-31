@@ -333,6 +333,7 @@ var api = require('./api.msx');
 
 var ChatRoom = {
   controller: function() {
+    m.redraw.strategy("diff")
     var ctrl = this;
     ctrl.param = m.prop(m.route.param("roomId")),
     wsCtrl.send(wsCtrl.sendData("initChat", {t: "chatrooms"}));
@@ -684,6 +685,7 @@ var div = [{id: "div 1", v: 1 ,
 
 var Home = {
   controller: function() {
+    m.redraw.strategy("diff")
     api.rd("Controller: Home");
     var ctrl = this;
     ctrl.divs = m.prop([]);
@@ -971,6 +973,7 @@ var MessageButton = require('./menu_button/Message.msx');
 
 var Nav = {
   controller: function(){
+    m.redraw.strategy("diff")
     api.rd("Controller: nav");
     var ctrl = this;
     ctrl.ping = m.prop(wsCtrl.ping);
@@ -1019,15 +1022,13 @@ var Nav = {
              className:((m.route() == "/dashboard")?"active":"") + " item route-button", 
              config:m.route
           }, children: [
-            {tag: "i", attrs: {className:"large icon newspaper"}}, 
-            "Articles"
+            {tag: "i", attrs: {className:"large icon newspaper"}}
           ]}, 
           {tag: "a", attrs: {href:"/chatroom", 
              className:((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button", 
              config:m.route
           }, children: [
-            {tag: "i", attrs: {className:"large icon comments"}}, 
-            "Chat rooms"
+            {tag: "i", attrs: {className:"large icon comments"}}
           ]}, 
           {tag: "div", attrs: {className:"ui category search item"}, children: [
             {tag: "div", attrs: {className:"ui icon input"}, children: [
@@ -1041,7 +1042,16 @@ var Nav = {
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
 
              {tag: "div", attrs: {className:"item"}, children: [
-               {tag: "i", attrs: {className:"large icon users"}}, 
+               {tag: "i", attrs: {className:"large icon  heart", 
+                  config:function(element, isInit, ctx){
+                      if(!isInit){
+                        setInterval(function(){
+                        $(element).transition('jiggle')
+                        }, 1000);
+                      }
+                   }
+                  
+               }}, 
                {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):({tag: "i", attrs: {className:"tiny spinner loading icon zero-margin-right"}})]}
              ]}, 
              {tag: "a", attrs: {href:"javascript:void(0)", className:"item", 
@@ -1154,6 +1164,7 @@ var users = [
 
 var Room = {
   controller: function() {
+    m.redraw.strategy("diff")
     var ctrl = this;
     console.log('init room')
     ctrl.id = m.route.param("roomId");
@@ -1391,7 +1402,9 @@ var Comments = function(ctrl){
               , children: [
                 wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
                     return (
-                    {tag: "div", attrs: {className:"comment"}, children: [
+                    {tag: "div", attrs: {className:"comment", 
+                         key:comment.time
+                    }, children: [
                       {tag: "a", attrs: {className:"avatar"}, children: [
                         {tag: "img", attrs: {src:comment.avatar}}
                       ]}, 

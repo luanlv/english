@@ -33,6 +33,7 @@ var users = [
 
 var Room = {
   controller: function() {
+    m.redraw.strategy("diff")
     var ctrl = this;
     console.log('init room')
     ctrl.id = m.route.param("roomId");
@@ -270,7 +271,9 @@ var Comments = function(ctrl){
               >
                 {wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
                     return (
-                    <div className="comment">
+                    <div className="comment"
+                         key={comment.time}
+                    >
                       <a className="avatar">
                         <img src={comment.avatar}/>
                       </a>
