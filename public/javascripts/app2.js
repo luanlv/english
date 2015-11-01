@@ -375,26 +375,32 @@ var ChatRoom = {
               }, children: [
                 {tag: "span", attrs: {className:"fr"}, children: [
                   {tag: "div", attrs: {className:"item"}, children: [
-                    {tag: "i", attrs: {className:"tiny users right middle aligned icon"}, children: [wsCtrl.getRooms("123").u]}
+                    {tag: "i", attrs: {className:"tiny users right middle aligned icon", 
+                       config:function(element, isInit, ctx){
+                          if(isInit){
+                            if(ctx.u !=  wsCtrl.getRooms("123").u){
+                               $(element).transition('jiggle')
+                            }
+                          }
+                          ctx.u = $(element).val()
+                       }
+                    }, children: [wsCtrl.getRooms("123").u]}
                   ]}, 
-                  {tag: "i", attrs: {className:"tiny plug right middle aligned icon"}, children: [wsCtrl.getRooms("123").c]}
+                  {tag: "i", attrs: {className:"tiny plug right middle aligned icon", 
+                     config:function(element, isInit, ctx){
+                          if(isInit){
+                            if(ctx.c !=  wsCtrl.getRooms("123").c){
+                               $(element).transition('jiggle')
+                            }
+                          }
+                          ctx.c = $(element).val()
+                       }
+                  }, children: [wsCtrl.getRooms("123").c]}
                 ]}, 
                 {tag: "i", attrs: {className:"large pointing right middle aligned icon"}}, 
                 {tag: "div", attrs: {className:"content"}, children: [
                   {tag: "div", attrs: {className:"header"}, children: ["Room 1"]}, 
                   {tag: "div", attrs: {className:"description"}, children: ["Dành cho nguời mới học ( beginer )"]}
-                ]}
-              ]}, 
-              {tag: "a", attrs: {className:"item"}, children: [
-                {tag: "span", attrs: {className:"fr"}, children: [
-                  {tag: "i", attrs: {className:"tiny users right middle aligned icon"}, children: ["0"]}, 
-                  {tag: "br", attrs: {}}, 
-                  {tag: "i", attrs: {className:"tiny plug right middle aligned icon"}, children: ["0"]}
-                ]}, 
-                {tag: "i", attrs: {className:"large pointing right middle aligned icon"}}, 
-                {tag: "div", attrs: {className:"content"}, children: [
-                  {tag: "div", attrs: {className:"header"}, children: ["Room 2"]}, 
-                  {tag: "div", attrs: {className:"description"}, children: ["Dành cho ???"]}
                 ]}
               ]}
             ]}
@@ -1042,16 +1048,7 @@ var Nav = {
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
 
              {tag: "div", attrs: {className:"item"}, children: [
-               {tag: "i", attrs: {className:"large icon  heart", 
-                  config:function(element, isInit, ctx){
-                      if(!isInit){
-                        setInterval(function(){
-                        $(element).transition('jiggle')
-                        }, 1000);
-                      }
-                   }
-                  
-               }}, 
+               {tag: "i", attrs: {className:"large icon  users"}}, 
                {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):({tag: "i", attrs: {className:"tiny spinner loading icon zero-margin-right"}})]}
              ]}, 
              {tag: "a", attrs: {href:"javascript:void(0)", className:"item", 
@@ -1069,7 +1066,26 @@ var Nav = {
                (ctrl.ping()>8000 || ctrl.ping() == 0)?(
                 {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
                    ):(
-                {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi zero-margin-right"}}
+                {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
+                   config:function(element, isInit, ctx){
+                      if(!isInit){
+                        var jiggleIcon;
+                        var fnJiggle = function(time){
+                         clearInterval(jiggleIcon);
+                          jiggleIcon = setInterval(function(){
+                          $(element).transition('jiggle')
+                          }, time);
+                        };
+                        if(ctrl.ping() > 0 || ctrl.ping <= 500){
+                          fnJiggle(1000)
+                        } else {
+                          fnJiggle(200)
+                        }
+
+                      }
+                   }
+                  
+                }}
                    )
              ]}, 
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
@@ -1099,7 +1115,7 @@ var Nav = {
                   (ctrl.ping()>8000 || ctrl.ping() == 0)?(
                   {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
                       ):(
-                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon wifi zero-margin-right"}}
+                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right"}}
                       )
                 ]}, 
                 LoginButton(ctrl)

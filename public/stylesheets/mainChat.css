@@ -125,15 +125,14 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
 #footer{
   margin-top: 30px;
   width: 100%;
-
-
 }
 .footer{
   width: 100%;
   min-height: 100px;
   color: black;
   text-align: center;
-  background: #2185D0;
+  border-top: 1px solid #ddd;
+  background: white;
 }
 
 #app{

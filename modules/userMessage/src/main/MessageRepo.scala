@@ -58,7 +58,7 @@ object MessageRepo {
     coll.find(bs)
       .sort(BSONDocument("mv" -> -1))
       .cursor[UserMessage]()
-      .collect[List](10)
+      .collect[List](30)
   }
 
   def getMissingMes(listMesIds: Array[String]) = {

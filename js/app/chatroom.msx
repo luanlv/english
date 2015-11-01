@@ -46,26 +46,32 @@ var ChatRoom = {
               >
                 <span className="fr">
                   <div className="item">
-                    <i className="tiny users right middle aligned icon">{wsCtrl.getRooms("123").u}</i>
+                    <i className="tiny users right middle aligned icon"
+                       config={function(element, isInit, ctx){
+                          if(isInit){
+                            if(ctx.u !=  wsCtrl.getRooms("123").u){
+                               $(element).transition('jiggle')
+                            }
+                          }
+                          ctx.u = $(element).val()
+                       }}
+                    >{wsCtrl.getRooms("123").u}</i>
                   </div>
-                  <i className="tiny plug right middle aligned icon">{wsCtrl.getRooms("123").c}</i>
+                  <i className="tiny plug right middle aligned icon"
+                     config={function(element, isInit, ctx){
+                          if(isInit){
+                            if(ctx.c !=  wsCtrl.getRooms("123").c){
+                               $(element).transition('jiggle')
+                            }
+                          }
+                          ctx.c = $(element).val()
+                       }}
+                  >{wsCtrl.getRooms("123").c}</i>
                 </span>
                 <i className="large pointing right middle aligned icon"></i>
                 <div className="content">
                   <div className="header">Room 1</div>
                   <div className="description">Dành cho nguời mới học ( beginer )</div>
-                </div>
-              </a>
-              <a className="item">
-                <span className="fr">
-                  <i className="tiny users right middle aligned icon">0</i>
-                  <br/>
-                  <i className="tiny plug right middle aligned icon">0</i>
-                </span>
-                <i className="large pointing right middle aligned icon"></i>
-                <div className="content">
-                  <div className="header">Room 2</div>
-                  <div className="description">Dành cho ???</div>
                 </div>
               </a>
             </div>
