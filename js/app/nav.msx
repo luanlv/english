@@ -97,22 +97,17 @@ var Nav = {
                 <i className={"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
                    config={function(element, isInit, ctx){
                       if(!isInit){
-                        var jiggleIcon;
-                        var fnJiggle = function(time){
-                         clearInterval(jiggleIcon);
-                          jiggleIcon = setInterval(function(){
+                        setTimeout(function fnJiggle(){
                           $(element).transition('jiggle')
-                          }, time);
-                        };
-                        if(ctrl.ping() > 0 || ctrl.ping <= 500){
-                          fnJiggle(1000)
-                        } else {
-                          fnJiggle(200)
-                        }
-
+                          if(ctrl.ping() > 0 || ctrl.ping <= 500){
+                            setTimeout(fnJiggle, 1000)
+                          } else {
+                            setTimeout(fnJiggle, 500)
+                          }
+                        },1000)
                       }
+                     }
                    }
-                  }
                 >{}</i>
                    )}
              </a>
@@ -143,7 +138,21 @@ var Nav = {
                   {(ctrl.ping()>8000 || ctrl.ping() == 0)?(
                   <i className={"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}></i>
                       ):(
-                  <i className={"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right"}></i>
+                  <i className={"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
+                     config={function(element, isInit, ctx){
+                      if(!isInit){
+                        setTimeout(function fnJiggle(){
+                          $(element).transition('jiggle')
+                          if(ctrl.ping() > 0 || ctrl.ping <= 500){
+                            setTimeout(fnJiggle, 1000)
+                          } else {
+                            setTimeout(fnJiggle, 500)
+                          }
+                        },1000)
+                      }
+                     }
+                   }
+                  >{}</i>
                       )}
                 </a>
                 {LoginButton(ctrl)}

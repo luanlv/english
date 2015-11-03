@@ -1,9 +1,11 @@
-Nav = require('./nav.msx');
-Home = require('./home.msx');
-Dashboard = require('./dashboard.msx');
-ChatRoom = require('./chatroom.msx');
-Room = require('./room.msx');
-Footer = require('./footer.msx');
+"user strict";
+
+var Nav = require('./nav.msx');
+var Home = require('./home.msx');
+var Dashboard = require('./dashboard.msx');
+var ChatRoom = require('./chatroom.msx');
+var Room = require('./room.msx');
+var Footer = require('./footer.msx');
 
 window.route = function( sub ){
   return {

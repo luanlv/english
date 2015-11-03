@@ -28,10 +28,7 @@ object Captcher {
 
   def receive = {
 
-    case SayHello(name: String) =>{
-      println("case SayHello ------------------------------------------------")
-      sender ! "Hello, " + name
-    }
+    case SayHello(name: String) => sender ! "Hello, " + name
 
     case AnyCaptcha             => sender ! Captcha2.default
 

@@ -40,7 +40,6 @@ final class Cached(
   }
 
   def setNewVersion(id: String, v: Int) = {
-    println("new version: " + id + " " + v)
     cache.remove(id)
     cache.apply(id)(v)
   }

@@ -27,7 +27,6 @@ private[security] final class Api(firewall: Firewall, tor: Tor) {
       }
       case false =>
         val sessionId = Random nextStringUppercase 12
-        println("sessionId saveAuthentication:=============: " + sessionId)
         Store.save(
           sessionId, userId, req, apiVersion, tor isExitNode req.remoteAddress
         ) inject sessionId

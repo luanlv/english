@@ -375,7 +375,7 @@ var ChatRoom = {
               }, children: [
                 {tag: "span", attrs: {className:"fr"}, children: [
                   {tag: "div", attrs: {className:"item"}, children: [
-                    {tag: "i", attrs: {className:"tiny users right middle aligned icon", 
+                    {tag: "i", attrs: {className:"tiny users left middle aligned icon", 
                        config:function(element, isInit, ctx){
                           if(isInit){
                             if(ctx.u !=  wsCtrl.getRooms("123").u){
@@ -386,7 +386,7 @@ var ChatRoom = {
                        }
                     }, children: [wsCtrl.getRooms("123").u]}
                   ]}, 
-                  {tag: "i", attrs: {className:"tiny plug right middle aligned icon", 
+                  {tag: "i", attrs: {className:"tiny plug left middle aligned icon", 
                      config:function(element, isInit, ctx){
                           if(isInit){
                             if(ctx.c !=  wsCtrl.getRooms("123").c){
@@ -529,12 +529,14 @@ var Dashboard = {
 
 module.exports = Dashboard;
 },{"../ws/_wsCtrl.js":13,"./api.msx":1}],5:[function(require,module,exports){
-Nav = require('./nav.msx');
-Home = require('./home.msx');
-Dashboard = require('./dashboard.msx');
-ChatRoom = require('./chatroom.msx');
-Room = require('./room.msx');
-Footer = require('./footer.msx');
+"user strict";
+
+var Nav = require('./nav.msx');
+var Home = require('./home.msx');
+var Dashboard = require('./dashboard.msx');
+var ChatRoom = require('./chatroom.msx');
+var Room = require('./room.msx');
+var Footer = require('./footer.msx');
 
 window.route = function( sub ){
   return {
@@ -1069,22 +1071,17 @@ var Nav = {
                 {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
                    config:function(element, isInit, ctx){
                       if(!isInit){
-                        var jiggleIcon;
-                        var fnJiggle = function(time){
-                         clearInterval(jiggleIcon);
-                          jiggleIcon = setInterval(function(){
+                        setTimeout(function fnJiggle(){
                           $(element).transition('jiggle')
-                          }, time);
-                        };
-                        if(ctrl.ping() > 0 || ctrl.ping <= 500){
-                          fnJiggle(1000)
-                        } else {
-                          fnJiggle(200)
-                        }
-
+                          if(ctrl.ping() > 0 || ctrl.ping <= 500){
+                            setTimeout(fnJiggle, 1000)
+                          } else {
+                            setTimeout(fnJiggle, 500)
+                          }
+                        },1000)
                       }
-                   }
-                  
+                     }
+                   
                 }}
                    )
              ]}, 
@@ -1115,7 +1112,21 @@ var Nav = {
                   (ctrl.ping()>8000 || ctrl.ping() == 0)?(
                   {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
                       ):(
-                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"teal":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right"}}
+                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
+                     config:function(element, isInit, ctx){
+                      if(!isInit){
+                        setTimeout(function fnJiggle(){
+                          $(element).transition('jiggle')
+                          if(ctrl.ping() > 0 || ctrl.ping <= 500){
+                            setTimeout(fnJiggle, 1000)
+                          } else {
+                            setTimeout(fnJiggle, 500)
+                          }
+                        },1000)
+                      }
+                     }
+                   
+                  }}
                       )
                 ]}, 
                 LoginButton(ctrl)
