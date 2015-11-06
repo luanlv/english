@@ -32,12 +32,16 @@ object Auth extends LilaController {
 
   private def authenticateUser(u: UserModel)(implicit ctx: Context) = {
     implicit val req = ctx.req
+    val url = req.cookies.get("url") match {
+      case None => "/"
+      case Some(cookie) => cookie.value.replaceAll("%2F", "/")
+    }
     u.ipBan.fold(
       Env.security.firewall.blockIp(req.remoteAddress) inject BadRequest("blocked by firewall"),
       api.saveAuthentication(u.id, ctx.mobileApiVersion) flatMap { sessionId =>
         negotiate(
           html = Redirect {
-            get("referrer").filter(_.nonEmpty) orElse req.session.get(api.AccessUri) getOrElse "/"
+            get("referrer").filter(_.nonEmpty) orElse req.session.get(api.AccessUri) getOrElse url
           }.fuccess,
           api = _ => mobileUserOk(u)
         ) map {
@@ -73,6 +77,7 @@ object Auth extends LilaController {
   def authenticate = OpenBody { implicit ctx =>
     Firewall {
       implicit val req = ctx.body
+
       api.loginForm.bindFromRequest.fold(
         err => {
           negotiate(
@@ -87,10 +92,14 @@ object Auth extends LilaController {
 
   def logout = Open { implicit ctx =>
     implicit val req = ctx.req
+    val url = req.cookies.get("url") match {
+      case None => "/"
+      case Some(cookie) => cookie.value.replaceAll("%2F", "/")
+    }
     req.session get "sessionId" foreach lila.security.Store.delete
     negotiate(
       //html = fuccess(Redirect(routes.Lobby.home)),
-      html = fuccess(Redirect("/")),
+      html = fuccess(Redirect(url)),
       api = apiVersion => Ok(Json.obj("ok" -> true)).fuccess
     ) map (_ withCookies LilaCookie.newSession)
   }

@@ -3,9 +3,9 @@
 
 GET /              controllers.Application.index
 GET /dashboard             controllers.Application.index
-GET /chatroom              controllers.Application.index
-GET /chatroom/123          controllers.Application.index
-GET /json              controllers.Application.json
+GET /chatroom              controllers.Chat.chatRooms
+GET /chatroom/:id          controllers.Chat.chatRoom(id: String)
+GET /json                  controllers.Application.json
 
 GET   /socket                          controllers.Main.websocket
 

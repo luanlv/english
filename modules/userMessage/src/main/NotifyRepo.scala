@@ -120,7 +120,7 @@ object NotifyRepo {
     coll.aggregate(Match(BSONDocument("_id" -> userId)), List(
       Unwind("m"),
       //Match(BSONDocument("lid.id" -> userId)),
-      Sort(Descending("l.d")),
+      Sort(Descending("m.d")),
       Limit(5),
       Project(BSONDocument("_id" -> 0, "m" -> 1))
     )).map(_.documents.map(x => x.getAs[BSONDocument]("m").head).map(_.as[NotifyMessage]))

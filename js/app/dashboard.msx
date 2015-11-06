@@ -7,6 +7,7 @@ var initData = {}
 var Dashboard = {
   controller: function() {
     console.log("controller dashboard!")
+    $.cookie('url', m.route(), {path: "/"})
     var ctrl = this;
     ctrl.server = initData.dashboard || {server: false};
     ctrl.request = (!ctrl.server.server)? api.requestWithFeedback({method: "GET", url: "/json"}) : {

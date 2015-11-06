@@ -3,7 +3,6 @@ var wsCtrl = require('../ws/_wsCtrl.js');
 
 var api = api || {};
 
-
 api.rd = function(name){
   //console.log("Debug: " + name)
 };
@@ -64,12 +63,16 @@ api.setsVal = function(callback) {
 
 api.markRead = function(rank){
   if(wsCtrl.data.chat[rank].read === false){
-    if(wsCtrl.data.chat[rank].chat[wsCtrl.data.chat[rank].chat.length - 1].f.id == wsCtrl.data.chat[rank].user.id) {
-      wsCtrl.send(wsCtrl.sendData("mr", {
-        uid: wsCtrl.data.chat[rank].user.id,
-        mv: wsCtrl.data.chat[rank].chat[wsCtrl.data.chat[rank].chat.length - 1].mv
-      }));
-    }
+    //if(wsCtrl.data.chat[rank].chat[wsCtrl.data.chat[rank].chat.length - 1].f.id == wsCtrl.data.chat[rank].user.id) {
+    //  wsCtrl.send(wsCtrl.sendData("mr", {
+    //    uid: wsCtrl.data.chat[rank].user.id,
+    //    mv: wsCtrl.data.chat[rank].chat[wsCtrl.data.chat[rank].chat.length - 1].mv
+    //  }));
+    //}
+    wsCtrl.send(wsCtrl.sendData("mr", {
+      uid: wsCtrl.data.chat[rank].user.id,
+      mv: wsCtrl.data.chat[rank].chat[wsCtrl.data.chat[rank].chat.length - 1].mv
+    }));
     wsCtrl.data.chat[rank].read = true;
   }
 };
@@ -77,8 +80,10 @@ api.markRead = function(rank){
 api.focusById = function(uid){
   setTimeout(function focusComment(){
     if(document.getElementById(uid) != undefined){
+      console.log("run focus OK: " + uid)
       document.getElementById(uid).focus();
     } else {
+      console.log("running focus: " + uid)
       setTimeout(focusComment, 100)
     }
   }, 100);

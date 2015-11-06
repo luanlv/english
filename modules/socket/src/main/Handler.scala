@@ -166,9 +166,9 @@ object Handler {
       }
 
       case ("m", o) => userId foreach { u =>
-        if(u.length() > 0) {
+        if(u.length() > 0 ) {
           (o \ "d").asOpt[JsObject] foreach { data =>
-            hub.actor.userMessage ! Msg(u, data)
+            if(((o obj "d").get str "to").get != u) hub.actor.userMessage ! Msg(u, data)
           }
         }
       }

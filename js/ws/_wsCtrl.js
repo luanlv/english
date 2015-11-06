@@ -10,6 +10,8 @@ var mRVersion = wsCtrl.mRVersion
 
 var prevTime;
 
+
+
 wsCtrl.ping = 0;
 wsCtrl.total = 0;
 
@@ -20,6 +22,12 @@ window.redraw = {
   right: 0,
   app: 0
 };
+
+wsCtrl.storage = {
+  chat: $.localStorage.get('chat') || []
+};
+
+
 
 wsCtrl.data = {
   chatrooms: {},
@@ -35,6 +43,13 @@ wsCtrl.data = {
   }
 };
 var data = wsCtrl.data;
+
+function initChat(){
+  wsCtrl.storage.chat.map(function(user){
+    data.chat.push({user: user.user, display: true, input: m.prop(''), init: false, hide: user.hide, read: true, chat: []});
+    send(sendData("init_chat", {w: user.user.id, cv: 0}));
+  });
+}
 
 //var ws = new WebSocket("ws://188.166.254.203:9000/socket?sri=" + sri);
 var reconnect;
@@ -82,6 +97,9 @@ function initWs(){
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
     wsCtrl.ping = 1;
+
+    initChat();
+
   };
 
   ws.onmessage = function (e) {
@@ -109,12 +127,21 @@ var pingData = function() {
   });
 };
 
-function arrayObjectIndexOf(myArray, searchTerm, property) {
+wsCtrl.arrayObjectIndexOf = function(myArray, searchTerm, property) {
   for(var i = 0, len = myArray.length; i < len; i++) {
     if (myArray[i][property] === searchTerm) return i;
   }
   return -1;
-}
+};
+var arrayObjectIndexOf = wsCtrl.arrayObjectIndexOf;
+
+wsCtrl.arrayObjectIndexOf2 = function(myArray, searchTerm, property) {
+  for(var i = 0, len = myArray.length; i < len; i++) {
+    if (myArray[i]['user'][property] === searchTerm) return i;
+  }
+  return -1;
+};
+var arrayObjectIndexOf2 = wsCtrl.arrayObjectIndexOf2;
 
 wsCtrl.sendData = function(t, d){
   return JSON.stringify({
@@ -163,8 +190,10 @@ wsCtrl.getPosChat = function(user, mv){
     }
   }
   if(pos = -1){
-    data.chat.push({user: user, display: true, input: m.prop(''), init: false, hide: false, read: read, chat: []});
+    data.chat.push({user: user, display: true, input: m.prop(''), init: false, hide: false, read: true, chat: []});
     send(sendData("init_chat", {w: user.id, cv: cv}));
+    wsCtrl.storage.chat.push({user: user, hide: false});
+    $.localStorage.set('chat', wsCtrl.storage.chat);
     return (data.chat.length - 1)
   }
 };
@@ -308,23 +337,25 @@ ctrl.listen = function(d){
 
 
   else if(d.t === "init_chat"){
-    var listMes = d.d;
+    var listMes = d.d.reverse();
     if(listMes.length > 0){
       var user = (userId == d.d[0].f.id)?d.d[0].t:d.d[0].f;
       var pos = getPosChat(user);
       //console.log("init posssssssss:" + pos);
       if(data.chat[pos].chat.length <= 1) {
-        d.d.map(function (mes) {
-          //console.log("init_chat: " + mes.mv);
-          //console.log("push:" + mes.mes);
-          data.chat[pos].chat.push(mes)
-        });
+        //d.d.map(function (mes) {
+        //  //console.log("init_chat: " + mes.mv);
+        //  //console.log("push:" + mes.mes);
+        //  data.chat[pos].chat.push(mes)
+        //});
+      data.chat[pos].chat = d.d.concat(data.chat[pos].chat)
       } else {
-        d.d.map(function(mes){
-          if(mes.mv < data.chat[pos].chat[0].mv) data.chat[pos].chat.push(mes)
-        })
+        //d.d.map(function(mes){
+        //  if(mes.mv < data.chat[pos].chat[0].mv) data.chat[pos].chat.push(mes)
+        //})
+        data.chat[pos].chat = d.d
       }
-      data.chat[pos].chat.sort(sortByVer);
+      //data.chat[pos].chat.sort(sortByVer);
       rd.right(function(){m.redraw()})
     }
   }
@@ -455,10 +486,10 @@ var doMes = function(d){
     data.chat[pos].chat.push(
         {f: d.d.f, "mv": d.d.mv, "mes": d.d.m, "time": d.d.time}
     );
-    if(data.chat[pos].display != true){
-      data.chat[pos].display = true;
-      data.chat[pos].hide = false;
-    }
+    //if(data.chat[pos].display != true){
+    //  data.chat[pos].display = true;
+    //  data.chat[pos].hide = false;
+    //}
     if(userId !== d.d.f.id) {
       data.chat[pos].read = false;
     } else data.chat[pos].read = true;

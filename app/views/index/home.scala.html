@@ -35,23 +35,24 @@
 	<div class="red"></div>
 	@jsTag("head.load.min.js")
 	<script>
-
 		  head.load(
 			  "/assets/stylesheets/mainChat.css?v=3",
 			  "/assets/semantic/semantic.min.css?v=3");
 
 			head.load("/assets/javascripts/vendor/jquery.min.js")
+				.js("/assets/javascripts/jquery.cookie.min.js?v=3")
+				.js("/assets/javascripts/jquery.storageapi.min.js?v=3")
 				.js("/assets/semantic/semantic.min.js?v=3")
 				.js("/assets/javascripts/jquery.textarea_autosize.js?v=3")
 				.js("/assets/javascripts/attrchange.js?v=3")
 				.js("/assets/javascripts/moment.min.js?v=3")
 				.js("/assets/javascripts/mithril.js?v=3")
+				.js("/assets/javascripts/mithril-storage.js?v=3")
 				.js("/assets/javascripts/main.js?v=3")
 				.js({app: "/assets/javascripts/app2.js?v=3"})
 			head.ready('app', function() {
-				  var color = $('.red');
 				  var f1 = function(){
-					  if(typeof(initRoute) == "function" && typeof($) == "function" && color.css('color') != 'rgb(0, 0, 0)'){
+					  if(typeof(initRoute) == "function" && typeof($) == "function" && $('.red').css('color') != 'rgb(0, 0, 0)'){
 						  initRoute();
 						  initComponent();
 					  } else {

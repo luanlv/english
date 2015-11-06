@@ -34,6 +34,7 @@ var users = [
 var Room = {
   controller: function() {
     m.redraw.strategy("diff")
+    $.cookie('url', m.route(), {path: "/"})
     var ctrl = this;
     console.log('init room')
     ctrl.id = m.route.param("roomId");

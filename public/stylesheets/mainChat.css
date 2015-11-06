@@ -9,7 +9,6 @@ html,body {
 
 body{
   overflow-y: scroll!important;
-
 }
 
 ::-webkit-scrollbar{
@@ -337,7 +336,7 @@ textarea {
 }
 
 .unread{
-  background: #db2828!important;
+  /*background: #db2828!important;*/
 }
 
 .notifyWr{
