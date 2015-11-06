@@ -24,7 +24,7 @@ window.redraw = {
 };
 
 wsCtrl.storage = {
-  chat: $.localStorage.get('chat') || []
+  chat: $.localStorage.get('chat:' + wsCtrl.userId) || []
 };
 
 
@@ -193,7 +193,7 @@ wsCtrl.getPosChat = function(user, mv){
     data.chat.push({user: user, display: true, input: m.prop(''), init: false, hide: false, read: true, chat: []});
     send(sendData("init_chat", {w: user.id, cv: cv}));
     wsCtrl.storage.chat.push({user: user, hide: false});
-    $.localStorage.set('chat', wsCtrl.storage.chat);
+    $.localStorage.set('chat:' + wsCtrl.userId, wsCtrl.storage.chat);
     return (data.chat.length - 1)
   }
 };

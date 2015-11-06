@@ -25,7 +25,7 @@ var Chat = {
       var index = wsCtrl.arrayObjectIndexOf2(wsCtrl.storage.chat, wsCtrl.data.chat[num].user.id, "id")
       if(index > -1){
         wsCtrl.storage.chat[index].hide = wsCtrl.data.chat[num].hide;
-        $.localStorage.set('chat', wsCtrl.storage.chat)
+        $.localStorage.set('chat:' + wsCtrl.userId, wsCtrl.storage.chat);
       }
     };
 
@@ -35,7 +35,7 @@ var Chat = {
       var index = wsCtrl.arrayObjectIndexOf2(wsCtrl.storage.chat, wsCtrl.data.chat[num].user.id, "id");
       if(index > -1){
         wsCtrl.storage.chat.splice(index, 1);
-        $.localStorage.set('chat', wsCtrl.storage.chat)
+        $.localStorage.set('chat:' + wsCtrl.userId, wsCtrl.storage.chat);
       }
     };
 

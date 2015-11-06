@@ -164,7 +164,7 @@ var Chat = {
       var index = wsCtrl.arrayObjectIndexOf2(wsCtrl.storage.chat, wsCtrl.data.chat[num].user.id, "id")
       if(index > -1){
         wsCtrl.storage.chat[index].hide = wsCtrl.data.chat[num].hide;
-        $.localStorage.set('chat', wsCtrl.storage.chat)
+        $.localStorage.set('chat:' + wsCtrl.userId, wsCtrl.storage.chat);
       }
     };
 
@@ -174,7 +174,7 @@ var Chat = {
       var index = wsCtrl.arrayObjectIndexOf2(wsCtrl.storage.chat, wsCtrl.data.chat[num].user.id, "id");
       if(index > -1){
         wsCtrl.storage.chat.splice(index, 1);
-        $.localStorage.set('chat', wsCtrl.storage.chat)
+        $.localStorage.set('chat:' + wsCtrl.userId, wsCtrl.storage.chat);
       }
     };
 
@@ -1505,7 +1505,7 @@ window.redraw = {
 };
 
 wsCtrl.storage = {
-  chat: $.localStorage.get('chat') || []
+  chat: $.localStorage.get('chat:' + wsCtrl.userId) || []
 };
 
 
@@ -1674,7 +1674,7 @@ wsCtrl.getPosChat = function(user, mv){
     data.chat.push({user: user, display: true, input: m.prop(''), init: false, hide: false, read: true, chat: []});
     send(sendData("init_chat", {w: user.id, cv: cv}));
     wsCtrl.storage.chat.push({user: user, hide: false});
-    $.localStorage.set('chat', wsCtrl.storage.chat);
+    $.localStorage.set('chat:' + wsCtrl.userId, wsCtrl.storage.chat);
     return (data.chat.length - 1)
   }
 };
