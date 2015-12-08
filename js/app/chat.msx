@@ -68,7 +68,8 @@ var Chat = {
     redraw.right++;
     return (
         <div>
-          {ctrl.showChatDock?(<div id="user-list">
+          {wsCtrl.userId.length>0?(
+          ctrl.showChatDock?(<div id="user-list">
             <div className="ui segment pad0">
             <div className="ui top attached inverted header chat-title"
                  onclick={function(){rd.right(ctrl.toggleChatDock())}}
@@ -94,7 +95,9 @@ var Chat = {
             <div className="ui top attached inverted header chat-title"
                  onclick={function(){rd.right(ctrl.toggleChatDock())}}
             >Chat</div>
-          </div>)}
+          </div>)):""
+          }
+
           <div id="dock-bot">
             {wsCtrl.data.chat.map(function(chat, rank){
                 return (!chat.display)?"":(

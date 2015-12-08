@@ -207,6 +207,7 @@ var Chat = {
     redraw.right++;
     return (
         {tag: "div", attrs: {}, children: [
+          wsCtrl.userId.length>0?(
           ctrl.showChatDock?({tag: "div", attrs: {id:"user-list"}, children: [
             {tag: "div", attrs: {className:"ui segment pad0"}, children: [
             {tag: "div", attrs: {className:"ui top attached inverted header chat-title", 
@@ -233,7 +234,9 @@ var Chat = {
             {tag: "div", attrs: {className:"ui top attached inverted header chat-title", 
                  onclick:function(){rd.right(ctrl.toggleChatDock())}
             }, children: ["Chat"]}
-          ]}), 
+          ]})):"", 
+          
+
           {tag: "div", attrs: {id:"dock-bot"}, children: [
             wsCtrl.data.chat.map(function(chat, rank){
                 return (!chat.display)?"":(
