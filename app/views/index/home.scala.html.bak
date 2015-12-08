@@ -36,23 +36,23 @@
 	@jsTag("head.load.min.js")
 	<script>
 		  head.load(
-			  "http://cdn.luanlv.info/assets/stylesheets/mainChat.css?v=3",
+			  "/assets/stylesheets/mainChat.css?v=3",
 //			  "/assets/semantic/semantic.min.css?v=3");
 			  "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.css");
 
 //			head.load("/assets/javascripts/vendor/jquery.min.js")
 			head.load("http://cdn.luanlv.info/assets/javascripts/vendor/jquery.min.js")
-				.js("http://cdn.luanlv.info/assets/javascripts/jquery.cookie.min.js?v=3")
-				.js("http://cdn.luanlv.info/assets/javascripts/jquery.storageapi.min.js?v=3")
+				.js("/assets/javascripts/jquery.cookie.min.js?v=3")
+				.js("/assets/javascripts/jquery.storageapi.min.js?v=3")
 //				.js("/assets/semantic/semantic.min.js?v=3")
 				.js("https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.js")
-				.js("http://cdn.luanlv.info/assets/javascripts/jquery.textarea_autosize.js?v=3")
-				.js("http://cdn.luanlv.info/assets/javascripts/attrchange.js?v=3")
-				.js("http://cdn.luanlv.info/assets/javascripts/moment.min.js?v=3")
-				.js("http://cdn.luanlv.info/assets/javascripts/mithril.js?v=3")
-				.js("http://cdn.luanlv.info/assets/javascripts/mithril-storage.js?v=3")
-				.js("http://cdn.luanlv.info/assets/javascripts/main.js?v=3")
-				.js({app: "http://cdn.luanlv.info/assets/javascripts/app2.js?v=3"})
+				.js("/assets/javascripts/jquery.textarea_autosize.js?v=3")
+				.js("/assets/javascripts/attrchange.js?v=3")
+				.js("/assets/javascripts/moment.min.js?v=3")
+				.js("/assets/javascripts/mithril.js?v=3")
+				.js("/assets/javascripts/mithril-storage.js?v=3")
+				.js("/assets/javascripts/main.js?v=3")
+				.js({app: "/assets/javascripts/app2.js?v=3"})
 			head.ready('app', function() {
 				  var f1 = function(){
 					  if(typeof(initRoute) == "function" && typeof($) == "function" && $('.red').css('color') != 'rgb(0, 0, 0)'){
