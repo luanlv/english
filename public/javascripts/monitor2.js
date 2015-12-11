@@ -147,7 +147,7 @@ $(function() {
   var lastCall = getMillis();
 
   var sri = Math.random().toString(36).substring(5);
-  var wsUrl = "ws://" + document.domain + ":9000" + "/monitor/socket?sri=" + sri;
+  var wsUrl = "ws://" + "socket." + document.domain + ":9000" + "/monitor/socket?sri=" + sri;
   console.log(wsUrl);
   var ws = window.MozWebSocket ? new MozWebSocket(wsUrl) : new WebSocket(wsUrl);
   ws.onmessage = function(e) {
