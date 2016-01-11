@@ -35,8 +35,8 @@ object Dependencies {
   val hasher = "com.roundeights" %% "hasher" % "1.0.0"
   val jgit = "org.eclipse.jgit" % "org.eclipse.jgit" % "3.2.0.201312181205-r"
   val jodaTime = "joda-time" % "joda-time" % "2.8.1"
-  val RM = "org.reactivemongo" %% "reactivemongo" % "0.11.6"
-  val PRM = "org.reactivemongo" %% "play2-reactivemongo" % "0.11.6.play24"
+  val RM = "org.reactivemongo" %% "reactivemongo" % "0.11.9"
+  val PRM = "org.reactivemongo" %% "play2-reactivemongo" % "0.11.9"
   val maxmind = "com.sanoma.cda" %% "maxmind-geoip2-scala" % "1.2.3-THIB"
   //val prismic = "io.prismic" %% "scala-kit" % "1.3.4"
   //val akkaRemote = "com.typesafe.akka" %% "akka-remote" % "2.3.12"
@@ -47,7 +47,7 @@ object Dependencies {
   val bigPipe = "com.ybrikman.ping" %% "big-pipe" % "0.0.12"
 
   object play {
-    val version = "2.4.2"
+    val version = "2.4.6"
     val api = "com.typesafe.play" %% "play" % version
     val test = "com.typesafe.play" %% "play-test" % version
   }
@@ -58,7 +58,7 @@ object Dependencies {
   }
 
   object akka {
-      val version = "2.4.0"
+      val version = "2.4.1"
       val actor = "com.typesafe.akka" %% "akka-actor" % version
       val slf4j = "com.typesafe.akka" %% "akka-slf4j" % version
     }

@@ -419,7 +419,45 @@ var ChatRoom = {
                 {tag: "i", attrs: {className:"large pointing right middle aligned icon"}}, 
                 {tag: "div", attrs: {className:"content"}, children: [
                   {tag: "div", attrs: {className:"header"}, children: ["Room 1"]}, 
-                  {tag: "div", attrs: {className:"description"}, children: ["Dành cho nguời mới học ( beginer )"]}
+                  {tag: "div", attrs: {className:"description"}, children: ["Beginer"]}
+                ]}
+              ]}
+            ]}
+          ]}, 
+
+          {tag: "div", attrs: {className:"ui segment"}, children: [
+            {tag: "div", attrs: {className:"ui relaxed divided list"}, children: [
+              {tag: "a", attrs: {href:"/chatroom/321", className:"item", 
+                 config:m.route
+              }, children: [
+                {tag: "span", attrs: {className:"fr"}, children: [
+                  {tag: "div", attrs: {className:"item"}, children: [
+                    {tag: "i", attrs: {className:"tiny users left middle aligned icon", 
+                       config:function(element, isInit, ctx){
+                          if(isInit){
+                            if(ctx.u !=  wsCtrl.getRooms("321").u){
+                               $(element).transition('jiggle')
+                            }
+                          }
+                          ctx.u = $(element).val()
+                       }
+                    }, children: [wsCtrl.getRooms("321").u]}
+                  ]}, 
+                  {tag: "i", attrs: {className:"tiny plug left middle aligned icon", 
+                     config:function(element, isInit, ctx){
+                          if(isInit){
+                            if(ctx.c !=  wsCtrl.getRooms("321").c){
+                               $(element).transition('jiggle')
+                            }
+                          }
+                          ctx.c = $(element).val()
+                       }
+                  }, children: [wsCtrl.getRooms("321").c]}
+                ]}, 
+                {tag: "i", attrs: {className:"large pointing right middle aligned icon"}}, 
+                {tag: "div", attrs: {className:"content"}, children: [
+                  {tag: "div", attrs: {className:"header"}, children: ["Room 2"]}, 
+                  {tag: "div", attrs: {className:"description"}, children: ["Advanced"]}
                 ]}
               ]}
             ]}
@@ -1443,7 +1481,6 @@ var Comments = function(ctrl){
                     }
                  
         }, children: [
-          {tag: "div", attrs: {className:"scrollBar"}}, 
           (!wsCtrl.getRoom(ctrl.id).initOk)?(
           {tag: "div", attrs: {className:"ui active loader"}}
               ):(
@@ -1570,7 +1607,7 @@ var ws;
 function initWs(){
   var sri = Math.random().toString(36).substring(2);
   //ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
-  ws = new WebSocket("ws://" + "socket." + document.domain + ":9000/socket?sri=" + sri);
+  ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
   ws.onopen = function(){
     console.log('WebSocket ok');
     initReconnect();

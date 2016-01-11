@@ -264,7 +264,6 @@ var Comments = function(ctrl){
                     }
                  }
         >
-          <div className="scrollBar"></div>
           {(!wsCtrl.getRoom(ctrl.id).initOk)?(
           <div className="ui active loader"></div>
               ):(

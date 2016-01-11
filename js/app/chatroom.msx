@@ -72,7 +72,45 @@ var ChatRoom = {
                 <i className="large pointing right middle aligned icon"></i>
                 <div className="content">
                   <div className="header">Room 1</div>
-                  <div className="description">Dành cho nguời mới học ( beginer )</div>
+                  <div className="description">Beginer</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div className="ui segment">
+            <div className="ui relaxed divided list">
+              <a href="/chatroom/321" className="item"
+                 config={m.route}
+              >
+                <span className="fr">
+                  <div className="item">
+                    <i className="tiny users left middle aligned icon"
+                       config={function(element, isInit, ctx){
+                          if(isInit){
+                            if(ctx.u !=  wsCtrl.getRooms("321").u){
+                               $(element).transition('jiggle')
+                            }
+                          }
+                          ctx.u = $(element).val()
+                       }}
+                    >{wsCtrl.getRooms("321").u}</i>
+                  </div>
+                  <i className="tiny plug left middle aligned icon"
+                     config={function(element, isInit, ctx){
+                          if(isInit){
+                            if(ctx.c !=  wsCtrl.getRooms("321").c){
+                               $(element).transition('jiggle')
+                            }
+                          }
+                          ctx.c = $(element).val()
+                       }}
+                  >{wsCtrl.getRooms("321").c}</i>
+                </span>
+                <i className="large pointing right middle aligned icon"></i>
+                <div className="content">
+                  <div className="header">Room 2</div>
+                  <div className="description">Advanced</div>
                 </div>
               </a>
             </div>

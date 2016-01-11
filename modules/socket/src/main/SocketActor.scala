@@ -20,7 +20,7 @@ import makeTimeout.large
 abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket with Actor {
 
 
-  val listRoomIds = List("123")
+  val listRoomIds = List("123", "321")
   val listSid  = scala.collection.mutable.Map.empty[String, (Option[String], String)]
 
   val members = scala.collection.mutable.Map.empty[String, M]
@@ -164,7 +164,7 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
   def initChatRooms(uid: String, roomId: String, userId:Option[String]) = {
     sub(uid, roomId, userId)
     val listByGroup = listSid.groupBy(x => x._2._2)
-    val data = listRoomIds.map(roomId => Json.obj("id" -> roomId, "c" -> (if(listByGroup.contains(roomId)) listByGroup(roomId).toSeq.length else 0), "u" -> (if(listByGroup.contains(roomId)) listByGroup(roomId).toSeq.filter(x => x._2._1.get.length > 0 ).length else 0)))
+    val data = listRoomIds.map(roomId => Json.obj("id" -> roomId, "c" -> (if(listByGroup.contains(roomId)) listByGroup(roomId).toSeq.length else 0), "u" -> (if(listByGroup.contains(roomId)) listByGroup(roomId).values.toList.map(x => x._1).distinct.size else 0)))
     listUidInRoom(roomId) foreach { uid =>
       withMember(uid)(_ push makeMessage("chatNotify", Json.obj("t" -> "initChatRooms" , "v" -> data)))
     }
@@ -242,6 +242,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
             changeNBMember(roomId, data)
             changeNBMember("chatrooms", data)
           }
+        } else {
+          listSid -= uid
+          val data = Json.obj("t" -> "io", "v" -> Json.obj("rid" -> roomId, "c" -> -1))
+          changeNBMember("chatrooms", data)
         }
       } else {
         listSid -= uid
