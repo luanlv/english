@@ -17,12 +17,14 @@ trait AssetHelper { self: I18nHelper =>
 
   //val assetBaseUrl = s"http://$assetDomain"
   val assetBaseUrl = ""
+  val staticUrl = "http://static.luanlv.info"
 
   def cdnUrl(path: String) = s"$assetBaseUrl$path"
   def staticUrl(path: String) = s"$assetBaseUrl${routes.Assets.at(path)}"
 
 
   def cssTag(name: String, staticDomain: Boolean = true) = cssAt("stylesheets/" + name, staticDomain)
+  def cssTagName(name: String) = staticUrl + "/assets/stylesheets/" + name + "?v=" + assetVersion
 
   def cssVendorTag(name: String, staticDomain: Boolean = true) = cssAt("vendor/" + name, staticDomain)
 
@@ -32,6 +34,7 @@ trait AssetHelper { self: I18nHelper =>
   }
 
   def jsTag(name: String) = jsAt("javascripts/" + name)
+  def jsTagName(name: String) = staticUrl + "/assets/javascripts/" + name + "?v=" + assetVersion
 
   def jsTagCompiled(name: String) = if (isProd) jsAt("compiled/" + name) else jsTag(name)
 

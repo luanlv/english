@@ -21,9 +21,9 @@ final class Env(
 
   object Net {
     //val Domain = "localhost:9000" //config getString "net.domain"
-    val Domain = "192.168.1.25:9000" //config getString "net.domain"
-    val Protocol = "http" //config getString "net.protocol"
-    val BaseUrl = "luanlv.info" //config getString "net.base_url"
+    val Domain = config getString "net.domain"
+    val Protocol = config getString "net.protocol"
+    val BaseUrl = config getString "net.base_url"
     val Port = 9000 //config getInt "http.port"
     val ExtraPorts = (config getStringList "net.extra_ports").toList
     val AssetDomain = config getString "net.asset.domain"
