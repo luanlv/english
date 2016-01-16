@@ -16,8 +16,29 @@ import scala.concurrent.Future
 
 object API extends LilaController {
 
-  def getGroup(name: String) = Open { implicit ctx =>
-    Ok("ok").fuccess
+  def getSelfInformation = Auth { implicit ctx =>
+    me => {
+      Ok(Json.obj("username" -> me.username, "name" -> me.name, "avatar" -> me.avatar)).fuccess
+    }
+  }
+
+  def updateInformation =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
+    val req = ctx.body
+    val name = (Json.parse(req.body.toString).as[JsObject]\"name").as[String]
+    println(name)
+    UserRepo.updateName(ctx.userId.get, name) map {
+      lila.user.Env.current.lightUserApi.refresh(ctx.userId.get)
+      result => Ok("")
+    }
+  }
+
+  def getInformationUser(user: String) = Open { implicit ctx =>
+    UserRepo.byId(user).map {
+      dataUser => dataUser match {
+        case None => BadRequest
+        case Some(userInfo) => Ok(Json.obj("username" -> userInfo.username, "name" -> userInfo.name, "avatar" -> userInfo.avatar))
+      }
+    }
   }
 
 }

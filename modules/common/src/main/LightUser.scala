@@ -2,7 +2,7 @@ package lila.common
 
 import play.api.libs.json.Json
 
-case class LightUser(id: String, name: String, title: Option[String]) {
+case class LightUser(id: String, name: String, title: Option[String], avatar: String) {
   def titleName = title.fold(name)(_ + " " + name)
   def titleNameHtml = title.fold(name)(_ + "&nbsp;" + name)
 }

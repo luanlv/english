@@ -27,6 +27,7 @@ private[chatRoom] object RoomMessage {
         user = lila.user.Env.current.lightUserApi.get(~doc.getAs[String]("user")).head,
         chat = ~doc.getAs[String]("chat"),
         time = doc.getAs[DateTime]("time").head
+
       )
     }
   }

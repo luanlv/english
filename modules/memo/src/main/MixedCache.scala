@@ -13,6 +13,11 @@ final class MixedCache[K, V] private (
   def get(k: K): V = try {
     cache get k
   }
+
+  def refresh(k: K) = try {
+    cache refresh k
+  }
+
   catch {
     case _: java.util.concurrent.ExecutionException => default(k)
     case e: com.google.common.util.concurrent.UncheckedExecutionException =>
@@ -49,4 +54,5 @@ object MixedCache {
       (_: Boolean) => async(true) await makeTimeout(awaitTime))
     new MixedCache(sync, _ => default, invalidate(async, sync) _)
   }
+
 }

@@ -1,5 +1,6 @@
 var gulp        = require('gulp');
 //var sass        = require('gulp-sass');
+var sass = require('gulp-ruby-sass');
 var browserify = require('gulp-browserify');
 var rename = require('gulp-rename');
 
@@ -8,13 +9,13 @@ var gulpif = require('gulp-if');
 var browserSync = require('browser-sync');
 var sourcemaps = require('gulp-sourcemaps');
 //var minifyCss = require('gulp-minify-css');
+var autoprefixer = require('gulp-autoprefixer');
 
-// Registering a 'less' task that just compile our LESS files to CSS
 
 
 
 gulp.task('app', function() {
-  gulp.src('js/app/_main.msx')
+  gulp.src('front_end/app/_main.msx')
       .pipe(browserify({
         transform: ['mithrilify']
       }))
@@ -23,8 +24,20 @@ gulp.task('app', function() {
 });
 
 
+gulp.task('sass', function () {
+    return sass('front_end/scss/*.scss')
+        .on('error', sass.logError)
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
+        .pipe(rename('custom.min.css'))
+        .pipe(gulp.dest('public/stylesheets'));
+});
+
+
 gulp.task('ws', function(){
-  gulp.src('js/ws/_main.js')
+  gulp.src('front_end/ws/_main.js')
       .pipe(browserify({
         transform: ['mithrilify']
       }))
@@ -53,9 +66,10 @@ gulp.task('serve', function () {
 });
 
 gulp.task('watchjsx', ['app'], function () {
-  gulp.watch('js/{,*/}{,*/}*.msx', ['app']);
-  gulp.watch('js/{,*/}{,*/}*.js', ['app']);
+  gulp.watch('front_end/{,*/}{,*/}*.msx', ['app']);
+  gulp.watch('front_end/{,*/}{,*/}*.js', ['app']);
+  gulp.watch('front_end/scss/{,*/}*.scss', ['sass']);
 });
 
 // Creating the default gulp task
-gulp.task('default', [  'app', 'watchjsx', 'serve']);
+gulp.task('default', [  'app', 'sass', 'watchjsx', 'serve']);

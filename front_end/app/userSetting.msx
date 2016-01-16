@@ -1,0 +1,145 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var UserSetting = {
+    controller: function() {
+        var ctrl = this;
+        if(wsCtrl.userId.length < 1){
+            m.route("/");
+        } else {
+            ctrl.user = m.prop({});
+            ctrl.setup = function(){
+                rd.setting();
+            };
+            ctrl.request = api.requestWithFeedback2({method: "POST", url: "/settings"}, ctrl.user, ctrl.setup);
+
+            rd.setting()
+        }
+
+    },
+    view: function(ctrl) {
+       return (!ctrl.request.ready()?(
+           <div className="ui segment loading mh500">
+
+           </div>
+       ):[
+           <div className="ui grid main-content sha2 ">
+               <div className="head-user ui grid">
+                   <div className="four wide column" style="  min-height: 250px">
+                       {avatarWr(ctrl)}
+                   </div>
+                   <div className="twelve wide column edit-information" style="b min-height: 250px">
+
+                       <div class="ui labeled input">
+                           <div className="field">Name:</div>
+                           <input id="name" type="text" placeholder="Tên hiển thị!" value={ctrl.user().name}/>
+                       </div>
+                        <br/><br/><br/><br/><br/><br/><br/>
+                       <div className="ui divider"></div>
+                       <button class="ui button"
+                           onclick={function(){
+                               var sendInfo = {
+                                   "name": $('#name').val()
+                               };
+                               console.log(sendInfo);
+
+                               $.ajax({
+                                    type: "POST",
+                                    url: "/settings/updateInfo",
+                                    data: JSON.stringify(sendInfo),
+                                    contentType: "application/json",
+                                    dataType: "text"
+                               });
+                           }}
+                       >
+                           Save
+                       </button>
+                       <button class="ui button">
+                           Reset
+                       </button>
+                   </div>
+               </div>
+           </div>
+       ])
+    }
+};
+
+
+var avatarWr = function(ctrl){
+    return (
+        <div className="ui segment avatarWr">
+            <div className="ui special  cards"
+                 config={function(el, isInited, ctx){
+                                if(!isInited){
+                                    $('.special.cards .image').dimmer({
+                                      on: 'hover'
+                                    });
+                                }
+                            }}
+            >
+
+                <div className="card">
+                    <div className="blurring dimmable image">
+                        <div className="ui dimmer">
+                            <div className="content">
+                                <div className="center">
+                                    <form id="formUpload" enctype="multipart/form-data" action="/upload/image" method="post">
+                                        <input className="avatar-upload" name="picture" id="picture" type="file" accept="image/*"
+
+                                               config={function(el, isInited){
+                                                            if(!isInited){
+                                                                $(el).change(function (){
+                                                                   var _URL = window.URL || window.webkitURL;
+                                                                    var file, img;
+                                                                    if ((file = this.files[0])) {
+                                                                        img = new Image();
+                                                                        img.onload = function () {
+
+                                                                            if(this.width >= 180 && this.height >=180){
+                                                                                $('.avatarWr').addClass('loading');
+                                                                                jQuery.each(jQuery('#picture')[0].files, function(i, file) {
+                                                                                    data.append('file-'+i, file);
+                                                                                });
+                                                                                jQuery.ajax({
+                                                                                    url: '/upload/image',
+                                                                                    data: data,
+                                                                                    cache: false,
+                                                                                    contentType: false,
+                                                                                    processData: false,
+                                                                                    type: 'POST',
+                                                                                    success: function(data){
+                                                                                        var url = "/getimage/small/" + data;
+                                                                                        $('#avatarImg').attr('src', url);
+                                                                                        $('.avatarWr').removeClass('loading');
+                                                                                        wsCtrl.avatar = data;
+                                                                                    }
+                                                                                });
+                                                                            } else {
+                                                                                alert("Chiều rộng và chiều dài của ảnh phải lớn hơn 180px");
+                                                                            }
+                                                                        };
+                                                                        img.src = _URL.createObjectURL(file);
+                                                                    }
+                                                                    var data = new FormData();
+
+                                                                 });
+                                                            }
+                                                          }}
+                                        />
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                        <img id="avatarImg" src={(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    )
+}
+
+
+module.exports = UserSetting;

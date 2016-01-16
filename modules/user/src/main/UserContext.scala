@@ -18,6 +18,10 @@ sealed trait UserContext {
 
   def username = me map (_.username)
 
+  def name = me map (_.name)
+
+  def avatar = me map (_.avatar)
+
   def troll = me.??(_.troll)
 
   def ip = req.remoteAddress

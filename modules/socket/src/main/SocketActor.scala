@@ -20,7 +20,7 @@ import makeTimeout.large
 abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket with Actor {
 
 
-  val listRoomIds = List("123", "321")
+  val listRoomIds = List("01", "02", "03", "04", "05", "06")
   val listSid  = scala.collection.mutable.Map.empty[String, (Option[String], String)]
 
   val members = scala.collection.mutable.Map.empty[String, M]
@@ -141,8 +141,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     }
   }
 
-  def notifyUserEnterRoom(user: String, roomId: String) {
-    val mes = Json.obj("room" -> roomId, "t" -> "userEnter", "u" -> Json.obj("name" -> user, "role" -> "user", "avatar" -> "/assets/avatar/2.jpg"))
+  def notifyUserEnterRoom(user: JsValue, roomId: String) {
+    val mes = Json.obj("room" -> roomId, "t" -> "userEnter", "u" -> user)
     listUidInRoom(roomId) foreach {uid =>
       withMember(uid)(_ push makeMessage("chatNotify", mes))
     }
@@ -174,7 +174,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     sub(uid, roomId, userId)
     (lila.hub.Env.current.actor.chatRoom ? GetInitChatRoom(roomId)) foreach {
       case data: JsObject => {
-        withMember(uid)(_ push makeMessage("chatNotify", data))
+        val listByGroup = listSid.groupBy(x => x._2._2)
+        val newData = data.++(Json.obj("c" -> listByGroup(roomId).toSeq.length, "u" -> listByGroup(roomId).values.toList.map(x => x._1).distinct.size))
+        withMember(uid)(_ push makeMessage("chatNotify", newData))
       }
     }
   }
@@ -199,24 +201,24 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     if(!listSid.contains(uid)){
       userId foreach { userId =>
         if(userId.length > 0){
-          if(roomId != "roomchats") {
+          if(roomId != "chatrooms") {
             if(!userInRoom(userId, roomId, listSid.keys.toList)) {
               listSid += (uid -> (Some(userId), roomId))
               val data = Json.obj("t" -> "io", "v" -> Json.obj("rid" -> roomId, "c" -> 1, "u" -> 1))
               changeNBMember("chatrooms", data)
-              changeNBMember("roomId", data)
+              changeNBMember(roomId, data)
             } else {
               listSid += (uid -> (Some(userId), roomId))
               val data = Json.obj("t" -> "io", "v" -> Json.obj("rid" -> roomId, "c" -> 1))
               changeNBMember("chatrooms", data)
-              changeNBMember("roomId", data)
+              changeNBMember(roomId, data)
             }
           } else {
             listSid += (uid -> (Some(userId), roomId))
           }
         } else {
           listSid += (uid -> (Some(userId), roomId))
-          if(roomId != "roomchats") {
+          if(roomId != "chatrooms") {
             val data = Json.obj("t" -> "io", "v" -> Json.obj("rid" -> roomId, "c" -> 1))
             changeNBMember("chatrooms", data)
             changeNBMember(roomId, data)
@@ -245,11 +247,13 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
         } else {
           listSid -= uid
           val data = Json.obj("t" -> "io", "v" -> Json.obj("rid" -> roomId, "c" -> -1))
+          changeNBMember(roomId, data)
           changeNBMember("chatrooms", data)
         }
       } else {
         listSid -= uid
         val data = Json.obj("t" -> "io", "v" -> Json.obj("rid" -> roomId, "c" -> -1))
+        changeNBMember(roomId, data)
         changeNBMember("chatrooms", data)
       }
 

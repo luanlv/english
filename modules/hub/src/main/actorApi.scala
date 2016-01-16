@@ -226,7 +226,7 @@ package userMessage {
 package chatRoom {
   case class UserSubscribe(userId: String, roomId: String)
   case class UserUnSubscribe(userId: String, roomId: String)
-  case class UserEnterRoom(user: String, roomId: String)
+  case class UserEnterRoom(user: JsValue, roomId: String)
   case class UserLeavesRoom(user: String, roomId: String)
   case class GetInitChatRoom(roomId: String)
   case class ChatRoomMessage(userId: String, roomId: String, mes: String)

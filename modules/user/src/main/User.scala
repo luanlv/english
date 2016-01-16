@@ -20,6 +20,8 @@ case class User(
                    toints: Int = 0,
                    playTime: Option[User.PlayTime] = None,
                    title: Option[String] = None,
+                   avatar: String,
+                   name: String,
                    createdAt: DateTime,
                    seenAt: Option[DateTime],
                    kid: Boolean,
@@ -33,7 +35,7 @@ case class User(
   override def toString =
     s"User: games:${count.game}${troll ?? " troll"}${engine ?? " engine"}"
 
-  def light = lila.common.LightUser(id = id, name = username, title = title)
+  def light = lila.common.LightUser(id = id, name = name, title = title, avatar = avatar)
 
   def langs = ("en" :: lang.toList).distinct.sorted
 
@@ -121,6 +123,8 @@ object User {
     val createdWithApiVersion = "createdWithApiVersion"
     val lang = "lang"
     val title = "title"
+    val avatar = "avatar"
+    val name = "name"
     def glicko(perf: String) = s"$perfs.$perf.gl"
     val email = "email"
     val mustConfirmEmail = "mustConfirmEmail"
@@ -153,11 +157,15 @@ object User {
       seenAt = r dateO seenAt,
       kid = r boolD kid,
       lang = r strO lang,
-      title = r strO title)
+      title = r strO title,
+      avatar = r str avatar,
+      name = r str name
+    )
 
     def writes(w: BSON.Writer, o: User) = BSONDocument(
       id -> o.id,
       username -> o.username,
+      name -> o.username,
       count -> o.count,
       troll -> w.boolO(o.troll),
       ipBan -> w.boolO(o.ipBan),
@@ -172,7 +180,9 @@ object User {
       seenAt -> o.seenAt,
       kid -> w.boolO(o.kid),
       lang -> o.lang,
-      title -> o.title)
+      title -> o.title,
+      avatar -> o.avatar
+    )
   }
 
   private[user] lazy val tube = lila.db.BsTube(userBSONHandler)

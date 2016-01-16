@@ -39,6 +39,7 @@ trait ImageRepo {
 
   def all: Fu[List[Image]] = $find.all
 
+
   def find(name: String, page: Int) = imageTube.coll.find(BSONDocument(
       "metadata.size" -> "small",
       "filename" -> BSONDocument("$regex" -> (".*" + name + ".*"), "$options" -> "-i")

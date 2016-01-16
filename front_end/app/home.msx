@@ -1,0 +1,131 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+var div = [{id: "div 1", v: 1 ,
+  title: "How to Learn English Faster",
+  content: "We’ve all heard a thousand times that the only way to really learn English is to be totally immersed in the language, completely surrounded by it everywhere you go. But we wanted to go deeper than that and find quick and easy ways to start getting immersed. So our research team put together 10 steps that you can follow, in this order, to make learning English faster and a whole lot more fun. There are tons of podcasts about all topics imaginable these days: entertainment, politics, news. A good way to find one is to look for a podcast from a TV channel you usually watch in your cable TV. Look for one that interests you and listen to it in your car while driving. You’ll train your ear that way! Most of them are hilarious! It will be so worth it. Try looking at the comments to pick up some words and sentences you aren’t familiar with, but be careful there is all kinds of bizarre stuff in YouTube comments. When you are alone at home, or of course in the shower, start talking! Sing a song in English the way it sounds to you, talk about the weather or any other topic. Do this frequently and your pronunciation will drastically improve – guaranteed!"
+},{id: "div 2", v: 5,
+  title: "Learn English quickly",
+  content: "So many of our students want to learn English fast. Some students are so busy that they only have a few minutes a day to study English. While other students need to improve their English skills in just a few weeks before an important deadline. To the first we say, even if you have only 5 minutes a day, you can still make progress in English. It's far better to spend a little time each day to learn a few new words than to give up entirely. Over time these study moments will accumulate. To the second we say, immerse yourself in the language as intensively as possible. If you can, go abroad. Living in an English-speaking environment will make you progress faster than any other method. Even at home, read and listen to English all day, study with a live teacher, and make English-speaking friends online. Create an English-speaking environment around yourself and you'll learn English much faster than by just attending a course."
+} ,{id:"div 3", v: 10,
+  title: "Meet a Community Member",
+  content: "Meet Colie, a wikiHow Admin, New Article Booster, Welcomer, and Featured Author from the US who has been part of the community for over five years. She loves to write articles (she has started 55 of them herself!), fix grammar mistakes, organize and revamp articles, and help other wikiHowians. Her favorite wikiHow article is How to Make Chocolate Toffee Squares. She says that she’s learned communication and coaching skills through wikiHow, and enjoys the instant gratification of improving something and being productive online. She also loves how friendly, helpful, and personal everyone in the wikiHow community is."
+}];
+
+var Home = {
+  controller: function() {
+    m.redraw.strategy("diff")
+    $.cookie('url', m.route(), {path: "/"})
+    api.rd("Controller: Home");
+    var ctrl = this;
+    ctrl.divs = m.prop([]);
+    ctrl.divs(div);
+    ctrl.add = function(input){
+      ctrl.inputPost('')
+    };
+    ctrl.inputPost = m.prop('');
+    rd.home(function(){m.redraw()});
+  },
+  view: function(ctrl) {
+    api.rd("home:" + redraw.home);
+    redraw.home++;
+    return (
+        <div className="ui grid  main-content ">
+          <div className="three wide column">
+              <div className="ui  home-post-Wr mh500">
+                  <div className="trending">
+                      <h3>Trending Now</h3>
+                      <ul>
+                          <li>2016 Academy Award Nominations</li>
+                          <li>Death of Alan Rickman</li>
+                          <li>Death of David Bowie</li>
+                          <li>Sherlock: The Abominable Bride</li>
+                          <li>Making a Murderer</li>
+                      </ul>
+                  </div>
+
+              </div>
+              <div className="ui  home-post-Wr mh300"></div>
+          </div>
+
+            <div className="nine wide column">
+
+            <div className="ui home-post-Wr ">
+
+              <div className="ui form postWr postContainer">
+                <div className="field">
+                  <textarea className="auto-size new-post"
+                            rows="2"
+                            placeholder="What's on your mind?"
+                            config={function (element, isInit, ctx) {
+                                        if(!isInit) {
+                                          $(element).textareaAutoSize();
+                                          $(element).on('input', function(){
+                                              ctrl.inputPost($(element).val())
+                                          })
+                                        }
+                                        element.value = ctrl.inputPost();
+                                        if(element.value.length<1){
+
+                                          //$(element).css('height', '41px')
+                                        }
+                                      }
+                                    }
+                            onkeypress={function(e){
+                                                if(e.keyCode == 13 && !e.shiftKey) {
+                                                  m.redraw.strategy("none");
+                                                  if (ctrl.inputPost().length < 1) {
+                                                    return false;
+                                                  }
+                                                }else{
+                                                  m.redraw.strategy("none");
+                                                  if(e.keyCode == 13 && e.shiftKey && ctrl.inputPost().length < 1){
+                                                    return false;
+                                                  }
+                                                }
+                                            }
+                                        }
+                  >{ctrl.inputPost()}</textarea>
+                </div>
+                <div className="post">
+                  <button className="ui mini primary button"
+                       onclick={function(e){
+                        m.redraw.strategy("none");
+                        ctrl.add(ctrl.inputPost())
+                        //$('.new-post').attr('disabled', true);
+                        $('.postWr').addClass('loading');
+
+                       }}
+                  >Post</button>
+                  <span className="clear"></span>
+                </div>
+              </div>
+            </div>
+
+              {ctrl.divs().map(function(item){
+                  return (
+                      <div className="ui home-post-Wr">
+                          <div className="ui postContainer postDemo"
+                                  id={item.id}
+                                  v={item.v}
+                          >
+                          <h2>{item.title}</h2>
+                          <p>
+                            {item.content}
+                          </p>
+                          </div>
+                      </div>
+                  )
+                  })}
+
+          </div>
+          <div className="four wide column">
+              <div className="ui  home-post-Wr mh300"></div>
+              <div className="ui  home-post-Wr mh500"></div>
+              <div className="ui  home-post-Wr mh300"></div>
+          </div>
+        </div>
+    )
+  }
+};
+
+module.exports = Home;

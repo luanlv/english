@@ -40,7 +40,22 @@ object Application extends LilaController{
     }
   }
 
+  def user(user: String) = Open {implicit ctx =>
+    Ok(views.html.index.home()).fuccess
+  }
+
+  def userMini(user: String) = Open {implicit  ctx =>
+    lila.app.Env.user.lightUserApi.get(user) match {
+      case None => Ok("").fuccess
+      case Some(lightUser) => {
+//        val fuData = Future("<div>" + lightUser.name + "</div>")
+//        val result = Promise.timeout(fuData, 0.2 second).flatMap(x => x)
+//        result.map {
+//          x => Ok(x)
+//        }
+        Ok("<div>" + lightUser.name + "</div>").fuccess
+      }
+    }
+  }
+
 }
-
-
-

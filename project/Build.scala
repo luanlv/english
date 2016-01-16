@@ -11,7 +11,7 @@ object ApplicationBuild extends Build {
   import BuildSettings._
   import Dependencies._
 
-  lazy val root = Project("lila", file(".")) enablePlugins _root_.play.sbt.PlayScala settings (
+  lazy val root = Project("english", file(".")) enablePlugins _root_.play.sbt.PlayScala settings (
     scalaVersion := globalScalaVersion,
     resolvers ++= Dependencies.Resolvers.commons,
     scalacOptions := compilerOptions,

@@ -192,6 +192,8 @@ trait UserRepo {
 
   def setEngine(id: ID, v: Boolean): Funit = $update.field(id, "engine", v)
 
+  def setAvatar(id: ID, v: String): Funit = $update.field(id, "avatar", v)
+
   def setBooster(id: ID, v: Boolean): Funit = $update.field(id, "booster", v)
 
   def toggleIpBan(id: ID) = $update.doc[ID, User](id) { u => $set("ipBan" -> !u.ipBan) }
@@ -199,6 +201,8 @@ trait UserRepo {
   def toggleKid(user: User) = $update.field(user.id, "kid", !user.kid)
 
   def updateTroll(user: User) = $update.field(user.id, "troll", user.troll)
+
+  def updateName(id: ID, v: String): Funit = $update.field(id, "name", v)
 
   def isEngine(id: ID): Fu[Boolean] = $count.exists($select(id) ++ engineSelect(true))
 
@@ -270,7 +274,9 @@ trait UserRepo {
     BSONDocument(
       F.id -> normalize(username),
       F.username -> username,
+      F.name -> username,
       F.email -> email,
+      F.avatar -> "",
       //F.mustConfirmEmail -> (email.isDefined && mobileApiVersion.isEmpty).option(DateTime.now),
       "password" -> hash(password, salt),
       "salt" -> salt,

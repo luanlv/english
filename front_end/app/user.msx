@@ -1,0 +1,99 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var User = {
+    controller: function() {
+        var ctrl = this;
+        ctrl.userId = m.route.param('user');
+        ctrl.user = m.prop({});
+        //ctrl.userId = m.route.param('user');
+        //m.request({method: "GET", url: "/api/getUser/" + ctrl.userId}).then(
+        //    function(user){
+        //        ctrl.user(user);
+        //    }
+        //);
+        ctrl.setup = function(){
+            rd.user();
+        };
+
+        ctrl.error = function(){
+            m.route('/');
+        }
+        ctrl.request = api.requestWithFeedback2({method: "GET", url: "/api/getUser/" + ctrl.userId}, ctrl.user, ctrl.setup, ctrl.error);
+        rd.user()
+    },
+    view: function(ctrl) {
+       return (!ctrl.request.ready()?(
+                <div className="ui segment loading mh500">
+
+                </div>
+            ):(
+           <div className="ui grid main-content sha2">
+                <div className="head-user ui grid">
+                    <div className="four wide column" style="  min-height: 250px">
+                        <div className="avatarWr">
+                            <img id="avatarImg" src={(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
+                        </div>
+
+                    </div>
+                    <div className="twelve wide column" style="b min-height: 250px">
+                        <h2 className="ui header">
+                            {ctrl.user().name}
+                        </h2>
+                        <div className="edit">
+                            {(wsCtrl.userId !== ctrl.userId)?[
+                            <button className="ui inverted button">
+                                <i className="add user icon"></i>
+                                Add Friend
+                            </button>,
+                            <button className="ui inverted button">
+                                <i className="plus icon"></i>
+                                Follow
+                            </button>
+                            ]:(
+                                <a className="ui basic button" href={"/settings"} config={m.route}>
+                                    <i className="write square icon"></i>
+                                    Edit Profile
+                                </a>
+                            )}
+
+
+                        </div>
+                        <div className="ui divider"></div>
+                        ...
+
+                        <br/><br/><br/><br/><br/>
+
+                        <div className="ui divider"></div>
+                        <div className="infoWr">
+                        <div className="ui labeled button" >
+                            <div className="ui inverted white">
+                                <i className="users icon"></i>
+                                <div className="number">
+                                190
+                                </div>
+                                Following
+                            </div>
+                        </div>
+
+                        <div className="ui labeled button">
+                            <div className="ui inverted white">
+                                <i className="users icon"></i>
+                                <div className="number">
+                                10
+                                </div>
+                                Follower
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+           </div>
+            )
+        )
+    }
+};
+
+
+module.exports = User;

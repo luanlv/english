@@ -178,3 +178,42 @@ $(document).on('mouseup', function mouseup(){
 
   return init(function () {});
 }));
+
+
+var powerTipLoader = '<div class="square-wrap"><div class="square-spin"></div></div>';
+
+
+var userPowertip = function($els, placement) {
+  $els.removeClass('ulpt').powerTip({
+    intentPollInterval: 200,
+    fadeInTime: 100,
+    fadeOutTime: 100,
+    placement: placement,
+    smartPlacement: true,
+    mouseOnToPopup: true,
+    closeDelay: 200
+  }).on({
+    powerTipPreRender: function() {
+      $.ajax({
+        url: ($(this).attr('href') || $(this).data('href')).replace(/\?.+$/, '') + '/mini',
+        success: function(html) {
+          $('#powerTip').html(html);
+          $('body').trigger('lichess.content_loaded');
+        }
+      });
+    }
+  }).data('powertip', powerTipLoader);
+};
+
+$( document ).ready(function() {
+
+  function updatePowertips() {
+    userPowertip($('.ulpt'), 'sw-alt');
+  }
+
+  //setTimeout(updatePowertips, 1600);
+  setInterval(updatePowertips, 1000);
+  $('body').on('lichess.content_loaded', updatePowertips);
+
+});
+

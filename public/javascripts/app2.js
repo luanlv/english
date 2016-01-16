@@ -32,13 +32,43 @@ api.requestWithFeedback = function(args) {
   }
 };
 
+api.requestWithFeedback2 = function(args, bind, fn, fnError) {
+    var data = m.prop();
+    var completed = m.prop(false);
+    var complete = function() {
+        completed(true)
+    };
+    args.background = true;
+    args.config = function(xhr) {
+        xhr.timeout = 4000;
+        xhr.ontimeout = function() {
+            complete();
+            m.redraw();
+        }
+    };
+    return {
+        request: m.request(args).then(data).then(function(data){
+            console.log(data);
+            if(bind !== undefined) bind(data);
+            if(fn !== undefined) fn();
+            complete();
+            m.redraw();
+        }, function(error){
+            console.log(error)
+            if(fnError !== undefined)  fnError()
+        }),
+        data: data,
+        ready: completed
+    }
+};
+
 
 api.scrollBottom = function(element, isInit, context) {
   if(!isInit){
     element.scrollTop = element.scrollHeight;
   }
   var addLegth = (element.scrollHeight - context.prevHeight) || 0;
-  if( element.scrollHeight - element.clientHeight - element.scrollTop < addLegth +  + 10 )
+  if( element.scrollHeight - element.clientHeight - element.scrollTop < addLegth +  10 )
     element.scrollTop = element.scrollHeight;
   context.prevHeight = element.scrollHeight
 }
@@ -48,7 +78,7 @@ api.scrollBottom2 = function(element, isInit, context) {
     element.scrollTop = element.scrollHeight;
   }
   var addLegth = (element.scrollHeight - context.prevHeight) || 0;
-  if( element.scrollHeight - element.clientHeight - element.scrollTop < addLegth +  + 40)
+  if( element.scrollHeight - element.clientHeight - element.scrollTop < addLegth + 60)
     element.scrollTop = element.scrollHeight;
   context.prevHeight = element.scrollHeight
 };
@@ -136,7 +166,7 @@ api.time = function(timestamp){
 
 
 module.exports = api;
-},{"../ws/_wsCtrl.js":13}],2:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":15}],2:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -252,7 +282,7 @@ var Chat = {
 
                       {tag: "div", attrs: {className:"raised chatboxWr", 
                            style:chat.hide?"display: none":""}, children: [" ", {tag: "div", attrs: {className:"ui segment noSha"}, children: [
-                          {tag: "div", attrs: {className:"ui top attached inverted header chat-title" + (chat.read?"":" unread"), 
+                          {tag: "div", attrs: {className:"ui top attached inverted header chat-title sha2" + (chat.read?"":" unread"), 
                                onclick:function(){rd.right(ctrl.toggleChat(rank))}
                           }, children: [
                             chat.user.name, 
@@ -344,128 +374,88 @@ var Chat = {
 
 module.exports = Chat;
 
-},{"../ws/_wsCtrl.js":13,"./api.msx":1}],3:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":15,"./api.msx":1}],3:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
 
 var ChatRoom = {
   controller: function() {
-    m.redraw.strategy("diff")
+    m.redraw.strategy("diff");
     $.cookie('url', m.route(), {path: "/"})
     var ctrl = this;
-    ctrl.param = m.prop(m.route.param("roomId")),
+    ctrl.param = m.prop(m.route.param("roomId"));
     wsCtrl.send(wsCtrl.sendData("initChat", {t: "chatrooms"}));
 
     var intervalChatRooms = setInterval(function(){
       wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
     }, 30000);
     ctrl.onunload = function() {
-      wsCtrl.data.chatrooms = {}
-      wsCtrl.send(wsCtrl.sendData("unSub", {t: "chatrooms"}))
-      clearInterval(intervalChatRooms)
+      wsCtrl.data.chatrooms = {};
+      wsCtrl.send(wsCtrl.sendData("unSub", {t: "chatrooms"}));
+      clearInterval(intervalChatRooms);
     };
+    ctrl.roomList = [
+      {id: "01", name: "Room 1", description: "Low intermediate level of English"},
+      {id: "02", name: "Room 2", description: "High intermediate level of English"},
+      {id: "03", name: "Room 3", description: "Advanced level of English"},
+      {id: "04", name: "Room 4", description: "Proficient in English"},
+      {id: "05", name: "Room 5", description: "Upper Intermediate"},
+      {id: "06", name: "Room 6", description: "Very Advanced"},
+    ];
 
     rd.chatroom();
   },
   view: function(ctrl) {
     return (
-      {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
-        {tag: "div", attrs: {className:"eleven wide column main-left border-right"}, children: [
-          {tag: "div", attrs: {className:"ui", style:"min-height: 50px"}, children: [
-            {tag: "button", attrs: {className:"ui right floated button create-button", 
-                    config:function(el, isInit, ctx){
-                          if(!isInit){
-                            $('.ui.button.create-button').popup({
-                              popup : $('.ui.popup.create-room'),
-                              position : 'bottom right',
-                              on    : 'click'
-                            })
-                          }
-                      }
-                    
-            }, children: ["Create new room"]}
-          ]}, 
+      {tag: "div", attrs: {className:"ui grid main-content"}, children: [
+        {tag: "div", attrs: {className:"eleven wide column"}, children: [
+          {tag: "div", attrs: {className:"ui segment segWr mh500"}, children: [
+            {tag: "div", attrs: {className:"ui grid"}, children: [
+              ctrl.roomList.map(function(room){
+                return (
+                    {tag: "div", attrs: {className:"eight wide column"}, children: [
+                    {tag: "div", attrs: {className:"ui segment"}, children: [
+                      {tag: "div", attrs: {className:"ui relaxed divided list"}, children: [
+                        {tag: "a", attrs: {href:"/chatroom/" + room.id, className:"item", 
+                           config:m.route
+                        }, children: [
 
-          {tag: "div", attrs: {className:"ui segment"}, children: [
-            {tag: "div", attrs: {className:"ui relaxed divided list"}, children: [
-              {tag: "a", attrs: {href:"/chatroom/123", className:"item", 
-                 config:m.route
-              }, children: [
-                {tag: "span", attrs: {className:"fr"}, children: [
-                  {tag: "div", attrs: {className:"item"}, children: [
-                    {tag: "i", attrs: {className:"tiny users left middle aligned icon", 
-                       config:function(element, isInit, ctx){
-                          if(isInit){
-                            if(ctx.u !=  wsCtrl.getRooms("123").u){
-                               $(element).transition('jiggle')
-                            }
-                          }
-                          ctx.u = $(element).val()
-                       }
-                    }, children: [wsCtrl.getRooms("123").u]}
-                  ]}, 
-                  {tag: "i", attrs: {className:"tiny plug left middle aligned icon", 
-                     config:function(element, isInit, ctx){
-                          if(isInit){
-                            if(ctx.c !=  wsCtrl.getRooms("123").c){
-                               $(element).transition('jiggle')
-                            }
-                          }
-                          ctx.c = $(element).val()
-                       }
-                  }, children: [wsCtrl.getRooms("123").c]}
-                ]}, 
-                {tag: "i", attrs: {className:"large pointing right middle aligned icon"}}, 
-                {tag: "div", attrs: {className:"content"}, children: [
-                  {tag: "div", attrs: {className:"header"}, children: ["Room 1"]}, 
-                  {tag: "div", attrs: {className:"description"}, children: ["Beginer"]}
-                ]}
-              ]}
-            ]}
-          ]}, 
+                    {tag: "span", attrs: {className:"fr"}, children: [
+                      {tag: "div", attrs: {className:"item"}, children: [
+                        {tag: "i", attrs: {className:"tiny users left middle aligned icon"
+                        }, children: [wsCtrl.getRooms(room.id).u]}
+                      ]}, 
+                      {tag: "i", attrs: {className:"tiny plug left middle aligned icon"
+                      }, children: [
+                        wsCtrl.getRooms(room.id).c
+                      ]}
+                    ]}, 
 
-          {tag: "div", attrs: {className:"ui segment"}, children: [
-            {tag: "div", attrs: {className:"ui relaxed divided list"}, children: [
-              {tag: "a", attrs: {href:"/chatroom/321", className:"item", 
-                 config:m.route
-              }, children: [
-                {tag: "span", attrs: {className:"fr"}, children: [
-                  {tag: "div", attrs: {className:"item"}, children: [
-                    {tag: "i", attrs: {className:"tiny users left middle aligned icon", 
-                       config:function(element, isInit, ctx){
-                          if(isInit){
-                            if(ctx.u !=  wsCtrl.getRooms("321").u){
-                               $(element).transition('jiggle')
-                            }
-                          }
-                          ctx.u = $(element).val()
-                       }
-                    }, children: [wsCtrl.getRooms("321").u]}
-                  ]}, 
-                  {tag: "i", attrs: {className:"tiny plug left middle aligned icon", 
-                     config:function(element, isInit, ctx){
-                          if(isInit){
-                            if(ctx.c !=  wsCtrl.getRooms("321").c){
-                               $(element).transition('jiggle')
-                            }
-                          }
-                          ctx.c = $(element).val()
-                       }
-                  }, children: [wsCtrl.getRooms("321").c]}
-                ]}, 
-                {tag: "i", attrs: {className:"large pointing right middle aligned icon"}}, 
-                {tag: "div", attrs: {className:"content"}, children: [
-                  {tag: "div", attrs: {className:"header"}, children: ["Room 2"]}, 
-                  {tag: "div", attrs: {className:"description"}, children: ["Advanced"]}
-                ]}
-              ]}
-            ]}
-          ]}, 
+                          {tag: "i", attrs: {className:"large pointing right middle aligned icon"}}, 
+                          {tag: "div", attrs: {className:"content"}, children: [
+                            {tag: "div", attrs: {className:"header"}, children: [room.name]}, 
+                            {tag: "div", attrs: {className:"description"}, children: [room.description]}
+                          ]}
+                        ]}
+                      ]}
+                    ]}
+                  ]}
+                )
+              })
+            ]}, 
 
-          Create()
+
+
+
+            Create()
+          ]}
         ]}, 
-        {tag: "div", attrs: {className:"three wide column"}, children: ["right"]}
+        {tag: "div", attrs: {className:"five wide column"}, children: [
+          {tag: "div", attrs: {className:"ui mh500"}
+
+          }
+        ]}
       ]}
     )
   }
@@ -551,7 +541,7 @@ var Create = function(){
 }
 
 module.exports = ChatRoom;
-},{"../ws/_wsCtrl.js":13,"./api.msx":1}],4:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":15,"./api.msx":1}],4:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var initData = {}
@@ -576,23 +566,25 @@ var Dashboard = {
     redraw.dashboard++;
     if(!ctrl.request.ready()) {
       return (
-          {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: ["LOADING !!! (delay 1s)"]}
+          {tag: "div", attrs: {className:"ui grid main-content "}, children: ["LOADING !!! (delay 1s)"]}
       )
     } else {
-      return {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [ctrl.request.data().data]}
+      return {tag: "div", attrs: {className:"ui grid main-content"}, children: [ctrl.request.data().data]}
     }
   }
 };
 
 
 module.exports = Dashboard;
-},{"../ws/_wsCtrl.js":13,"./api.msx":1}],5:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":15,"./api.msx":1}],5:[function(require,module,exports){
 "user strict";
 
 var Nav = require('./nav.msx');
 var Home = require('./home.msx');
 var Dashboard = require('./dashboard.msx');
 var ChatRoom = require('./chatroom.msx');
+var User = require('./user.msx');
+var UserSetting = require('./userSetting.msx');
 var Room = require('./room.msx');
 var Footer = require('./footer.msx');
 
@@ -605,7 +597,7 @@ window.route = function( sub ){
     },
     view : sub.view
   }
-}
+};
 
 window.target = [];
 window.tenant = function(id, module) {
@@ -655,8 +647,14 @@ window.rd = {
   room: function(callback){
     local(['room'], callback).call()
   },
+  user: function(callback){
+    local(['user'], callback).call()
+  },
+  setting: function(callback){
+    local(['setting'], callback).call()
+  },
   all: function(callback){
-    local(["home", "dashboard", "nav", "app", "right", "chatroom", "room"], callback).call()
+    local(["home", "dashboard", "nav", "app", "right", "chatroom", "room", "user", "setting"], callback).call()
   }
 };
 
@@ -706,6 +704,8 @@ window.initRoute = function(){
     "/dashboard": tenant('dashboard', route(Dashboard)),
     "/chatroom": tenant('chatroom', route(ChatRoom)),
     "/chatroom/:roomId": tenant('room', route(Room)),
+    "/settings": tenant('setting', route(UserSetting)),
+    "/@/:user": tenant('user', route(User)),
   });
   $('.loaderWr').remove();
 };
@@ -715,7 +715,7 @@ window.initComponent = function() {
   m.mount(document.getElementById('footer'), tenant('footer', Footer));
   m.mount(document.getElementById('rightContainer'), tenant('right', Chat));
 }
-},{"./chat.msx":2,"./chatroom.msx":3,"./dashboard.msx":4,"./footer.msx":6,"./home.msx":7,"./nav.msx":11,"./room.msx":12}],6:[function(require,module,exports){
+},{"./chat.msx":2,"./chatroom.msx":3,"./dashboard.msx":4,"./footer.msx":6,"./home.msx":7,"./nav.msx":11,"./room.msx":12,"./user.msx":13,"./userSetting.msx":14}],6:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -735,7 +735,7 @@ var Footer = {
 
 
 module.exports = Footer;
-},{"../ws/_wsCtrl.js":13,"./api.msx":1}],7:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":15,"./api.msx":1}],7:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var div = [{id: "div 1", v: 1 ,
@@ -767,9 +767,28 @@ var Home = {
     api.rd("home:" + redraw.home);
     redraw.home++;
     return (
-        {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
-          {tag: "div", attrs: {className:"eleven wide column main-left border-right"}, children: [
-            {tag: "h1", attrs: {}, children: ["A trivial website for learning english !!!"]}, 
+        {tag: "div", attrs: {className:"ui grid  main-content "}, children: [
+          {tag: "div", attrs: {className:"three wide column"}, children: [
+              {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
+                  {tag: "div", attrs: {className:"trending"}, children: [
+                      {tag: "h3", attrs: {}, children: ["Trending Now"]}, 
+                      {tag: "ul", attrs: {}, children: [
+                          {tag: "li", attrs: {}, children: ["2016 Academy Award Nominations"]}, 
+                          {tag: "li", attrs: {}, children: ["Death of Alan Rickman"]}, 
+                          {tag: "li", attrs: {}, children: ["Death of David Bowie"]}, 
+                          {tag: "li", attrs: {}, children: ["Sherlock: The Abominable Bride"]}, 
+                          {tag: "li", attrs: {}, children: ["Making a Murderer"]}
+                      ]}
+                  ]}
+
+              ]}, 
+              {tag: "div", attrs: {className:"ui  home-post-Wr mh300"}}
+          ]}, 
+
+            {tag: "div", attrs: {className:"nine wide column"}, children: [
+
+            {tag: "div", attrs: {className:"ui home-post-Wr "}, children: [
+
               {tag: "div", attrs: {className:"ui form postWr postContainer"}, children: [
                 {tag: "div", attrs: {className:"field"}, children: [
                   {tag: "textarea", attrs: {className:"auto-size new-post", 
@@ -806,7 +825,7 @@ var Home = {
                   }, children: [ctrl.inputPost()]}
                 ]}, 
                 {tag: "div", attrs: {className:"post"}, children: [
-                  {tag: "button", attrs: {className:"ui blue mini right floated button", 
+                  {tag: "button", attrs: {className:"ui mini primary button", 
                        onclick:function(e){
                         m.redraw.strategy("none");
                         ctrl.add(ctrl.inputPost())
@@ -817,28 +836,38 @@ var Home = {
                   }, children: ["Post"]}, 
                   {tag: "span", attrs: {className:"clear"}}
                 ]}
-              ]}, 
+              ]}
+            ]}, 
 
               ctrl.divs().map(function(item){
-                  return {tag: "div", attrs: {className:"ui postContainer postDemo", 
-                              id:item.id, 
-                              v:item.v
-                  }, children: [
-                  {tag: "h2", attrs: {}, children: [item.title]}, 
-                  {tag: "p", attrs: {}, children: [
-                    item.content
-                  ]}
-                  ]}
+                  return (
+                      {tag: "div", attrs: {className:"ui home-post-Wr"}, children: [
+                          {tag: "div", attrs: {className:"ui postContainer postDemo", 
+                                  id:item.id, 
+                                  v:item.v
+                          }, children: [
+                          {tag: "h2", attrs: {}, children: [item.title]}, 
+                          {tag: "p", attrs: {}, children: [
+                            item.content
+                          ]}
+                          ]}
+                      ]}
+                  )
                   })
+
           ]}, 
-          {tag: "div", attrs: {className:"three wide column"}, children: ["right"]}
+          {tag: "div", attrs: {className:"four wide column"}, children: [
+              {tag: "div", attrs: {className:"ui  home-post-Wr mh300"}}, 
+              {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}}, 
+              {tag: "div", attrs: {className:"ui  home-post-Wr mh300"}}
+          ]}
         ]}
     )
   }
 };
 
 module.exports = Home;
-},{"../ws/_wsCtrl.js":13,"./api.msx":1}],8:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":15,"./api.msx":1}],8:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -908,7 +937,7 @@ var LoginButton = function(ctrl){ return(
 )}
 
 module.exports = LoginButton;
-},{"../../ws/_wsCtrl.js":13,".././api.msx":1}],9:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":15,".././api.msx":1}],9:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -989,7 +1018,7 @@ var MessageButton = function(ctrl){ return (
 ) }
 
 module.exports = MessageButton;
-},{"../../ws/_wsCtrl.js":13,".././api.msx":1}],10:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":15,".././api.msx":1}],10:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -1030,7 +1059,7 @@ var UserButton = function(ctrl){ return (
 ) }
 
 module.exports = UserButton;
-},{"../../ws/_wsCtrl.js":13,".././api.msx":1}],11:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":15,".././api.msx":1}],11:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -1099,7 +1128,7 @@ var Nav = {
           ]}, 
           {tag: "div", attrs: {className:"ui category search item"}, children: [
             {tag: "div", attrs: {className:"ui icon input"}, children: [
-              {tag: "input", attrs: {className:"", type:"text", placeholder:"Search ..."}}, 
+              {tag: "input", attrs: {className:"", type:"text", style:"width: 400px;", placeholder:"Search ..."}}, 
                 {tag: "i", attrs: {className:"search link icon"}}
             ]}, 
             {tag: "div", attrs: {className:"results"}}
@@ -1142,7 +1171,7 @@ var Nav = {
                      }
                    
                 }}
-                   )
+               )
              ]}, 
             {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
               {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
@@ -1175,7 +1204,7 @@ var Nav = {
                      config:function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
-                          $(element).transition('jiggle')
+                          $(element).transition('jiggle');
                           if(ctrl.ping() > 0 || ctrl.ping <= 500){
                             setTimeout(fnJiggle, 1000)
                           } else {
@@ -1214,134 +1243,98 @@ var Ping = function(ctrl){
 };
 
 module.exports = Nav;
-},{"../ws/_wsCtrl.js":13,"./api.msx":1,"./menu_button/Login.msx":8,"./menu_button/Message.msx":9,"./menu_button/User.msx":10}],12:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":15,"./api.msx":1,"./menu_button/Login.msx":8,"./menu_button/Message.msx":9,"./menu_button/User.msx":10}],12:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
-var comments = [
-  {avatar: '/assets/avatar/2.jpg', user: 'Mot', time: "5H42", comment: "Hello world 1!"},
-  {avatar: '/assets/avatar/3.jpg', user: 'Hai', time: "5H49", comment: "Hello world 2!"},
-  {avatar: '/assets/avatar/1.jpg', user: 'Ba', time: "5H52", comment: "Hello world 3!"},
-  {avatar: '/assets/avatar/4.jpg', user: 'Bon', time: "6H42", comment: "Hello world 4!"}
-];
-
-var users = [
-  {
-  avatar: '/assets/avatar/2.jpg',
-  name: 'Mot',
-  role: 'Admin'
-  },
-  {
-    avatar: '/assets/avatar/3.jpg',
-    name: 'Hai',
-    role: 'User'
-  },
-  {
-    avatar: '/assets/avatar/1.jpg',
-    name: 'Ba',
-    role: 'User'
-  },
-  {
-    avatar: '/assets/avatar/4.jpg',
-    name: 'Bon',
-    role: 'Mod'
-  }
-];
-
 var Room = {
-  controller: function() {
-    m.redraw.strategy("diff")
-    $.cookie('url', m.route(), {path: "/"})
-    var ctrl = this;
-    console.log('init room')
-    ctrl.id = m.route.param("roomId");
-    ctrl.param = m.prop(m.route.param("roomId"));
-    ctrl.loadMore = true;
+    controller: function() {
+        m.redraw.strategy("diff")
+        $.cookie('url', m.route(), {path: "/"});
+        var ctrl = this;
+        ctrl.id = m.route.param("roomId");
+        ctrl.param = m.prop(m.route.param("roomId"));
+        ctrl.loadMore = true;
+        ctrl.scrollBottom = true;
+        ctrl.add = function () {
+            var input = wsCtrl.inputChat(ctrl.id)().trim();
+            //input = input.replace(/\n/g, '');
+            if (input) {
+                wsCtrl.send(wsCtrl.sendData("chat", {room: ctrl.id, d: input}));
+                wsCtrl.inputChat(ctrl.id)('');
+            }
+            rd.room(function(){m.redraw()})
+        };
 
-    ////server test
-    //if(wsCtrl.userId.length > 0) {
-    //  setTimeout(function testServer(){
-    //    wsCtrl.send(wsCtrl.sendData("chat", {room: ctrl.id, d: Math.random().toString(36)}));
-    //    setTimeout(testServer, Math.ceil(300 + Math.random()*300))
-    //  }, 500)
-    //
-    //  setTimeout(function testServer2(){
-    //    wsCtrl.data.userOnline.map(function(userId){
-    //      if(userId.id != wsCtrl.userId) wsCtrl.send(wsCtrl.sendData("m", {to: userId.id, mes: Math.random().toString(36)}));
-    //    });
-    //    setTimeout(testServer2, Math.ceil(200 + Math.random()*500))
-    //  }, 1000)
-    //}
-    ////end
+        wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
 
-    ctrl.add = function () {
-      var input = wsCtrl.inputChat(ctrl.id)().trim();
-      //input = input.replace(/\n/g, '');
-      if (input) {
-        wsCtrl.send(wsCtrl.sendData("chat", {room: ctrl.id, d: input}));
-        wsCtrl.inputChat(ctrl.id)('');
-      }
-      rd.room(function(){m.redraw()})
-    };
+        var intervalRoom = setInterval(function(){
+            wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
+        }, 30000);
 
-    wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
+        ctrl.onunload = function() {
+            wsCtrl.send(wsCtrl.sendData("unSub", {t: "room", v: ctrl.param()}));
+            wsCtrl.clearOldRoom(ctrl.id);
+            clearInterval(intervalRoom)
+        };
+        console.log("ctrl room !");
+        rd.room();
+    },
+    view: function(ctrl) {
+        return (
+            {tag: "div", attrs: {className:"ui grid main-content "}, children: [
+                {tag: "div", attrs: {className:"eleven wide column room-chat"}, children: [
+                    {tag: "div", attrs: {className:"ui segment segWr"}, children: [
+                        {tag: "div", attrs: {className:"ui padded grid"}, children: [
+                            {tag: "div", attrs: {className:"thirteen wide  column light-border-right pad-bot0"}, children: [
+                                Comments(ctrl)
+                            ]}, 
+                            {tag: "div", attrs: {className:"three wide column"}, children: [
+                                {tag: "div", attrs: {className:"room-user"}, children: [
 
-    var intervalRoom = setInterval(function(){
-      wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
-    }, 30000);
-    ctrl.onunload = function() {
-      wsCtrl.send(wsCtrl.sendData("unSub", {t: "room", v: ctrl.param()}));
-      wsCtrl.clearOldRoom(ctrl.id);
-      clearInterval(intervalRoom)
-    };
-    rd.room();
-  },
-  view: function(ctrl) {
-    return (
-        {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [
-          {tag: "div", attrs: {className:"eleven wide column room-chat border-right pad0 "}, children: [
-            {tag: "div", attrs: {className:"ui padded grid"}, children: [
-              {tag: "div", attrs: {className:"twelve wide  column light-border-right pad-bot0"}, children: [
-                Comments(ctrl)
-              ]}, 
-              {tag: "div", attrs: {className:"four wide column"}, children: [
-                {tag: "div", attrs: {className:"room-user"}, children: [
-                  {tag: "h5", attrs: {className:"ui dividing header"}, children: ["User online!"]}, 
-                  {tag: "div", attrs: {}, children: [
-                    {tag: "div", attrs: {}, children: [
-                      (!wsCtrl.getRoom(ctrl.id).initOk)?(
-                           {tag: "div", attrs: {className:"ui active loader"}}
-                        ):(
-                          {tag: "div", attrs: {className:"ui list"}, children: [
-                            wsCtrl.userInRoom(ctrl.id).map(function(user){
-                                return (
-                                {tag: "div", attrs: {className:"item"}, children: [
-                                  {tag: "i", attrs: {className:"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}}, 
-                                  {tag: "div", attrs: {className:"content"}, children: [
-                                    user.name
-                                  ]}
+                                    {tag: "h5", attrs: {className:"ui dividing header"}, children: ["List Users !"
+                                    ]}, 
+                                    {tag: "div", attrs: {}, children: [
+                                        {tag: "div", attrs: {}, children: [
+                                            (!wsCtrl.getRoom(ctrl.id).initOk)?(
+                                                {tag: "div", attrs: {className:"ui active loader"}}
+                                            ):(
+                                                {tag: "div", attrs: {className:"ui list"}, children: [
+                                                    wsCtrl.userInRoom(ctrl.id).map(function(user){
+                                                        return (
+
+                                                            {tag: "div", attrs: {className:"item"}, children: [
+
+                                                                {tag: "i", attrs: {className:"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}}, 
+
+                                                                {tag: "div", attrs: {className:"content"}, children: [
+                                                                    {tag: "a", attrs: {className:"ulpt", href:"/@/" + user.id, config:m.route}, children: [
+                                                                        user.name
+                                                                    ]}
+                                                                ]}
+                                                            ]}
+
+                                                        )
+                                                    })
+                                                ]}
+                                            )
+                                            
+                                        ]}
+
+                                    ]}
                                 ]}
-                                    )
-                                })
-                          ]}
-                        )
-                      
-                    ]}
-
-                  ]}
-                ]}
-              ]}
-            ]}, 
-            {tag: "div", attrs: {className:"ui padded grid "}, children: [
-              {tag: "div", attrs: {className:"twelve wide column light-border-right pad-top0"}, children: [
-                {tag: "div", attrs: {className:"ui divider"}}, 
-                {tag: "div", attrs: {className:"ui comments mar0"}, children: [
-                  {tag: "div", attrs: {className:"comment"}, children: [
-                    {tag: "a", attrs: {className:"avatar"}, children: [
-                      {tag: "img", attrs: {src:"/assets/avatar/2.jpg"}}
-                    ]}, 
-                    {tag: "div", attrs: {className:"ui form content"}, children: [
-                      {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
+                            ]}
+                        ]}, 
+                        {tag: "div", attrs: {className:"ui padded grid "}, children: [
+                            {tag: "div", attrs: {className:"thirteen wide column light-border-right pad-top0"}, children: [
+                                {tag: "div", attrs: {className:"ui divider"}}, 
+                                {tag: "div", attrs: {className:"ui comments mar0"}, children: [
+                                    {tag: "div", attrs: {className:"comment"}, children: [
+                                        {tag: "a", attrs: {className:"avatar"}, children: [
+                                            {tag: "img", attrs: {src:(wsCtrl.avatar.length>0)?("/getimage/thumb/" + wsCtrl.avatar):("/assets/avatar/2.jpg")}}
+                                        ]}, 
+                                        {tag: "div", attrs: {className:"ui form content"}, children: [
+                                            {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
                         {tag: "textarea", attrs: {rows:"1", style:"max-height: 150px", 
                                   config:function (element, isInit, ctx) {
                                           if(!isInit) {
@@ -1355,7 +1348,6 @@ var Room = {
                                                 wsCtrl.inputChat(ctrl.id)($(element).val())
                                               });
                                             }
-
                                             $(element).textareaAutoSize();
                                             $(element).attrchange({
                                               //trackValues: true,
@@ -1404,33 +1396,44 @@ var Room = {
                                       
                                   placeholder:"Click here to type a chat message"
                         }}
-                      ]}
+                                            ]}
+                                        ]}
+                                    ]}
+                                ]}
+                            ]}, 
+                            {tag: "div", attrs: {className:"three wide column pad-top0"}, children: [
+                                {tag: "div", attrs: {className:"ui divider "}}, 
+                                {tag: "div", attrs: {}}
+                            ]}
+                        ]}
                     ]}
-                  ]}
+                ]}, 
+
+                {tag: "div", attrs: {className:"five wide column"}, children: [
+                    {tag: "div", attrs: {className:"ui mh500"}
+
+                    }
                 ]}
-              ]}, 
-              {tag: "div", attrs: {className:"four wide column pad-top0"}, children: [
-                {tag: "div", attrs: {className:"ui divider "}}, 
-                {tag: "div", attrs: {}}
-              ]}
             ]}
-          ]}, 
-          {tag: "div", attrs: {className:"three  wide column"}, children: ["right"]}
-        ]}
-    )
-  }
+        )
+    }
 };
 
 var Comments = function(ctrl){
-  return (
-      {tag: "div", attrs: {className:"ui comments room-box"}, children: [
-        {tag: "h5", attrs: {className:"ui dividing header"}, children: ["Comments"]}, 
-        {tag: "div", attrs: {className:"box-commentWr"}, children: [
-        {tag: "div", attrs: {className:"box-comment", 
-             config:function(element, isInit, context) {
+    return (
+        {tag: "div", attrs: {className:"ui comments room-box"}, children: [
+            {tag: "h5", attrs: {className:"ui dividing header"}, children: ["Room: ", ctrl.id, 
+          {tag: "span", attrs: {className:"fr"}, children: [
+            {tag: "i", attrs: {className:"tiny users left middle aligned icon", style:"margin: 0 5px;"}, children: [wsCtrl.getRooms(ctrl.id).u]}, 
+            {tag: "i", attrs: {className:"tiny plug left middle aligned icon", style:"margin: 0 5px;"}, children: [wsCtrl.getRooms(ctrl.id).c]}
+        ]}
+            ]}, 
+
+            {tag: "div", attrs: {className:"box-commentWr"}, children: [
+                {tag: "div", attrs: {className:"box-comment", 
+                     config:function(element, isInit, context) {
                       if(context.flagScroll == true) context.fixPos = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
                       if(wsCtrl.getRoom(ctrl.id).gettingPrev == true){
-
                         element.scrollTop = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
                         if(downkey){
                           context.flagScroll = false;
@@ -1457,10 +1460,16 @@ var Comments = function(ctrl){
                       }
 
                       if(!isInit){
+                        
                         context.run = true;
                         $(element).on('scroll', function f1(){
+                        if(element.scrollHeight - element.scrollTop - element.clientHeight > 50){
+                            ctrl.scrollBottom = false;
+                        } else {
+                            ctrl.scrollBottom = true;
+                        }
                         if(wsCtrl.getRoom(ctrl.id).initOk){
-                          if(element.scrollTop < 100 && wsCtrl.getRoom(ctrl.id).gettingPrev == false){
+                          if(element.scrollTop < 10 && wsCtrl.getRoom(ctrl.id).gettingPrev == false && wsCtrl.loadMoreComments(ctrl.id)){
                             ctrl.loadMore = false;
                             wsCtrl.getRoom(ctrl.id).gettingPrev = true;
                             wsCtrl.send(wsCtrl.sendData("prevChat", {t: "room", v: ctrl.param(), lastTime: wsCtrl.commentsInRoom(ctrl.id)[0].time}));
@@ -1470,64 +1479,314 @@ var Comments = function(ctrl){
                         });
                       }
 
-                        var addLength = (element.scrollHeight - context.prevScrollHeight) || 0;
+                      var addLength = (element.scrollHeight - context.prevScrollHeight) || 0;
 
 
-                        if( (element.scrollHeight - element.clientHeight - element.scrollTop < addLength + 40) && (element.scrollTop > (200 + element.scrollHeight - context.prevScrollHeight))){
+                        if(ctrl.scrollBottom){
                           element.scrollTop = element.scrollHeight;
                         }
-                      context.prevScrollTop = element.scrollTop
+                      context.prevScrollTop = element.scrollTop;
                       context.prevScrollHeight = element.scrollHeight
                     }
                  
-        }, children: [
-          (!wsCtrl.getRoom(ctrl.id).initOk)?(
-          {tag: "div", attrs: {className:"ui active loader"}}
-              ):(
-              {tag: "div", attrs: {}
-              , children: [
-                wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
-                    return (
-                    {tag: "div", attrs: {className:"comment", 
-                         key:comment.time
-                    }, children: [
-                      {tag: "a", attrs: {className:"avatar"}, children: [
-                        {tag: "img", attrs: {src:comment.avatar}}
-                      ]}, 
-                      {tag: "div", attrs: {className:"content"}, children: [
-                        {tag: "a", attrs: {className:"author"}, children: [comment.user]}, 
-                        {tag: "div", attrs: {className:" metadata fr"}, children: [
-                          {tag: "span", attrs: {className:"date"}, children: [api.time(comment.time)]}
-                        ]}, 
-                        {tag: "div", attrs: {className:"text"}, children: [
-                          comment.comment
-                        ]}
+                }, children: [
+                    (!wsCtrl.getRoom(ctrl.id).initOk)?(
+                        {tag: "div", attrs: {className:"ui active loader"}}
+                    ):(
+                        {tag: "div", attrs: {}
+                        , children: [
+                            wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
+                                return (
+                                    {tag: "div", attrs: {className:"comment", 
+                                         key:comment.time
+                                    }, children: [
+                                        {tag: "a", attrs: {className:"avatar ulpt", href:"/@/" + comment.userId, config:m.route}, children: [
+                                            {tag: "img", attrs: {src:comment.avatar}}
+                                        ]}, 
+                                        {tag: "div", attrs: {className:"content"}, children: [
+                                            {tag: "a", attrs: {className:"author ulpt", href:"/@/" + comment.userId, config:m.route}, children: [comment.user]}, 
+                                            {tag: "div", attrs: {className:" metadata fr"}, children: [
+                                                {tag: "span", attrs: {className:"date"}, children: [api.time(comment.time)]}
+                                            ]}, 
+                                            {tag: "div", attrs: {className:"text"}, children: [
+                                                comment.comment
+                                            ]}
 
-                      ]}
-                    ]}
-                        )
-                    })
-                
-              ]}
-              )
-          
+                                        ]}
+                                    ]}
+                                )
+                            })
+                            
+                        ]}
+                    )
+                    
+                ]}
+            ]}
         ]}
-        ]}
-      ]}
-  )
+    )
 }
 
 module.exports = Room;
-},{"../ws/_wsCtrl.js":13,"./api.msx":1}],13:[function(require,module,exports){
-var wsCtrl = {}
+},{"../ws/_wsCtrl.js":15,"./api.msx":1}],13:[function(require,module,exports){
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var User = {
+    controller: function() {
+        var ctrl = this;
+        ctrl.userId = m.route.param('user');
+        ctrl.user = m.prop({});
+        //ctrl.userId = m.route.param('user');
+        //m.request({method: "GET", url: "/api/getUser/" + ctrl.userId}).then(
+        //    function(user){
+        //        ctrl.user(user);
+        //    }
+        //);
+        ctrl.setup = function(){
+            rd.user();
+        };
+
+        ctrl.error = function(){
+            m.route('/');
+        }
+        ctrl.request = api.requestWithFeedback2({method: "GET", url: "/api/getUser/" + ctrl.userId}, ctrl.user, ctrl.setup, ctrl.error);
+        rd.user()
+    },
+    view: function(ctrl) {
+       return (!ctrl.request.ready()?(
+                {tag: "div", attrs: {className:"ui segment loading mh500"}
+
+                }
+            ):(
+           {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
+                {tag: "div", attrs: {className:"head-user ui grid"}, children: [
+                    {tag: "div", attrs: {className:"four wide column", style:"  min-height: 250px"}, children: [
+                        {tag: "div", attrs: {className:"avatarWr"}, children: [
+                            {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
+                        ]}
+
+                    ]}, 
+                    {tag: "div", attrs: {className:"twelve wide column", style:"b min-height: 250px"}, children: [
+                        {tag: "h2", attrs: {className:"ui header"}, children: [
+                            ctrl.user().name
+                        ]}, 
+                        {tag: "div", attrs: {className:"edit"}, children: [
+                            (wsCtrl.userId !== ctrl.userId)?[
+                            {tag: "button", attrs: {className:"ui inverted button"}, children: [
+                                {tag: "i", attrs: {className:"add user icon"}}, 
+                                "Add Friend"
+                            ]},
+                            {tag: "button", attrs: {className:"ui inverted button"}, children: [
+                                {tag: "i", attrs: {className:"plus icon"}}, 
+                                "Follow"
+                            ]}
+                            ]:(
+                                {tag: "a", attrs: {className:"ui basic button", href:"/settings", config:m.route}, children: [
+                                    {tag: "i", attrs: {className:"write square icon"}}, 
+                                    "Edit Profile"
+                                ]}
+                            )
+
+
+                        ]}, 
+                        {tag: "div", attrs: {className:"ui divider"}}, 
+                        "...", 
+
+                        {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, 
+
+                        {tag: "div", attrs: {className:"ui divider"}}, 
+                        {tag: "div", attrs: {className:"infoWr"}, children: [
+                        {tag: "div", attrs: {className:"ui labeled button"}, children: [
+                            {tag: "div", attrs: {className:"ui inverted white"}, children: [
+                                {tag: "i", attrs: {className:"users icon"}}, 
+                                {tag: "div", attrs: {className:"number"}, children: [
+                                "190"
+                                ]}, 
+                                "Following"
+                            ]}
+                        ]}, 
+
+                        {tag: "div", attrs: {className:"ui labeled button"}, children: [
+                            {tag: "div", attrs: {className:"ui inverted white"}, children: [
+                                {tag: "i", attrs: {className:"users icon"}}, 
+                                {tag: "div", attrs: {className:"number"}, children: [
+                                "10"
+                                ]}, 
+                                "Follower"
+                            ]}
+                        ]}
+                        ]}
+                    ]}
+                ]}
+           ]}
+            )
+        )
+    }
+};
+
+
+module.exports = User;
+},{"../ws/_wsCtrl.js":15,"./api.msx":1}],14:[function(require,module,exports){
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+
+
+var UserSetting = {
+    controller: function() {
+        var ctrl = this;
+        if(wsCtrl.userId.length < 1){
+            m.route("/");
+        } else {
+            ctrl.user = m.prop({});
+            ctrl.setup = function(){
+                rd.setting();
+            };
+            ctrl.request = api.requestWithFeedback2({method: "POST", url: "/settings"}, ctrl.user, ctrl.setup);
+
+            rd.setting()
+        }
+
+    },
+    view: function(ctrl) {
+       return (!ctrl.request.ready()?(
+           {tag: "div", attrs: {className:"ui segment loading mh500"}
+
+           }
+       ):[
+           {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [
+               {tag: "div", attrs: {className:"head-user ui grid"}, children: [
+                   {tag: "div", attrs: {className:"four wide column", style:"  min-height: 250px"}, children: [
+                       avatarWr(ctrl)
+                   ]}, 
+                   {tag: "div", attrs: {className:"twelve wide column edit-information", style:"b min-height: 250px"}, children: [
+
+                       {tag: "div", attrs: {class:"ui labeled input"}, children: [
+                           {tag: "div", attrs: {className:"field"}, children: ["Name:"]}, 
+                           {tag: "input", attrs: {id:"name", type:"text", placeholder:"Tên hiển thị!", value:ctrl.user().name}}
+                       ]}, 
+                        {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, 
+                       {tag: "div", attrs: {className:"ui divider"}}, 
+                       {tag: "button", attrs: {class:"ui button", 
+                           onclick:function(){
+                               var sendInfo = {
+                                   "name": $('#name').val()
+                               };
+                               console.log(sendInfo);
+
+                               $.ajax({
+                                    type: "POST",
+                                    url: "/settings/updateInfo",
+                                    data: JSON.stringify(sendInfo),
+                                    contentType: "application/json",
+                                    dataType: "text"
+                               });
+                           }
+                       }, children: [
+                           "Save"
+                       ]}, 
+                       {tag: "button", attrs: {class:"ui button"}, children: [
+                           "Reset"
+                       ]}
+                   ]}
+               ]}
+           ]}
+       ])
+    }
+};
+
+
+var avatarWr = function(ctrl){
+    return (
+        {tag: "div", attrs: {className:"ui segment avatarWr"}, children: [
+            {tag: "div", attrs: {className:"ui special  cards", 
+                 config:function(el, isInited, ctx){
+                                if(!isInited){
+                                    $('.special.cards .image').dimmer({
+                                      on: 'hover'
+                                    });
+                                }
+                            }
+            }, children: [
+
+                {tag: "div", attrs: {className:"card"}, children: [
+                    {tag: "div", attrs: {className:"blurring dimmable image"}, children: [
+                        {tag: "div", attrs: {className:"ui dimmer"}, children: [
+                            {tag: "div", attrs: {className:"content"}, children: [
+                                {tag: "div", attrs: {className:"center"}, children: [
+                                    {tag: "form", attrs: {id:"formUpload", enctype:"multipart/form-data", action:"/upload/image", method:"post"}, children: [
+                                        {tag: "input", attrs: {className:"avatar-upload", name:"picture", id:"picture", type:"file", accept:"image/*", 
+
+                                               config:function(el, isInited){
+                                                            if(!isInited){
+                                                                $(el).change(function (){
+                                                                   var _URL = window.URL || window.webkitURL;
+                                                                    var file, img;
+                                                                    if ((file = this.files[0])) {
+                                                                        img = new Image();
+                                                                        img.onload = function () {
+
+                                                                            if(this.width >= 180 && this.height >=180){
+                                                                                $('.avatarWr').addClass('loading');
+                                                                                jQuery.each(jQuery('#picture')[0].files, function(i, file) {
+                                                                                    data.append('file-'+i, file);
+                                                                                });
+                                                                                jQuery.ajax({
+                                                                                    url: '/upload/image',
+                                                                                    data: data,
+                                                                                    cache: false,
+                                                                                    contentType: false,
+                                                                                    processData: false,
+                                                                                    type: 'POST',
+                                                                                    success: function(data){
+                                                                                        var url = "/getimage/small/" + data;
+                                                                                        $('#avatarImg').attr('src', url);
+                                                                                        $('.avatarWr').removeClass('loading');
+                                                                                        wsCtrl.avatar = data;
+                                                                                    }
+                                                                                });
+                                                                            } else {
+                                                                                alert("Chiều rộng và chiều dài của ảnh phải lớn hơn 180px");
+                                                                            }
+                                                                        };
+                                                                        img.src = _URL.createObjectURL(file);
+                                                                    }
+                                                                    var data = new FormData();
+
+                                                                 });
+                                                            }
+                                                          }}
+                                        }
+                                    ]}
+
+                                ]}
+                            ]}
+                        ]}, 
+                        {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
+                    ]}
+                ]}
+            ]}
+
+        ]}
+    )
+}
+
+
+module.exports = UserSetting;
+},{"../ws/_wsCtrl.js":15,"./api.msx":1}],15:[function(require,module,exports){
+var wsCtrl = {};
 wsCtrl.userId = document.body.getAttribute("id");
 var userId = wsCtrl.userId;
+
 wsCtrl.userName = document.body.getAttribute("name");
-var userName = wsCtrl.userName
+var userName = wsCtrl.userName;
+
+wsCtrl.avatar = document.body.getAttribute("avatar");
+
 wsCtrl.mVersion = parseInt(document.body.getAttribute("mv"));
-var mVersion = wsCtrl.mVersion
+var mVersion = wsCtrl.mVersion;
 wsCtrl.mRVersion = parseInt(document.body.getAttribute("mv"));
-var mRVersion = wsCtrl.mRVersion
+var mRVersion = wsCtrl.mRVersion;
 
 var prevTime;
 
@@ -1777,33 +2036,6 @@ ctrl.listen = function(d){
 
   else if(d.t === "mes"){
 
-    if(d.d.m.indexOf("Time:") != -1){
-      testDelay = parseInt(d.d.m.substring(5))
-    }
-
-    if(d.d.m === 'startTest' && wsCtrl.userId !== 'luan' && !testInit){
-      testInit = true
-      if(wsCtrl.userId.length > 0) {
-        m.route('/chatroom/123');
-        setTimeout(function testServer() {
-          if(wsCtrl.getRoom("123").initOk) wsCtrl.send(wsCtrl.sendData("chat", {room: "123", d: Math.random().toString(36)}));
-          test1 = setTimeout(testServer, Math.ceil(testDelay + Math.random() * 200))
-        }, 200);
-
-        setTimeout(function testServer2(){
-          wsCtrl.send(wsCtrl.sendData("m", {to: "luan2", mes: Math.random().toString(36)}));
-          wsCtrl.send(wsCtrl.sendData("m", {to: "luan3", mes: Math.random().toString(36)}));
-          wsCtrl.send(wsCtrl.sendData("m", {to: "luan4", mes: Math.random().toString(36)}));
-          wsCtrl.send(wsCtrl.sendData("m", {to: "luan5", mes: Math.random().toString(36)}));
-          test2 = setTimeout(testServer2, Math.ceil(testDelay + Math.random()*200))
-        }, 1000)
-      }
-    }
-    if(d.d.m === 'stopTest' && wsCtrl.userId !== 'luan') {
-      clearTimeout(test1);
-      clearTimeout(test2)
-    }
-
     if(mVersion >= (d.d.v-1)){
       doMes(d);
       mVersion++;
@@ -1920,40 +2152,46 @@ ctrl.listen = function(d){
           var mes = d.d.d;
           wsCtrl.commentsInRoom(roomId).push(
               {
-                avatar: '/assets/avatar/2.jpg',
-                user: mes.user,
+                avatar: (mes.user.avatar.length>0)?("/getimage/thumb/" + mes.user.avatar):('/assets/avatar/2.jpg'),
+                userId: mes.user.userId,
+                user: mes.user.name,
                 time: Date.now(),
                 comment: mes.chat
               }
-          )
-          if(wsCtrl.commentsInRoom(roomId).length>100){
-            wsCtrl.data.chatroom[roomId].comments = []
-          }
+          );
         } else if(d.d.t == "userEnter"){
 
           var user = d.d.u;
-          if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user.name, "name") < 0){
+            user.role = "user";
+
+          if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user.id, "id") < 0){
             wsCtrl.userInRoom(roomId).push(user)
           }
         } else if(d.d.t == "userLeaves"){
           var user = d.d.u;
-          console.log(user)
-          console.log(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"))
-          wsCtrl.userInRoom(roomId).splice(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"), 1);
+          //console.log(user)
+          //console.log(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name"))
+          wsCtrl.userInRoom(roomId).splice(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user.id, "id"), 1);
         } else if(d.d.t === "initChat") {
           var users = d.d.lu;
-          var listChats = d.d.lc.reverse();
-          users.map(function(user){
-            if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user, "name") < 0){
-              var u = {avatar: "/assets/avatar/1.jpg", name: user, role: "user"}
-              wsCtrl.userInRoom(roomId).push(u)
+          wsCtrl.getRooms(d.d.room).c = d.d.c;
+          wsCtrl.getRooms(d.d.room).u = d.d.u;
+          var listChats = d.d.lc;
+
+
+            users.map(function(user){
+
+              if(arrayObjectIndexOf(wsCtrl.userInRoom(roomId), user.id, "id") < 0){
+              user.role = "user";
+              wsCtrl.userInRoom(roomId).push(user)
             }
-          })
+          });
 
           listChats.map(function(chat){
-            wsCtrl.commentsInRoom(roomId).push(
+            wsCtrl.commentsInRoom(roomId).unshift(
                 {
-                  avatar: '/assets/avatar/' + Math.ceil(Math.random()*3 + 1) + '.jpg',
+                  avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):("/assets/avatar/1.jpg"),
+                  userId: chat.user.id,
                   user: chat.user.name,
                   time: chat.time,
                   comment: chat.chat
@@ -1962,11 +2200,14 @@ ctrl.listen = function(d){
           });
           wsCtrl.getRoom(roomId).initOk = true;
         } else if(d.d.t === "prevChat") {
-          var listChats = d.d.lc.reverse();
-          var roomId = d.d.room;
-          var listComments = listChats.map(function(chat){
+            var listChats = d.d.lc.reverse();
+            var roomId = d.d.room;
+            if(listChats.length < 1) wsCtrl.getRoom(roomId).loadMore = false;
+            var listComments = listChats.map(function(chat){
+                console.log(chat);
             return {
-              avatar: '/assets/avatar/' + Math.ceil(Math.random()*3 + 1) + '.jpg',
+              avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):("/assets/avatar/1.jpg"),
+              userId: chat.user.userId,
               user: chat.user.name,
               time: chat.time,
               comment: chat.chat
@@ -1975,19 +2216,19 @@ ctrl.listen = function(d){
           wsCtrl.data.chatroom[roomId].comments = listComments.concat(wsCtrl.data.chatroom[roomId].comments)
           //wsCtrl.data.chatroom[roomId].gettingPrev = false;
         } else if(d.d.t === "initChatRooms") {
-          var listInfos = d.d.v
+          var listInfos = d.d.v;
           listInfos.map(function(room){
-            wsCtrl.getRooms(room.id).c = room.c
-            wsCtrl.getRooms(room.id).u = room.u
+            wsCtrl.getRooms(room.id).c = room.c;
+            wsCtrl.getRooms(room.id).u = room.u;
           });
           rd.chatroom(function(){m.redraw()})
         } else if(d.d.t === "io") {
           var value = d.d.v;
           if(value.c != undefined) wsCtrl.getRooms(value.rid).c += parseInt(value.c);
           if(value.u != undefined) wsCtrl.getRooms(value.rid).u += parseInt(value.u);
-          rd.chatroom(function(){m.redraw()});
-        }
+          rd.chatroom(function(){rd.room(function(){m.redraw()})});
 
+        }
         rd.room(function(){m.redraw()})
       }
 
@@ -2018,11 +2259,6 @@ var doMes = function(d){
     if(userId !== d.d.f.id) {
       data.chat[pos].read = false;
     } else data.chat[pos].read = true;
-  //server test
-    if(data.chat[pos].chat.length > 100){
-      data.chat[pos].chat = []
-    }
-  //end
     rd.right(function(){m.redraw()})
 };
 
@@ -2030,6 +2266,7 @@ wsCtrl.getRoom = function(id){
   if(wsCtrl.data.chatroom[id] == undefined) {
     wsCtrl.data.chatroom[id] = {};
     wsCtrl.data.chatroom[id].initOk = false;
+    wsCtrl.data.chatroom[id].loadMore = true;
     wsCtrl.data.chatroom[id].gettingPrev = false;
   }
   return wsCtrl.data.chatroom[id]
@@ -2041,6 +2278,11 @@ wsCtrl.userInRoom = function(id){
   return wsCtrl.getRoom(id).users
 };
 var userInRoom = wsCtrl.userInRoom;
+
+wsCtrl.loadMoreComments = function(id){
+    if(wsCtrl.getRoom(id).loadMore == undefined) wsCtrl.getRoom(id).loadMore = true;
+    return wsCtrl.getRoom(id).loadMore;
+};
 
 wsCtrl.commentsInRoom = function(id){
   if(wsCtrl.getRoom(id).comments == undefined) wsCtrl.getRoom(id).comments = []
@@ -2068,7 +2310,6 @@ wsCtrl.getRooms = function(id){
 };
 
 $('body').on('click', '.relation_actions a.relation', function() {
-  console.log("relation")
   var $a = $(this).addClass('processing');
   $.ajax({
     url: $a.attr('href'),
