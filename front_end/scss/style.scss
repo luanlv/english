@@ -205,7 +205,7 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
   margin: 5px;
   padding: 5px;
   background: lightblue;
-  overflow: auto;
+  //overflow: auto;
   word-wrap: break-word;
   white-space: pre-wrap;
 }
@@ -892,7 +892,7 @@ textarea {
   line-height: 36px;
 }
 
-#avatarImg{
+  #avatarImg{
   width: 180px;
   height: 180px;
 }

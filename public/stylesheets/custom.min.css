@@ -469,7 +469,6 @@ textarea:focus:-ms-input-placeholder {
   margin: 5px;
   padding: 5px;
   background: lightblue;
-  overflow: auto;
   word-wrap: break-word;
   white-space: pre-wrap; }
 
