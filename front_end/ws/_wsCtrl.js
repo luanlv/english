@@ -99,13 +99,12 @@ function initWs(){
     console.log('WebSocket ok');
     initReconnect();
     //console.log("prev Ping:" + wsCtrl.ping)
-    wsCtrl.ping = 0;
+    wsCtrl.ping = -1;
     send(pingData());
     prevTime = Date.now();
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
-    wsCtrl.ping = 1;
-
+    //wsCtrl.ping = 1;
     initChat();
 
   };

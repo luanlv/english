@@ -1139,7 +1139,7 @@ var Nav = {
 
              {tag: "div", attrs: {className:"item"}, children: [
                {tag: "i", attrs: {className:"large icon  users"}}, 
-               {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):({tag: "i", attrs: {className:"tiny spinner loading icon zero-margin-right"}})]}
+               {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):("?")]}
              ]}, 
              {tag: "a", attrs: {href:"javascript:void(0)", className:"item", 
                 config:function(el, isInit, ctx){
@@ -1153,7 +1153,7 @@ var Nav = {
                       }
                     
              }, children: [
-               (ctrl.ping()>8000 || ctrl.ping() == 0)?(
+               (ctrl.ping()>8000 || ctrl.ping() < 0)?(
                 {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
                    ):(
                 {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
@@ -1183,7 +1183,7 @@ var Nav = {
               {tag: "div", attrs: {className:"right menu"}, children: [
                 {tag: "div", attrs: {className:"item"}, children: [
                   {tag: "i", attrs: {className:"large icon users"}}, 
-                  {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):({tag: "i", attrs: {className:"tiny spinner loading icon zero-margin-right"}})]}
+                  {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):("?")]}
                 ]}, 
                 {tag: "a", attrs: {href:"javascript:void(0)", className:"item", 
                    config:function(el, isInit, ctx){
@@ -1197,7 +1197,7 @@ var Nav = {
                       }
                     
                 }, children: [
-                  (ctrl.ping()>8000 || ctrl.ping() == 0)?(
+                  (ctrl.ping()>8000 || ctrl.ping() < 0)?(
                   {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
                       ):(
                   {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
@@ -1299,7 +1299,7 @@ var Room = {
                                             (!wsCtrl.getRoom(ctrl.id).initOk)?(
                                                 {tag: "div", attrs: {className:"ui active loader"}}
                                             ):(
-                                                {tag: "div", attrs: {className:"ui list"}, children: [
+                                                {tag: "div", attrs: {className:"ui list users-in-room"}, children: [
                                                     wsCtrl.userInRoom(ctrl.id).map(function(user){
                                                         return (
 
@@ -1679,8 +1679,12 @@ var UserSetting = {
                                     url: "/settings/updateInfo",
                                     data: JSON.stringify(sendInfo),
                                     contentType: "application/json",
-                                    dataType: "text"
+                                    dataType: "text",
+                                    success: function(data){
+                                       wsCtrl.userName = $('#name').val();
+                                    }
                                });
+
                            }
                        }, children: [
                            "Save"
@@ -1875,13 +1879,12 @@ function initWs(){
     console.log('WebSocket ok');
     initReconnect();
     //console.log("prev Ping:" + wsCtrl.ping)
-    wsCtrl.ping = 0;
+    wsCtrl.ping = -1;
     send(pingData());
     prevTime = Date.now();
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
-    wsCtrl.ping = 1;
-
+    //wsCtrl.ping = 1;
     initChat();
 
   };

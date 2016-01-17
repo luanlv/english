@@ -288,7 +288,7 @@ html, body {
   margin: 0;
   padding: 0;
   background: #fff !important;
-  font-family: Georgia,Times,"Times New Roman",serif; }
+  font-family: Georgia,Times,"Times New Roman",serif !important; }
 
 .mh500 {
   min-height: 500px; }
@@ -877,7 +877,13 @@ textarea {
   background: white;
   position: relative;
   height: 490px;
-  overflow-y: scroll; }
+  overflow-y: scroll;
+  overflow-x: hidden;
+  white-space: nowrap; }
+  .box-comment .text, .box-comment2 .text {
+    overflow: hidden; }
+  .box-comment .author, .box-comment2 .author {
+    color: #777 !important; }
 
 .box-commentWr {
   background-color: rgba(0, 0, 0, 0.2); }
@@ -889,7 +895,8 @@ textarea {
   float: left; }
 
 .room-chat {
-  font-size: 13px !important; }
+  font-size: 13px !important;
+  font-family: 'Open Sans', sans-serif, Arial, Helvetica !important; }
   .room-chat .comment {
     margin-top: 5px;
     margin-bottom: 5px; }
@@ -1047,10 +1054,9 @@ textarea {
   font-size: 18px;
   line-height: 32px;
   margin-right: 20px;
-  color: white;
-  font-family: Georgia,Times,"Times New Roman",serif; }
+  color: white; }
 .edit-information input {
   font-size: 18px;
   font-weight: bold;
   padding: 0 10px 0 10px !important;
-  font-family: Georgia,Times,"Times New Roman",serif !important; }
+  font-family: 'Open Sans', sans-serif, Arial, Helvetica !important; }

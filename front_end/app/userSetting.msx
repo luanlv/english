@@ -49,8 +49,12 @@ var UserSetting = {
                                     url: "/settings/updateInfo",
                                     data: JSON.stringify(sendInfo),
                                     contentType: "application/json",
-                                    dataType: "text"
+                                    dataType: "text",
+                                    success: function(data){
+                                       wsCtrl.userName = $('#name').val();
+                                    }
                                });
+
                            }}
                        >
                            Save

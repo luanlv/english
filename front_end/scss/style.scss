@@ -7,7 +7,7 @@ html,body {
   margin: 0;
   padding: 0;
   background: #fff !important;
-  font-family: Georgia,Times,"Times New Roman",serif;
+  font-family: Georgia,Times,"Times New Roman",serif !important;
 }
 
 .mh500{
@@ -693,6 +693,15 @@ textarea {
   position: relative;
   height: 490px;
   overflow-y: scroll;
+  overflow-x: hidden;
+  white-space: nowrap;
+  .text{
+    //word-wrap: break-word;
+    overflow: hidden;
+  }
+  .author{
+    color: #777 !important;
+  }
 }
 
 .box-commentWr{
@@ -714,6 +723,7 @@ textarea {
     margin-top: 5px;
     margin-bottom: 5px;
   }
+  font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
 }
 
 .room-chat textarea{
@@ -899,14 +909,23 @@ textarea {
     line-height: 32px;
     margin-right: 20px;
     color: white;
-    font-family: Georgia,Times,"Times New Roman",serif;
+    //font-family: Georgia,Times,"Times New Roman",serif;
   }
   input {
     font-size: 18px;
     font-weight: bold;
     padding: 0 10px 0 10px !important;
-    font-family: Georgia,Times,"Times New Roman",serif !important;
+    font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
     //border-bottom: 1px solid #ddd !important;
     //font-size: 18px !important;
+  }
+}
+
+
+.users-in-room{
+  .content {
+    a {
+      //color: #3b5998 !important;
+    }
   }
 }

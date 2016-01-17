@@ -53,7 +53,7 @@ var Room = {
                                             {(!wsCtrl.getRoom(ctrl.id).initOk)?(
                                                 <div className="ui active loader"></div>
                                             ):(
-                                                <div className="ui list">
+                                                <div className="ui list users-in-room">
                                                     {wsCtrl.userInRoom(ctrl.id).map(function(user){
                                                         return (
 

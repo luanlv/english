@@ -2256,3 +2256,6 @@
 2016-01-17T06:48:23.130+0700 I NETWORK  [conn1112] end connection 127.0.0.1:34444 (21 connections now open)
 2016-01-17T06:48:23.134+0700 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:34448 #1114 (22 connections now open)
 2016-01-17T06:48:23.134+0700 I NETWORK  [initandlisten] connection accepted from 127.0.0.1:34450 #1115 (23 connections now open)
+2016-01-17T07:25:53.028+0700 I NETWORK  [conn666] end connection 127.0.0.1:55622 (22 connections now open)
+2016-01-17T07:25:55.312+0700 I NETWORK  [conn473] end connection 127.0.0.1:54170 (21 connections now open)
+2016-01-17T07:25:57.796+0700 I NETWORK  [conn684] end connection 127.0.0.1:56544 (20 connections now open)
