@@ -91,7 +91,6 @@ function initWs(){
   var sri = Math.random().toString(36).substring(2);
   if(document.domain === "localhost") {
     ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
-
   } else {
     ws = new WebSocket("ws://" + document.domain + ":9903/socket?sri=" + sri);
   }

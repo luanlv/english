@@ -3,42 +3,42 @@ var api = require('./api.msx');
 
 
 var UserSetting = {
-    controller: function() {
-        var ctrl = this;
-        if(wsCtrl.userId.length < 1){
-            m.route("/");
-        } else {
-            ctrl.user = m.prop({});
-            ctrl.setup = function(){
-                rd.setting();
-            };
-            ctrl.request = api.requestWithFeedback2({method: "POST", url: "/settings"}, ctrl.user, ctrl.setup);
+  controller: function() {
+    var ctrl = this;
+    if(wsCtrl.userId.length < 1){
+      m.route("/");
+    } else {
+      ctrl.user = m.prop({});
+      ctrl.setup = function(){
+        rd.setting();
+      };
+      ctrl.request = api.requestWithFeedback2({method: "POST", url: "/settings"}, ctrl.user, ctrl.setup);
 
-            rd.setting()
-        }
+      rd.setting()
+    }
 
-    },
-    view: function(ctrl) {
-       return (!ctrl.request.ready()?(
-           <div className="ui segment loading mh500">
+  },
+  view: function(ctrl) {
+    return (!ctrl.request.ready()?(
+        <div className="ui segment main-content loading mh500">
 
-           </div>
-       ):[
-           <div className="ui grid main-content sha2 ">
-               <div className="head-user ui grid">
-                   <div className="four wide column" style="  min-height: 250px">
-                       {avatarWr(ctrl)}
-                   </div>
-                   <div className="twelve wide column edit-information" style="b min-height: 250px">
+        </div>
+    ):[
+      <div className="ui grid main-content sha2 ">
+        <div className="head-user ui grid">
+          <div className="four wide column" style="  min-height: 250px">
+            {avatarWr(ctrl)}
+          </div>
+          <div className="twelve wide column edit-information" style="b min-height: 250px">
 
-                       <div class="ui labeled input">
-                           <div className="field">Name:</div>
-                           <input id="name" type="text" placeholder="Tên hiển thị!" value={ctrl.user().name}/>
-                       </div>
-                        <br/><br/><br/><br/><br/><br/><br/>
-                       <div className="ui divider"></div>
-                       <button class="ui button"
-                           onclick={function(){
+            <div class="ui labeled input">
+              <div className="field">Name:</div>
+              <input id="name" type="text" placeholder="Tên hiển thị!" value={ctrl.user().name}/>
+            </div>
+            <br/><br/><br/><br/><br/><br/><br/>
+            <div className="ui divider"></div>
+            <button class="ui button"
+                    onclick={function(){
                                var sendInfo = {
                                    "name": $('#name').val()
                                };
@@ -56,42 +56,42 @@ var UserSetting = {
                                });
 
                            }}
-                       >
-                           Save
-                       </button>
-                       <button class="ui button">
-                           Reset
-                       </button>
-                   </div>
-               </div>
-           </div>
-       ])
-    }
+            >
+              Save
+            </button>
+            <button class="ui button">
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    ])
+  }
 };
 
 
 var avatarWr = function(ctrl){
-    return (
-        <div className="ui segment avatarWr">
-            <div className="ui special  cards"
-                 config={function(el, isInited, ctx){
+  return (
+      <div className="ui segment avatarWr">
+        <div className="ui special  cards"
+             config={function(el, isInited, ctx){
                                 if(!isInited){
                                     $('.special.cards .image').dimmer({
                                       on: 'hover'
                                     });
                                 }
                             }}
-            >
+        >
 
-                <div className="card">
-                    <div className="blurring dimmable image">
-                        <div className="ui dimmer">
-                            <div className="content">
-                                <div className="center">
-                                    <form id="formUpload" enctype="multipart/form-data" action="/upload/image" method="post">
-                                        <input className="avatar-upload" name="picture" id="picture" type="file" accept="image/*"
+          <div className="card">
+            <div className="blurring dimmable image">
+              <div className="ui dimmer">
+                <div className="content">
+                  <div className="center">
+                    <form id="formUpload" enctype="multipart/form-data" action="/upload/image" method="post">
+                      <input className="avatar-upload" name="picture" id="picture" type="file" accept="image/*"
 
-                                               config={function(el, isInited){
+                             config={function(el, isInited){
                                                             if(!isInited){
                                                                 $(el).change(function (){
                                                                    var _URL = window.URL || window.webkitURL;
@@ -130,19 +130,19 @@ var avatarWr = function(ctrl){
                                                                  });
                                                             }
                                                           }}
-                                        />
-                                    </form>
+                      />
+                    </form>
 
-                                </div>
-                            </div>
-                        </div>
-                        <img id="avatarImg" src={(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
-                    </div>
+                  </div>
                 </div>
+              </div>
+              <img id="avatarImg" src={(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
             </div>
-
+          </div>
         </div>
-    )
+
+      </div>
+  )
 }
 
 

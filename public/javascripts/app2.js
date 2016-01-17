@@ -1633,42 +1633,42 @@ var api = require('./api.msx');
 
 
 var UserSetting = {
-    controller: function() {
-        var ctrl = this;
-        if(wsCtrl.userId.length < 1){
-            m.route("/");
-        } else {
-            ctrl.user = m.prop({});
-            ctrl.setup = function(){
-                rd.setting();
-            };
-            ctrl.request = api.requestWithFeedback2({method: "POST", url: "/settings"}, ctrl.user, ctrl.setup);
+  controller: function() {
+    var ctrl = this;
+    if(wsCtrl.userId.length < 1){
+      m.route("/");
+    } else {
+      ctrl.user = m.prop({});
+      ctrl.setup = function(){
+        rd.setting();
+      };
+      ctrl.request = api.requestWithFeedback2({method: "POST", url: "/settings"}, ctrl.user, ctrl.setup);
 
-            rd.setting()
+      rd.setting()
+    }
+
+  },
+  view: function(ctrl) {
+    return (!ctrl.request.ready()?(
+        {tag: "div", attrs: {className:"ui segment main-content loading mh500"}
+
         }
+    ):[
+      {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [
+        {tag: "div", attrs: {className:"head-user ui grid"}, children: [
+          {tag: "div", attrs: {className:"four wide column", style:"  min-height: 250px"}, children: [
+            avatarWr(ctrl)
+          ]}, 
+          {tag: "div", attrs: {className:"twelve wide column edit-information", style:"b min-height: 250px"}, children: [
 
-    },
-    view: function(ctrl) {
-       return (!ctrl.request.ready()?(
-           {tag: "div", attrs: {className:"ui segment loading mh500"}
-
-           }
-       ):[
-           {tag: "div", attrs: {className:"ui grid main-content sha2 "}, children: [
-               {tag: "div", attrs: {className:"head-user ui grid"}, children: [
-                   {tag: "div", attrs: {className:"four wide column", style:"  min-height: 250px"}, children: [
-                       avatarWr(ctrl)
-                   ]}, 
-                   {tag: "div", attrs: {className:"twelve wide column edit-information", style:"b min-height: 250px"}, children: [
-
-                       {tag: "div", attrs: {class:"ui labeled input"}, children: [
-                           {tag: "div", attrs: {className:"field"}, children: ["Name:"]}, 
-                           {tag: "input", attrs: {id:"name", type:"text", placeholder:"Tên hiển thị!", value:ctrl.user().name}}
-                       ]}, 
-                        {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, 
-                       {tag: "div", attrs: {className:"ui divider"}}, 
-                       {tag: "button", attrs: {class:"ui button", 
-                           onclick:function(){
+            {tag: "div", attrs: {class:"ui labeled input"}, children: [
+              {tag: "div", attrs: {className:"field"}, children: ["Name:"]}, 
+              {tag: "input", attrs: {id:"name", type:"text", placeholder:"Tên hiển thị!", value:ctrl.user().name}}
+            ]}, 
+            {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, 
+            {tag: "div", attrs: {className:"ui divider"}}, 
+            {tag: "button", attrs: {class:"ui button", 
+                    onclick:function(){
                                var sendInfo = {
                                    "name": $('#name').val()
                                };
@@ -1686,42 +1686,42 @@ var UserSetting = {
                                });
 
                            }
-                       }, children: [
-                           "Save"
-                       ]}, 
-                       {tag: "button", attrs: {class:"ui button"}, children: [
-                           "Reset"
-                       ]}
-                   ]}
-               ]}
-           ]}
-       ])
-    }
+            }, children: [
+              "Save"
+            ]}, 
+            {tag: "button", attrs: {class:"ui button"}, children: [
+              "Reset"
+            ]}
+          ]}
+        ]}
+      ]}
+    ])
+  }
 };
 
 
 var avatarWr = function(ctrl){
-    return (
-        {tag: "div", attrs: {className:"ui segment avatarWr"}, children: [
-            {tag: "div", attrs: {className:"ui special  cards", 
-                 config:function(el, isInited, ctx){
+  return (
+      {tag: "div", attrs: {className:"ui segment avatarWr"}, children: [
+        {tag: "div", attrs: {className:"ui special  cards", 
+             config:function(el, isInited, ctx){
                                 if(!isInited){
                                     $('.special.cards .image').dimmer({
                                       on: 'hover'
                                     });
                                 }
                             }
-            }, children: [
+        }, children: [
 
-                {tag: "div", attrs: {className:"card"}, children: [
-                    {tag: "div", attrs: {className:"blurring dimmable image"}, children: [
-                        {tag: "div", attrs: {className:"ui dimmer"}, children: [
-                            {tag: "div", attrs: {className:"content"}, children: [
-                                {tag: "div", attrs: {className:"center"}, children: [
-                                    {tag: "form", attrs: {id:"formUpload", enctype:"multipart/form-data", action:"/upload/image", method:"post"}, children: [
-                                        {tag: "input", attrs: {className:"avatar-upload", name:"picture", id:"picture", type:"file", accept:"image/*", 
+          {tag: "div", attrs: {className:"card"}, children: [
+            {tag: "div", attrs: {className:"blurring dimmable image"}, children: [
+              {tag: "div", attrs: {className:"ui dimmer"}, children: [
+                {tag: "div", attrs: {className:"content"}, children: [
+                  {tag: "div", attrs: {className:"center"}, children: [
+                    {tag: "form", attrs: {id:"formUpload", enctype:"multipart/form-data", action:"/upload/image", method:"post"}, children: [
+                      {tag: "input", attrs: {className:"avatar-upload", name:"picture", id:"picture", type:"file", accept:"image/*", 
 
-                                               config:function(el, isInited){
+                             config:function(el, isInited){
                                                             if(!isInited){
                                                                 $(el).change(function (){
                                                                    var _URL = window.URL || window.webkitURL;
@@ -1760,19 +1760,19 @@ var avatarWr = function(ctrl){
                                                                  });
                                                             }
                                                           }}
-                                        }
-                                    ]}
-
-                                ]}
-                            ]}
-                        ]}, 
-                        {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
+                      }
                     ]}
-                ]}
-            ]}
 
+                  ]}
+                ]}
+              ]}, 
+              {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
+            ]}
+          ]}
         ]}
-    )
+
+      ]}
+  )
 }
 
 
@@ -1871,7 +1871,6 @@ function initWs(){
   var sri = Math.random().toString(36).substring(2);
   if(document.domain === "localhost") {
     ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
-
   } else {
     ws = new WebSocket("ws://" + document.domain + ":9903/socket?sri=" + sri);
   }

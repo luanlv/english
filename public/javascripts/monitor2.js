@@ -11,7 +11,7 @@ $(function() {
   var maxPoints = 60;
   var colors = Highcharts.theme.colors;
   var width = 375,
-    height = 165;
+      height = 165;
   var counter = 0;
   var chartDefaults = {
     credits: disabled,
@@ -77,9 +77,9 @@ $(function() {
         }
       },
       series: [{
-          name: info.title,
-          data: []
-        }
+        name: info.title,
+        data: []
+      }
       ]
     }));
   }
@@ -147,8 +147,12 @@ $(function() {
   var lastCall = getMillis();
 
   var sri = Math.random().toString(36).substring(5);
-  var wsUrl = "ws://" + "socket." + document.domain + ":9000" + "/monitor/socket?sri=" + sri;
-  console.log(wsUrl);
+  var wsUrl;
+  if(document.domain === "localhost") {
+    wsUrl = "ws://" + "socket." + document.domain + ":9000" + "/monitor/socket?sri=" + sri;
+  } else {
+    wsUrl = "ws://" + "socket." + document.domain + ":9903" + "/monitor/socket?sri=" + sri;
+  }
   var ws = window.MozWebSocket ? new MozWebSocket(wsUrl) : new WebSocket(wsUrl);
   ws.onmessage = function(e) {
     var m = JSON.parse(e.data);

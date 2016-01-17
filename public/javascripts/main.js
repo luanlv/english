@@ -209,10 +209,10 @@ $( document ).ready(function() {
 
   function updatePowertips() {
     userPowertip($('.ulpt'), 'sw-alt');
-  }
+  };
 
   //setTimeout(updatePowertips, 1600);
-  setInterval(updatePowertips, 1000);
+  setInterval(updatePowertips, 600);
   $('body').on('lichess.content_loaded', updatePowertips);
 
 });
