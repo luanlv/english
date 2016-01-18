@@ -43,14 +43,7 @@ var User = {
                         </h2>
                         <div className="edit">
                             {(wsCtrl.userId !== ctrl.userId)?[
-                            <button className="ui inverted button">
-                                <i className="add user icon"></i>
-                                Add Friend
-                            </button>,
-                            <button className="ui inverted button">
-                                <i className="plus icon"></i>
-                                Follow
-                            </button>
+
                             ]:(
                                 <a className="ui basic button" href={"/settings"} config={m.route}>
                                     <i className="write square icon"></i>
@@ -67,25 +60,22 @@ var User = {
 
                         <div className="ui divider"></div>
                         <div className="infoWr">
-                        <div className="ui labeled button" >
-                            <div className="ui inverted white">
-                                <i className="users icon"></i>
-                                <div className="number">
-                                190
-                                </div>
-                                Following
+                            <div className="relation_actions">
+                                <a className="tiny ui  basic animated relation button hint--bottom hover_text" tabindex="0" href="/rel/follow/luan1?mini=1">
+                                    <span className="visible content">100 Follower</span>
+                                        <span className="hidden content">
+                                          <i className="thumbs outline up icon"></i>
+                                          Follow
+                                        </span>
+                                </a>
+                                <a className="tiny ui  basic animated relation button hint--bottom hover_text" tabindex="0" href="/rel/request/luan1?mini=1">
+                                    <span className="visible content">100 Friends</span>
+                                        <span className="hidden content">
+                                          <i className="thumbs up icon"></i>
+                                          Add Friend
+                                        </span>
+                                </a>
                             </div>
-                        </div>
-
-                        <div className="ui labeled button">
-                            <div className="ui inverted white">
-                                <i className="users icon"></i>
-                                <div className="number">
-                                10
-                                </div>
-                                Follower
-                            </div>
-                        </div>
                         </div>
                     </div>
                 </div>

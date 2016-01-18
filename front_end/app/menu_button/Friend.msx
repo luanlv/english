@@ -1,0 +1,96 @@
+var wsCtrl = require('../../ws/_wsCtrl.js');
+var api = require('.././api.msx');
+
+var Friend = function(ctrl){ return (
+    <div>
+      <a className="item nofity border-left-icon message-button"
+         onclick={function(){rd.nav(ctrl.displayFriend());}}
+      >
+        <a href="javascript:void(0)"><i className="large icon add user users-icon"></i></a>
+        {(wsCtrl.data.makeFriend.n>0)?(<div className="floating ui red label num-label">{wsCtrl.data.makeFriend.n}</div>):""}
+      </a>
+      <div className="notifyWr">
+        {(wsCtrl.data.makeFriend.display)?(
+            <div className="inNotify">
+              <div className="corner-right"><div className="tr"></div></div>
+              <div className="ui raised  attracted segment notify-content sha3 pad0">
+                <div className="ui top attracted label tran">
+                  Friend Requests
+                </div>
+                {!wsCtrl.data.makeFriend.init?"LOADING":(
+                    <div>
+                      {wsCtrl.data.makeFriend.listRequests.map(function(friend){
+                      return (
+                          <div className="notifyFriend clearfix"
+                               config={
+                                    function(el, isInit, ctx){
+                                      if(!isInit){
+                                      console.log("////")
+                                         $(el).on('mouseleave', function(){
+                                             if(!$('.menu:hover').length > 0){
+                                                $(el).unbind('mouseleave');
+                                                $('.menu').unbind('mouseleave');
+                                                wsCtrl.data.makeFriend.display = false;
+                                                rd.nav(function(){m.redraw()})
+                                             }
+                                          });
+
+                                         $('.menu').on('mouseleave', function(){
+                                            if(!$(el).filter(':hover').length > 0){
+                                              $(el).unbind('mouseleave');
+                                              $('.menu').unbind('mouseleave');
+                                              wsCtrl.data.makeFriend.display = false;
+                                              rd.nav(function(){m.redraw()})
+                                           }
+                                          })
+                                      }
+                                    }
+                                 }
+                          >
+                            <span class="ui list fleft">
+                              <div class="item">
+                                <img class="ui avatar image" src={(friend.avatar.length>0)?("/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata} />
+                                  <div class="content">
+                                    <a class="header" href={"/@/" + friend.id} config={m.route}>{friend.name}</a>
+                                    <div class="description">wanting to make friend with you</div>
+                                  </div>
+                              </div>
+                            </span>
+                            <span class="mini ui buttons fright">
+                              <a href={("/rel/friend/" + friend.id)} class="ui positive button"
+                                onclick={function(e){
+                                  e.preventDefault();
+                                    $.post($(this).attr('href'),
+                                       function(data) {
+                                         //alert("Data Loaded: " + data);
+
+                                         wsCtrl.data.makeFriend.listRequests = wsCtrl.data.makeFriend.listRequests.filter(function (el) {
+                                            return el.id != friend.id;
+                                         });
+
+                                         rd.nav(function(){
+                                         if(wsCtrl.data.makeFriend.listRequests.length < 1 ){
+                                            wsCtrl.data.makeFriend.display = false;
+                                         }
+                                         m.redraw()
+                                         });
+                                       }
+                                    );
+                                }}
+                              >Cormfirm</a>
+                              <div class="or"></div>
+                              <a class="ui  button">Reject</a>
+                            </span>
+                          </div>
+                      )
+                      })}
+                    </div>
+                )}
+              </div>
+            </div>
+        ):""}
+      </div>
+    </div>
+) };
+
+module.exports = Friend;

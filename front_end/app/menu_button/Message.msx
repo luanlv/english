@@ -15,25 +15,35 @@ var MessageButton = function(ctrl){ return (
           <div className="corner-right"><div className="tr"></div></div>
           <div className="ui raised  attracted segment notify-content sha3 pad0">
             <div className="ui top attracted label tran">
-              Inbox({wsCtrl.data.notify.n})
+              Inbox ({wsCtrl.data.notify.n})
             </div>
             {!wsCtrl.data.notify.init?"LOADING":(
             <div>
               {
                   wsCtrl.data.notify.notifyMessage.map(function(mes){
                       return (
-                      <div className="notifyMes"
+                      <div className="notifyMes clearfix"
                            config={
                                     function(el, isInit, ctx){
                                       if(!isInit){
-                                         function mesClick(){
-                                            if(!$(el).is(':hover') && !$('.message-button').is(':hover')){
+
+                                         $(el).on('mouseleave', function(){
+                                             if(!$('.menu:hover').length > 0){
+                                                $(el).unbind('mouseleave');
+                                                $('.menu').unbind('mouseleave');
+                                                wsCtrl.data.notify.display = false;
+                                                rd.nav(function(){m.redraw()})
+                                             }
+                                          });
+
+                                         $('.menu').on('mouseleave', function(){
+                                            if(!$(el).filter(':hover').length > 0){
+                                              $(el).unbind('mouseleave');
+                                              $('.menu').unbind('mouseleave');
                                               wsCtrl.data.notify.display = false;
-                                              $(document).unbind("click", mesClick);
                                               rd.nav(function(){m.redraw()})
-                                            }
-                                         }
-                                         $(document).on('click', mesClick)
+                                           }
+                                          })
                                       }
 
                                       $(el).click(function(){
@@ -55,14 +65,17 @@ var MessageButton = function(ctrl){ return (
                                     }
                                  }
                       >
-                        <div className="notifyName">
-                          {mes.user.name}
-                        </div>
-                        <div className="mesNumber">
-                          ({mes.n})
-                        </div>
-                        <div className="lastMes">
-                          {mes.lm.mes}
+                        <div className="nleft"></div>
+                        <div className="nright">
+                          <span className="notifyName">
+                            {mes.user.name}
+                          </span>
+                          <span className="mesNumber">
+                             ({mes.n})
+                          </span>
+                          <div className="lastMes">
+                            {mes.lm.mes}
+                          </div>
                         </div>
                       </div>
                           )

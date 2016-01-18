@@ -32,13 +32,19 @@ wsCtrl.storage = {
 };
 
 
-
+wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
 wsCtrl.data = {
   chatrooms: {},
   chatroom: {},
   userOnline: [],
   user: {},
   chat: [],
+  makeFriend: {
+    n: 0,
+    listRequests: [],
+    init: false,
+    display: false
+  },
   notify: {
     n: 0,
     notifyMessage: [],
@@ -147,6 +153,7 @@ wsCtrl.arrayObjectIndexOf2 = function(myArray, searchTerm, property) {
   }
   return -1;
 };
+
 var arrayObjectIndexOf2 = wsCtrl.arrayObjectIndexOf2;
 
 wsCtrl.sendData = function(t, d){
@@ -248,7 +255,7 @@ ctrl.listen = function(d){
       prevTime = Date.now();
       send(pingData());
     }
-
+    wsCtrl.data.makeFriend.n = d.d.mf;
     var preNotify = data.notify.n;
     data.notify.n = d.d.n;
     if (preNotify !== data.notify.n) rd.nav(function(){m.redraw()})
@@ -365,6 +372,11 @@ ctrl.listen = function(d){
     rd.nav(function(){m.redraw();});
   }
 
+  else if(d.t === "init_friend_request"){
+    data.makeFriend.listRequests = d.d;
+    data.makeFriend.init = true;
+    rd.nav(function(){m.redraw();});
+  }
 
   else if(d.t === "chatNotify") {
 
@@ -374,8 +386,8 @@ ctrl.listen = function(d){
           var mes = d.d.d;
           wsCtrl.commentsInRoom(roomId).push(
               {
-                avatar: (mes.user.avatar.length>0)?("/getimage/thumb/" + mes.user.avatar):('/assets/avatar/2.jpg'),
-                userId: mes.user.userId,
+                avatar: (mes.user.avatar.length>0)?("/getimage/thumb/" + mes.user.avatar):wsCtrl.defaultAvata,
+                userId: mes.user.id,
                 user: mes.user.name,
                 time: Date.now(),
                 comment: mes.chat
@@ -412,7 +424,7 @@ ctrl.listen = function(d){
           listChats.map(function(chat){
             wsCtrl.commentsInRoom(roomId).unshift(
                 {
-                  avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):("/assets/avatar/1.jpg"),
+                  avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):wsCtrl.defaultAvata,
                   userId: chat.user.id,
                   user: chat.user.name,
                   time: chat.time,
@@ -426,9 +438,9 @@ ctrl.listen = function(d){
             var roomId = d.d.room;
             if(listChats.length < 1) wsCtrl.getRoom(roomId).loadMore = false;
             var listComments = listChats.map(function(chat){
-                console.log(chat);
+
             return {
-              avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):("/assets/avatar/1.jpg"),
+              avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):wsCtrl.defaultAvata,
               userId: chat.user.userId,
               user: chat.user.name,
               time: chat.time,

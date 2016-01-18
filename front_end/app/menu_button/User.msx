@@ -14,20 +14,41 @@ var UserButton = function(ctrl){ return (
         <div className="inUser"
              config={function(el, isInit, ctx){
                if(!isInit){
-                 function userClick(){
-                    if(!$(el).is(':hover') && !$('.user-button').is(':hover')){
-                      ctrl.displayUser = false;
-                      $(document).unbind("click", userClick);
-                      rd.nav(function(){m.redraw()})
-                    }
-                 }
-                 $(document).on('click', userClick)
+
+                  $(el).on('mouseleave', function(){
+                     if(!$('.menu:hover').length > 0){
+                        $(el).unbind('mouseleave');
+                        $('.menu').unbind('mouseleave');
+                        ctrl.displayUser = false;
+                        rd.nav(function(){m.redraw()})
+                     }
+                  });
+
+                   $('.menu').on('mouseleave', function(){
+                      if(!$(el).filter(':hover').length > 0){
+                        $(el).unbind('mouseleave');
+                        $('.menu').unbind('mouseleave');
+                        ctrl.displayUser = false;
+                        rd.nav(function(){m.redraw()})
+                     }
+                    })
                }
              }}
         >
           <div className="corner-right"><div className="tr"></div></div>
           <div className="ui  attracted segment notify-content sha3">
-            <a href="/logout" class="ui small button">
+            <a href={"/@/" + wsCtrl.userId} class="fluid ui small button"
+              config={m.route}
+              onclick={function(){
+                ctrl.displayUser = false;
+                rd.nav(function(){m.redraw()})
+              }}
+            >
+              <i class="user icon"></i>
+              Profile
+            </a>
+            <br/>
+            <a href="/logout" class="fluid ui small button">
               <i class="sign out icon"></i>
               Logout
             </a>

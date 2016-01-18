@@ -9,7 +9,7 @@ case class Connected[M <: SocketMember](
   enumerator: JsEnumerator,
   member: M)
 case class Sync(uid: String, friends: List[String])
-case class Ping(uid: String, v: Int)
+case class Ping(uid: String, n1: Int, n2: Int)
 case class SetAlive(uid: String)
 case class Test(uid: String)
 case class Test2(uid: String, to: String, mes: String)
@@ -38,6 +38,7 @@ case class OnlineFriends(uid: String, list: List[LightUser])
 
 case class SendMissingMes(uid: String, f: Int, t: Int, data: List[JsValue])
 case class SendInitMes(uid: String, data: List[JsValue])
+case class SendFriendRequest(uid: String, data: Set[LightUser])
 
 case class SendInitNotify(uid: String, data: List[JsValue])
 

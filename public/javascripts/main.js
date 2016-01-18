@@ -212,7 +212,7 @@ $( document ).ready(function() {
   };
 
   //setTimeout(updatePowertips, 1600);
-  setInterval(updatePowertips, 600);
+  setInterval(updatePowertips, 300);
   $('body').on('lichess.content_loaded', updatePowertips);
 
 });

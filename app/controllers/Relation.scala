@@ -15,13 +15,17 @@ object Relation extends LilaController {
   private def env = Env.relation
 
   private def renderActions(userId: String, mini: Boolean)(implicit ctx: Context) =
-    (ctx.userId ?? { env.api.relation(_, userId) }) zip
-        (ctx.isAuth ?? { Env.pref.api followable userId }) zip
-        (ctx.userId ?? { env.api.blocks(userId, _) }) flatMap {
-      case ((relation, followable), blocked) => negotiate(
+    (ctx.userId ?? { env.friendshipApi.friendship(_, userId) }) zip
+    (ctx.userId ?? { env.makeFriendApi.makeFriend(_, userId) }) zip
+      (ctx.userId ?? { env.api.relation(_, userId) }) zip
+      (ctx.isAuth ?? { Env.pref.api followable userId }) zip
+      (ctx.userId ?? { env.api.blocks(userId, _) }) zip
+      env.api.nbFollowers(userId)  zip
+      env.friendshipApi.nbFriends(userId)  flatMap {
+      case ((((((friend, makeFriend), relation), followable), blocked), nbFollower), nbFriends) => negotiate(
         html = fuccess(Ok(mini.fold(
-          html.relation.mini(userId, blocked = blocked, followable = followable, relation = relation),
-          html.relation.actions(userId, relation = relation, blocked = blocked, followable = followable)
+          html.relation.mini(userId, blocked = blocked, followable = followable, relation = relation, makeFriend = makeFriend, friend = friend, nbFollower = nbFollower, nbFriends = nbFriends),
+          html.relation.actions2(userId, relation = relation, makeFriend = makeFriend, friend = friend,  blocked = blocked, followable = followable)
         ))),
         api = _ => fuccess(Ok(Json.obj(
           "followable" -> followable,
@@ -31,14 +35,31 @@ object Relation extends LilaController {
       )
     }
 
+
   def follow(userId: String) = Auth { implicit ctx =>
     me =>
       env.api.follow(me.id, userId).nevermind >> renderActions(userId, getBool("mini"))
   }
 
+  def friend(userId: String) = Auth { implicit ctx =>
+    me =>
+      env.friendshipApi.doFriend(me.id, userId).nevermind >> Ok("ok").fuccess //renderActions(userId, getBool("mini"))
+  }
+
+  def request(userId: String) = Auth { implicit ctx =>
+    me =>
+//      println('request)
+      env.makeFriendApi.request(me.id, userId).nevermind >> renderActions(userId, getBool("mini"))
+  }
+
   def unfollow(userId: String) = Auth { implicit ctx =>
     me =>
       env.api.unfollow(me.id, userId).nevermind >> renderActions(userId, getBool("mini"))
+  }
+
+  def unrequest(userId: String) = Auth { implicit ctx =>
+    me =>
+      env.makeFriendApi.unrequest(me.id, userId).nevermind >> renderActions(userId, getBool("mini"))
   }
 
   def block(userId: String) = Auth { implicit ctx =>

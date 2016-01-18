@@ -1,0 +1,35 @@
+@(u: User, blocked: Boolean, followable: Boolean, rel: Option[lila.relation.Relation], makeFriend: Option[lila.relation.Relation], friend: Option[lila.relation.Relation], nbFollower: Int, nbFriends: Int)(implicit ctx: Context)
+<div class="mini">
+
+  <div class="ui header">
+    <img src="@{"/getimage/thumb/" + u.avatar}" >
+    <div class="content">
+      <a class="route" href=@{"/@/" + u.username}>@u.name</a>
+      <div class="sub header"><a class="route" href=@{"/@/" + u.username}>@@@{u.username}</a></div>
+    </div>
+  </div>
+
+
+@ctx.userId.map { myId =>
+
+    <table class="actions">
+      <tbody>
+        <tr>
+          @if(!blocked) {
+            @*<td>*@
+              @*<a class="button hint--bottom" data-hint="@trans.chat()" href="#">*@
+                @*<span data-icon="c">Message</span>*@
+              @*</a>*@
+            @*</td>*@
+            @*<td>*@
+              @*<a class="button hint--bottom" data-hint="@trans.play()" href="#">*@
+                @*<span data-icon="U">Lobby</span>*@
+              @*</a>*@
+            @*</td>*@
+          }
+          <td class="relation_actions">@relation.mini(u.id, blocked, followable, rel, makeFriend, friend,  myId == u.id, nbFollower, nbFriends)</td>
+        </tr>
+      </tbody>
+    </table>
+}
+</div>

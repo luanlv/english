@@ -18,12 +18,36 @@ final class Env(
 
   private val settings = new {
     val CollectionRelation = config getString "collection.relation"
+    val CollectionMakeFriend = config getString "collection.makeFriend"
+    val CollectionFriendship = config getString "collection.friendship"
     val ActorNotifyFreq = config duration "actor.notify_freq"
     val ActorName = config getString "actor.name"
     val MaxFollow = config getInt "limit.follow"
     val MaxBlock = config getInt "limit.block"
   }
   import settings._
+
+  lazy val makeFriendApi = new MakeFriendApi(
+    cached = cached,
+    actor = hub.actor.relation,
+    bus = system.lilaBus,
+    getOnlineUserIds = getOnlineUserIds,
+    timeline = hub.actor.timeline,
+    reporter = hub.actor.report,
+    followable = followable,
+    maxFollow = MaxFollow,
+    maxBlock = MaxBlock)
+
+  lazy val friendshipApi = new FriendshipApi(
+    cached = cached,
+    actor = hub.actor.relation,
+    bus = system.lilaBus,
+    getOnlineUserIds = getOnlineUserIds,
+    timeline = hub.actor.timeline,
+    reporter = hub.actor.report,
+    followable = followable,
+    maxFollow = MaxFollow,
+    maxBlock = MaxBlock)
 
   lazy val api = new RelationApi(
     cached = cached,
@@ -41,7 +65,9 @@ final class Env(
   private[relation] val actor = system.actorOf(Props(new RelationActor(
     getOnlineUserIds = getOnlineUserIds,
     lightUser = lightUser,
-    api = api
+    api = api,
+    makeFriendApi = makeFriendApi,
+    friendshipApi = friendshipApi
   )), name = ActorName)
 
 //  {
@@ -55,6 +81,8 @@ final class Env(
 //  }
 
   private[relation] lazy val relationColl = db(CollectionRelation)
+  private[relation] lazy val makeFriendColl = db(CollectionMakeFriend)
+  private[relation] lazy val friendshipColl = db(CollectionFriendship)
 }
 
 object Env {

@@ -8,9 +8,9 @@ GET /chatroom/:id          controllers.Chat.chatRoom(id: String)
 GET /json                  controllers.Application.json
 GET /settings              controllers.Application.index
 
-GET /@/:user               controllers.Application.user(user: String)
+GET /@/:username               controllers.Application.user(username: String)
 
-GET /@/:user/mini          controllers.Application.userMini(user: String)
+GET /@/:username/mini          controllers.User.showMini(username: String)
 
 GET   /socket                          controllers.Main.websocket
 
@@ -38,7 +38,12 @@ POST     /upload/image                @controllers.ImageCtrl.upload
 #User
 
 POST  /rel/follow/:userId              controllers.Relation.follow(userId: String)
+POST  /rel/request/:userId              controllers.Relation.request(userId: String)
 POST  /rel/unfollow/:userId            controllers.Relation.unfollow(userId: String)
+POST  /rel/unrequest/:userId            controllers.Relation.unrequest(userId: String)
+
+POST  /rel/friend/:userId              controllers.Relation.friend(userId: String)
+
 POST  /rel/block/:userId               controllers.Relation.block(userId: String)
 POST  /rel/unblock/:userId             controllers.Relation.unblock(userId: String)
 

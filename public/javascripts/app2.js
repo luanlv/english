@@ -165,8 +165,14 @@ api.time = function(timestamp){
 };
 
 
+$(document).on('click', '.route', function(e){
+  e.preventDefault();
+  m.route($(this).attr('href'));
+  $('.mini').remove();
+});
+
 module.exports = api;
-},{"../ws/_wsCtrl.js":15}],2:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16}],2:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -301,7 +307,7 @@ var Chat = {
                               chat.chat.map(function(item, num){
                                   return {tag: "div", attrs: {}, children: [
                                     chat.init?({tag: "div", attrs: {className:"loading_chat"}, children: ["\"Loading previous ...\""]}):"", 
-                                    {tag: "div", attrs: {className:(item.f.id == wsCtrl.userId)?"comment-left": "comment-right"}, children: [
+                                    {tag: "div", attrs: {className:(item.f.id == wsCtrl.userId)?"ui left pointing basic label chat-left": "ui right pointing basic label chat-right"}, children: [
                                       {tag: "div", attrs: {className:"mes"}, children: [item.mes]}
                                     ]}
                                   ]}
@@ -374,7 +380,7 @@ var Chat = {
 
 module.exports = Chat;
 
-},{"../ws/_wsCtrl.js":15,"./api.msx":1}],3:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],3:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -541,7 +547,7 @@ var Create = function(){
 }
 
 module.exports = ChatRoom;
-},{"../ws/_wsCtrl.js":15,"./api.msx":1}],4:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],4:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var initData = {}
@@ -576,7 +582,7 @@ var Dashboard = {
 
 
 module.exports = Dashboard;
-},{"../ws/_wsCtrl.js":15,"./api.msx":1}],5:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],5:[function(require,module,exports){
 "user strict";
 
 var Nav = require('./nav.msx');
@@ -715,7 +721,7 @@ window.initComponent = function() {
   m.mount(document.getElementById('footer'), tenant('footer', Footer));
   m.mount(document.getElementById('rightContainer'), tenant('right', Chat));
 }
-},{"./chat.msx":2,"./chatroom.msx":3,"./dashboard.msx":4,"./footer.msx":6,"./home.msx":7,"./nav.msx":11,"./room.msx":12,"./user.msx":13,"./userSetting.msx":14}],6:[function(require,module,exports){
+},{"./chat.msx":2,"./chatroom.msx":3,"./dashboard.msx":4,"./footer.msx":6,"./home.msx":7,"./nav.msx":12,"./room.msx":13,"./user.msx":14,"./userSetting.msx":15}],6:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -735,7 +741,7 @@ var Footer = {
 
 
 module.exports = Footer;
-},{"../ws/_wsCtrl.js":15,"./api.msx":1}],7:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],7:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 var div = [{id: "div 1", v: 1 ,
@@ -867,7 +873,104 @@ var Home = {
 };
 
 module.exports = Home;
-},{"../ws/_wsCtrl.js":15,"./api.msx":1}],8:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],8:[function(require,module,exports){
+var wsCtrl = require('../../ws/_wsCtrl.js');
+var api = require('.././api.msx');
+
+var Friend = function(ctrl){ return (
+    {tag: "div", attrs: {}, children: [
+      {tag: "a", attrs: {className:"item nofity border-left-icon message-button", 
+         onclick:function(){rd.nav(ctrl.displayFriend());}
+      }, children: [
+        {tag: "a", attrs: {href:"javascript:void(0)"}, children: [{tag: "i", attrs: {className:"large icon add user users-icon"}}]}, 
+        (wsCtrl.data.makeFriend.n>0)?({tag: "div", attrs: {className:"floating ui red label num-label"}, children: [wsCtrl.data.makeFriend.n]}):""
+      ]}, 
+      {tag: "div", attrs: {className:"notifyWr"}, children: [
+        (wsCtrl.data.makeFriend.display)?(
+            {tag: "div", attrs: {className:"inNotify"}, children: [
+              {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
+              {tag: "div", attrs: {className:"ui raised  attracted segment notify-content sha3 pad0"}, children: [
+                {tag: "div", attrs: {className:"ui top attracted label tran"}, children: [
+                  "Friend Requests"
+                ]}, 
+                !wsCtrl.data.makeFriend.init?"LOADING":(
+                    {tag: "div", attrs: {}, children: [
+                      wsCtrl.data.makeFriend.listRequests.map(function(friend){
+                      return (
+                          {tag: "div", attrs: {className:"notifyFriend clearfix", 
+                               config:
+                                    function(el, isInit, ctx){
+                                      if(!isInit){
+                                      console.log("////")
+                                         $(el).on('mouseleave', function(){
+                                             if(!$('.menu:hover').length > 0){
+                                                $(el).unbind('mouseleave');
+                                                $('.menu').unbind('mouseleave');
+                                                wsCtrl.data.makeFriend.display = false;
+                                                rd.nav(function(){m.redraw()})
+                                             }
+                                          });
+
+                                         $('.menu').on('mouseleave', function(){
+                                            if(!$(el).filter(':hover').length > 0){
+                                              $(el).unbind('mouseleave');
+                                              $('.menu').unbind('mouseleave');
+                                              wsCtrl.data.makeFriend.display = false;
+                                              rd.nav(function(){m.redraw()})
+                                           }
+                                          })
+                                      }
+                                    }
+                                 
+                          }, children: [
+                            {tag: "span", attrs: {class:"ui list fleft"}, children: [
+                              {tag: "div", attrs: {class:"item"}, children: [
+                                {tag: "img", attrs: {class:"ui avatar image", src:(friend.avatar.length>0)?("/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata}}, 
+                                  {tag: "div", attrs: {class:"content"}, children: [
+                                    {tag: "a", attrs: {class:"header", href:"/@/" + friend.id, config:m.route}, children: [friend.name]}, 
+                                    {tag: "div", attrs: {class:"description"}, children: ["wanting to make friend with you"]}
+                                  ]}
+                              ]}
+                            ]}, 
+                            {tag: "span", attrs: {class:"mini ui buttons fright"}, children: [
+                              {tag: "a", attrs: {href:("/rel/friend/" + friend.id), class:"ui positive button", 
+                                onclick:function(e){
+                                  e.preventDefault();
+                                    $.post($(this).attr('href'),
+                                       function(data) {
+                                         //alert("Data Loaded: " + data);
+
+                                         wsCtrl.data.makeFriend.listRequests = wsCtrl.data.makeFriend.listRequests.filter(function (el) {
+                                            return el.id != friend.id;
+                                         });
+
+                                         rd.nav(function(){
+                                         if(wsCtrl.data.makeFriend.listRequests.length < 1 ){
+                                            wsCtrl.data.makeFriend.display = false;
+                                         }
+                                         m.redraw()
+                                         });
+                                       }
+                                    );
+                                }
+                              }, children: ["Cormfirm"]}, 
+                              {tag: "div", attrs: {class:"or"}}, 
+                              {tag: "a", attrs: {class:"ui  button"}, children: ["Reject"]}
+                            ]}
+                          ]}
+                      )
+                      })
+                    ]}
+                )
+              ]}
+            ]}
+        ):""
+      ]}
+    ]}
+) };
+
+module.exports = Friend;
+},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],9:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -937,7 +1040,7 @@ var LoginButton = function(ctrl){ return(
 )}
 
 module.exports = LoginButton;
-},{"../../ws/_wsCtrl.js":15,".././api.msx":1}],9:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],10:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -955,25 +1058,35 @@ var MessageButton = function(ctrl){ return (
           {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
           {tag: "div", attrs: {className:"ui raised  attracted segment notify-content sha3 pad0"}, children: [
             {tag: "div", attrs: {className:"ui top attracted label tran"}, children: [
-              "Inbox(", wsCtrl.data.notify.n, ")"
+              "Inbox (", wsCtrl.data.notify.n, ")"
             ]}, 
             !wsCtrl.data.notify.init?"LOADING":(
             {tag: "div", attrs: {}, children: [
               
                   wsCtrl.data.notify.notifyMessage.map(function(mes){
                       return (
-                      {tag: "div", attrs: {className:"notifyMes", 
+                      {tag: "div", attrs: {className:"notifyMes clearfix", 
                            config:
                                     function(el, isInit, ctx){
                                       if(!isInit){
-                                         function mesClick(){
-                                            if(!$(el).is(':hover') && !$('.message-button').is(':hover')){
+
+                                         $(el).on('mouseleave', function(){
+                                             if(!$('.menu:hover').length > 0){
+                                                $(el).unbind('mouseleave');
+                                                $('.menu').unbind('mouseleave');
+                                                wsCtrl.data.notify.display = false;
+                                                rd.nav(function(){m.redraw()})
+                                             }
+                                          });
+
+                                         $('.menu').on('mouseleave', function(){
+                                            if(!$(el).filter(':hover').length > 0){
+                                              $(el).unbind('mouseleave');
+                                              $('.menu').unbind('mouseleave');
                                               wsCtrl.data.notify.display = false;
-                                              $(document).unbind("click", mesClick);
                                               rd.nav(function(){m.redraw()})
-                                            }
-                                         }
-                                         $(document).on('click', mesClick)
+                                           }
+                                          })
                                       }
 
                                       $(el).click(function(){
@@ -995,14 +1108,17 @@ var MessageButton = function(ctrl){ return (
                                     }
                                  
                       }, children: [
-                        {tag: "div", attrs: {className:"notifyName"}, children: [
-                          mes.user.name
-                        ]}, 
-                        {tag: "div", attrs: {className:"mesNumber"}, children: [
-                          "(", mes.n, ")"
-                        ]}, 
-                        {tag: "div", attrs: {className:"lastMes"}, children: [
-                          mes.lm.mes
+                        {tag: "div", attrs: {className:"nleft"}}, 
+                        {tag: "div", attrs: {className:"nright"}, children: [
+                          {tag: "span", attrs: {className:"notifyName"}, children: [
+                            mes.user.name
+                          ]}, 
+                          {tag: "span", attrs: {className:"mesNumber"}, children: [
+                             "(", mes.n, ")"
+                          ]}, 
+                          {tag: "div", attrs: {className:"lastMes"}, children: [
+                            mes.lm.mes
+                          ]}
                         ]}
                       ]}
                           )
@@ -1018,7 +1134,7 @@ var MessageButton = function(ctrl){ return (
 ) }
 
 module.exports = MessageButton;
-},{"../../ws/_wsCtrl.js":15,".././api.msx":1}],10:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],11:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -1035,20 +1151,41 @@ var UserButton = function(ctrl){ return (
         {tag: "div", attrs: {className:"inUser", 
              config:function(el, isInit, ctx){
                if(!isInit){
-                 function userClick(){
-                    if(!$(el).is(':hover') && !$('.user-button').is(':hover')){
-                      ctrl.displayUser = false;
-                      $(document).unbind("click", userClick);
-                      rd.nav(function(){m.redraw()})
-                    }
-                 }
-                 $(document).on('click', userClick)
+
+                  $(el).on('mouseleave', function(){
+                     if(!$('.menu:hover').length > 0){
+                        $(el).unbind('mouseleave');
+                        $('.menu').unbind('mouseleave');
+                        ctrl.displayUser = false;
+                        rd.nav(function(){m.redraw()})
+                     }
+                  });
+
+                   $('.menu').on('mouseleave', function(){
+                      if(!$(el).filter(':hover').length > 0){
+                        $(el).unbind('mouseleave');
+                        $('.menu').unbind('mouseleave');
+                        ctrl.displayUser = false;
+                        rd.nav(function(){m.redraw()})
+                     }
+                    })
                }
              }
         }, children: [
           {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
           {tag: "div", attrs: {className:"ui  attracted segment notify-content sha3"}, children: [
-            {tag: "a", attrs: {href:"/logout", class:"ui small button"}, children: [
+            {tag: "a", attrs: {href:"/@/" + wsCtrl.userId, class:"fluid ui small button", 
+              config:m.route, 
+              onclick:function(){
+                ctrl.displayUser = false;
+                rd.nav(function(){m.redraw()})
+              }
+            }, children: [
+              {tag: "i", attrs: {class:"user icon"}}, 
+              "Profile"
+            ]}, 
+            {tag: "br", attrs: {}}, 
+            {tag: "a", attrs: {href:"/logout", class:"fluid ui small button"}, children: [
               {tag: "i", attrs: {class:"sign out icon"}}, 
               "Logout"
             ]}
@@ -1059,13 +1196,14 @@ var UserButton = function(ctrl){ return (
 ) }
 
 module.exports = UserButton;
-},{"../../ws/_wsCtrl.js":15,".././api.msx":1}],11:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],12:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
 var UserButton = require('./menu_button/User.msx');
 var LoginButton = require('./menu_button/Login.msx');
 var MessageButton = require('./menu_button/Message.msx');
+var FriendButton = require('./menu_button/Friend.msx');
 
 var Nav = {
   controller: function(){
@@ -1087,6 +1225,8 @@ var Nav = {
     }, 1000);
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
+      wsCtrl.data.notify.display = false;
+      wsCtrl.data.makeFriend.display = false;
       ctrl.displayUser = !ctrl.displayUser
     };
     ctrl.displayLogin = false;
@@ -1101,8 +1241,22 @@ var Nav = {
       }
       //}
       wsCtrl.data.notify.n = 0;
-      wsCtrl.data.notify.display = !wsCtrl.data.notify.display
+      wsCtrl.data.makeFriend.display = false;
+      ctrl.displayUser = false;
+      wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
     };
+
+
+
+    ctrl.displayFriend = function(){
+      if(wsCtrl.data.makeFriend.display == false ) {
+        wsCtrl.data.makeFriend.init = false;
+        wsCtrl.send(wsCtrl.sendData("gmf", 0))
+      }
+      wsCtrl.data.notify.display = false;
+      ctrl.displayUser = false;
+      wsCtrl.data.makeFriend.display = !wsCtrl.data.makeFriend.display;
+    }
 
   },
   view: function(ctrl){
@@ -1173,10 +1327,7 @@ var Nav = {
                 }}
                )
              ]}, 
-            {tag: "a", attrs: {href:"javascript:void(0)", className:"item"}, children: [
-              {tag: "i", attrs: {className:"large icon add user users-icon"}}, 
-              {tag: "div", attrs: {className:"floating ui red label num-label"}, children: ["2"]}
-            ]}, 
+           FriendButton(ctrl), 
             MessageButton(ctrl), 
             UserButton(ctrl)
           ]}):(
@@ -1243,7 +1394,7 @@ var Ping = function(ctrl){
 };
 
 module.exports = Nav;
-},{"../ws/_wsCtrl.js":15,"./api.msx":1,"./menu_button/Login.msx":8,"./menu_button/Message.msx":9,"./menu_button/User.msx":10}],12:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1,"./menu_button/Friend.msx":8,"./menu_button/Login.msx":9,"./menu_button/Message.msx":10,"./menu_button/User.msx":11}],13:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -1527,7 +1678,7 @@ var Comments = function(ctrl){
 }
 
 module.exports = Room;
-},{"../ws/_wsCtrl.js":15,"./api.msx":1}],13:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],14:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -1573,14 +1724,7 @@ var User = {
                         ]}, 
                         {tag: "div", attrs: {className:"edit"}, children: [
                             (wsCtrl.userId !== ctrl.userId)?[
-                            {tag: "button", attrs: {className:"ui inverted button"}, children: [
-                                {tag: "i", attrs: {className:"add user icon"}}, 
-                                "Add Friend"
-                            ]},
-                            {tag: "button", attrs: {className:"ui inverted button"}, children: [
-                                {tag: "i", attrs: {className:"plus icon"}}, 
-                                "Follow"
-                            ]}
+
                             ]:(
                                 {tag: "a", attrs: {className:"ui basic button", href:"/settings", config:m.route}, children: [
                                     {tag: "i", attrs: {className:"write square icon"}}, 
@@ -1597,25 +1741,22 @@ var User = {
 
                         {tag: "div", attrs: {className:"ui divider"}}, 
                         {tag: "div", attrs: {className:"infoWr"}, children: [
-                        {tag: "div", attrs: {className:"ui labeled button"}, children: [
-                            {tag: "div", attrs: {className:"ui inverted white"}, children: [
-                                {tag: "i", attrs: {className:"users icon"}}, 
-                                {tag: "div", attrs: {className:"number"}, children: [
-                                "190"
+                            {tag: "div", attrs: {className:"relation_actions"}, children: [
+                                {tag: "a", attrs: {className:"tiny ui  basic animated relation button hint--bottom hover_text", tabindex:"0", href:"/rel/follow/luan1?mini=1"}, children: [
+                                    {tag: "span", attrs: {className:"visible content"}, children: ["100 Follower"]}, 
+                                        {tag: "span", attrs: {className:"hidden content"}, children: [
+                                          {tag: "i", attrs: {className:"thumbs outline up icon"}}, 
+                                          "Follow"
+                                        ]}
                                 ]}, 
-                                "Following"
+                                {tag: "a", attrs: {className:"tiny ui  basic animated relation button hint--bottom hover_text", tabindex:"0", href:"/rel/request/luan1?mini=1"}, children: [
+                                    {tag: "span", attrs: {className:"visible content"}, children: ["100 Friends"]}, 
+                                        {tag: "span", attrs: {className:"hidden content"}, children: [
+                                          {tag: "i", attrs: {className:"thumbs up icon"}}, 
+                                          "Add Friend"
+                                        ]}
+                                ]}
                             ]}
-                        ]}, 
-
-                        {tag: "div", attrs: {className:"ui labeled button"}, children: [
-                            {tag: "div", attrs: {className:"ui inverted white"}, children: [
-                                {tag: "i", attrs: {className:"users icon"}}, 
-                                {tag: "div", attrs: {className:"number"}, children: [
-                                "10"
-                                ]}, 
-                                "Follower"
-                            ]}
-                        ]}
                         ]}
                     ]}
                 ]}
@@ -1627,7 +1768,7 @@ var User = {
 
 
 module.exports = User;
-},{"../ws/_wsCtrl.js":15,"./api.msx":1}],14:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],15:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -1777,7 +1918,7 @@ var avatarWr = function(ctrl){
 
 
 module.exports = UserSetting;
-},{"../ws/_wsCtrl.js":15,"./api.msx":1}],15:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],16:[function(require,module,exports){
 var wsCtrl = {};
 wsCtrl.userId = document.body.getAttribute("id");
 var userId = wsCtrl.userId;
@@ -1812,13 +1953,19 @@ wsCtrl.storage = {
 };
 
 
-
+wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
 wsCtrl.data = {
   chatrooms: {},
   chatroom: {},
   userOnline: [],
   user: {},
   chat: [],
+  makeFriend: {
+    n: 0,
+    listRequests: [],
+    init: false,
+    display: false
+  },
   notify: {
     n: 0,
     notifyMessage: [],
@@ -1927,6 +2074,7 @@ wsCtrl.arrayObjectIndexOf2 = function(myArray, searchTerm, property) {
   }
   return -1;
 };
+
 var arrayObjectIndexOf2 = wsCtrl.arrayObjectIndexOf2;
 
 wsCtrl.sendData = function(t, d){
@@ -2028,7 +2176,7 @@ ctrl.listen = function(d){
       prevTime = Date.now();
       send(pingData());
     }
-
+    wsCtrl.data.makeFriend.n = d.d.mf;
     var preNotify = data.notify.n;
     data.notify.n = d.d.n;
     if (preNotify !== data.notify.n) rd.nav(function(){m.redraw()})
@@ -2145,6 +2293,11 @@ ctrl.listen = function(d){
     rd.nav(function(){m.redraw();});
   }
 
+  else if(d.t === "init_friend_request"){
+    data.makeFriend.listRequests = d.d;
+    data.makeFriend.init = true;
+    rd.nav(function(){m.redraw();});
+  }
 
   else if(d.t === "chatNotify") {
 
@@ -2154,8 +2307,8 @@ ctrl.listen = function(d){
           var mes = d.d.d;
           wsCtrl.commentsInRoom(roomId).push(
               {
-                avatar: (mes.user.avatar.length>0)?("/getimage/thumb/" + mes.user.avatar):('/assets/avatar/2.jpg'),
-                userId: mes.user.userId,
+                avatar: (mes.user.avatar.length>0)?("/getimage/thumb/" + mes.user.avatar):wsCtrl.defaultAvata,
+                userId: mes.user.id,
                 user: mes.user.name,
                 time: Date.now(),
                 comment: mes.chat
@@ -2192,7 +2345,7 @@ ctrl.listen = function(d){
           listChats.map(function(chat){
             wsCtrl.commentsInRoom(roomId).unshift(
                 {
-                  avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):("/assets/avatar/1.jpg"),
+                  avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):wsCtrl.defaultAvata,
                   userId: chat.user.id,
                   user: chat.user.name,
                   time: chat.time,
@@ -2206,9 +2359,9 @@ ctrl.listen = function(d){
             var roomId = d.d.room;
             if(listChats.length < 1) wsCtrl.getRoom(roomId).loadMore = false;
             var listComments = listChats.map(function(chat){
-                console.log(chat);
+
             return {
-              avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):("/assets/avatar/1.jpg"),
+              avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):wsCtrl.defaultAvata,
               userId: chat.user.userId,
               user: chat.user.name,
               time: chat.time,

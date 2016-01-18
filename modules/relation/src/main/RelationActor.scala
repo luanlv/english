@@ -2,6 +2,7 @@ package lila.relation
 
 import akka.actor.{ Actor, ActorSelection }
 import akka.pattern.{ ask, pipe }
+import lila.hub.actorApi.userMessage.PingVersion
 import play.api.libs.json.Json
 
 import actorApi._
@@ -13,13 +14,23 @@ import makeTimeout.short
 private[relation] final class RelationActor(
     getOnlineUserIds: () => Set[String],
     lightUser: String => Option[LightUser],
-    api: RelationApi) extends Actor {
+    api: RelationApi,
+    makeFriendApi: MakeFriendApi,
+    friendshipApi: FriendshipApi) extends Actor {
 
   private val bus = context.system.lilaBus
 
   private var onlines = Map[ID, LightUser]()
 
   def receive = {
+
+    case PingVersion(userId) => {
+      sender ! makeFriendApi.nbRequester(userId).await
+    }
+
+    case GetFriendRequest(userId) => {
+      sender ! makeFriendApi.requester(userId).map(setId => setId.map(id => lightUser(id).get))
+    }
 
     case GetOnlineFriends(userId) => onlineFriends(userId) pipeTo sender
 
@@ -55,5 +66,6 @@ private[relation] final class RelationActor(
       }
     }
   }
+
 
 }

@@ -54,7 +54,7 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
   // generic message handler
   def receiveGeneric: Receive = {
 
-    case Ping(uid, v)             => ping(uid, v)
+    case Ping(uid, notify, makeFriend)             => ping(uid, notify, makeFriend)
 
     case SetAlive(uid)         => setAlive(uid)
 
@@ -84,6 +84,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     case UserLeavesRoom(user, roomId) => notifyUserLeaveRoom(user, roomId)
 
     case DoChat(chat, roomId) =>  sendChatRoom(chat, roomId)
+
+    case SendFriendRequest(uid, data) => sendFriendRequester(uid, data)
 
     case Broom                 => {
       broom
@@ -130,9 +132,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
 
 
-  def ping(uid: String, notify: Int) {
+  def ping(uid: String, notify: Int, makeFriend: Int) {
     setAlive(uid)
-    withMember(uid)(_ push makeMessage("n", pong.++(Json.obj("n" -> notify))))
+    withMember(uid)(_ push makeMessage("n", pong.++(Json.obj("n" -> notify, "mf" -> makeFriend))))
   }
 
   def listUidInRoom(roomId: String) = {
@@ -161,6 +163,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     }
   }
 
+
+
   def initChatRooms(uid: String, roomId: String, userId:Option[String]) = {
     sub(uid, roomId, userId)
     val listByGroup = listSid.groupBy(x => x._2._2)
@@ -180,6 +184,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
       }
     }
   }
+
+
 
   def getPrevChat(uid: String, roomId: String, lastTime: Long) = {
     (lila.hub.Env.current.actor.chatRoom ? PrevChat(roomId, lastTime)) foreach {
@@ -347,6 +353,11 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
   def sendInitNotify(uid: String, data: List[JsValue]) = {
     withMember(uid)(_ push makeMessage("init_notify", data))
   }
+
+  def sendFriendRequester(uid: String, data: Set[LightUser]) = {
+    withMember(uid)(_ push makeMessage("init_friend_request", data))
+  }
+
   def uids = members.keys
 
   def membersByUserId(userId: String): Iterable[M] = members collect {

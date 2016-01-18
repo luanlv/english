@@ -11,6 +11,7 @@ import play.api.libs.json._
 import actorApi._
 import lila.common.PimpedJson._
 import lila.hub.actorApi.relation.ReloadOnlineFriends
+import lila.hub.actorApi.relation.GetFriendRequest
 import makeTimeout.large
 
 import scala.concurrent.Future
@@ -31,10 +32,11 @@ object Handler {
     def baseController(member: SocketMember): Controller = {
       case ("p", o) => {
         userId match {
-          case None => socket ! Ping(uid, 0)
+          case None => socket ! Ping(uid, 0, 0)
           case Some(user) => {
-            (hub.actor.userMessage ? PingVersion(user)) foreach {
-              case v: Int => socket ! Ping(uid, v)
+            (hub.actor.userMessage ? PingVersion(user)) zip
+            (hub.actor.relation ? PingVersion(user)) map {
+              case (notify: Int, makeFriend: Int) => socket ! Ping(uid, notify, makeFriend)
               case _ => //println("unhander !!!")
             }
           }
@@ -161,6 +163,19 @@ object Handler {
               case _ => //println("gnm from" + userId + " error!")
             }
 
+          }
+        }
+      }
+
+      case ("gmf", o) => userId foreach { userId =>
+        if(userId.length() > 0) {
+          (hub.actor.relation ? GetFriendRequest(userId)) foreach {
+            case fuData:Future[Set[LightUser]] => {
+              fuData.map{
+                data => socket ! SendFriendRequest(uid, data)
+              }
+            }
+            case _ =>
           }
         }
       }

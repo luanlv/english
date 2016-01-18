@@ -190,7 +190,18 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
 .comment-left{
   overflow: auto;
   width: 200px;
-  float: left;
+}
+
+.chat-right{
+  margin-bottom: 3px !important;
+  width: 200px;
+  float: right;
+}
+
+.chat-left{
+  margin-bottom: 3px !important;
+  width: 200px;
+  //overflow: auto;
 }
 
 .text{
@@ -200,12 +211,6 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
 }
 
 .mes{
-  border: 1px solid #ddd;
-  border-radius: 3px 3px 3px 3px;
-  margin: 5px;
-  padding: 5px;
-  background: lightblue;
-  //overflow: auto;
   word-wrap: break-word;
   white-space: pre-wrap;
 }
@@ -247,18 +252,20 @@ textarea {
 .chatboxWr{
   right: 0;
   width: 260px;
-  height: 305px;
+  height: 307px;
   position: absolute;
-  bottom: 0;
+  bottom: 2px;
 }
 
 .chat-box{
+  margin-top: 3px;
   width: 100%;
   overflow:auto;
   overflow-x:hidden;
   height: 243px;
   position:relative;
-  background: rgb(233, 234, 237);;
+  background: rgb(225, 255, 225);
+
 }
 
 .new-comment{
@@ -269,6 +276,10 @@ textarea {
   max-height: 66px;
   overflow-x: hidden;
   padding: 5px !important;
+}
+
+.chat-title, .chat-title2 {
+  font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
 }
 
 .chat-title{
@@ -370,33 +381,53 @@ textarea {
   right: -0px;
 }
 
+.notifyFriend {
+  height: 40px;
+  padding: 5px;
+  border-top: 1px solid rgba(0,0,0, 0.2);
+  .fleft {
+    width: 250px;
+    float: left;
+  }
+  .fright {
+    width: 100px;
+    float: left;
+  }
+}
+
 .notifyMes{
   text-align: left;
   border-top: 1px solid rgba(0,0,0, 0.2);
   cursor: pointer;
-  height:36px;
-  padding: 10px;
+  .nright{
+    padding-left: 10px;
+    width: 378px;
+    height: 38px;
+    float: left;
+  }
+
+  .notifyName {
+    color: black;
+    font-weight: bold;
+  }
+  .mesNumber {
+    color: #555;
+    margin-left: 5px;
+  }
+  .lastMes {
+    color: #333;
+    font-weight: lighter;
+    overflow: hidden;
+  }
+  &:hover {
+    background: rgba(92, 92, 92, 0.14);
+  }
 }
 
-.notifyName {
-  display: inline-block;
-  color: black;
-  font-weight: bold;
-}
 
-.mesNumber {
-  display: inline-block;
-  color: darkblue;
-}
-.mesNumber:after{
-  content: " : "
-}
-.lastMes {
-  display: inline-block;
-  color: #333;
-  font-weight: lighter;
-  overflow: hidden;
-}
+
+
+
 
 .haveNotify {
   background: red;
@@ -437,6 +468,11 @@ textarea {
   }
 }
 
+.clearfix:after {
+  clear: both;
+  content: "";
+  display: block;
+}
 
 .clear{
   clear: both;
@@ -588,7 +624,7 @@ textarea {
 
 .inUser .notify-content{
   border-radius: 0 0 3px 3px!important;
-  width: 135px;
+  width: 180px;
   min-height: 50px;
   border: 1px solid rgba(0,0,0, 0.2) !important;
 }
@@ -700,7 +736,8 @@ textarea {
     overflow: hidden;
   }
   .author{
-    color: #666 !important;
+    color: #555 !important;
+    font-size: 12px !important;
   }
 }
 
@@ -724,6 +761,9 @@ textarea {
     margin-bottom: 5px;
   }
   font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
+  > .segWr {
+    padding-top: 0 !important;
+  }
 }
 
 .room-chat textarea{
@@ -765,11 +805,32 @@ textarea {
 }
 
 #powerTip {
+  .route {
+    font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
+  }
   background: #fff !important;
-  //border: 1px solid #666;
+  border: 1px solid #ddd;
   color: #333 !important;
   border-radius: 3px !important;
   @extend .sha3;
+  .mini {
+    width: 260px;
+    height: 95px;
+    .sub a {
+      color: #999;
+      &:hover{
+        text-decoration: underline;
+      }
+    }
+    table {
+      width: 100%;
+    }
+    .relation_actions{
+      > a {
+        width: 49%;
+      }
+    }
+  }
 }
 
 #powerTip:before, #powerTip:after {
@@ -849,9 +910,11 @@ textarea {
   }
 
   .infoWr{
-    >div{
-      margin-left: 10px;
-      margin-right: 10px;
+    .relation_actions{
+      a {
+        color: white !important;
+        font-weight: bold !important;
+      }
     }
   }
 }

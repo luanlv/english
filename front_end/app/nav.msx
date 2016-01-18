@@ -4,6 +4,7 @@ var api = require('./api.msx');
 var UserButton = require('./menu_button/User.msx');
 var LoginButton = require('./menu_button/Login.msx');
 var MessageButton = require('./menu_button/Message.msx');
+var FriendButton = require('./menu_button/Friend.msx');
 
 var Nav = {
   controller: function(){
@@ -25,6 +26,8 @@ var Nav = {
     }, 1000);
     ctrl.displayUser = false;
     ctrl.toggleUser = function(){
+      wsCtrl.data.notify.display = false;
+      wsCtrl.data.makeFriend.display = false;
       ctrl.displayUser = !ctrl.displayUser
     };
     ctrl.displayLogin = false;
@@ -39,8 +42,22 @@ var Nav = {
       }
       //}
       wsCtrl.data.notify.n = 0;
-      wsCtrl.data.notify.display = !wsCtrl.data.notify.display
+      wsCtrl.data.makeFriend.display = false;
+      ctrl.displayUser = false;
+      wsCtrl.data.notify.display = !wsCtrl.data.notify.display;
     };
+
+
+
+    ctrl.displayFriend = function(){
+      if(wsCtrl.data.makeFriend.display == false ) {
+        wsCtrl.data.makeFriend.init = false;
+        wsCtrl.send(wsCtrl.sendData("gmf", 0))
+      }
+      wsCtrl.data.notify.display = false;
+      ctrl.displayUser = false;
+      wsCtrl.data.makeFriend.display = !wsCtrl.data.makeFriend.display;
+    }
 
   },
   view: function(ctrl){
@@ -111,10 +128,7 @@ var Nav = {
                 >{}</i>
                )}
              </a>
-            <a href="javascript:void(0)"  className="item">
-              <i className="large icon add user users-icon"></i>
-              <div className="floating ui red label num-label">2</div>
-            </a>
+           {FriendButton(ctrl)}
             {MessageButton(ctrl)}
             {UserButton(ctrl)}
           </div>):(

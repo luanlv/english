@@ -52,7 +52,9 @@ private[userMessage] final class UserMessageActor(
     }
 
     case InitNotify(userId) => {
-      sender ! api.getNotifyMessage(userId).map(_.map(Json.toJson(_)))
+      println(userId)
+      val data = api.getNotifyMessage(userId).map(_.map(Json.toJson(_)))
+      sender ! data
       Env.current.cached.setNewVersion("notify:" + userId, 0)
       api.resetNotify(userId)
     }
@@ -108,7 +110,7 @@ private[userMessage] final class UserMessageActor(
 
         api.insert(mv + 1, lightUser(fromId).head, lightUser(toId).head, mes, time) map {
           writeResult => writeResult match {
-            case ok if ok.ok   => {
+            case ok if !ok.hasErrors   => {
               Env.current.cached.setNewVersion("chatVer:" + mesId, mv + 1)
               Env.current.cached.setNewVersion("userChatVer:",fromId, fromV + 1, toId, toV + 1)
               Env.current.cached.pushVersion(toId, toV + 1, mesId + "_" + (mv + 1) )
@@ -117,13 +119,13 @@ private[userMessage] final class UserMessageActor(
               val data = Json.obj("mv" -> (mv + 1), "f" -> lightUser(fromId).head, "t" -> lightUser(toId).head, "m" -> mes, "timem" -> time)
               bus.publish(SendTo(fromId, "mes", data.++(Json.obj("v" -> (fromV + 1)))), 'users)
               bus.publish(SendTo(toId, "mes", data.++(Json.obj("v" -> (toV + 1 )))), 'users)
-
               if(api.notifyMessage(toId, fromId,  mesId,  mv + 1, mes, time)){
                 val newNotify = Env.current.cached.getNotify(toId).await + 1
                 Env.current.cached.setNewVersion("notify:" + toId, newNotify)
                 bus.publish(SendTo(toId, "n", newNotify), 'users)
+                println("ok")
               } else {
-                //println("not update!")
+                println("not update!")
               }
 
             }
