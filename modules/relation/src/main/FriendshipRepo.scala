@@ -21,8 +21,8 @@ private[relation] object FriendshipRepo {
       obj str "u1" map { _ -> ~(obj boolean "r") }
     } map (_.filter(_._2 == relation).map(_._1).toSet)
 
-  def doFriend(u1: ID, u2: ID): Funit = save(u1, u2, Friend)
-  def unfriend(u1: ID, u2: ID): Funit = remove(u1, u2)
+  def doFriend(u1: ID, u2: ID): Funit = save(u1, u2, Friend) >> save(u2, u1, Friend)
+  def unfriend(u1: ID, u2: ID): Funit = remove(u1, u2) >> remove(u2, u1)
 
   private def save(u1: ID, u2: ID, relation: Relation): Funit = $save(
     makeId(u1, u2),

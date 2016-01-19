@@ -11,7 +11,29 @@ var MessageButton = function(ctrl){ return (
       </a>
       <div className="notifyWr">
         {!wsCtrl.data.notify.display?"":(
-        <div className="inNotify">
+        <div className="inNotify"
+          config={function(el, isInit){
+            if(!isInit){
+               $(el).on('mouseleave', function(){
+                   if(!$('.menu:hover').length > 0){
+                      $(el).unbind('mouseleave');
+                      $('.menu').unbind('mouseleave');
+                      wsCtrl.data.notify.display = false;
+                      rd.nav(function(){m.redraw()})
+                   }
+                });
+
+               $('.menu').on('mouseleave', function(){
+                  if(!$(el).filter(':hover').length > 0){
+                    $(el).unbind('mouseleave');
+                    $('.menu').unbind('mouseleave');
+                    wsCtrl.data.notify.display = false;
+                    rd.nav(function(){m.redraw()})
+                 }
+                })
+            }
+          }}
+        >
           <div className="corner-right"><div className="tr"></div></div>
           <div className="ui raised  attracted segment notify-content sha3 pad0">
             <div className="ui top attracted label tran">
@@ -25,26 +47,6 @@ var MessageButton = function(ctrl){ return (
                       <div className="notifyMes clearfix"
                            config={
                                     function(el, isInit, ctx){
-                                      if(!isInit){
-
-                                         $(el).on('mouseleave', function(){
-                                             if(!$('.menu:hover').length > 0){
-                                                $(el).unbind('mouseleave');
-                                                $('.menu').unbind('mouseleave');
-                                                wsCtrl.data.notify.display = false;
-                                                rd.nav(function(){m.redraw()})
-                                             }
-                                          });
-
-                                         $('.menu').on('mouseleave', function(){
-                                            if(!$(el).filter(':hover').length > 0){
-                                              $(el).unbind('mouseleave');
-                                              $('.menu').unbind('mouseleave');
-                                              wsCtrl.data.notify.display = false;
-                                              rd.nav(function(){m.redraw()})
-                                           }
-                                          })
-                                      }
 
                                       $(el).click(function(){
                                         local(['nav', 'right'], function(){

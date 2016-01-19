@@ -58,8 +58,20 @@ final class MakeFriendApi(
       case ((false, _), _)        => funit
       case ((_, Some(Request)), _) => funit
       case ((_, _), Some(Block))  => funit
-      case _ => MakeFriendRepo.request(u1, u2) >>
-        refresh(u1, u2)
+      case _ =>
+        makeFriend(u2, u1) flatMap {
+          case Some(Request) =>
+            unrequest(u2, u1)
+            FriendshipRepo.doFriend(u1, u2) >>-
+            cached.invalidateMakeFriend(u2, u1)
+            cached.invalidateMakeFriend(u1, u2)
+
+            cached.invalidateFriendship(u1, u2)
+            cached.invalidateFriendship(u2, u1)
+          case _ =>
+            MakeFriendRepo.request(u1, u2) >>
+            refresh(u1, u2)
+        }
     }
 
 

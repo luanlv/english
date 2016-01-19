@@ -62,6 +62,11 @@ object Relation extends LilaController {
       env.makeFriendApi.unrequest(me.id, userId).nevermind >> renderActions(userId, getBool("mini"))
   }
 
+  def unfriend(userId: String) = Auth { implicit ctx =>
+    me =>
+      env.friendshipApi.unfriend(me.id, userId).nevermind >> renderActions(userId, getBool("mini"))
+  }
+
   def block(userId: String) = Auth { implicit ctx =>
     me =>
       env.api.block(me.id, userId).nevermind >> renderActions(userId, getBool("mini"))

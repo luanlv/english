@@ -543,17 +543,27 @@ wsCtrl.getRooms = function(id){
   return wsCtrl.data.chatrooms[id]
 };
 
+$(document).on('click', '.route', function(e){
+  console.log("route")
+  e.preventDefault();
+  m.route($(this).attr('href'));
+  $('.mini').remove();
+});
+
 $('body').on('click', '.relation_actions a.relation', function() {
   var $a = $(this).addClass('processing');
-  $.ajax({
-    url: $a.attr('href'),
-    type: 'post',
-    success: function(html) {
-      $a.parent().html(html);
-    }
-  });
+  if (!$(this).hasClass("unfriend") || confirm('Are you sure you want to delete this?')) {
+    $.ajax({
+      url: $a.attr('href'),
+      type: 'post',
+      success: function (html) {
+        $a.parent().html(html);
+      }
+    });
+  }
   return false;
 });
+
 
 
 module.exports = wsCtrl;

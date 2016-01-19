@@ -165,11 +165,7 @@ api.time = function(timestamp){
 };
 
 
-$(document).on('click', '.route', function(e){
-  e.preventDefault();
-  m.route($(this).attr('href'));
-  $('.mini').remove();
-});
+
 
 module.exports = api;
 },{"../ws/_wsCtrl.js":16}],2:[function(require,module,exports){
@@ -887,7 +883,32 @@ var Friend = function(ctrl){ return (
       ]}, 
       {tag: "div", attrs: {className:"notifyWr"}, children: [
         (wsCtrl.data.makeFriend.display)?(
-            {tag: "div", attrs: {className:"inNotify"}, children: [
+            {tag: "div", attrs: {className:"inNotify", 
+                 config:
+                    function(el, isInit, ctx){
+                      if(!isInit){
+                      console.log("////");
+                         $(el).on('mouseleave', function(){
+                             if(!$('.menu:hover').length > 0){
+                                $(el).unbind('mouseleave');
+                                $('.menu').unbind('mouseleave');
+                                wsCtrl.data.makeFriend.display = false;
+                                rd.nav(function(){m.redraw()})
+                             }
+                          });
+
+                         $('.menu').on('mouseleave', function(){
+                            if(!$(el).filter(':hover').length > 0){
+                              $(el).unbind('mouseleave');
+                              $('.menu').unbind('mouseleave');
+                              wsCtrl.data.makeFriend.display = false;
+                              rd.nav(function(){m.redraw()})
+                           }
+                          })
+                      }
+                    }
+                 
+            }, children: [
               {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
               {tag: "div", attrs: {className:"ui raised  attracted segment notify-content sha3 pad0"}, children: [
                 {tag: "div", attrs: {className:"ui top attracted label tran"}, children: [
@@ -897,32 +918,7 @@ var Friend = function(ctrl){ return (
                     {tag: "div", attrs: {}, children: [
                       wsCtrl.data.makeFriend.listRequests.map(function(friend){
                       return (
-                          {tag: "div", attrs: {className:"notifyFriend clearfix", 
-                               config:
-                                    function(el, isInit, ctx){
-                                      if(!isInit){
-                                      console.log("////")
-                                         $(el).on('mouseleave', function(){
-                                             if(!$('.menu:hover').length > 0){
-                                                $(el).unbind('mouseleave');
-                                                $('.menu').unbind('mouseleave');
-                                                wsCtrl.data.makeFriend.display = false;
-                                                rd.nav(function(){m.redraw()})
-                                             }
-                                          });
-
-                                         $('.menu').on('mouseleave', function(){
-                                            if(!$(el).filter(':hover').length > 0){
-                                              $(el).unbind('mouseleave');
-                                              $('.menu').unbind('mouseleave');
-                                              wsCtrl.data.makeFriend.display = false;
-                                              rd.nav(function(){m.redraw()})
-                                           }
-                                          })
-                                      }
-                                    }
-                                 
-                          }, children: [
+                          {tag: "div", attrs: {className:"notifyFriend clearfix"}, children: [
                             {tag: "span", attrs: {class:"ui list fleft"}, children: [
                               {tag: "div", attrs: {class:"item"}, children: [
                                 {tag: "img", attrs: {class:"ui avatar image", src:(friend.avatar.length>0)?("/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata}}, 
@@ -1054,7 +1050,29 @@ var MessageButton = function(ctrl){ return (
       ]}, 
       {tag: "div", attrs: {className:"notifyWr"}, children: [
         !wsCtrl.data.notify.display?"":(
-        {tag: "div", attrs: {className:"inNotify"}, children: [
+        {tag: "div", attrs: {className:"inNotify", 
+          config:function(el, isInit){
+            if(!isInit){
+               $(el).on('mouseleave', function(){
+                   if(!$('.menu:hover').length > 0){
+                      $(el).unbind('mouseleave');
+                      $('.menu').unbind('mouseleave');
+                      wsCtrl.data.notify.display = false;
+                      rd.nav(function(){m.redraw()})
+                   }
+                });
+
+               $('.menu').on('mouseleave', function(){
+                  if(!$(el).filter(':hover').length > 0){
+                    $(el).unbind('mouseleave');
+                    $('.menu').unbind('mouseleave');
+                    wsCtrl.data.notify.display = false;
+                    rd.nav(function(){m.redraw()})
+                 }
+                })
+            }
+          }
+        }, children: [
           {tag: "div", attrs: {className:"corner-right"}, children: [{tag: "div", attrs: {className:"tr"}}]}, 
           {tag: "div", attrs: {className:"ui raised  attracted segment notify-content sha3 pad0"}, children: [
             {tag: "div", attrs: {className:"ui top attracted label tran"}, children: [
@@ -1068,26 +1086,6 @@ var MessageButton = function(ctrl){ return (
                       {tag: "div", attrs: {className:"notifyMes clearfix", 
                            config:
                                     function(el, isInit, ctx){
-                                      if(!isInit){
-
-                                         $(el).on('mouseleave', function(){
-                                             if(!$('.menu:hover').length > 0){
-                                                $(el).unbind('mouseleave');
-                                                $('.menu').unbind('mouseleave');
-                                                wsCtrl.data.notify.display = false;
-                                                rd.nav(function(){m.redraw()})
-                                             }
-                                          });
-
-                                         $('.menu').on('mouseleave', function(){
-                                            if(!$(el).filter(':hover').length > 0){
-                                              $(el).unbind('mouseleave');
-                                              $('.menu').unbind('mouseleave');
-                                              wsCtrl.data.notify.display = false;
-                                              rd.nav(function(){m.redraw()})
-                                           }
-                                          })
-                                      }
 
                                       $(el).click(function(){
                                         local(['nav', 'right'], function(){
@@ -1684,86 +1682,128 @@ var api = require('./api.msx');
 
 
 var User = {
-    controller: function() {
-        var ctrl = this;
-        ctrl.userId = m.route.param('user');
-        ctrl.user = m.prop({});
-        //ctrl.userId = m.route.param('user');
-        //m.request({method: "GET", url: "/api/getUser/" + ctrl.userId}).then(
-        //    function(user){
-        //        ctrl.user(user);
-        //    }
-        //);
-        ctrl.setup = function(){
-            rd.user();
-        };
+  controller: function() {
+    var ctrl = this;
+    ctrl.userId = m.route.param('user');
+    ctrl.user = m.prop({});
+    //ctrl.userId = m.route.param('user');
+    //m.request({method: "GET", url: "/api/getUser/" + ctrl.userId}).then(
+    //    function(user){
+    //        ctrl.user(user);
+    //    }
+    //);
+    ctrl.setup = function(){
+      rd.user();
+    };
 
-        ctrl.error = function(){
-            m.route('/');
-        }
-        ctrl.request = api.requestWithFeedback2({method: "GET", url: "/api/getUser/" + ctrl.userId}, ctrl.user, ctrl.setup, ctrl.error);
-        rd.user()
-    },
-    view: function(ctrl) {
-       return (!ctrl.request.ready()?(
-                {tag: "div", attrs: {className:"ui segment loading mh500"}
+    ctrl.error = function(){
+      m.route('/');
+    }
+    ctrl.request = api.requestWithFeedback2({method: "GET", url: "/api/getUser/" + ctrl.userId}, ctrl.user, ctrl.setup, ctrl.error);
+    rd.user()
+  },
+  view: function(ctrl) {
+    return (!ctrl.request.ready()?(
+            {tag: "div", attrs: {className:"ui segment loading mh500"}
 
-                }
-            ):(
-           {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
-                {tag: "div", attrs: {className:"head-user ui grid"}, children: [
-                    {tag: "div", attrs: {className:"four wide column", style:"  min-height: 250px"}, children: [
-                        {tag: "div", attrs: {className:"avatarWr"}, children: [
-                            {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
+            }
+        ):(
+            {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
+              {tag: "div", attrs: {className:"head-user ui grid"}, children: [
+                {tag: "div", attrs: {className:"four wide column", style:"  min-height: 250px"}, children: [
+                  {tag: "div", attrs: {className:"avatarWr"}, children: [
+                    {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
+                  ]}
+
+                ]}, 
+                {tag: "div", attrs: {className:"twelve wide column", style:"b min-height: 250px"}, children: [
+                  {tag: "h2", attrs: {className:"ui header"}, children: [
+                    ctrl.user().name
+                  ]}, 
+                  {tag: "div", attrs: {className:"edit"}, children: [
+                    (wsCtrl.userId !== ctrl.userId)?[
+
+                    ]:(
+                        {tag: "a", attrs: {className:"ui basic button", href:"/settings", config:m.route}, children: [
+                          {tag: "i", attrs: {className:"write square icon"}}, 
+                          "Edit Profile"
                         ]}
+                    )
 
-                    ]}, 
-                    {tag: "div", attrs: {className:"twelve wide column", style:"b min-height: 250px"}, children: [
-                        {tag: "h2", attrs: {className:"ui header"}, children: [
-                            ctrl.user().name
-                        ]}, 
-                        {tag: "div", attrs: {className:"edit"}, children: [
-                            (wsCtrl.userId !== ctrl.userId)?[
 
-                            ]:(
-                                {tag: "a", attrs: {className:"ui basic button", href:"/settings", config:m.route}, children: [
-                                    {tag: "i", attrs: {className:"write square icon"}}, 
-                                    "Edit Profile"
+                  ]}, 
+                  {tag: "div", attrs: {className:"ui divider"}}, 
+                  "...", 
+
+                  {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, 
+
+                  {tag: "div", attrs: {className:"ui divider"}}, 
+                  {tag: "div", attrs: {className:"infoWr"}, children: [
+                    {tag: "div", attrs: {className:"relation_actions"}, children: [
+                      (wsCtrl.userId === ctrl.user().username)?[
+                        {tag: "a", attrs: {className:"tiny ui  basic  relation button hint--bottom hover_text custom", tabindex:"0", href:"#"}, children: [
+                          {tag: "span", attrs: {className:"content"}, children: [ctrl.user().extra.nbFollower, " Folowers"]}
+                        ]},
+                        {tag: "a", attrs: {className:"tiny ui  basic  relation button hint--bottom hover_text custom", tabindex:"0", href:"#"}, children: [
+                          {tag: "span", attrs: {className:"content"}, children: [ctrl.user().extra.nbFriends, " Friends"]}
+                        ]}
+                      ]:[(!ctrl.user().extra.relation)?(
+                          {tag: "a", attrs: {className:"tiny ui  basic animated relation button hint--bottom hover_text custom", 
+                             tabindex:"0", href:"/rel/follow/" + ctrl.user().username + "?mini=1"}, children: [
+                            {tag: "span", attrs: {className:"visible content"}, children: [ctrl.user().extra.nbFollower, " Follower"]}, 
+                                            {tag: "span", attrs: {className:"hidden content"}, children: [
+                                              {tag: "i", attrs: {className:"thumbs outline up icon"}}, 
+                                              "Follow"
+                                            ]}
+                          ]}
+                      ):(
+                          {tag: "a", attrs: {className:"tiny ui blue basic animated relation button hint--bottom hover_text custom", tabindex:"0", href:"/rel/unfollow/" + ctrl.user().username + "?mini=1"}, children: [
+                            {tag: "span", attrs: {className:"visible content"}, children: [ctrl.user().extra.nbFollower, " Follower"]}, 
+                                                {tag: "span", attrs: {className:"hidden content"}, children: [
+                                                  {tag: "i", attrs: {className:"thumbs up icon"}}, 
+                                                  "Following"
+                                                ]}
+                          ]}
+                      ),
+                        (!ctrl.user().extra.friend)?(
+                            (!ctrl.user().extra.makeFriend)?(
+                                {tag: "a", attrs: {className:"tiny ui  basic animated relation button hint--bottom hover_text custom", tabindex:"0", href:"/rel/request/" + ctrl.user().username + "?mini=1"}, children: [
+                                  {tag: "span", attrs: {className:"visible content"}, children: [ctrl.user().extra.nbFriends, " Friends"]}, 
+                                                {tag: "span", attrs: {className:"hidden content"}, children: [
+                                                  {tag: "i", attrs: {className:"thumbs up icon"}}, 
+                                                  "Add Friend"
+                                                ]}
+                                ]}
+                            ):(
+                                {tag: "a", attrs: {className:"tiny ui olive basic animated relation button hint--bottom hover_text custom", tabindex:"0", href:"/rel/unrequest/" + ctrl.user().username + "?mini=1"}, children: [
+                                  {tag: "span", attrs: {className:"visible content"}, children: [ctrl.user().extra.nbFriends, " Friends"]}, 
+                                                {tag: "span", attrs: {className:"hidden content"}, children: [
+                                                  {tag: "i", attrs: {className:"thumbs up icon"}}, 
+                                                  "Cancel Request"
+                                                ]}
                                 ]}
                             )
 
-
-                        ]}, 
-                        {tag: "div", attrs: {className:"ui divider"}}, 
-                        "...", 
-
-                        {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, 
-
-                        {tag: "div", attrs: {className:"ui divider"}}, 
-                        {tag: "div", attrs: {className:"infoWr"}, children: [
-                            {tag: "div", attrs: {className:"relation_actions"}, children: [
-                                {tag: "a", attrs: {className:"tiny ui  basic animated relation button hint--bottom hover_text", tabindex:"0", href:"/rel/follow/luan1?mini=1"}, children: [
-                                    {tag: "span", attrs: {className:"visible content"}, children: ["100 Follower"]}, 
-                                        {tag: "span", attrs: {className:"hidden content"}, children: [
-                                          {tag: "i", attrs: {className:"thumbs outline up icon"}}, 
-                                          "Follow"
-                                        ]}
-                                ]}, 
-                                {tag: "a", attrs: {className:"tiny ui  basic animated relation button hint--bottom hover_text", tabindex:"0", href:"/rel/request/luan1?mini=1"}, children: [
-                                    {tag: "span", attrs: {className:"visible content"}, children: ["100 Friends"]}, 
-                                        {tag: "span", attrs: {className:"hidden content"}, children: [
-                                          {tag: "i", attrs: {className:"thumbs up icon"}}, 
-                                          "Add Friend"
-                                        ]}
-                                ]}
+                        ):(
+                            {tag: "a", attrs: {className:"tiny ui blue basic animated relation button hint--bottom hover_text custom unfriend", tabindex:"0", href:"/rel/unfriend/" + ctrl.user().username + "?mini=1"}, children: [
+                              {tag: "span", attrs: {className:"visible content unfriend"}, children: [ctrl.user().extra.nbFriends, " Friends"]}, 
+                              {tag: "span", attrs: {className:"hidden content unfriend"}, children: [
+                                {tag: "i", attrs: {className:"remove user icon"}}, 
+                                "Unfriend"
+                              ]}
                             ]}
-                        ]}
+                        )
+                      ]
+                      
+
                     ]}
+                  ]}
                 ]}
-           ]}
-            )
+              ]}
+            ]}
         )
-    }
+    )
+  }
 };
 
 
@@ -2464,17 +2504,27 @@ wsCtrl.getRooms = function(id){
   return wsCtrl.data.chatrooms[id]
 };
 
+$(document).on('click', '.route', function(e){
+  console.log("route")
+  e.preventDefault();
+  m.route($(this).attr('href'));
+  $('.mini').remove();
+});
+
 $('body').on('click', '.relation_actions a.relation', function() {
   var $a = $(this).addClass('processing');
-  $.ajax({
-    url: $a.attr('href'),
-    type: 'post',
-    success: function(html) {
-      $a.parent().html(html);
-    }
-  });
+  if (!$(this).hasClass("unfriend") || confirm('Are you sure you want to delete this?')) {
+    $.ajax({
+      url: $a.attr('href'),
+      type: 'post',
+      success: function (html) {
+        $a.parent().html(html);
+      }
+    });
+  }
   return false;
 });
+
 
 
 module.exports = wsCtrl;

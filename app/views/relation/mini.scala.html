@@ -8,7 +8,7 @@
       @*<i class="thumbs outline up icon"></i>*@
       @*Follow*@
       @*</a>*@
-      <a class="tiny ui  basic animated relation button hint--bottom hover_text" tabindex="0" href="@routes.Relation.follow(userId)?mini=1">
+      <a class="tiny ui  basic animated relation button hint--bottom hover_text custom" tabindex="0" href="@routes.Relation.follow(userId)?mini=1">
         <span class="visible content">@nbFollower Follower</span>
         <span class="hidden content">
           <i class="thumbs outline up icon"></i>
@@ -21,7 +21,7 @@
       @*<i class="thumbs up icon"></i>*@
       @*Following*@
       @*</a>*@
-      <a class="tiny ui blue basic animated relation button hint--bottom hover_text" tabindex="0" href="@routes.Relation.unfollow(userId)?mini=1">
+      <a class="tiny ui blue basic animated relation button hint--bottom hover_text custom" tabindex="0" href="@routes.Relation.unfollow(userId)?mini=1">
         <span class="visible content">@nbFollower Follower</span>
         <span class="hidden content">
           <i class="thumbs up icon"></i>
@@ -30,7 +30,7 @@
       </a>
     }
     case Some(false) => {
-      <a class="relation button hint--bottom" data-hint="@trans.unblock()" class="hover_text" href="@routes.Relation.unblock(userId)?mini=1">
+      <a class="relation button hint--bottom custom" data-hint="@trans.unblock()" class="hover_text" href="@routes.Relation.unblock(userId)?mini=1">
         <span data-icon="k">&nbsp; @trans.blocked()</span>
       </a>
     }
@@ -43,7 +43,7 @@
     case None if followable && !blocked => {
       @makeFriend match {
         case None if followable && !blocked => {
-          <a class="tiny ui  basic animated relation button hint--bottom hover_text" tabindex="0" href="@routes.Relation.request(userId)?mini=1">
+          <a class="tiny ui  basic animated relation button hint--bottom hover_text custom" tabindex="0" href="@routes.Relation.request(userId)?mini=1">
             <span class="visible content">@nbFriends Friends</span>
             <span class="hidden content">
               <i class="thumbs up icon"></i>
@@ -52,7 +52,7 @@
           </a>
         }
         case Some(true) => {
-          <a class="tiny ui olive basic animated relation button hint--bottom hover_text" tabindex="0" href="@routes.Relation.unrequest(userId)?mini=1">
+          <a class="tiny ui olive basic animated relation button hint--bottom hover_text custom" tabindex="0" href="@routes.Relation.unrequest(userId)?mini=1">
             <span class="visible content">@nbFriends Friends</span>
             <span class="hidden content">
               <i class="thumbs up icon"></i>
@@ -66,7 +66,9 @@
     }
 
     case Some(true) => {
-      <a class="tiny ui blue basic animated relation button hint--bottom hover_text" tabindex="0" href="@routes.Relation.unrequest(userId)?mini=1">
+      <a class="tiny ui blue basic animated relation button hint--bottom hover_text custom unfriend" tabindex="0"
+        href="@routes.Relation.unfriend(userId)?mini=1"
+      >
         <span class="visible content">@nbFriends Friends</span>
         <span class="hidden content">
           <i class="remove user icon"></i>
@@ -81,10 +83,10 @@
 
 
 } else {
-  <a class="tiny ui  basic  relation button hint--bottom hover_text" tabindex="0" href="#">
-    <span class="content">100 Folowers</span>
+  <a class="tiny ui  basic  relation button hint--bottom hover_text custom" tabindex="0" href="#">
+    <span class="content">@nbFollower Folowers</span>
   </a>
-  <a class="tiny ui  basic  relation button hint--bottom hover_text" tabindex="0" href="#">
+  <a class="tiny ui  basic  relation button hint--bottom hover_text custom" tabindex="0" href="#">
     <span class="content">@nbFriends Friends</span>
   </a>
 

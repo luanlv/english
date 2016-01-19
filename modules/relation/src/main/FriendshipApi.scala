@@ -56,7 +56,9 @@ final class FriendshipApi(
     else followable(u2) zip friendship(u1, u2) flatMap {
       case (false, _)      => funit
       case (_, Some(Friend)) => funit
-      case _ => FriendshipRepo.doFriend(u1, u2) >> FriendshipRepo.doFriend(u2, u1) >> MakeFriendRepo.unrequest(u2, u1) >> cached.invalidateMakeFriend(u2, u1) >>
+      case _ => FriendshipRepo.doFriend(u1, u2) >>
+        MakeFriendRepo.unrequest(u2, u1)
+        cached.invalidateMakeFriend(u2, u1)
         refresh(u1, u2)
     }
 
@@ -65,7 +67,7 @@ final class FriendshipApi(
   def unfriend(u1: ID, u2: ID): Funit =
     if (u1 == u2) funit
     else friendship(u1, u2) flatMap {
-      case Some(Friend) => FriendshipRepo.unfriend(u1, u2) >> refresh(u1, u2)
+      case Some(Friend) => FriendshipRepo.unfriend(u1, u2) >> FriendshipRepo.unfriend(u2, u1) >> refresh(u1, u2)
       case _            => funit
     }
 

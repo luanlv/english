@@ -51,7 +51,7 @@ object User extends LilaController {
         friendshipApi.nbFriends(user.id)  map {
         case ((((((blocked, followable), relation), makeFriend), friend), nbFollower), nbFriends) =>
           Ok(html.user.mini(user, blocked, followable, relation, makeFriend, friend, nbFollower, nbFriends))
-            .withHeaders(CACHE_CONTROL -> "max-age=5")
+            .withHeaders(CACHE_CONTROL -> "max-age=0")
       }
     }
   }

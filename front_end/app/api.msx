@@ -164,10 +164,6 @@ api.time = function(timestamp){
 };
 
 
-$(document).on('click', '.route', function(e){
-  e.preventDefault();
-  m.route($(this).attr('href'));
-  $('.mini').remove();
-});
+
 
 module.exports = api;

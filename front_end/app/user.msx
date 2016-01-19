@@ -3,86 +3,128 @@ var api = require('./api.msx');
 
 
 var User = {
-    controller: function() {
-        var ctrl = this;
-        ctrl.userId = m.route.param('user');
-        ctrl.user = m.prop({});
-        //ctrl.userId = m.route.param('user');
-        //m.request({method: "GET", url: "/api/getUser/" + ctrl.userId}).then(
-        //    function(user){
-        //        ctrl.user(user);
-        //    }
-        //);
-        ctrl.setup = function(){
-            rd.user();
-        };
+  controller: function() {
+    var ctrl = this;
+    ctrl.userId = m.route.param('user');
+    ctrl.user = m.prop({});
+    //ctrl.userId = m.route.param('user');
+    //m.request({method: "GET", url: "/api/getUser/" + ctrl.userId}).then(
+    //    function(user){
+    //        ctrl.user(user);
+    //    }
+    //);
+    ctrl.setup = function(){
+      rd.user();
+    };
 
-        ctrl.error = function(){
-            m.route('/');
-        }
-        ctrl.request = api.requestWithFeedback2({method: "GET", url: "/api/getUser/" + ctrl.userId}, ctrl.user, ctrl.setup, ctrl.error);
-        rd.user()
-    },
-    view: function(ctrl) {
-       return (!ctrl.request.ready()?(
-                <div className="ui segment loading mh500">
-
-                </div>
-            ):(
-           <div className="ui grid main-content sha2">
-                <div className="head-user ui grid">
-                    <div className="four wide column" style="  min-height: 250px">
-                        <div className="avatarWr">
-                            <img id="avatarImg" src={(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
-                        </div>
-
-                    </div>
-                    <div className="twelve wide column" style="b min-height: 250px">
-                        <h2 className="ui header">
-                            {ctrl.user().name}
-                        </h2>
-                        <div className="edit">
-                            {(wsCtrl.userId !== ctrl.userId)?[
-
-                            ]:(
-                                <a className="ui basic button" href={"/settings"} config={m.route}>
-                                    <i className="write square icon"></i>
-                                    Edit Profile
-                                </a>
-                            )}
-
-
-                        </div>
-                        <div className="ui divider"></div>
-                        ...
-
-                        <br/><br/><br/><br/><br/>
-
-                        <div className="ui divider"></div>
-                        <div className="infoWr">
-                            <div className="relation_actions">
-                                <a className="tiny ui  basic animated relation button hint--bottom hover_text" tabindex="0" href="/rel/follow/luan1?mini=1">
-                                    <span className="visible content">100 Follower</span>
-                                        <span className="hidden content">
-                                          <i className="thumbs outline up icon"></i>
-                                          Follow
-                                        </span>
-                                </a>
-                                <a className="tiny ui  basic animated relation button hint--bottom hover_text" tabindex="0" href="/rel/request/luan1?mini=1">
-                                    <span className="visible content">100 Friends</span>
-                                        <span className="hidden content">
-                                          <i className="thumbs up icon"></i>
-                                          Add Friend
-                                        </span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-           </div>
-            )
-        )
+    ctrl.error = function(){
+      m.route('/');
     }
+    ctrl.request = api.requestWithFeedback2({method: "GET", url: "/api/getUser/" + ctrl.userId}, ctrl.user, ctrl.setup, ctrl.error);
+    rd.user()
+  },
+  view: function(ctrl) {
+    return (!ctrl.request.ready()?(
+            <div className="ui segment loading mh500">
+
+            </div>
+        ):(
+            <div className="ui grid main-content sha2">
+              <div className="head-user ui grid">
+                <div className="four wide column" style="  min-height: 250px">
+                  <div className="avatarWr">
+                    <img id="avatarImg" src={(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
+                  </div>
+
+                </div>
+                <div className="twelve wide column" style="b min-height: 250px">
+                  <h2 className="ui header">
+                    {ctrl.user().name}
+                  </h2>
+                  <div className="edit">
+                    {(wsCtrl.userId !== ctrl.userId)?[
+
+                    ]:(
+                        <a className="ui basic button" href={"/settings"} config={m.route}>
+                          <i className="write square icon"></i>
+                          Edit Profile
+                        </a>
+                    )}
+
+
+                  </div>
+                  <div className="ui divider"></div>
+                  ...
+
+                  <br/><br/><br/><br/><br/>
+
+                  <div className="ui divider"></div>
+                  <div className="infoWr">
+                    <div className="relation_actions">
+                      {(wsCtrl.userId === ctrl.user().username)?[
+                        <a className="tiny ui  basic  relation button hint--bottom hover_text custom" tabindex="0" href="#">
+                          <span className="content">{ctrl.user().extra.nbFollower} Folowers</span>
+                        </a>,
+                        <a className="tiny ui  basic  relation button hint--bottom hover_text custom" tabindex="0" href="#">
+                          <span className="content">{ctrl.user().extra.nbFriends} Friends</span>
+                        </a>
+                      ]:[(!ctrl.user().extra.relation)?(
+                          <a className="tiny ui  basic animated relation button hint--bottom hover_text custom"
+                             tabindex="0" href={"/rel/follow/" + ctrl.user().username + "?mini=1"}>
+                            <span className="visible content">{ctrl.user().extra.nbFollower} Follower</span>
+                                            <span className="hidden content">
+                                              <i className="thumbs outline up icon"></i>
+                                              Follow
+                                            </span>
+                          </a>
+                      ):(
+                          <a className="tiny ui blue basic animated relation button hint--bottom hover_text custom" tabindex="0" href={"/rel/unfollow/" + ctrl.user().username + "?mini=1"}>
+                            <span className="visible content">{ctrl.user().extra.nbFollower} Follower</span>
+                                                <span className="hidden content">
+                                                  <i className="thumbs up icon"></i>
+                                                  Following
+                                                </span>
+                          </a>
+                      ),
+                        (!ctrl.user().extra.friend)?(
+                            (!ctrl.user().extra.makeFriend)?(
+                                <a className="tiny ui  basic animated relation button hint--bottom hover_text custom" tabindex="0" href={"/rel/request/" + ctrl.user().username + "?mini=1"}>
+                                  <span className="visible content">{ctrl.user().extra.nbFriends} Friends</span>
+                                                <span className="hidden content">
+                                                  <i className="thumbs up icon"></i>
+                                                  Add Friend
+                                                </span>
+                                </a>
+                            ):(
+                                <a className="tiny ui olive basic animated relation button hint--bottom hover_text custom" tabindex="0" href={"/rel/unrequest/" + ctrl.user().username + "?mini=1"}>
+                                  <span className="visible content">{ctrl.user().extra.nbFriends} Friends</span>
+                                                <span className="hidden content">
+                                                  <i className="thumbs up icon"></i>
+                                                  Cancel Request
+                                                </span>
+                                </a>
+                            )
+
+                        ):(
+                            <a className="tiny ui blue basic animated relation button hint--bottom hover_text custom unfriend" tabindex="0" href={"/rel/unfriend/" + ctrl.user().username + "?mini=1"}>
+                              <span className="visible content unfriend">{ctrl.user().extra.nbFriends} Friends</span>
+                              <span className="hidden content unfriend">
+                                <i className="remove user icon"></i>
+                                Unfriend
+                              </span>
+                            </a>
+                        )
+                      ]
+                      }
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        )
+    )
+  }
 };
 
 
