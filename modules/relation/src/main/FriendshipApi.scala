@@ -59,8 +59,7 @@ final class FriendshipApi(
       case (_, Some(Friend)) => funit
       case _ =>
         FriendshipRepo.doFriend(u1, u2) >>
-        MakeFriendRepo.unrequest(u2, u1)
-        cached.invalidateMakeFriend(u2, u1)
+        MakeFriendRepo.unrequest(u2, u1) >>
         refresh(u1, u2)
     }
 

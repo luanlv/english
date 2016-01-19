@@ -62,13 +62,8 @@ final class MakeFriendApi(
       case _ =>
         makeFriend(u2, u1) flatMap {
           case Some(Request) =>
-            unrequest(u2, u1)
-            FriendshipRepo.doFriend(u1, u2) >>-
-            cached.invalidateMakeFriend(u2, u1)
-            cached.invalidateMakeFriend(u1, u2)
+            Env.current.friendshipApi.doFriend(u1, u2) >> reloadNotify(u1)
 
-            cached.invalidateFriendship(u1, u2)
-            cached.invalidateFriendship(u2, u1)
           case _ =>
             MakeFriendRepo.request(u1, u2) >>
             refresh(u1, u2) >> reloadNotify(u2)
@@ -79,7 +74,9 @@ final class MakeFriendApi(
   def unrequest(u1: ID, u2: ID): Funit =
     if (u1 == u2) funit
     else makeFriend(u1, u2) flatMap {
-      case Some(Request) => MakeFriendRepo.unrequest(u1, u2) >> refresh(u1, u2) >> reloadNotify(u2)
+      case Some(Request) => {
+        MakeFriendRepo.unrequest(u1, u2) >> refresh(u1, u2) >> reloadNotify(u2)
+      }
       case _            => funit
     }
 
