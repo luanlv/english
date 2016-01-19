@@ -52,7 +52,6 @@ private[userMessage] final class UserMessageActor(
     }
 
     case InitNotify(userId) => {
-      println(userId)
       val data = api.getNotifyMessage(userId).map(_.map(Json.toJson(_)))
       sender ! data
       Env.current.cached.setNewVersion("notify:" + userId, 0)
@@ -123,9 +122,8 @@ private[userMessage] final class UserMessageActor(
                 val newNotify = Env.current.cached.getNotify(toId).await + 1
                 Env.current.cached.setNewVersion("notify:" + toId, newNotify)
                 bus.publish(SendTo(toId, "n", newNotify), 'users)
-                println("ok")
               } else {
-                println("not update!")
+//                println("not update!")
               }
 
             }

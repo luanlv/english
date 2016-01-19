@@ -301,12 +301,8 @@ ctrl.listen = function(d){
     }
   }
 
-  else if(d.t === "ul"){
-    d.d.map(function(user){
-      if(arrayObjectIndexOf(data.userOnline, user.id, "id") < 0) {
-        data.userOnline.push(user);
-      }
-    });
+  else if(d.t === "following_onlines"){
+    data.userOnline = d.d;
     rd.right(function(){m.redraw()})
   }
 

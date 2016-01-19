@@ -39,7 +39,7 @@ private[relation] final class RelationActor(
     // triggers following reloading for this user id
     case ReloadOnlineFriends(userId) => onlineFriends(userId) foreach {
       case users:List[LightUser] =>
-        bus.publish(SendTo(userId, "following_onlines", users.map(_.titleName)), 'users)
+        bus.publish(SendTo(userId, "following_onlines", users), 'users)
     }
 
     case NotifyMovement =>
@@ -58,8 +58,6 @@ private[relation] final class RelationActor(
 
   private def onlineFriends(userId: String): Fu[List[LightUser]] =
     friendshipApi friends  userId map { ids =>
-      println(ids)
-      println(onlines)
       ids.flatMap(onlines.get).toList
     }
 

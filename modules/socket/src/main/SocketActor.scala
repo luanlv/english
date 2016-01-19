@@ -339,7 +339,7 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
   }
 
   def sendOnlineFriend(uid: String, listUser: List[LightUser]) {
-    withMember(uid)(_ push makeMessage("ul", listUser))
+    withMember(uid)(_ push makeMessage("following_onlines", listUser))
   }
 
   def sendMissingMes(uid: String, f: Int, t: Int, data: List[JsValue]){

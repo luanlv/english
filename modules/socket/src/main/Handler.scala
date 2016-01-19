@@ -106,12 +106,11 @@ object Handler {
         }
       }
 
-      case ("get_onlines", _) => println("get online! - " + userId.get);userId foreach { u =>
+      case ("get_onlines", _) => userId foreach { u =>
         (hub.actor.relation ? GetOnlineUser(u)) foreach {
           case data: List[LightUser] =>
-            println("found")
               socket ! SendOnlineFriends(uid, data)
-          case _ => println("not found!")
+          case _ =>
         }
       }
 

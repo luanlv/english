@@ -929,7 +929,7 @@ var Friend = function(ctrl){ return (
                               ]}
                             ]}, 
                             {tag: "span", attrs: {class:"mini ui buttons fright"}, children: [
-                              {tag: "a", attrs: {href:("/rel/friend/" + friend.id), class:"ui positive button", 
+                              {tag: "a", attrs: {href:("/rel/request/" + friend.id), class:"ui positive button", 
                                 onclick:function(e){
                                   e.preventDefault();
                                     $.post($(this).attr('href'),
@@ -2283,12 +2283,8 @@ ctrl.listen = function(d){
     }
   }
 
-  else if(d.t === "ul"){
-    d.d.map(function(user){
-      if(arrayObjectIndexOf(data.userOnline, user.id, "id") < 0) {
-        data.userOnline.push(user);
-      }
-    });
+  else if(d.t === "following_onlines"){
+    data.userOnline = d.d;
     rd.right(function(){m.redraw()})
   }
 

@@ -57,7 +57,7 @@ var Friend = function(ctrl){ return (
                               </div>
                             </span>
                             <span class="mini ui buttons fright">
-                              <a href={("/rel/friend/" + friend.id)} class="ui positive button"
+                              <a href={("/rel/request/" + friend.id)} class="ui positive button"
                                 onclick={function(e){
                                   e.preventDefault();
                                     $.post($(this).attr('href'),
