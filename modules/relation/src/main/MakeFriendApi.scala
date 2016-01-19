@@ -1,6 +1,7 @@
 package lila.relation
 
 import akka.actor.ActorSelection
+import lila.relation.actorApi.ReloadNotify
 import scala.util.Success
 
 import lila.db.api._
@@ -70,16 +71,15 @@ final class MakeFriendApi(
             cached.invalidateFriendship(u2, u1)
           case _ =>
             MakeFriendRepo.request(u1, u2) >>
-            refresh(u1, u2)
+            refresh(u1, u2) >> reloadNotify(u2)
         }
     }
-
 
 
   def unrequest(u1: ID, u2: ID): Funit =
     if (u1 == u2) funit
     else makeFriend(u1, u2) flatMap {
-      case Some(Request) => MakeFriendRepo.unrequest(u1, u2) >> refresh(u1, u2)
+      case Some(Request) => MakeFriendRepo.unrequest(u1, u2) >> refresh(u1, u2) >> reloadNotify(u2)
       case _            => funit
     }
 
@@ -88,4 +88,7 @@ final class MakeFriendApi(
   private def refresh(u1: ID, u2: ID): Funit =
     cached.invalidateMakeFriend(u1, u2) >>-
       List(u1, u2).foreach(actor ! ReloadOnlineFriends(_))
+
+  private def reloadNotify(userId: ID):Funit =
+    fuccess(actor ! ReloadNotify(userId))
 }

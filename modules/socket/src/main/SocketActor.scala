@@ -60,7 +60,7 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case SendName(uid, id, name)   => sendName(uid, id,  name)
 
-    case OnlineFriends(uid, listUser) => sendOnlineFriend(uid, listUser)
+    case SendOnlineFriends(uid, listUser) => sendOnlineFriend(uid, listUser)
 
     case SendMissingMes(uid, f, t, data) => sendMissingMes(uid, f, t, data)
 

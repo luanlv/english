@@ -206,9 +206,11 @@ package relation {
 case class ReloadOnlineFriends(userId: String)
 case class GetOnlineFriends(userId: String)
 case class OnlineFriends(users: List[LightUser])
+  
 case class Block(u1: String, u2: String)
 case class UnBlock(u1: String, u2: String)
 case class GetFriendRequest(userId: String)
+case class GetOnlineUser(userId: String)
 }
 
 
@@ -216,7 +218,7 @@ package userMessage {
   case class Msg(userId: String, o: JsObject)
   case class PingVersion(userId: String)
   case class NotifyMovementOnlineUser()
-  case class GetOnlineUser(userId: String)
+
   case class GetName(uid: String)
   case class InitChat(fromId: String, toId: String, cv: Int)
   case class MissingMes(userId: String, f: Int, t: Int)

@@ -262,7 +262,9 @@ ctrl.listen = function(d){
     wsCtrl.total = d.d.d;
 
   }
-
+  else if(d.t === "nbRequester"){
+    wsCtrl.data.makeFriend.n = d.d;
+  }
   else if(d.t === "mes"){
 
     if(mVersion >= (d.d.v-1)){

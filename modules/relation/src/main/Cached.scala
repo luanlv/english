@@ -54,7 +54,6 @@ private[relation] final class Cached {
     }).sequenceFu.void >> makeFriend.remove(u1, u2)
 
   private[relation] def invalidateFriendship(u1: ID, u2: ID): Funit = {
-
     (List(friends) flatMap { cache =>
       List(u1, u2) map cache.remove
     }).sequenceFu.void >> {

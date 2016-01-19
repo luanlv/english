@@ -41,6 +41,7 @@ POST  /rel/follow/:userId              controllers.Relation.follow(userId: Strin
 POST  /rel/request/:userId              controllers.Relation.request(userId: String)
 POST  /rel/unfollow/:userId            controllers.Relation.unfollow(userId: String)
 POST  /rel/unrequest/:userId            controllers.Relation.unrequest(userId: String)
+POST  /rel/reject/:userId            controllers.Relation.reject(userId: String)
 
 POST  /rel/friend/:userId              controllers.Relation.friend(userId: String)
 POST  /rel/unfriend/:userId            controllers.Relation.unfriend(userId: String)

@@ -46,11 +46,11 @@ final class Env(
   //lazy val messageRepo = new MessageRepo(repo = userMessage)
   //lazy val notifyRepo = new NotifyRepo(repo = notifyMessage)
 
-  scheduler.once(10 seconds) {
-    scheduler.message(1.02 second) {
-      actor -> lila.userMessage.actorApi.NotifyMovement
-    }
-  }
+//  scheduler.once(10 seconds) {
+//    scheduler.message(1.02 second) {
+//      actor -> lila.userMessage.actorApi.NotifyMovement
+//    }
+//  }
 
   private[userMessage] lazy val userMessageColl = db(collectionUserMessage)
   private[userMessage] lazy val notifyColl = db(collectionNotify)

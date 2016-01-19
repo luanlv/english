@@ -70,15 +70,15 @@ final class Env(
     friendshipApi = friendshipApi
   )), name = ActorName)
 
-//  {
-//    import scala.concurrent.duration._
-//
-//    scheduler.once(10 seconds) {
-//      scheduler.message(ActorNotifyFreq) {
-//        actor -> actorApi.NotifyMovement
-//      }
-//    }
-//  }
+  {
+    import scala.concurrent.duration._
+
+    scheduler.once(10 seconds) {
+      scheduler.message(ActorNotifyFreq) {
+        actor -> actorApi.NotifyMovement
+      }
+    }
+  }
 
   private[relation] lazy val relationColl = db(CollectionRelation)
   private[relation] lazy val makeFriendColl = db(CollectionMakeFriend)

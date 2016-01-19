@@ -79,7 +79,28 @@ var Friend = function(ctrl){ return (
                                 }}
                               >Cormfirm</a>
                               <div class="or"></div>
-                              <a class="ui  button">Reject</a>
+                              <a class="ui  button"
+                                 href={("/rel/reject/" + friend.id)}
+                                 onclick={function(e){
+                                  e.preventDefault();
+                                    $.post($(this).attr('href'),
+                                       function(data) {
+                                         //alert("Data Loaded: " + data);
+
+                                         wsCtrl.data.makeFriend.listRequests = wsCtrl.data.makeFriend.listRequests.filter(function (el) {
+                                            return el.id != friend.id;
+                                         });
+
+                                         rd.nav(function(){
+                                         if(wsCtrl.data.makeFriend.listRequests.length < 1 ){
+                                            wsCtrl.data.makeFriend.display = false;
+                                         }
+                                         m.redraw()
+                                         });
+                                       }
+                                    );
+                                }}
+                              >Reject</a>
                             </span>
                           </div>
                       )

@@ -2,7 +2,13 @@
 <div class="mini">
 
   <div class="ui header">
-    <img src="@{"/getimage/thumb/" + u.avatar}" >
+    @{
+      if(u.avatar.length > 0) {
+        Html(s"<img src=/getimage/thumb/${u.avatar} />")
+      } else {
+        <img src="/assets/avatar/2.jpg"/>
+      }
+    }
     <div class="content">
       <a class="route" href=@{"/@/" + u.username}>@u.name</a>
       <div class="sub header"><a class="route" href=@{"/@/" + u.username}>@@@{u.username}</a></div>

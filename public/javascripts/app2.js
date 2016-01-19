@@ -951,7 +951,28 @@ var Friend = function(ctrl){ return (
                                 }
                               }, children: ["Cormfirm"]}, 
                               {tag: "div", attrs: {class:"or"}}, 
-                              {tag: "a", attrs: {class:"ui  button"}, children: ["Reject"]}
+                              {tag: "a", attrs: {class:"ui  button", 
+                                 href:("/rel/reject/" + friend.id), 
+                                 onclick:function(e){
+                                  e.preventDefault();
+                                    $.post($(this).attr('href'),
+                                       function(data) {
+                                         //alert("Data Loaded: " + data);
+
+                                         wsCtrl.data.makeFriend.listRequests = wsCtrl.data.makeFriend.listRequests.filter(function (el) {
+                                            return el.id != friend.id;
+                                         });
+
+                                         rd.nav(function(){
+                                         if(wsCtrl.data.makeFriend.listRequests.length < 1 ){
+                                            wsCtrl.data.makeFriend.display = false;
+                                         }
+                                         m.redraw()
+                                         });
+                                       }
+                                    );
+                                }
+                              }, children: ["Reject"]}
                             ]}
                           ]}
                       )
@@ -2223,7 +2244,9 @@ ctrl.listen = function(d){
     wsCtrl.total = d.d.d;
 
   }
-
+  else if(d.t === "nbRequester"){
+    wsCtrl.data.makeFriend.n = d.d;
+  }
   else if(d.t === "mes"){
 
     if(mVersion >= (d.d.v-1)){

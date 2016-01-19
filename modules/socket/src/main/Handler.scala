@@ -4,6 +4,7 @@ import akka.actor.ActorRef
 import akka.pattern.{ ask, pipe }
 import lila.common.LightUser
 import lila.hub.actorApi.userMessage._
+import lila.hub.actorApi.relation._
 import lila.hub.actorApi.chatRoom._
 import play.api.libs.iteratee.{ Iteratee, Enumerator }
 import play.api.libs.json._
@@ -105,10 +106,12 @@ object Handler {
         }
       }
 
-      case ("get_onlines", _) => userId foreach { u =>
-        (hub.actor.userMessage ? GetOnlineUser(u)) foreach {
-          case data: List[LightUser] => socket ! OnlineFriends(uid, data)
-          case _ =>
+      case ("get_onlines", _) => println("get online! - " + userId.get);userId foreach { u =>
+        (hub.actor.relation ? GetOnlineUser(u)) foreach {
+          case data: List[LightUser] =>
+            println("found")
+              socket ! SendOnlineFriends(uid, data)
+          case _ => println("not found!")
         }
       }
 

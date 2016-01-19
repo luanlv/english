@@ -32,11 +32,13 @@ private[relation] final class RelationActor(
       sender ! makeFriendApi.requester(userId).map(setId => setId.map(id => lightUser(id).get))
     }
 
-    case GetOnlineFriends(userId) => onlineFriends(userId) pipeTo sender
+    case GetOnlineUser(userId) => sender ! onlineFriends(userId).await
+
+    case ReloadNotify(userId) => reloadNotify(userId)
 
     // triggers following reloading for this user id
     case ReloadOnlineFriends(userId) => onlineFriends(userId) foreach {
-      case OnlineFriends(users) =>
+      case users:List[LightUser] =>
         bus.publish(SendTo(userId, "following_onlines", users.map(_.titleName)), 'users)
     }
 
@@ -54,18 +56,25 @@ private[relation] final class RelationActor(
 
   private def onlineIds: Set[ID] = onlines.keySet
 
-  private def onlineFriends(userId: String): Fu[OnlineFriends] =
-    api following userId map { ids =>
-      OnlineFriends(ids.flatMap(onlines.get).toList)
+  private def onlineFriends(userId: String): Fu[List[LightUser]] =
+    friendshipApi friends  userId map { ids =>
+      println(ids)
+      println(onlines)
+      ids.flatMap(onlines.get).toList
     }
 
   private def notifyFollowers(users: List[LightUser], message: String) {
     users foreach { user =>
-      api followers user.id map (_ filter onlines.contains) foreach { ids =>
-        if (ids.nonEmpty) bus.publish(SendTos(ids.toSet, message, user.titleName), 'users)
+      friendshipApi friends  user.id map (_ filter onlines.contains) foreach { ids =>
+        if (ids.nonEmpty) bus.publish(SendTos(ids.toSet, message, user), 'users)
       }
     }
   }
 
+  private def reloadNotify(userId: String) = {
+      makeFriendApi nbRequester  userId map {
+        nbRequester => bus.publish(SendTo(userId, "nbRequester", nbRequester), 'users)
+      }
+  }
 
 }
