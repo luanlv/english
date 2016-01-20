@@ -132,14 +132,14 @@ var Home = {
                         <div className="ui home-post-Wr">
                           <div className="ui postContainer postDemo">
 
-                            <div class="ui list">
-                              <div class="item">
-                                  <a class="fl avatar ulpt" href={"/@/" + post.user.id}>
-                                    <img class="image" src={(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)} />
+                            <div className="ui list">
+                              <div className="item">
+                                  <a className="fl avatar ulpt" href={"/@/" + post.user.id}>
+                                    <img className="image" src={(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)} />
                                   </a>
-                                  <div class="content">
-                                    <span class="header"><a class="name ulpt" href={"/@/" + post.user.id}>{post.user.name}</a></span>
-                                    <div class="description">{api.time(post.published)}</div>
+                                  <div className="content">
+                                    <span className="header"><a className="name ulpt" href={"/@/" + post.user.id}>{post.user.name}</a></span>
+                                    <div className="description">{api.time(post.published)}</div>
                                   </div>
                              </div>
 
@@ -151,20 +151,20 @@ var Home = {
 
                             <div className="ui horizontal list extra-post">
                               <div className="item">
-                                <a class="mini ui  basic button">
-                                  <i class="heart icon"></i>
+                                <a className="mini ui  basic button">
+                                  <i className="heart icon"></i>
                                   0
                                 </a>
                               </div>
                               <div className="item">
-                                <a class="mini ui basic button">
-                                  <i class="comment icon"></i>
+                                <a className="mini ui basic button">
+                                  <i className="comment icon"></i>
                                   0
                                 </a>
                               </div>
                               <div className="item">
-                                <a class="mini ui basic button">
-                                  <i class="share icon"></i>
+                                <a className="mini ui basic button">
+                                  <i className="share icon"></i>
                                   0
                                 </a>
                               </div>

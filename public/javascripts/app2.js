@@ -886,14 +886,14 @@ var Home = {
                         {tag: "div", attrs: {className:"ui home-post-Wr"}, children: [
                           {tag: "div", attrs: {className:"ui postContainer postDemo"}, children: [
 
-                            {tag: "div", attrs: {class:"ui list"}, children: [
-                              {tag: "div", attrs: {class:"item"}, children: [
-                                  {tag: "a", attrs: {class:"fl avatar ulpt", href:"/@/" + post.user.id}, children: [
-                                    {tag: "img", attrs: {class:"image", src:(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)}}
+                            {tag: "div", attrs: {className:"ui list"}, children: [
+                              {tag: "div", attrs: {className:"item"}, children: [
+                                  {tag: "a", attrs: {className:"fl avatar ulpt", href:"/@/" + post.user.id}, children: [
+                                    {tag: "img", attrs: {className:"image", src:(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)}}
                                   ]}, 
-                                  {tag: "div", attrs: {class:"content"}, children: [
-                                    {tag: "span", attrs: {class:"header"}, children: [{tag: "a", attrs: {class:"name ulpt", href:"/@/" + post.user.id}, children: [post.user.name]}]}, 
-                                    {tag: "div", attrs: {class:"description"}, children: [api.time(post.published)]}
+                                  {tag: "div", attrs: {className:"content"}, children: [
+                                    {tag: "span", attrs: {className:"header"}, children: [{tag: "a", attrs: {className:"name ulpt", href:"/@/" + post.user.id}, children: [post.user.name]}]}, 
+                                    {tag: "div", attrs: {className:"description"}, children: [api.time(post.published)]}
                                   ]}
                              ]}
 
@@ -905,20 +905,20 @@ var Home = {
 
                             {tag: "div", attrs: {className:"ui horizontal list extra-post"}, children: [
                               {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "a", attrs: {class:"mini ui  basic button"}, children: [
-                                  {tag: "i", attrs: {class:"heart icon"}}, 
+                                {tag: "a", attrs: {className:"mini ui  basic button"}, children: [
+                                  {tag: "i", attrs: {className:"heart icon"}}, 
                                   "0"
                                 ]}
                               ]}, 
                               {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "a", attrs: {class:"mini ui basic button"}, children: [
-                                  {tag: "i", attrs: {class:"comment icon"}}, 
+                                {tag: "a", attrs: {className:"mini ui basic button"}, children: [
+                                  {tag: "i", attrs: {className:"comment icon"}}, 
                                   "0"
                                 ]}
                               ]}, 
                               {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "a", attrs: {class:"mini ui basic button"}, children: [
-                                  {tag: "i", attrs: {class:"share icon"}}, 
+                                {tag: "a", attrs: {className:"mini ui basic button"}, children: [
+                                  {tag: "i", attrs: {className:"share icon"}}, 
                                   "0"
                                 ]}
                               ]}
@@ -1009,17 +1009,17 @@ var Friend = function(ctrl){ return (
                       wsCtrl.data.makeFriend.listRequests.map(function(friend){
                       return (
                           {tag: "div", attrs: {className:"notifyFriend clearfix"}, children: [
-                            {tag: "span", attrs: {class:"ui list fleft"}, children: [
-                              {tag: "div", attrs: {class:"item"}, children: [
-                                {tag: "img", attrs: {class:"ui avatar image", src:(friend.avatar.length>0)?("/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata}}, 
-                                  {tag: "div", attrs: {class:"content"}, children: [
-                                    {tag: "a", attrs: {class:"header", href:"/@/" + friend.id, config:m.route}, children: [friend.name]}, 
-                                    {tag: "div", attrs: {class:"description"}, children: ["wanting to make friend with you"]}
+                            {tag: "span", attrs: {className:"ui list fleft"}, children: [
+                              {tag: "div", attrs: {className:"item"}, children: [
+                                {tag: "img", attrs: {className:"ui avatar image", src:(friend.avatar.length>0)?("/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata}}, 
+                                  {tag: "div", attrs: {className:"content"}, children: [
+                                    {tag: "a", attrs: {className:"header", href:"/@/" + friend.id, config:m.route}, children: [friend.name]}, 
+                                    {tag: "div", attrs: {className:"description"}, children: ["wanting to make friend with you"]}
                                   ]}
                               ]}
                             ]}, 
-                            {tag: "span", attrs: {class:"mini ui buttons fright"}, children: [
-                              {tag: "a", attrs: {href:("/rel/request/" + friend.id), class:"ui positive button", 
+                            {tag: "span", attrs: {className:"mini ui buttons fright"}, children: [
+                              {tag: "a", attrs: {href:("/rel/request/" + friend.id), className:"ui positive button", 
                                 onclick:function(e){
                                   e.preventDefault();
                                     $.post($(this).attr('href'),
@@ -1040,8 +1040,8 @@ var Friend = function(ctrl){ return (
                                     );
                                 }
                               }, children: ["Cormfirm"]}, 
-                              {tag: "div", attrs: {class:"or"}}, 
-                              {tag: "a", attrs: {class:"ui  button", 
+                              {tag: "div", attrs: {className:"or"}}, 
+                              {tag: "a", attrs: {className:"ui  button", 
                                  href:("/rel/reject/" + friend.id), 
                                  onclick:function(e){
                                   e.preventDefault();

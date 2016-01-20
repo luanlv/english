@@ -47,17 +47,17 @@ var Friend = function(ctrl){ return (
                       {wsCtrl.data.makeFriend.listRequests.map(function(friend){
                       return (
                           <div className="notifyFriend clearfix">
-                            <span class="ui list fleft">
-                              <div class="item">
-                                <img class="ui avatar image" src={(friend.avatar.length>0)?("/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata} />
-                                  <div class="content">
-                                    <a class="header" href={"/@/" + friend.id} config={m.route}>{friend.name}</a>
-                                    <div class="description">wanting to make friend with you</div>
+                            <span className="ui list fleft">
+                              <div className="item">
+                                <img className="ui avatar image" src={(friend.avatar.length>0)?("/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata} />
+                                  <div className="content">
+                                    <a className="header" href={"/@/" + friend.id} config={m.route}>{friend.name}</a>
+                                    <div className="description">wanting to make friend with you</div>
                                   </div>
                               </div>
                             </span>
-                            <span class="mini ui buttons fright">
-                              <a href={("/rel/request/" + friend.id)} class="ui positive button"
+                            <span className="mini ui buttons fright">
+                              <a href={("/rel/request/" + friend.id)} className="ui positive button"
                                 onclick={function(e){
                                   e.preventDefault();
                                     $.post($(this).attr('href'),
@@ -78,8 +78,8 @@ var Friend = function(ctrl){ return (
                                     );
                                 }}
                               >Cormfirm</a>
-                              <div class="or"></div>
-                              <a class="ui  button"
+                              <div className="or"></div>
+                              <a className="ui  button"
                                  href={("/rel/reject/" + friend.id)}
                                  onclick={function(e){
                                   e.preventDefault();
