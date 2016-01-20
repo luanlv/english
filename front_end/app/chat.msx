@@ -74,16 +74,31 @@ var Chat = {
             <div className="ui top attached inverted header chat-title"
                  onclick={function(){rd.right(ctrl.toggleChatDock())}}
             >Online</div>
+              <div class="ui tiny middle aligned selection list">
               {wsCtrl.data.userOnline.map(function(user){
-                  return <div className="userOnline"
-                              config={function(el){
+                  return (
+                    <a class=" item ulptr ulpt" href={"/@/" + user.id}
+                       config={function(el, isInited){
                                   $(el).click(function(){
                                     if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
                                   });
+
+                                  if(!isInited){
+                                    $(el).click(function(){
+                                        return false;
+                                    })
+                                  }
                                 }
                               }
-                          >{user.name + ((wsCtrl.userId.length > 0 && wsCtrl.userId == user.id)?" (you)":"")}</div>
+                    >
+                      <img class="ui avatar image" src={(user.avatar.length>0)?("/getimage/small/" + user.avatar):wsCtrl.defaultAvata}/>
+                        <div class="content">
+                          <div class="header">{user.name}</div>
+                        </div>
+                    </a>
+                  )
                   })}
+              </div>
             <div className="ui search">
               <div className="ui left icon input">
                 <input className="search-friend" type="text" placeholder="Search"/>

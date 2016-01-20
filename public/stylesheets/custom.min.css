@@ -558,14 +558,19 @@ textarea {
   bottom: 0;
   right: 5px;
   width: 190px; }
+  #user-list .header {
+    font-family: 'Open Sans', sans-serif, Arial, Helvetica !important; }
+  #user-list .ulptr {
+    padding-top: 0px !important; }
 
 .title-user-list {
   background: lightblue;
   border: 1px solid yellowgreen; }
 
-.userOnline {
+.userOnline, .userOnline:hover {
   cursor: pointer;
-  padding: 7px; }
+  padding: 10px;
+  color: #555; }
 
 .close-chat {
   position: absolute;

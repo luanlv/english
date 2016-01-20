@@ -134,11 +134,11 @@ var Home = {
 
                             <div className="ui list">
                               <div className="item">
-                                  <a className="fl avatar ulpt" href={"/@/" + post.user.id}>
+                                  <a className="fl avatar route ulpt" href={"/@/" + post.user.id}>
                                     <img className="image" src={(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)} />
                                   </a>
                                   <div className="content">
-                                    <span className="header"><a className="name ulpt" href={"/@/" + post.user.id}>{post.user.name}</a></span>
+                                    <span className="header"><a className="name route ulpt" href={"/@/" + post.user.id}>{post.user.name}</a></span>
                                     <div className="description">{api.time(post.published)}</div>
                                   </div>
                              </div>
