@@ -245,16 +245,31 @@ var Chat = {
             {tag: "div", attrs: {className:"ui top attached inverted header chat-title", 
                  onclick:function(){rd.right(ctrl.toggleChatDock())}
             }, children: ["Online"]}, 
+              {tag: "div", attrs: {class:"ui tiny middle aligned selection list"}, children: [
               wsCtrl.data.userOnline.map(function(user){
-                  return {tag: "div", attrs: {className:"userOnline", 
-                              config:function(el){
+                  return (
+                    {tag: "a", attrs: {class:" item ulptr ulpt", href:"/@/" + user.id, 
+                       config:function(el, isInited){
                                   $(el).click(function(){
                                     if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
                                   });
+
+                                  if(!isInited){
+                                    $(el).click(function(){
+                                        return false;
+                                    })
+                                  }
                                 }
                               
-                          }, children: [user.name + ((wsCtrl.userId.length > 0 && wsCtrl.userId == user.id)?" (you)":"")]}
-                  }), 
+                    }, children: [
+                      {tag: "img", attrs: {class:"ui avatar image", src:(user.avatar.length>0)?("/getimage/small/" + user.avatar):wsCtrl.defaultAvata}}, 
+                        {tag: "div", attrs: {class:"content"}, children: [
+                          {tag: "div", attrs: {class:"header"}, children: [user.name]}
+                        ]}
+                    ]}
+                  )
+                  })
+              ]}, 
             {tag: "div", attrs: {className:"ui search"}, children: [
               {tag: "div", attrs: {className:"ui left icon input"}, children: [
                 {tag: "input", attrs: {className:"search-friend", type:"text", placeholder:"Search"}}, 
@@ -398,12 +413,12 @@ var ChatRoom = {
       clearInterval(intervalChatRooms);
     };
     ctrl.roomList = [
-      {id: "01", name: "Room 1", description: "Low intermediate level of English"},
-      {id: "02", name: "Room 2", description: "High intermediate level of English"},
-      {id: "03", name: "Room 3", description: "Advanced level of English"},
-      {id: "04", name: "Room 4", description: "Proficient in English"},
-      {id: "05", name: "Room 5", description: "Upper Intermediate"},
-      {id: "06", name: "Room 6", description: "Very Advanced"},
+      {id: "01", name: "Room 1", description: "???"},
+      //{id: "02", name: "Room 2", description: "High intermediate level of English"},
+      //{id: "03", name: "Room 3", description: "Advanced level of English"},
+      //{id: "04", name: "Room 4", description: "Proficient in English"},
+      //{id: "05", name: "Room 5", description: "Upper Intermediate"},
+      //{id: "06", name: "Room 6", description: "Very Advanced"},
     ];
 
     rd.chatroom();
@@ -888,11 +903,11 @@ var Home = {
 
                             {tag: "div", attrs: {className:"ui list"}, children: [
                               {tag: "div", attrs: {className:"item"}, children: [
-                                  {tag: "a", attrs: {className:"fl avatar ulpt", href:"/@/" + post.user.id}, children: [
+                                  {tag: "a", attrs: {className:"fl avatar route ulpt", href:"/@/" + post.user.id}, children: [
                                     {tag: "img", attrs: {className:"image", src:(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)}}
                                   ]}, 
                                   {tag: "div", attrs: {className:"content"}, children: [
-                                    {tag: "span", attrs: {className:"header"}, children: [{tag: "a", attrs: {className:"name ulpt", href:"/@/" + post.user.id}, children: [post.user.name]}]}, 
+                                    {tag: "span", attrs: {className:"header"}, children: [{tag: "a", attrs: {className:"name route ulpt", href:"/@/" + post.user.id}, children: [post.user.name]}]}, 
                                     {tag: "div", attrs: {className:"description"}, children: [api.time(post.published)]}
                                   ]}
                              ]}

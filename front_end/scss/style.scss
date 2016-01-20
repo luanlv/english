@@ -309,6 +309,13 @@ textarea {
   bottom: 0;
   right: 5px;
   width: 190px;
+  .header {
+    font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
+  }
+  .ulptr {
+    padding-top: 0px !important;
+    //padding-bottom: 10px !important;
+  }
 }
 
 .title-user-list{
@@ -316,9 +323,10 @@ textarea {
   border: 1px solid yellowgreen;
 }
 
-.userOnline{
+.userOnline, .userOnline:hover{
   cursor: pointer;
-  padding: 7px;
+  padding: 10px;
+  color: #555;
 }
 
 .close-chat{

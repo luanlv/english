@@ -19,12 +19,12 @@ var ChatRoom = {
       clearInterval(intervalChatRooms);
     };
     ctrl.roomList = [
-      {id: "01", name: "Room 1", description: "Low intermediate level of English"},
-      {id: "02", name: "Room 2", description: "High intermediate level of English"},
-      {id: "03", name: "Room 3", description: "Advanced level of English"},
-      {id: "04", name: "Room 4", description: "Proficient in English"},
-      {id: "05", name: "Room 5", description: "Upper Intermediate"},
-      {id: "06", name: "Room 6", description: "Very Advanced"},
+      {id: "01", name: "Room 1", description: "???"},
+      //{id: "02", name: "Room 2", description: "High intermediate level of English"},
+      //{id: "03", name: "Room 3", description: "Advanced level of English"},
+      //{id: "04", name: "Room 4", description: "Proficient in English"},
+      //{id: "05", name: "Room 5", description: "Upper Intermediate"},
+      //{id: "06", name: "Room 6", description: "Very Advanced"},
     ];
 
     rd.chatroom();
