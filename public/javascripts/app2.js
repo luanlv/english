@@ -244,7 +244,7 @@ var Chat = {
             {tag: "div", attrs: {className:"ui segment pad0"}, children: [
             {tag: "div", attrs: {className:"ui top attached inverted header chat-title", 
                  onclick:function(){rd.right(ctrl.toggleChatDock())}
-            }, children: ["Chat"]}, 
+            }, children: ["Online"]}, 
               wsCtrl.data.userOnline.map(function(user){
                   return {tag: "div", attrs: {className:"userOnline", 
                               config:function(el){
@@ -265,7 +265,7 @@ var Chat = {
           ]}):({tag: "div", attrs: {id:"user-list"}, children: [
             {tag: "div", attrs: {className:"ui top attached inverted header chat-title", 
                  onclick:function(){rd.right(ctrl.toggleChatDock())}
-            }, children: ["Chat"]}
+            }, children: ["Online"]}
           ]})):"", 
           
 
@@ -568,10 +568,24 @@ var Dashboard = {
     redraw.dashboard++;
     if(!ctrl.request.ready()) {
       return (
-          {tag: "div", attrs: {className:"ui grid main-content "}, children: ["LOADING !!! (delay 1s)"]}
+          {tag: "div", attrs: {className:"ui grid main-content "}, children: [
+            {tag: "div", attrs: {className:"sixteen wide column"}, children: [
+              {tag: "div", attrs: {className:"ui segment loading mh300 noBor noSha"}, children: [
+                "Loading"
+              ]}
+            ]}
+          ]}
       )
     } else {
-      return {tag: "div", attrs: {className:"ui grid main-content"}, children: [ctrl.request.data().data]}
+      return ({tag: "div", attrs: {className:"ui center aligned grid main-content"}, children: [
+        {tag: "div", attrs: {className:"ui segment mh300 noBor noSha"}, children: [
+          {tag: "div", attrs: {className:"sixteen wide column"}, children: [
+            {tag: "div", attrs: {className:"building"}, children: [
+              "this page is under construction!"
+            ]}
+          ]}
+        ]}
+      ]})
     }
   }
 };
@@ -740,16 +754,6 @@ module.exports = Footer;
 },{"../ws/_wsCtrl.js":16,"./api.msx":1}],7:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
-var div = [{id: "div 1", v: 1 ,
-  title: "How to Learn English Faster",
-  content: "We’ve all heard a thousand times that the only way to really learn English is to be totally immersed in the language, completely surrounded by it everywhere you go. But we wanted to go deeper than that and find quick and easy ways to start getting immersed. So our research team put together 10 steps that you can follow, in this order, to make learning English faster and a whole lot more fun. There are tons of podcasts about all topics imaginable these days: entertainment, politics, news. A good way to find one is to look for a podcast from a TV channel you usually watch in your cable TV. Look for one that interests you and listen to it in your car while driving. You’ll train your ear that way! Most of them are hilarious! It will be so worth it. Try looking at the comments to pick up some words and sentences you aren’t familiar with, but be careful there is all kinds of bizarre stuff in YouTube comments. When you are alone at home, or of course in the shower, start talking! Sing a song in English the way it sounds to you, talk about the weather or any other topic. Do this frequently and your pronunciation will drastically improve – guaranteed!"
-},{id: "div 2", v: 5,
-  title: "Learn English quickly",
-  content: "So many of our students want to learn English fast. Some students are so busy that they only have a few minutes a day to study English. While other students need to improve their English skills in just a few weeks before an important deadline. To the first we say, even if you have only 5 minutes a day, you can still make progress in English. It's far better to spend a little time each day to learn a few new words than to give up entirely. Over time these study moments will accumulate. To the second we say, immerse yourself in the language as intensively as possible. If you can, go abroad. Living in an English-speaking environment will make you progress faster than any other method. Even at home, read and listen to English all day, study with a live teacher, and make English-speaking friends online. Create an English-speaking environment around yourself and you'll learn English much faster than by just attending a course."
-} ,{id:"div 3", v: 10,
-  title: "Meet a Community Member",
-  content: "Meet Colie, a wikiHow Admin, New Article Booster, Welcomer, and Featured Author from the US who has been part of the community for over five years. She loves to write articles (she has started 55 of them herself!), fix grammar mistakes, organize and revamp articles, and help other wikiHowians. Her favorite wikiHow article is How to Make Chocolate Toffee Squares. She says that she’s learned communication and coaching skills through wikiHow, and enjoys the instant gratification of improving something and being productive online. She also loves how friendly, helpful, and personal everyone in the wikiHow community is."
-}];
 
 var Home = {
   controller: function() {
@@ -757,12 +761,15 @@ var Home = {
     $.cookie('url', m.route(), {path: "/"})
     api.rd("Controller: Home");
     var ctrl = this;
-    ctrl.divs = m.prop([]);
-    ctrl.divs(div);
     ctrl.add = function(input){
       ctrl.inputPost('')
     };
     ctrl.inputPost = m.prop('');
+
+    if(!wsCtrl.data.post.init){
+      wsCtrl.send(wsCtrl.sendData("initPost", {}));
+    }
+
     rd.home(function(){m.redraw()});
   },
   view: function(ctrl) {
@@ -773,8 +780,12 @@ var Home = {
           {tag: "div", attrs: {className:"three wide column"}, children: [
               {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
                   {tag: "div", attrs: {className:"trending"}, children: [
-                      {tag: "h3", attrs: {}, children: ["Trending Now"]}, 
+                      {tag: "h3", attrs: {}, children: ["Trending Now (fake)"]}, 
                       {tag: "ul", attrs: {}, children: [
+                          {tag: "li", attrs: {}, children: ["What should I know about food in Cancun, Mexico?"]}, 
+                          {tag: "li", attrs: {}, children: ["What films were so bad, they destroyed the actors' careers?"]}, 
+                          {tag: "li", attrs: {}, children: ["Why do Americans think eggs are a dairy product?"]}, 
+                          {tag: "li", attrs: {}, children: ["I have good grades but I feel like I do not know anything properly. How should I deal with this situation?"]}, 
                           {tag: "li", attrs: {}, children: ["2016 Academy Award Nominations"]}, 
                           {tag: "li", attrs: {}, children: ["Death of Alan Rickman"]}, 
                           {tag: "li", attrs: {}, children: ["Death of David Bowie"]}, 
@@ -830,10 +841,20 @@ var Home = {
                   {tag: "button", attrs: {className:"ui mini primary button", 
                        onclick:function(e){
                         m.redraw.strategy("none");
-                        ctrl.add(ctrl.inputPost())
-                        //$('.new-post').attr('disabled', true);
                         $('.postWr').addClass('loading');
-
+                        $.ajax({
+                            type: "POST",
+                            url: "/post",
+                            data: JSON.stringify({content: ctrl.inputPost()}),
+                            contentType: "application/json",
+                            dataType: "text",
+                            success: function(data){
+                               ctrl.inputPost("");
+                               $('.new-post').css('height', 41);
+                               $('.postWr').removeClass('loading');
+                               rd.home(function(){m.redraw()})
+                            }
+                         });
                        }
                   }, children: ["Post"]}, 
                   {tag: "span", attrs: {className:"clear"}}
@@ -841,27 +862,82 @@ var Home = {
               ]}
             ]}, 
 
-              ctrl.divs().map(function(item){
-                  return (
-                      {tag: "div", attrs: {className:"ui home-post-Wr"}, children: [
-                          {tag: "div", attrs: {className:"ui postContainer postDemo", 
-                                  id:item.id, 
-                                  v:item.v
-                          }, children: [
-                          {tag: "h2", attrs: {}, children: [item.title]}, 
-                          {tag: "p", attrs: {}, children: [
-                            item.content
+              !wsCtrl.data.post.init?(
+                  {tag: "div", attrs: {className:"ui segment loading mh300 noBor noSha"}
+
+                  }
+              ):(
+                  wsCtrl.data.post.list.map(function(post){
+                    return (
+                        {tag: "div", attrs: {className:"ui home-post-Wr"}, children: [
+                          {tag: "div", attrs: {className:"ui postContainer postDemo"}, children: [
+
+                            {tag: "div", attrs: {class:"ui list"}, children: [
+                              {tag: "div", attrs: {class:"item"}, children: [
+                                  {tag: "a", attrs: {class:"fl avatar ulpt", href:"/@/" + post.user.id}, children: [
+                                    {tag: "img", attrs: {class:"image", src:(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)}}
+                                  ]}, 
+                                  {tag: "div", attrs: {class:"content"}, children: [
+                                    {tag: "span", attrs: {class:"header"}, children: [{tag: "a", attrs: {class:"name ulpt", href:"/@/" + post.user.id}, children: [post.user.name]}]}, 
+                                    {tag: "div", attrs: {class:"description"}, children: [api.time(post.published)]}
+                                  ]}
+                             ]}
+
+                            ]}, 
+
+                            {tag: "p", attrs: {className:"content-post"}, children: [
+                              post.content
+                            ]}, 
+
+                            {tag: "div", attrs: {className:"ui horizontal list extra-post"}, children: [
+                              {tag: "div", attrs: {className:"item"}, children: [
+                                {tag: "a", attrs: {class:"mini ui  basic button"}, children: [
+                                  {tag: "i", attrs: {class:"heart icon"}}, 
+                                  "0"
+                                ]}
+                              ]}, 
+                              {tag: "div", attrs: {className:"item"}, children: [
+                                {tag: "a", attrs: {class:"mini ui basic button"}, children: [
+                                  {tag: "i", attrs: {class:"comment icon"}}, 
+                                  "0"
+                                ]}
+                              ]}, 
+                              {tag: "div", attrs: {className:"item"}, children: [
+                                {tag: "a", attrs: {class:"mini ui basic button"}, children: [
+                                  {tag: "i", attrs: {class:"share icon"}}, 
+                                  "0"
+                                ]}
+                              ]}
+                            ]}
+
+
                           ]}
-                          ]}
-                      ]}
-                  )
+                        ]}
+                    )
                   })
+              )
+
 
           ]}, 
           {tag: "div", attrs: {className:"four wide column"}, children: [
-              {tag: "div", attrs: {className:"ui  home-post-Wr mh300"}}, 
-              {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}}, 
-              {tag: "div", attrs: {className:"ui  home-post-Wr mh300"}}
+            {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
+              {tag: "div", attrs: {className:"trending"}, children: [
+                {tag: "h3", attrs: {}, children: ["HOT NETWORK QUESTIONS (fake)"]}, 
+                {tag: "ul", attrs: {}, children: [
+                  {tag: "li", attrs: {}, children: ["What is the most terrifying experience you have had while travelling?"]}, 
+                  {tag: "li", attrs: {}, children: ["Which actors have won Oscars without an Oscar-worthy performance?"]}, 
+                  {tag: "li", attrs: {}, children: ["Does vending machine black coffee contain sugar?"]}, 
+                  {tag: "li", attrs: {}, children: ["What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?"]}, 
+                  {tag: "li", attrs: {}, children: ["Which is the most astonishing piece of code you've ever seen in your life?"]}, 
+                  {tag: "li", attrs: {}, children: ["What do natives call San Francisco?"]}, 
+                  {tag: "li", attrs: {}, children: ["Why does \"The Force Awakens\" use an image language associated with national socialism for the First Order?"]}, 
+                  {tag: "li", attrs: {}, children: ["A Treasure Chest for your Post-apocalyptic Children"]}, 
+                  {tag: "li", attrs: {}, children: ["Phrase when you offer someone something but it's really them who are paying for it"]}, 
+                  {tag: "li", attrs: {}, children: ["Why do academic journals usually have continuous page numbering?"]}
+                ]}
+              ]}
+
+            ]}
           ]}
         ]}
     )
@@ -2016,6 +2092,11 @@ wsCtrl.storage = {
 
 wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
 wsCtrl.data = {
+  post: {
+    init: false,
+    list: [],
+    timepoint: Date.now(),
+  },
   chatrooms: {},
   chatroom: {},
   userOnline: [],
@@ -2170,10 +2251,6 @@ var waitForConnection = function (callback, interval) {
 //  send(pingData());
 //}, 1000);
 
-
-
-
-
 wsCtrl.getPosChat = function(user, mv){
   var cv = (mv == undefined)?0:mv;
   var read = (mv == undefined);
@@ -2247,6 +2324,21 @@ ctrl.listen = function(d){
   else if(d.t === "nbRequester"){
     wsCtrl.data.makeFriend.n = d.d;
   }
+
+  else if(d.t === "initPost"){
+    wsCtrl.data.post.list = d.d;
+    wsCtrl.data.post.init = true;
+    wsCtrl.data.post.timepoint = wsCtrl.data.post.list[wsCtrl.data.post.list.length - 1].published;
+    rd.home(function(){m.redraw()})
+  }
+  else if(d.t === "newPost"){
+    console.log("new post")
+    if(d.d.id !== undefined) {
+      wsCtrl.data.post.list.unshift(d.d);
+    }
+    rd.home(function(){m.redraw()})
+  }
+
   else if(d.t === "mes"){
 
     if(mVersion >= (d.d.v-1)){

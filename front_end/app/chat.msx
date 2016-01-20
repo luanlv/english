@@ -73,7 +73,7 @@ var Chat = {
             <div className="ui segment pad0">
             <div className="ui top attached inverted header chat-title"
                  onclick={function(){rd.right(ctrl.toggleChatDock())}}
-            >Chat</div>
+            >Online</div>
               {wsCtrl.data.userOnline.map(function(user){
                   return <div className="userOnline"
                               config={function(el){
@@ -94,7 +94,7 @@ var Chat = {
           </div>):(<div id="user-list">
             <div className="ui top attached inverted header chat-title"
                  onclick={function(){rd.right(ctrl.toggleChatDock())}}
-            >Chat</div>
+            >Online</div>
           </div>)):""
           }
 

@@ -66,6 +66,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case SendInitMes(uid, data) => sendInitMes(uid, data)
 
+    case SendInitPost(uid, posts) => sendInitPost(uid, posts)
+
     case SendInitNotify(uid, data) => sendInitNotify(uid, data)
 
     case InitChatRoom(uid, roomId, userId) => {
@@ -340,6 +342,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
   def sendOnlineFriend(uid: String, listUser: List[LightUser]) {
     withMember(uid)(_ push makeMessage("following_onlines", listUser))
+  }
+
+  def sendInitPost(uid: String, posts: JsValue) = {
+    withMember(uid)(_ push makeMessage("initPost", posts))
   }
 
   def sendMissingMes(uid: String, f: Int, t: Int, data: List[JsValue]){

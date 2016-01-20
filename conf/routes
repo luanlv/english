@@ -9,8 +9,10 @@ GET /json                  controllers.Application.json
 GET /settings              controllers.Application.index
 
 GET /@/:username               controllers.Application.user(username: String)
-
 GET /@/:username/mini          controllers.User.showMini(username: String)
+
+POST /post                         controllers.API.doPost
+GET  /post/:username               controllers.API.getPost(username: String)
 
 GET   /socket                          controllers.Main.websocket
 

@@ -581,6 +581,10 @@ textarea {
   box-shadow: none!important;
 }
 
+.noBor{
+  border: transparent !important;
+}
+
 .segWr {
   //@extend .sha2;
   background: #fff;
@@ -674,7 +678,7 @@ textarea {
 
 .home-post-Wr {
   border-bottom: 1px solid $border;
-  padding-bottom: 20px;
+  padding-bottom: 5px;
   margin-bottom: 10px;
 }
 
@@ -890,9 +894,11 @@ textarea {
   color: #666;
   h3 {
     @extend .bo-bottom;
+    font-size: 14px;
   }
   ul {
     li {
+      font-size: 13px;
       list-style: none;
       &:before {
         content: "• ";
@@ -964,7 +970,7 @@ textarea {
 
 .avatar {
   img{
-    border: 1px solid $blue;
+    //border: 1px solid $blue;
   }
 }
 
@@ -993,4 +999,46 @@ textarea {
       //color: #3b5998 !important;
     }
   }
+}
+
+.postContainer{
+  .content-post {
+    //border-top: 1px dashed #ddd;
+  }
+  .name{
+    color: #555;
+    font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
+  }
+
+  .description {
+    font-size: 13px;
+    color: #eee;
+  }
+
+  .content-post {
+    min-height: 30px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+
+  }
+
+  .extra-post {
+    //border-top: 1px solid #ddd;
+    padding-top: 5px !important;
+
+  }
+  .avatar{
+    margin-right: 5px;
+    img{
+      width: 30px;
+      height: 30px;
+    }
+  }
+
+}
+
+.building {
+  margin-top: 30px;
+  color: red;
+  font-size: 30px;
 }

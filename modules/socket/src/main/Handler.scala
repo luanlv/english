@@ -5,6 +5,7 @@ import akka.pattern.{ ask, pipe }
 import lila.common.LightUser
 import lila.hub.actorApi.userMessage._
 import lila.hub.actorApi.relation._
+import lila.hub.actorApi.activity._
 import lila.hub.actorApi.chatRoom._
 import play.api.libs.iteratee.{ Iteratee, Enumerator }
 import play.api.libs.json._
@@ -136,11 +137,22 @@ object Handler {
         }
       }
 
+
       case ("mr", o) => userId foreach { userId =>
         if(userId.length > 0){
           val toId = (o\"d"\"uid").as[String]
           val mv = (o\"d"\"mv").as[Int]
           hub.actor.userMessage ! MarkRead(userId, toId, mv)
+        }
+      }
+
+      case ("initPost", o) => userId foreach { id =>
+        if(id.length() > 0){
+          (hub.actor.activity ? InitPost(id)) foreach {
+            case posts: JsValue => {
+              socket ! SendInitPost(uid, posts)
+            }
+          }
         }
       }
 

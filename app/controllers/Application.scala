@@ -34,7 +34,7 @@ object Application extends LilaController{
 
   def json = Open { implicit ctx =>
       val fuJson = Future(Json.obj("data" -> "data recieved from sever!!!"))
-      val fuJsonDelay:Future[JsObject] =  Promise.timeout(fuJson, 1 second).flatMap(x => x)
+      val fuJsonDelay:Future[JsObject] =  Promise.timeout(fuJson, 0 second).flatMap(x => x)
     fuJsonDelay.map{
       data => Ok(data)
     }

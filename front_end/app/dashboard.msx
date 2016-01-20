@@ -22,10 +22,24 @@ var Dashboard = {
     redraw.dashboard++;
     if(!ctrl.request.ready()) {
       return (
-          <div className="ui grid main-content ">LOADING !!! (delay 1s)</div>
+          <div className="ui grid main-content ">
+            <div className="sixteen wide column">
+              <div className="ui segment loading mh300 noBor noSha">
+                Loading
+              </div>
+            </div>
+          </div>
       )
     } else {
-      return <div className="ui grid main-content">{ctrl.request.data().data}</div>
+      return (<div className="ui center aligned grid main-content">
+        <div className="ui segment mh300 noBor noSha">
+          <div className="sixteen wide column">
+            <div className="building">
+              this page is under construction!
+            </div>
+          </div>
+        </div>
+      </div>)
     }
   }
 };

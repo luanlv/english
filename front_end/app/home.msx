@@ -1,15 +1,5 @@
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
-var div = [{id: "div 1", v: 1 ,
-  title: "How to Learn English Faster",
-  content: "We’ve all heard a thousand times that the only way to really learn English is to be totally immersed in the language, completely surrounded by it everywhere you go. But we wanted to go deeper than that and find quick and easy ways to start getting immersed. So our research team put together 10 steps that you can follow, in this order, to make learning English faster and a whole lot more fun. There are tons of podcasts about all topics imaginable these days: entertainment, politics, news. A good way to find one is to look for a podcast from a TV channel you usually watch in your cable TV. Look for one that interests you and listen to it in your car while driving. You’ll train your ear that way! Most of them are hilarious! It will be so worth it. Try looking at the comments to pick up some words and sentences you aren’t familiar with, but be careful there is all kinds of bizarre stuff in YouTube comments. When you are alone at home, or of course in the shower, start talking! Sing a song in English the way it sounds to you, talk about the weather or any other topic. Do this frequently and your pronunciation will drastically improve – guaranteed!"
-},{id: "div 2", v: 5,
-  title: "Learn English quickly",
-  content: "So many of our students want to learn English fast. Some students are so busy that they only have a few minutes a day to study English. While other students need to improve their English skills in just a few weeks before an important deadline. To the first we say, even if you have only 5 minutes a day, you can still make progress in English. It's far better to spend a little time each day to learn a few new words than to give up entirely. Over time these study moments will accumulate. To the second we say, immerse yourself in the language as intensively as possible. If you can, go abroad. Living in an English-speaking environment will make you progress faster than any other method. Even at home, read and listen to English all day, study with a live teacher, and make English-speaking friends online. Create an English-speaking environment around yourself and you'll learn English much faster than by just attending a course."
-} ,{id:"div 3", v: 10,
-  title: "Meet a Community Member",
-  content: "Meet Colie, a wikiHow Admin, New Article Booster, Welcomer, and Featured Author from the US who has been part of the community for over five years. She loves to write articles (she has started 55 of them herself!), fix grammar mistakes, organize and revamp articles, and help other wikiHowians. Her favorite wikiHow article is How to Make Chocolate Toffee Squares. She says that she’s learned communication and coaching skills through wikiHow, and enjoys the instant gratification of improving something and being productive online. She also loves how friendly, helpful, and personal everyone in the wikiHow community is."
-}];
 
 var Home = {
   controller: function() {
@@ -17,12 +7,15 @@ var Home = {
     $.cookie('url', m.route(), {path: "/"})
     api.rd("Controller: Home");
     var ctrl = this;
-    ctrl.divs = m.prop([]);
-    ctrl.divs(div);
     ctrl.add = function(input){
       ctrl.inputPost('')
     };
     ctrl.inputPost = m.prop('');
+
+    if(!wsCtrl.data.post.init){
+      wsCtrl.send(wsCtrl.sendData("initPost", {}));
+    }
+
     rd.home(function(){m.redraw()});
   },
   view: function(ctrl) {
@@ -33,8 +26,12 @@ var Home = {
           <div className="three wide column">
               <div className="ui  home-post-Wr mh500">
                   <div className="trending">
-                      <h3>Trending Now</h3>
+                      <h3>Trending Now (fake)</h3>
                       <ul>
+                          <li>What should I know about food in Cancun, Mexico?</li>
+                          <li>What films were so bad, they destroyed the actors' careers?</li>
+                          <li>Why do Americans think eggs are a dairy product?</li>
+                          <li>I have good grades but I feel like I do not know anything properly. How should I deal with this situation?</li>
                           <li>2016 Academy Award Nominations</li>
                           <li>Death of Alan Rickman</li>
                           <li>Death of David Bowie</li>
@@ -90,10 +87,20 @@ var Home = {
                   <button className="ui mini primary button"
                        onclick={function(e){
                         m.redraw.strategy("none");
-                        ctrl.add(ctrl.inputPost())
-                        //$('.new-post').attr('disabled', true);
                         $('.postWr').addClass('loading');
-
+                        $.ajax({
+                            type: "POST",
+                            url: "/post",
+                            data: JSON.stringify({content: ctrl.inputPost()}),
+                            contentType: "application/json",
+                            dataType: "text",
+                            success: function(data){
+                               ctrl.inputPost("");
+                               $('.new-post').css('height', 41);
+                               $('.postWr').removeClass('loading');
+                               rd.home(function(){m.redraw()})
+                            }
+                         });
                        }}
                   >Post</button>
                   <span className="clear"></span>
@@ -101,27 +108,82 @@ var Home = {
               </div>
             </div>
 
-              {ctrl.divs().map(function(item){
-                  return (
-                      <div className="ui home-post-Wr">
-                          <div className="ui postContainer postDemo"
-                                  id={item.id}
-                                  v={item.v}
-                          >
-                          <h2>{item.title}</h2>
-                          <p>
-                            {item.content}
-                          </p>
+              {!wsCtrl.data.post.init?(
+                  <div className="ui segment loading mh300 noBor noSha">
+
+                  </div>
+              ):(
+                  wsCtrl.data.post.list.map(function(post){
+                    return (
+                        <div className="ui home-post-Wr">
+                          <div className="ui postContainer postDemo">
+
+                            <div class="ui list">
+                              <div class="item">
+                                  <a class="fl avatar ulpt" href={"/@/" + post.user.id}>
+                                    <img class="image" src={(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)} />
+                                  </a>
+                                  <div class="content">
+                                    <span class="header"><a class="name ulpt" href={"/@/" + post.user.id}>{post.user.name}</a></span>
+                                    <div class="description">{api.time(post.published)}</div>
+                                  </div>
+                             </div>
+
+                            </div>
+
+                            <p className="content-post">
+                              {post.content}
+                            </p>
+
+                            <div className="ui horizontal list extra-post">
+                              <div className="item">
+                                <a class="mini ui  basic button">
+                                  <i class="heart icon"></i>
+                                  0
+                                </a>
+                              </div>
+                              <div className="item">
+                                <a class="mini ui basic button">
+                                  <i class="comment icon"></i>
+                                  0
+                                </a>
+                              </div>
+                              <div className="item">
+                                <a class="mini ui basic button">
+                                  <i class="share icon"></i>
+                                  0
+                                </a>
+                              </div>
+                            </div>
+
+
                           </div>
-                      </div>
-                  )
-                  })}
+                        </div>
+                    )
+                  })
+              )}
+
 
           </div>
           <div className="four wide column">
-              <div className="ui  home-post-Wr mh300"></div>
-              <div className="ui  home-post-Wr mh500"></div>
-              <div className="ui  home-post-Wr mh300"></div>
+            <div className="ui  home-post-Wr mh500">
+              <div className="trending">
+                <h3>HOT NETWORK QUESTIONS (fake)</h3>
+                <ul>
+                  <li>What is the most terrifying experience you have had while travelling?</li>
+                  <li>Which actors have won Oscars without an Oscar-worthy performance?</li>
+                  <li>Does vending machine black coffee contain sugar?</li>
+                  <li>What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?</li>
+                  <li>Which is the most astonishing piece of code you've ever seen in your life?</li>
+                  <li>What do natives call San Francisco?</li>
+                  <li>Why does "The Force Awakens" use an image language associated with national socialism for the First Order?</li>
+                  <li>A Treasure Chest for your Post-apocalyptic Children</li>
+                  <li>Phrase when you offer someone something but it's really them who are paying for it</li>
+                  <li>Why do academic journals usually have continuous page numbering?</li>
+                </ul>
+              </div>
+
+            </div>
           </div>
         </div>
     )

@@ -61,6 +61,7 @@ final class Env(
       //Env.shutup, // required to load the actor
       //Env.relay
       Env.user,
+      Env.activity,
       Env.security,
       Env.monitor
     )
@@ -94,5 +95,6 @@ object Env {
   def userMessage = lila.userMessage.Env.current
   def relation = lila.relation.Env.current
   def chatRoom = lila.chatRoom.Env.current
+  def activity = lila.activity.Env.current
 
 }

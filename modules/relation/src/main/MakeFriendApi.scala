@@ -75,7 +75,7 @@ final class MakeFriendApi(
     if (u1 == u2) funit
     else makeFriend(u1, u2) flatMap {
       case Some(Request) => {
-        MakeFriendRepo.unrequest(u1, u2) >> refresh(u1, u2) >> reloadNotify(u2)
+        MakeFriendRepo.unrequest(u1, u2) >> refresh(u1, u2) >> reloadNotify(u2) >> reloadNotify(u1)
       }
       case _            => funit
     }

@@ -236,3 +236,7 @@ package chatRoom {
   case class DoChat(chat: JsObject, roomId: String)
   case class PrevChat(roomId: String, lastTime: Long)
 }
+
+package activity {
+  case class InitPost(userId: String)
+}

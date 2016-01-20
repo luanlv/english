@@ -34,6 +34,11 @@ wsCtrl.storage = {
 
 wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
 wsCtrl.data = {
+  post: {
+    init: false,
+    list: [],
+    timepoint: Date.now(),
+  },
   chatrooms: {},
   chatroom: {},
   userOnline: [],
@@ -188,10 +193,6 @@ var waitForConnection = function (callback, interval) {
 //  send(pingData());
 //}, 1000);
 
-
-
-
-
 wsCtrl.getPosChat = function(user, mv){
   var cv = (mv == undefined)?0:mv;
   var read = (mv == undefined);
@@ -265,6 +266,21 @@ ctrl.listen = function(d){
   else if(d.t === "nbRequester"){
     wsCtrl.data.makeFriend.n = d.d;
   }
+
+  else if(d.t === "initPost"){
+    wsCtrl.data.post.list = d.d;
+    wsCtrl.data.post.init = true;
+    wsCtrl.data.post.timepoint = wsCtrl.data.post.list[wsCtrl.data.post.list.length - 1].published;
+    rd.home(function(){m.redraw()})
+  }
+  else if(d.t === "newPost"){
+    console.log("new post")
+    if(d.d.id !== undefined) {
+      wsCtrl.data.post.list.unshift(d.d);
+    }
+    rd.home(function(){m.redraw()})
+  }
+
   else if(d.t === "mes"){
 
     if(mVersion >= (d.d.v-1)){

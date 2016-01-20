@@ -785,6 +785,9 @@ textarea {
 .noSha {
   box-shadow: none !important; }
 
+.noBor {
+  border: transparent !important; }
+
 .segWr {
   background: #fff; }
 
@@ -857,7 +860,7 @@ textarea {
 
 .home-post-Wr {
   border-bottom: 1px solid #e2e2e2;
-  padding-bottom: 20px;
+  padding-bottom: 5px;
   margin-bottom: 10px; }
 
 .postWr textarea {
@@ -1024,9 +1027,12 @@ textarea {
 
 .trending {
   color: #666; }
+  .trending h3 {
+    font-size: 14px; }
   .trending ul {
     padding: 0; }
     .trending ul li {
+      font-size: 13px;
       list-style: none;
       margin-bottom: 10px; }
       .trending ul li:before {
@@ -1077,9 +1083,6 @@ textarea {
   width: 180px;
   height: 180px; }
 
-.avatar img {
-  border: 1px solid #0074D9; }
-
 .edit-information .field {
   font-size: 18px;
   line-height: 32px;
@@ -1089,3 +1092,26 @@ textarea {
   font-weight: bold;
   padding: 0 10px 0 10px !important;
   font-family: 'Open Sans', sans-serif, Arial, Helvetica !important; }
+
+.postContainer .name {
+  color: #555;
+  font-family: 'Open Sans', sans-serif, Arial, Helvetica !important; }
+.postContainer .description {
+  font-size: 13px;
+  color: #eee; }
+.postContainer .content-post {
+  min-height: 30px;
+  word-wrap: break-word;
+  white-space: pre-wrap; }
+.postContainer .extra-post {
+  padding-top: 5px !important; }
+.postContainer .avatar {
+  margin-right: 5px; }
+  .postContainer .avatar img {
+    width: 30px;
+    height: 30px; }
+
+.building {
+  margin-top: 30px;
+  color: red;
+  font-size: 30px; }

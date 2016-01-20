@@ -35,6 +35,7 @@ case class StartWatching(uid: String, member: SocketMember, gameIds: Set[String]
 case class SendName(uid: String, id: String, name: String)
 
 case class SendOnlineFriends(uid: String, list: List[LightUser])
+case class SendInitPost(uid: String, posts: JsValue)
 
 case class SendMissingMes(uid: String, f: Int, t: Int, data: List[JsValue])
 case class SendInitMes(uid: String, data: List[JsValue])
