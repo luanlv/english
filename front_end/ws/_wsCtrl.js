@@ -270,7 +270,7 @@ ctrl.listen = function(d){
   else if(d.t === "initPost"){
     wsCtrl.data.post.list = d.d;
     wsCtrl.data.post.init = true;
-    wsCtrl.data.post.timepoint = wsCtrl.data.post.list[wsCtrl.data.post.list.length - 1].published;
+    if(wsCtrl.data.post.list.length > 0) wsCtrl.data.post.timepoint = wsCtrl.data.post.list[wsCtrl.data.post.list.length - 1].published;
     rd.home(function(){m.redraw()})
   }
   else if(d.t === "newPost"){

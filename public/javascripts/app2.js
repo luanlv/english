@@ -808,7 +808,15 @@ var Home = {
                             rows:"2", 
                             placeholder:"What's on your mind?", 
                             config:function (element, isInit, ctx) {
+
                                         if(!isInit) {
+                                          if(wsCtrl.userId.length == 0){
+                                            $(element).on('click input', function(){
+                                              api.signin();
+                                              element.value = ''
+                                            })
+                                          }
+
                                           $(element).textareaAutoSize();
                                           $(element).on('input', function(){
                                               ctrl.inputPost($(element).val())
@@ -863,9 +871,15 @@ var Home = {
             ]}, 
 
               !wsCtrl.data.post.init?(
+                  (wsCtrl.userId.length>0)?(
                   {tag: "div", attrs: {className:"ui segment loading mh300 noBor noSha"}
 
                   }
+                  ):(
+                  {tag: "div", attrs: {className:"ui segment mh300 noBor noSha", style:"text-align: center"}, children: [
+                    "Please login to see posts!"
+                  ]}
+              )
               ):(
                   wsCtrl.data.post.list.map(function(post){
                     return (
@@ -2328,7 +2342,7 @@ ctrl.listen = function(d){
   else if(d.t === "initPost"){
     wsCtrl.data.post.list = d.d;
     wsCtrl.data.post.init = true;
-    wsCtrl.data.post.timepoint = wsCtrl.data.post.list[wsCtrl.data.post.list.length - 1].published;
+    if(wsCtrl.data.post.list.length > 0) wsCtrl.data.post.timepoint = wsCtrl.data.post.list[wsCtrl.data.post.list.length - 1].published;
     rd.home(function(){m.redraw()})
   }
   else if(d.t === "newPost"){

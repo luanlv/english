@@ -137,7 +137,7 @@ object Auth extends LilaController {
                 .map(_ -> email).flatMap {
               case (user, email) => // env.emailConfirm.send(user, email) inject
                   //Redirect(routes.Auth.checkYourEmail(user.username))
-                  Ok("ok").fuccess
+                  Ok("User created, Please login!").fuccess
               case _ => forms.signup.websiteWithoutCaptcha map {
                 case form => Ok(html.auth.signup2(form))
               }

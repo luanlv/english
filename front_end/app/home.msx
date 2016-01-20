@@ -54,7 +54,15 @@ var Home = {
                             rows="2"
                             placeholder="What's on your mind?"
                             config={function (element, isInit, ctx) {
+
                                         if(!isInit) {
+                                          if(wsCtrl.userId.length == 0){
+                                            $(element).on('click input', function(){
+                                              api.signin();
+                                              element.value = ''
+                                            })
+                                          }
+
                                           $(element).textareaAutoSize();
                                           $(element).on('input', function(){
                                               ctrl.inputPost($(element).val())
@@ -109,9 +117,15 @@ var Home = {
             </div>
 
               {!wsCtrl.data.post.init?(
+                  (wsCtrl.userId.length>0)?(
                   <div className="ui segment loading mh300 noBor noSha">
 
                   </div>
+                  ):(
+                  <div className="ui segment mh300 noBor noSha" style="text-align: center">
+                    Please login to see posts!
+                  </div>
+              )
               ):(
                   wsCtrl.data.post.list.map(function(post){
                     return (
