@@ -907,19 +907,19 @@ var Home = {
                               {tag: "div", attrs: {className:"item"}, children: [
                                 {tag: "a", attrs: {className:"mini ui  basic button"}, children: [
                                   {tag: "i", attrs: {className:"heart icon"}}, 
-                                  "0"
+                                  post.info.nbLike
                                 ]}
                               ]}, 
                               {tag: "div", attrs: {className:"item"}, children: [
                                 {tag: "a", attrs: {className:"mini ui basic button"}, children: [
                                   {tag: "i", attrs: {className:"comment icon"}}, 
-                                  "0"
+                                  post.info.nbComment
                                 ]}
                               ]}, 
                               {tag: "div", attrs: {className:"item"}, children: [
                                 {tag: "a", attrs: {className:"mini ui basic button"}, children: [
                                   {tag: "i", attrs: {className:"share icon"}}, 
-                                  "0"
+                                  post.info.nbShare
                                 ]}
                               ]}
                             ]}
