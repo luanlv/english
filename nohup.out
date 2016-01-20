@@ -1,0 +1,371 @@
+[boot] Preloading modules
+[boot] Preloading complete
+[application ERROR] 
+
+! @6oo5e5ggf - Internal server error, for (GET) [/] ->
+ 
+play.api.UnexpectedException: Unexpected exception[TimeoutException: Futures timed out after [5 milliseconds]]
+	at play.api.http.HttpErrorHandlerExceptions$.throwableToUsefulException(HttpErrorHandler.scala:261) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.http.DefaultHttpErrorHandler.onServerError(HttpErrorHandler.scala:191) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.GlobalSettings$class.onError(GlobalSettings.scala:179) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at Global$.onError(Global.scala:8) [english.english-0.1-SNAPSHOT.jar:na]
+	at play.api.http.GlobalSettingsHttpErrorHandler.onServerError(HttpErrorHandler.scala:94) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+Caused by: java.util.concurrent.TimeoutException: Futures timed out after [5 milliseconds]
+	at scala.concurrent.impl.Promise$DefaultPromise.ready(Promise.scala:219) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.result(Promise.scala:223) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.Await$$anonfun$result$1.apply(package.scala:190) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at akka.dispatch.MonitorableThreadFactory$AkkaForkJoinWorkerThread$$anon$3.block(ThreadPoolBuilder.scala:169) ~[com.typesafe.akka.akka-actor_2.11-2.4.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.managedBlock(ForkJoinPool.java:3640) [org.scala-lang.scala-library-2.11.7.jar:na]
+luan
+[r.a.MongoDriver WARN] No mongo-async-driver configuration found
+[r.c.a.MongoDBSystem ERROR] The entire node set is unreachable, is there a network problem?
+luan
+luan
+luan
+luan
+luan
+luan
+luan
+luan
+luan
+luan
+luan
+[INFO] [01/19/2016 21:43:15.048] [reactivemongo-akka.actor.default-dispatcher-10] [akka://reactivemongo/user/Monitor-6] Message [reactivemongo.core.actors.Close$] from Actor[akka://reactivemongo/deadLetters] to Actor[akka://reactivemongo/user/Monitor-6#-1892665224] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-5#1213914454] stopped.
+[INFO] [01/19/2016 21:43:15.091] [reactivemongo-akka.actor.default-dispatcher-6] [akka://reactivemongo/deadLetters] Message [reactivemongo.core.actors.Closed$] from Actor[akka://reactivemongo/user/Monitor-3#1989362839] to Actor[akka://reactivemongo/deadLetters] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-1311715002] stopped.
+[boot] Preloading modules
+[boot] Preloading complete
+get online! - luan
+Set()
+Map()
+found
+get online! - luan
+Set()
+Map()
+found
+[r.a.MongoDriver WARN] No mongo-async-driver configuration found
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+Set()
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+found
+[a.a.OneForOneStrategy ERROR] key not found: t7tjpqkx3yfx0f6r
+java.util.NoSuchElementException: key not found: t7tjpqkx3yfx0f6r
+	at scala.collection.MapLike$class.default(MapLike.scala:228) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.collection.AbstractMap.default(Map.scala:59) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.collection.mutable.HashMap.apply(HashMap.scala:65) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at lila.socket.SocketActor.unSub(SocketActor.scala:243) ~[org.lichess.socket-2.0.jar:2.0]
+	at lila.socket.SocketActor$$anonfun$receiveGeneric$1.applyOrElse(SocketActor.scala:80) ~[org.lichess.socket-2.0.jar:2.0]
+get online! - luan
+Set()
+Map()
+found
+[a.a.OneForOneStrategy ERROR] key not found: wvstd31kjd1jor
+java.util.NoSuchElementException: key not found: wvstd31kjd1jor
+	at scala.collection.MapLike$class.default(MapLike.scala:228) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.collection.AbstractMap.default(Map.scala:59) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.collection.mutable.HashMap.apply(HashMap.scala:65) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at lila.socket.SocketActor.unSub(SocketActor.scala:243) ~[org.lichess.socket-2.0.jar:2.0]
+	at lila.socket.SocketActor$$anonfun$receiveGeneric$1.applyOrElse(SocketActor.scala:80) ~[org.lichess.socket-2.0.jar:2.0]
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+found
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+found
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+Set()
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,cf650bb1-4f9f-4664-b1b4-6228930ff7ed))
+found
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412))
+found
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412))
+found
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412))
+found
+get online! - 
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412))
+found
+get online! - 
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412))
+found
+get online! - luan1
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan1 -> LightUser(luan1,luan1,None,))
+found
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan1 -> LightUser(luan1,luan1,None,))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan1 -> LightUser(luan1,luan1,None,))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan1 -> LightUser(luan1,luan1,None,))
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan1 -> LightUser(luan1,luan1,None,))
+get online! - luan1
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan1 -> LightUser(luan1,luan1,None,))
+found
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan1 -> LightUser(luan1,luan1,None,))
+found
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan1 -> LightUser(luan1,luan1,None,))
+found
+get online! - luan1
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan1 -> LightUser(luan1,luan1,None,))
+found
+[INFO] [01/19/2016 23:18:21.183] [reactivemongo-akka.actor.default-dispatcher-9] [akka://reactivemongo/user/Monitor-6] Message [reactivemongo.core.actors.Close$] from Actor[akka://reactivemongo/deadLetters] to Actor[akka://reactivemongo/user/Monitor-6#-1172087445] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-5#1533924272] stopped.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#788112204] stopped.
+[INFO] [01/19/2016 23:18:21.221] [reactivemongo-akka.actor.default-dispatcher-5] [akka://reactivemongo/deadLetters] Message [reactivemongo.core.actors.Closed$] from Actor[akka://reactivemongo/user/Monitor-3#-741118396] to Actor[akka://reactivemongo/deadLetters] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[boot] Preloading modules
+[boot] Preloading complete
+[application ERROR] 
+
+! @6oo6kg298 - Internal server error, for (GET) [/] ->
+ 
+play.api.UnexpectedException: Unexpected exception[TimeoutException: Futures timed out after [5 milliseconds]]
+	at play.api.http.HttpErrorHandlerExceptions$.throwableToUsefulException(HttpErrorHandler.scala:261) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.http.DefaultHttpErrorHandler.onServerError(HttpErrorHandler.scala:191) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.GlobalSettings$class.onError(GlobalSettings.scala:179) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at Global$.onError(Global.scala:8) [english.english-0.1-SNAPSHOT.jar:na]
+	at play.api.http.GlobalSettingsHttpErrorHandler.onServerError(HttpErrorHandler.scala:94) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+Caused by: java.util.concurrent.TimeoutException: Futures timed out after [5 milliseconds]
+	at scala.concurrent.impl.Promise$DefaultPromise.ready(Promise.scala:219) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.result(Promise.scala:223) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.Await$$anonfun$result$1.apply(package.scala:190) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at akka.dispatch.MonitorableThreadFactory$AkkaForkJoinWorkerThread$$anon$3.block(ThreadPoolBuilder.scala:169) ~[com.typesafe.akka.akka-actor_2.11-2.4.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.managedBlock(ForkJoinPool.java:3640) [org.scala-lang.scala-library-2.11.7.jar:na]
+[application ERROR] 
+
+! @6oo6kg298 - Internal server error, for (GET) [/] ->
+ 
+play.api.UnexpectedException: Unexpected exception[TimeoutException: Futures timed out after [5 milliseconds]]
+	at play.api.http.HttpErrorHandlerExceptions$.throwableToUsefulException(HttpErrorHandler.scala:261) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.http.DefaultHttpErrorHandler.onServerError(HttpErrorHandler.scala:191) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.GlobalSettings$class.onError(GlobalSettings.scala:179) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at Global$.onError(Global.scala:8) [english.english-0.1-SNAPSHOT.jar:na]
+	at play.api.http.GlobalSettingsHttpErrorHandler.onServerError(HttpErrorHandler.scala:94) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+Caused by: java.util.concurrent.TimeoutException: Futures timed out after [5 milliseconds]
+	at scala.concurrent.impl.Promise$DefaultPromise.ready(Promise.scala:219) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.result(Promise.scala:223) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.Await$$anonfun$result$1.apply(package.scala:190) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at akka.dispatch.MonitorableThreadFactory$AkkaForkJoinWorkerThread$$anon$3.block(ThreadPoolBuilder.scala:169) ~[com.typesafe.akka.akka-actor_2.11-2.4.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.managedBlock(ForkJoinPool.java:3640) [org.scala-lang.scala-library-2.11.7.jar:na]
+get online! - luan
+Set(luan1)
+Map()
+found
+get online! - luan
+Set(luan1)
+Map()
+found
+get online! - luan
+Set(luan1)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412))
+found
+get online! - luan2
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+[r.a.MongoDriver WARN] No mongo-async-driver configuration found
+Set()
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+get online! - luan2
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+Set()
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Set()
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+get online! - luan2
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Set()
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+get online! - luan2
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+get online! - luan2
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+get online! - luan2
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+get online! - luan
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+get online! - luan2
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+found
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Set(luan)
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+Set()
+Map(luan -> LightUser(luan,L?u V?n Lu?n,None,079d07a5-1a81-4574-bc8b-6bd9648ab412), luan2 -> LightUser(luan2,luan2,None,))
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-5#-66743757] stopped.
+[INFO] [01/20/2016 00:22:44.147] [reactivemongo-akka.actor.default-dispatcher-5] [akka://reactivemongo/user/Monitor-6] Message [reactivemongo.core.actors.Close$] from Actor[akka://reactivemongo/deadLetters] to Actor[akka://reactivemongo/user/Monitor-6#-1259624363] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#1001378826] stopped.
+[INFO] [01/20/2016 00:22:44.177] [reactivemongo-akka.actor.default-dispatcher-4] [akka://reactivemongo/deadLetters] Message [reactivemongo.core.actors.Closed$] from Actor[akka://reactivemongo/user/Monitor-3#-1854564337] to Actor[akka://reactivemongo/deadLetters] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[boot] Preloading modules
+[boot] Preloading complete
+[r.a.MongoDriver WARN] No mongo-async-driver configuration found
+[application ERROR] 
+
+! @6oo7cd12c - Internal server error, for (GET) [/] ->
+ 
+play.api.UnexpectedException: Unexpected exception[TimeoutException: Futures timed out after [5 milliseconds]]
+	at play.api.http.HttpErrorHandlerExceptions$.throwableToUsefulException(HttpErrorHandler.scala:261) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.http.DefaultHttpErrorHandler.onServerError(HttpErrorHandler.scala:191) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.GlobalSettings$class.onError(GlobalSettings.scala:179) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at Global$.onError(Global.scala:8) [english.english-0.1-SNAPSHOT.jar:na]
+	at play.api.http.GlobalSettingsHttpErrorHandler.onServerError(HttpErrorHandler.scala:94) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+Caused by: java.util.concurrent.TimeoutException: Futures timed out after [5 milliseconds]
+	at scala.concurrent.impl.Promise$DefaultPromise.ready(Promise.scala:219) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.result(Promise.scala:223) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.Await$$anonfun$result$1.apply(package.scala:190) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at akka.dispatch.MonitorableThreadFactory$AkkaForkJoinWorkerThread$$anon$3.block(ThreadPoolBuilder.scala:169) ~[com.typesafe.akka.akka-actor_2.11-2.4.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.managedBlock(ForkJoinPool.java:3640) [org.scala-lang.scala-library-2.11.7.jar:na]
+[application ERROR] 
+
+! @6oob8alc9 - Internal server error, for (GET) [/] ->
+ 
+play.api.UnexpectedException: Unexpected exception[TimeoutException: Futures timed out after [5 milliseconds]]
+	at play.api.http.HttpErrorHandlerExceptions$.throwableToUsefulException(HttpErrorHandler.scala:261) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.http.DefaultHttpErrorHandler.onServerError(HttpErrorHandler.scala:191) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.GlobalSettings$class.onError(GlobalSettings.scala:179) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at Global$.onError(Global.scala:8) [english.english-0.1-SNAPSHOT.jar:na]
+	at play.api.http.GlobalSettingsHttpErrorHandler.onServerError(HttpErrorHandler.scala:94) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+Caused by: java.util.concurrent.TimeoutException: Futures timed out after [5 milliseconds]
+	at scala.concurrent.impl.Promise$DefaultPromise.ready(Promise.scala:219) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.result(Promise.scala:223) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.Await$$anonfun$result$1.apply(package.scala:190) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at akka.dispatch.MonitorableThreadFactory$AkkaForkJoinWorkerThread$$anon$3.block(ThreadPoolBuilder.scala:169) ~[com.typesafe.akka.akka-actor_2.11-2.4.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.managedBlock(ForkJoinPool.java:3640) [org.scala-lang.scala-library-2.11.7.jar:na]
+[application ERROR] 
+
+! @6ooc17h26 - Internal server error, for (GET) [/] ->
+ 
+play.api.UnexpectedException: Unexpected exception[TimeoutException: Futures timed out after [5 milliseconds]]
+	at play.api.http.HttpErrorHandlerExceptions$.throwableToUsefulException(HttpErrorHandler.scala:261) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.http.DefaultHttpErrorHandler.onServerError(HttpErrorHandler.scala:191) ~[com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at play.api.GlobalSettings$class.onError(GlobalSettings.scala:179) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+	at Global$.onError(Global.scala:8) [english.english-0.1-SNAPSHOT.jar:na]
+	at play.api.http.GlobalSettingsHttpErrorHandler.onServerError(HttpErrorHandler.scala:94) [com.typesafe.play.play_2.11-2.4.4.jar:2.4.4]
+Caused by: java.util.concurrent.TimeoutException: Futures timed out after [5 milliseconds]
+	at scala.concurrent.impl.Promise$DefaultPromise.ready(Promise.scala:219) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.result(Promise.scala:223) [org.scala-lang.scala-library-2.11.7.jar:na]
+	at scala.concurrent.Await$$anonfun$result$1.apply(package.scala:190) ~[org.scala-lang.scala-library-2.11.7.jar:na]
+	at akka.dispatch.MonitorableThreadFactory$AkkaForkJoinWorkerThread$$anon$3.block(ThreadPoolBuilder.scala:169) ~[com.typesafe.akka.akka-actor_2.11-2.4.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.managedBlock(ForkJoinPool.java:3640) [org.scala-lang.scala-library-2.11.7.jar:na]
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-5#-194871662] stopped.
+[INFO] [01/20/2016 19:08:34.654] [reactivemongo-akka.actor.default-dispatcher-5] [akka://reactivemongo/user/Monitor-6] Message [reactivemongo.core.actors.Close$] from Actor[akka://reactivemongo/deadLetters] to Actor[akka://reactivemongo/user/Monitor-6#-427993528] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-814426383] stopped.
+[INFO] [01/20/2016 19:08:34.715] [reactivemongo-akka.actor.default-dispatcher-6] [akka://reactivemongo/deadLetters] Message [reactivemongo.core.actors.Closed$] from Actor[akka://reactivemongo/user/Monitor-3#577415102] to Actor[akka://reactivemongo/deadLetters] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[boot] Preloading modules
+[boot] Preloading complete
+[r.a.MongoDriver WARN] No mongo-async-driver configuration found
+Admin
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-5#-1450696356] stopped.
+[INFO] [01/20/2016 20:51:51.736] [reactivemongo-akka.actor.default-dispatcher-7] [akka://reactivemongo/user/Monitor-6] Message [reactivemongo.core.actors.Close$] from Actor[akka://reactivemongo/deadLetters] to Actor[akka://reactivemongo/user/Monitor-6#1646439984] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-1887723249] stopped.
+[INFO] [01/20/2016 20:51:51.790] [reactivemongo-akka.actor.default-dispatcher-3] [akka://reactivemongo/deadLetters] Message [reactivemongo.core.actors.Closed$] from Actor[akka://reactivemongo/user/Monitor-3#-1762867870] to Actor[akka://reactivemongo/deadLetters] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[boot] Preloading modules
+[boot] Preloading complete
+[INFO] [01/20/2016 20:55:20.071] [reactivemongo-akka.actor.default-dispatcher-4] [akka://reactivemongo/deadLetters] Message [reactivemongo.core.actors.Closed$] from Actor[akka://reactivemongo/user/Monitor-3#1035948080] to Actor[akka://reactivemongo/deadLetters] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#1670379346] stopped.
+[boot] Preloading modules
+[boot] Preloading complete
+[r.a.MongoDriver WARN] No mongo-async-driver configuration found
+[r.c.a.MongoDBSystem ERROR] The entire node set is unreachable, is there a network problem?
+[r.c.a.MongoDBSystem ERROR] The entire node set is unreachable, is there a network problem?
+[INFO] [01/20/2016 21:01:21.632] [reactivemongo-akka.actor.default-dispatcher-3] [akka://reactivemongo/user/Monitor-6] Message [reactivemongo.core.actors.Close$] from Actor[akka://reactivemongo/deadLetters] to Actor[akka://reactivemongo/user/Monitor-6#1008679506] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-5#1160741959] stopped.
+[r.c.a.MongoDBSystem WARN] MongoDBSystem Actor[akka://reactivemongo/user/Connection-2#-1727366108] stopped.
+[INFO] [01/20/2016 21:01:21.675] [reactivemongo-akka.actor.default-dispatcher-7] [akka://reactivemongo/deadLetters] Message [reactivemongo.core.actors.Closed$] from Actor[akka://reactivemongo/user/Monitor-3#-203860527] to Actor[akka://reactivemongo/deadLetters] was not delivered. [1] dead letters encountered. This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' and 'akka.log-dead-letters-during-shutdown'.
+[boot] Preloading modules
+[boot] Preloading complete
+[r.a.MongoDriver WARN] No mongo-async-driver configuration found
