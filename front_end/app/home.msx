@@ -153,19 +153,19 @@ var Home = {
                               <div className="item">
                                 <a className="mini ui  basic button">
                                   <i className="heart icon"></i>
-                                  0
+                                  {post.info.nbLike}
                                 </a>
                               </div>
                               <div className="item">
                                 <a className="mini ui basic button">
                                   <i className="comment icon"></i>
-                                  0
+                                  {post.info.nbComment}
                                 </a>
                               </div>
                               <div className="item">
                                 <a className="mini ui basic button">
                                   <i className="share icon"></i>
-                                  0
+                                  {post.info.nbShare}
                                 </a>
                               </div>
                             </div>

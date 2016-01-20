@@ -2,93 +2,93 @@ var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
 var Room = {
-    controller: function() {
-        m.redraw.strategy("diff")
-        $.cookie('url', m.route(), {path: "/"});
-        var ctrl = this;
-        ctrl.id = m.route.param("roomId");
-        ctrl.param = m.prop(m.route.param("roomId"));
-        ctrl.loadMore = true;
-        ctrl.scrollBottom = true;
-        ctrl.add = function () {
-            var input = wsCtrl.inputChat(ctrl.id)().trim();
-            //input = input.replace(/\n/g, '');
-            if (input) {
-                wsCtrl.send(wsCtrl.sendData("chat", {room: ctrl.id, d: input}));
-                wsCtrl.inputChat(ctrl.id)('');
-            }
-            rd.room(function(){m.redraw()})
-        };
+  controller: function() {
+    m.redraw.strategy("diff")
+    $.cookie('url', m.route(), {path: "/"});
+    var ctrl = this;
+    ctrl.id = m.route.param("roomId");
+    ctrl.param = m.prop(m.route.param("roomId"));
+    ctrl.loadMore = true;
+    ctrl.scrollBottom = true;
+    ctrl.add = function () {
+      var input = wsCtrl.inputChat(ctrl.id)().trim();
+      //input = input.replace(/\n/g, '');
+      if (input) {
+        wsCtrl.send(wsCtrl.sendData("chat", {room: ctrl.id, d: input}));
+        wsCtrl.inputChat(ctrl.id)('');
+      }
+      rd.room(function(){m.redraw()})
+    };
 
-        wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
+    wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
 
-        var intervalRoom = setInterval(function(){
-            wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
-        }, 30000);
+    var intervalRoom = setInterval(function(){
+      wsCtrl.send(wsCtrl.sendData("sub", {t: "room", v: ctrl.param()}));
+    }, 30000);
 
-        ctrl.onunload = function() {
-            wsCtrl.send(wsCtrl.sendData("unSub", {t: "room", v: ctrl.param()}));
-            wsCtrl.clearOldRoom(ctrl.id);
-            clearInterval(intervalRoom)
-        };
-        console.log("ctrl room !");
-        rd.room();
-    },
-    view: function(ctrl) {
-        return (
-            <div className="ui grid main-content ">
-                <div className="eleven wide column room-chat">
-                    <div className="ui segment segWr">
-                        <div className="ui padded grid">
-                            <div className="thirteen wide  column light-border-right pad-bot0">
-                                {Comments(ctrl)}
-                            </div>
-                            <div className="three wide column">
-                                <div className="room-user">
+    ctrl.onunload = function() {
+      wsCtrl.send(wsCtrl.sendData("unSub", {t: "room", v: ctrl.param()}));
+      wsCtrl.clearOldRoom(ctrl.id);
+      clearInterval(intervalRoom)
+    };
+    console.log("ctrl room !");
+    rd.room();
+  },
+  view: function(ctrl) {
+    return (
+        <div className="ui grid main-content ">
+          <div className="eleven wide column room-chat">
+            <div className="ui segment segWr">
+              <div className="ui padded grid">
+                <div className="thirteen wide  column light-border-right pad-bot0">
+                  {Comments(ctrl)}
+                </div>
+                <div className="three wide column">
+                  <div className="room-user">
 
-                                    <h5 className="ui dividing header">List Users !
-                                    </h5>
-                                    <div>
-                                        <div>
-                                            {(!wsCtrl.getRoom(ctrl.id).initOk)?(
-                                                <div className="ui active loader"></div>
-                                            ):(
-                                                <div className="ui list users-in-room">
-                                                    {wsCtrl.userInRoom(ctrl.id).map(function(user){
-                                                        return (
+                    <h5 className="ui dividing header">List Users !
+                    </h5>
+                    <div>
+                      <div>
+                        {(!wsCtrl.getRoom(ctrl.id).initOk)?(
+                            <div className="ui active loader"></div>
+                        ):(
+                            <div className="ui list users-in-room">
+                              {wsCtrl.userInRoom(ctrl.id).map(function(user){
+                                return (
 
-                                                            <div className="item">
+                                    <div className="item">
 
-                                                                <i className={"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}></i>
+                                      <i className={"user " + ((user.role == "Admin")?"red":((user.role == "Mod")?"yellow":"blue"))  +" icon"}></i>
 
-                                                                <div className="content" >
-                                                                    <a className="ulpt" href={"/@/" + user.id} config={m.route}>
-                                                                        {user.name}
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-
-                                                        )
-                                                    })}
-                                                </div>
-                                            )
-                                            }
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="ui padded grid ">
-                            <div className="thirteen wide column light-border-right pad-top0">
-                                <div className="ui divider"></div>
-                                <div className="ui comments mar0">
-                                    <div className="comment">
-                                        <a className="avatar">
-                                            <img src={(wsCtrl.avatar.length>0)?("/getimage/thumb/" + wsCtrl.avatar):("/assets/avatar/2.jpg")}/>
+                                      <div className="content" >
+                                        <a className="ulpt" href={"/@/" + user.id} config={m.route}>
+                                          {user.name}
                                         </a>
-                                        <div className="ui form content">
-                                            <div className="field" style="display:inline">
+                                      </div>
+                                    </div>
+
+                                )
+                              })}
+                            </div>
+                        )
+                        }
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="ui padded grid ">
+                <div className="thirteen wide column light-border-right pad-top0">
+                  <div className="ui divider"></div>
+                  <div className="ui comments mar0">
+                    <div className="comment">
+                      <a className="avatar">
+                        <img src={(wsCtrl.avatar.length>0)?("/getimage/thumb/" + wsCtrl.avatar):("/assets/avatar/2.jpg")}/>
+                      </a>
+                      <div className="ui form content">
+                        <div className="field" style="display:inline">
                         <textarea rows="1" style="max-height: 150px"
                                   config={function (element, isInit, ctx) {
                                           if(!isInit) {
@@ -150,42 +150,42 @@ var Room = {
                                       }
                                   placeholder="Click here to type a chat message"
                         >{}</textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="three wide column pad-top0">
-                                <div className="ui divider "></div>
-                                <div></div>
-                            </div>
                         </div>
+                      </div>
                     </div>
+                  </div>
                 </div>
-
-                <div className="five wide column">
-                    <div className="ui mh500">
-
-                    </div>
+                <div className="three wide column pad-top0">
+                  <div className="ui divider "></div>
+                  <div></div>
                 </div>
+              </div>
             </div>
-        )
-    }
+          </div>
+
+          <div className="five wide column">
+            <div className="ui mh500">
+
+            </div>
+          </div>
+        </div>
+    )
+  }
 };
 
 var Comments = function(ctrl){
-    return (
-        <div className="ui comments room-box">
-            <h5 className="ui dividing header">Room: {ctrl.id}
+  return (
+      <div className="ui comments room-box">
+        <h5 className="ui dividing header">Room: {ctrl.id}
           <span className="fr">
             <i className="tiny users left middle aligned icon" style="margin: 0 5px;">{wsCtrl.getRooms(ctrl.id).u}</i>
             <i className="tiny plug left middle aligned icon" style="margin: 0 5px;">{wsCtrl.getRooms(ctrl.id).c}</i>
         </span>
-            </h5>
+        </h5>
 
-            <div className="box-commentWr">
-                <div className="box-comment"
-                     config={function(element, isInit, context) {
+        <div className="box-commentWr">
+          <div className="box-comment"
+               config={function(element, isInit, context) {
                       if(context.flagScroll == true) context.fixPos = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
                       if(wsCtrl.getRoom(ctrl.id).gettingPrev == true){
                         element.scrollTop = context.prevScrollTop + element.scrollHeight - context.prevScrollHeight;
@@ -243,41 +243,41 @@ var Comments = function(ctrl){
                       context.prevScrollHeight = element.scrollHeight
                     }
                  }
+          >
+            {(!wsCtrl.getRoom(ctrl.id).initOk)?(
+                <div className="ui active loader"></div>
+            ):(
+                <div
                 >
-                    {(!wsCtrl.getRoom(ctrl.id).initOk)?(
-                        <div className="ui active loader"></div>
-                    ):(
-                        <div
+                  {wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
+                    return (
+                        <div className="comment"
+                             key={comment.time}
                         >
-                            {wsCtrl.commentsInRoom(ctrl.id).map(function(comment){
-                                return (
-                                    <div className="comment"
-                                         key={comment.time}
-                                    >
-                                        <a className="avatar ulpt" href={"/@/" + comment.userId} config={m.route}>
-                                            <img src={comment.avatar}/>
-                                        </a>
-                                        <div className="content">
-                                            <a className="author ulpt" href={"/@/" + comment.userId} config={m.route}>{comment.user}</a>
-                                            <div className=" metadata fr">
-                                                <span className="date">{api.time(comment.time)}</span>
-                                            </div>
-                                            <div className="text">
-                                                {comment.comment}
-                                            </div>
+                          <a className="avatar ulpt" href={"/@/" + comment.userId} config={m.route}>
+                            <img src={comment.avatar}/>
+                          </a>
+                          <div className="content">
+                            <a className="author ulpt" href={"/@/" + comment.userId} config={m.route}>{comment.user}</a>
+                            <div className=" metadata fr">
+                              <span className="date">{api.time(comment.time)}</span>
+                            </div>
+                            <div className="text">
+                              {comment.comment}
+                            </div>
 
-                                        </div>
-                                    </div>
-                                )
-                            })
-                            }
+                          </div>
                         </div>
                     )
-                    }
+                  })
+                  }
                 </div>
-            </div>
+            )
+            }
+          </div>
         </div>
-    )
+      </div>
+  )
 }
 
 module.exports = Room;

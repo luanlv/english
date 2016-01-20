@@ -27,6 +27,8 @@ window.redraw = {
   app: 0
 };
 
+wsCtrl.reconnect = false;
+
 wsCtrl.storage = {
   chat: $.localStorage.get('chat:' + wsCtrl.userId) || []
 };
@@ -84,28 +86,29 @@ function initReconnect(setTime){
   reconnect = setTimeout(function(){
     console.log("run reconnect !!")
     clearTimeout(pingSchedule);
-    if(ws){
-      ws.onerror = $.noop;
-      ws.onclose = $.noop;
-      ws.onopen = $.noop;
-      ws.onmessage = $.noop;
-      ws.close();
+    if(wsCtrl.ws){
+      wsCtrl.ws.onerror = $.noop;
+      wsCtrl.ws.onclose = $.noop;
+      wsCtrl.ws.onopen = $.noop;
+      wsCtrl.ws.onmessage = $.noop;
+      wsCtrl.ws.close();
     }
+    wsCtrl.reconnect = true;
     console.log("websocket will reconnect in " + delayInit +" ms !!")
     if(delayInitWs) clearTimeout(delayInitWs);
     delayInitWs = setTimeout(initWs, delayInit);
   }, delayReconnect);
 };
 
-var ws;
+
 function initWs(){
   var sri = Math.random().toString(36).substring(2);
   if(document.domain === "localhost") {
-    ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
+    wsCtrl.ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
   } else {
-    ws = new WebSocket("ws://" + document.domain + ":9903/socket?sri=" + sri);
+    wsCtrl.ws = new WebSocket("ws://" + document.domain + ":9903/socket?sri=" + sri);
   }
-  ws.onopen = function(){
+  wsCtrl.ws.onopen = function(){
     console.log('WebSocket ok');
     initReconnect();
     //console.log("prev Ping:" + wsCtrl.ping)
@@ -114,25 +117,44 @@ function initWs(){
     prevTime = Date.now();
     wsCtrl.data.userOnline = [];
     send(sendData("get_onlines", ""));
-    //wsCtrl.ping = 1;
-    initChat();
 
+    if(wsCtrl.reconnect){
+      getMissing();
+    }
+
+    initChat();
   };
 
-  ws.onmessage = function (e) {
+  wsCtrl.ws.onmessage = function (e) {
     var m = JSON.parse(e.data);
     ctrl.listen(m)
   };
 
-  ws.onclose = function(){
+  wsCtrl.ws.onclose = function(){
     console.log("socket closed")
   };
-  ws.onerror = function(){
+  wsCtrl.ws.onerror = function(){
     console.log("socket error")
   };
   initReconnect(4000);
 };
 initWs();
+
+
+var getMissing = function(){
+  console.log(m.route());
+  //console.log("get missing!")
+  if(m.route() === "/"){
+    wsCtrl.send(wsCtrl.sendData("reconnect", {t: "home", v: wsCtrl.data.post.timepoint}));
+  }
+
+  if(m.route().toString().indexOf('/chatroom/') >= 0){
+    wsCtrl.send(wsCtrl.sendData("reconnect", {t: "room", v: m.route.param("roomId")}))
+    if(wsCtrl.data.post.init){
+      wsCtrl.send(wsCtrl.sendData("reconnect", {t: "home", v: wsCtrl.data.post.timepoint}));
+    }
+  }
+};
 
 //var ws = new WebSocket("ws://localhost:9000/socket?sri=" + sri);
 //var ws = new WebSocket("ws://192.168.1.25:9000/socket?sri=" + sri);
@@ -171,16 +193,16 @@ var sendData = wsCtrl.sendData;
 
 wsCtrl.send = function (message, callback) {
   waitForConnection(function () {
-    ws.send(message);
+    wsCtrl.ws.send(message);
     if (typeof callback !== 'undefined') {
       callback();
     }
-  }, 1000);
+  }, 100);
 };
 var send = wsCtrl.send;
 
 var waitForConnection = function (callback, interval) {
-  if (ws.readyState === 1) {
+  if (wsCtrl.ws.readyState === 1) {
     callback();
   } else {
     setTimeout(function () {
@@ -277,12 +299,25 @@ ctrl.listen = function(d){
     console.log("new post")
     if(d.d.id !== undefined) {
       wsCtrl.data.post.list.unshift(d.d);
+      wsCtrl.data.post.timepoint = d.d.published;
     }
     rd.home(function(){m.redraw()})
   }
 
   else if(d.t === "mes"){
-
+    //--------------test
+    if(d.d.m === "stop"){
+      if(wsCtrl.ws){
+        wsCtrl.ws.onerror = $.noop;
+        wsCtrl.ws.onclose = $.noop;
+        wsCtrl.ws.onopen = $.noop;
+        wsCtrl.ws.onmessage = $.noop;
+        wsCtrl.ws.close();
+      }
+      initReconnect(0)
+      //initWs();
+    }
+    //--------------test
     if(mVersion >= (d.d.v-1)){
       doMes(d);
       mVersion++;
