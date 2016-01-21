@@ -1,11 +1,24 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 
+var LINK_DETECTION_REGEX = /\b(https?|ftp|file):\/\/[\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\-A-Za-z0-9+&@#\/%=~_|‌​]/gi;
 
 var api = api || {};
 
+
 api.rd = function(name){
   //console.log("Debug: " + name)
+};
+
+
+
+api.post = function(post){
+  return post.replace(LINK_DETECTION_REGEX, function(url) {
+    var address;
+    address = /[a-z]+:\/\//.test(url) ? url : "http://" + url;
+    url = url.replace(/^https?:\/\//, '');
+    return (url.indexOf('//' + document.domain)<0)?("<a href='" + address + "' target='_blank'>" + url + "</a>"):("<a href='" + address + "' target='_blank'" + 'class="route"' + ">" + url + "</a>");
+  }).replace(/\n/g, '<br/>');
 };
 
 api.requestWithFeedback = function(args) {
@@ -914,25 +927,54 @@ var Home = {
 
                             ]}, 
 
-                            {tag: "p", attrs: {className:"content-post"}, children: [
-                              post.content
+                            {tag: "div", attrs: {className:"content-post"}, children: [
+                              m.trust(api.post(post.content))
                             ]}, 
 
                             {tag: "div", attrs: {className:"ui horizontal list extra-post"}, children: [
                               {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "a", attrs: {className:"mini ui  basic button"}, children: [
+                                {tag: "a", attrs: {className:"mini ui  basic button", "data-content":"like", "data-position":"top left", 
+                                  config:function(el, isInited){
+                                    if(!isInited){
+                                      $(el)
+                                          .popup({
+                                            inline: true
+                                          })
+                                        ;
+                                      }
+                                    }
+                                  
+                                }, children: [
                                   {tag: "i", attrs: {className:"heart icon"}}, 
                                   post.info.nbLike
                                 ]}
                               ]}, 
                               {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "a", attrs: {className:"mini ui basic button"}, children: [
+                                {tag: "a", attrs: {className:"mini ui basic button", "data-content":"comment", "data-position":"top left", 
+                                   config:function(el, isInited){
+                                    if(!isInited){
+                                      $(el)
+                                          .popup({
+                                            inline: true
+                                          })
+                                        ;
+                                      }
+                                    }
+                                  
+                                }, children: [
                                   {tag: "i", attrs: {className:"comment icon"}}, 
                                   post.info.nbComment
                                 ]}
                               ]}, 
                               {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "a", attrs: {className:"mini ui basic button"}, children: [
+                                {tag: "a", attrs: {className:"mini ui basic button", "data-content":"share", "data-position":"top left", 
+                                   config:function(el, isInited){
+                                    if(!isInited){
+                                      $(el).popup({inline: true});
+                                    }
+                                    }
+                                  
+                                }, children: [
                                   {tag: "i", attrs: {className:"share icon"}}, 
                                   post.info.nbShare
                                 ]}
@@ -980,8 +1022,20 @@ var api = require('.././api.msx');
 
 var Friend = function(ctrl){ return (
     {tag: "div", attrs: {}, children: [
-      {tag: "a", attrs: {className:"item nofity border-left-icon message-button", 
-         onclick:function(){rd.nav(ctrl.displayFriend());}
+      {tag: "a", attrs: {className:"item nofity border-left-icon message-button", "data-content":"Friend Requests", "data-position":"bottom right", 
+         onclick:function(){rd.nav(ctrl.displayFriend());}, 
+         config:function(el, isInited){
+              if(!isInited){
+                var prepPopup = $(el);
+                prepPopup.popup({inline: true, on: 'manual'});
+                prepPopup.hover(function(){
+                  if(!wsCtrl.data.notify.display){prepPopup.popup('show');}
+                });
+                prepPopup.on('click mouseleave', function(){
+                  prepPopup.popup('hide');
+                });
+              }
+             }
       }, children: [
         {tag: "a", attrs: {href:"javascript:void(0)"}, children: [{tag: "i", attrs: {className:"large icon add user users-icon"}}]}, 
         (wsCtrl.data.makeFriend.n>0)?({tag: "div", attrs: {className:"floating ui red label num-label"}, children: [wsCtrl.data.makeFriend.n]}):""
@@ -1168,8 +1222,20 @@ var api = require('.././api.msx');
 
 var MessageButton = function(ctrl){ return (
     {tag: "div", attrs: {}, children: [
-      {tag: "a", attrs: {className:"item nofity border-left-icon message-button", 
-         onclick:function(){rd.nav(ctrl.displayNofity());}
+      {tag: "a", attrs: {className:"item nofity border-left-icon message-button pre-show-messages", "data-content":"Messages", "data-position":"bottom right", 
+         onclick:function(){rd.nav(ctrl.displayNofity());}, 
+         config:function(el, isInited){
+              if(!isInited){
+                var prepPopup = $(el);
+                prepPopup.popup({inline: true, on: 'manual'});
+                prepPopup.hover(function(){
+                  if(!wsCtrl.data.makeFriend.display){prepPopup.popup('show');}
+                });
+                prepPopup.on('click mouseleave', function(){
+                  prepPopup.popup('hide');
+                });
+              }
+             }
       }, children: [
         {tag: "a", attrs: {href:"javascript:void(0)"}, children: [{tag: "i", attrs: {className:"large mail icon"}}]}, 
         (wsCtrl.data.notify.n>0)?({tag: "div", attrs: {className:"floating ui red label num-label"}, children: [wsCtrl.data.notify.n]}):""
@@ -1264,8 +1330,20 @@ var api = require('.././api.msx');
 
 var UserButton = function(ctrl){ return (
     {tag: "div", attrs: {}, children: [
-      {tag: "a", attrs: {href:"javascript:void(0)", className:"item user-button", 
-         onclick:function(){rd.nav(ctrl.toggleUser())}
+      {tag: "a", attrs: {href:"javascript:void(0)", className:"item user-button", "data-content":"Profile", "data-position":"bottom right", 
+         onclick:function(){rd.nav(ctrl.toggleUser())}, 
+         config:function(el, isInited){
+              if(!isInited){
+                var prepPopup = $(el);
+                prepPopup.popup({inline: true, on: 'manual'});
+                prepPopup.hover(function(){
+                  if(!ctrl.displayUser){prepPopup.popup('show');}
+                });
+                prepPopup.on('click mouseleave', function(){
+                  prepPopup.popup('hide');
+                });
+              }
+             }
       }, children: [
         {tag: "i", attrs: {className:"large user icon"}}, 
         wsCtrl.userName
@@ -1388,19 +1466,31 @@ var Nav = {
     redraw.nav++;
     return (
         {tag: "div", attrs: {className:"ui top small blue inverted fixed  menu sha"}, children: [
-          {tag: "a", attrs: {href:"/", 
-             className:((m.route() == "/")?"active":"") + " item route-button", 
-             config:m.route
+          {tag: "a", attrs: {href:"/", "data-content":"Home", "data-position":"bottom left", 
+             className:((m.route() == "/")?"active":"") + " item route-button route", 
+             config:function(el, isInited){
+              if(!isInited){
+                $(el).popup({inline: true});
+              }
+             }
           }, children: [{tag: "i", attrs: {className:"large icon home users-icon"}}]}, 
-          {tag: "a", attrs: {href:"/dashboard", 
-             className:((m.route() == "/dashboard")?"active":"") + " item route-button", 
-             config:m.route
+          {tag: "a", attrs: {href:"/dashboard", "data-content":"Article", "data-position":"bottom left", 
+             className:((m.route() == "/dashboard")?"active":"") + " item route-button route", 
+             config:function(el, isInited){
+              if(!isInited){
+                $(el).popup({inline: true});
+              }
+             }
           }, children: [
             {tag: "i", attrs: {className:"large icon newspaper"}}
           ]}, 
-          {tag: "a", attrs: {href:"/chatroom", 
-             className:((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button", 
-             config:m.route
+          {tag: "a", attrs: {href:"/chatroom", "data-content":"Chat Room", "data-position":"bottom left", 
+             className:((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button route", 
+             config:function(el, isInited){
+              if(!isInited){
+                $(el).popup({inline: true});
+              }
+             }
           }, children: [
             {tag: "i", attrs: {className:"large icon comments"}}
           ]}, 
@@ -1415,7 +1505,13 @@ var Nav = {
 
            (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
 
-             {tag: "div", attrs: {className:"item"}, children: [
+             {tag: "div", attrs: {className:"item", "data-content":"Users Online", "data-position":"bottom right", 
+              config:function(el, isInited){
+              if(!isInited){
+                $(el).popup({inline: true});
+              }
+             }
+             }, children: [
                {tag: "i", attrs: {className:"large icon  users"}}, 
                {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):("?")]}
              ]}, 
@@ -1432,9 +1528,9 @@ var Nav = {
                     
              }, children: [
                (ctrl.ping()>8000 || ctrl.ping() < 0)?(
-                {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
+                {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}}
                    ):(
-                {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
+                {tag: "i", attrs: {className:"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
                    config:function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
@@ -1473,9 +1569,9 @@ var Nav = {
                     
                 }, children: [
                   (ctrl.ping()>8000 || ctrl.ping() < 0)?(
-                  {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}}
+                  {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}}
                       ):(
-                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
+                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
                      config:function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
@@ -1496,6 +1592,8 @@ var Nav = {
               ]}
               ), 
           Ping(ctrl), 
+          MakeFriend(ctrl), 
+          Messages(ctrl), 
           {tag: "div", attrs: {className:"ui modal sign-up"}, children: [
             {tag: "div", attrs: {className:"ui segment loading", style:"min-height: 500px;"}
             }
@@ -1511,12 +1609,25 @@ var Nav = {
 
 var Ping = function(ctrl){
   return(
-      {tag: "div", attrs: {className:"ui fluid popup show-ping"}, children: [
+      {tag: "div", attrs: {className:"ui  popup show-ping"}, children: [
         {tag: "div", attrs: {className:(ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")}, children: [ctrl.ping(), " ms"]}
       ]}
   )
 };
-
+var MakeFriend = function(ctrl){
+  return(
+      {tag: "div", attrs: {className:"ui popup show-makeFriend"}, children: [
+        {tag: "div", attrs: {}, children: ["Friend requests"]}
+      ]}
+  )
+};
+var Messages = function(ctrl){
+  return(
+      {tag: "div", attrs: {className:"ui  popup show-messages"}, children: [
+        {tag: "div", attrs: {}, children: ["Messages"]}
+      ]}
+  )
+};
 module.exports = Nav;
 },{"../ws/_wsCtrl.js":16,"./api.msx":1,"./menu_button/Friend.msx":8,"./menu_button/Login.msx":9,"./menu_button/Message.msx":10,"./menu_button/User.msx":11}],13:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
@@ -2163,7 +2274,7 @@ function initReconnect(setTime){
   var delayReconnect;
   var delayInit;
   if(setTime === undefined) {
-    delayReconnect = 8000;
+    delayReconnect = 6000;
     delayInit = 2000;
   } else {
     delayReconnect = setTime;
@@ -2325,7 +2436,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
-  console.log("run calc: " + wsCtrl.ping);
+  //console.log("run calc: " + wsCtrl.ping);
 }
 
 var calcTimeOut;
@@ -2333,7 +2444,7 @@ var pingSchedule;
 var inPingSchedule;
 function initPingSchedule() {
   pingSchedule = setTimeout(function pingScheduleFn() {
-    if (wsCtrl.ping <= 8000) {
+    if (wsCtrl.ping <= 6000) {
       calcPing();
       inPingSchedule = setTimeout(pingScheduleFn, 100);
     }

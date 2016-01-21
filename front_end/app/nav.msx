@@ -65,19 +65,31 @@ var Nav = {
     redraw.nav++;
     return (
         <div className="ui top small blue inverted fixed  menu sha">
-          <a href="/"
-             className={((m.route() == "/")?"active":"") + " item route-button"}
-             config={m.route}
+          <a href="/"  data-content="Home" data-position="bottom left"
+             className={((m.route() == "/")?"active":"") + " item route-button route"}
+             config={function(el, isInited){
+              if(!isInited){
+                $(el).popup({inline: true});
+              }
+             }}
           ><i  className="large icon home users-icon"></i></a>
-          <a href="/dashboard"
-             className={((m.route() == "/dashboard")?"active":"") + " item route-button"}
-             config={m.route}
+          <a href="/dashboard" data-content="Article" data-position="bottom left"
+             className={((m.route() == "/dashboard")?"active":"") + " item route-button route"}
+             config={function(el, isInited){
+              if(!isInited){
+                $(el).popup({inline: true});
+              }
+             }}
           >
             <i className="large icon newspaper"></i>
           </a>
-          <a href="/chatroom"
-             className={((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button"}
-             config={m.route}
+          <a href="/chatroom" data-content="Chat Room" data-position="bottom left"
+             className={((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button route"}
+             config={function(el, isInited){
+              if(!isInited){
+                $(el).popup({inline: true});
+              }
+             }}
           >
             <i className="large icon comments"></i>
           </a>
@@ -92,7 +104,13 @@ var Nav = {
 
            {(wsCtrl.userId.length>0)?(<div className="right menu">
 
-             <div className="item">
+             <div className="item" data-content="Users Online" data-position="bottom right"
+              config={function(el, isInited){
+              if(!isInited){
+                $(el).popup({inline: true});
+              }
+             }}
+             >
                <i className="large icon  users">{}</i>
                <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):("?")}</div>
              </div>
@@ -109,9 +127,9 @@ var Nav = {
                     }
              >
                {(ctrl.ping()>8000 || ctrl.ping() < 0)?(
-                <i className={"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}></i>
+                <i className={"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}></i>
                    ):(
-                <i className={"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
+                <i className={"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
                    config={function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
@@ -150,9 +168,9 @@ var Nav = {
                     }
                 >
                   {(ctrl.ping()>8000 || ctrl.ping() < 0)?(
-                  <i className={"large spinner loading " + ((ctrl.ping()>8000)?"red":"") + " icon zero-margin-right"}></i>
+                  <i className={"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}></i>
                       ):(
-                  <i className={"large " + ((ctrl.ping()<500)?"":((ctrl.ping()<1500)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
+                  <i className={"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
                      config={function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
@@ -173,6 +191,8 @@ var Nav = {
               </div>
               )}
           {Ping(ctrl)}
+          {MakeFriend(ctrl)}
+          {Messages(ctrl)}
           <div className="ui modal sign-up" >
             <div className="ui segment loading" style="min-height: 500px;">
             </div>
@@ -188,10 +208,23 @@ var Nav = {
 
 var Ping = function(ctrl){
   return(
-      <div className="ui fluid popup show-ping">
+      <div className="ui  popup show-ping">
         <div className={(ctrl.ping()<500)?"green":((ctrl.ping()<1500)?"yellow":"red")}>{ctrl.ping()} ms</div>
       </div>
   )
 };
-
+var MakeFriend = function(ctrl){
+  return(
+      <div className="ui popup show-makeFriend">
+        <div>Friend requests</div>
+      </div>
+  )
+};
+var Messages = function(ctrl){
+  return(
+      <div className="ui  popup show-messages">
+        <div>Messages</div>
+      </div>
+  )
+};
 module.exports = Nav;

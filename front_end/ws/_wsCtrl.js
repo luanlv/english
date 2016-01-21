@@ -76,7 +76,7 @@ function initReconnect(setTime){
   var delayReconnect;
   var delayInit;
   if(setTime === undefined) {
-    delayReconnect = 8000;
+    delayReconnect = 6000;
     delayInit = 2000;
   } else {
     delayReconnect = setTime;
@@ -238,7 +238,7 @@ var getPosChat = wsCtrl.getPosChat;
 function calcPing(){
   var now = Date.now();
   wsCtrl.ping = Math.ceil(now - prevTime);
-  console.log("run calc: " + wsCtrl.ping);
+  //console.log("run calc: " + wsCtrl.ping);
 }
 
 var calcTimeOut;
@@ -246,7 +246,7 @@ var pingSchedule;
 var inPingSchedule;
 function initPingSchedule() {
   pingSchedule = setTimeout(function pingScheduleFn() {
-    if (wsCtrl.ping <= 8000) {
+    if (wsCtrl.ping <= 6000) {
       calcPing();
       inPingSchedule = setTimeout(pingScheduleFn, 100);
     }

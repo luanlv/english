@@ -73,7 +73,7 @@ object API extends LilaController {
 
   def doPost =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
     val req = ctx.body
-    val content = (Json.parse(req.body.toString).as[JsObject]\"content").as[String]
+    val content = ((Json.parse(req.body.toString).as[JsObject]\"content").as[String]).replaceAll("\\n\\n\\s*\\n", "\n\n").replaceAll("[ \\t\\x0B\\f]+", " ").trim()
     ctx.userId match {
       case Some(id) => {
         postApi.newPost(id, content, DateTime.now()) map {

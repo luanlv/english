@@ -3,8 +3,20 @@ var api = require('.././api.msx');
 
 var UserButton = function(ctrl){ return (
     <div>
-      <a href="javascript:void(0)" className="item user-button"
+      <a href="javascript:void(0)" className="item user-button" data-content="Profile" data-position="bottom right"
          onclick={function(){rd.nav(ctrl.toggleUser())}}
+         config={function(el, isInited){
+              if(!isInited){
+                var prepPopup = $(el);
+                prepPopup.popup({inline: true, on: 'manual'});
+                prepPopup.hover(function(){
+                  if(!ctrl.displayUser){prepPopup.popup('show');}
+                });
+                prepPopup.on('click mouseleave', function(){
+                  prepPopup.popup('hide');
+                });
+              }
+             }}
       >
         <i className="large user icon"></i>
         {wsCtrl.userName}
