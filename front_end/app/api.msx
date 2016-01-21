@@ -16,7 +16,7 @@ api.post = function(post){
     var address;
     address = /[a-z]+:\/\//.test(url) ? url : "http://" + url;
     url = url.replace(/^https?:\/\//, '');
-    return (url.indexOf('//' + document.domain)<0)?("<a href='" + address + "' target='_blank'>" + url + "</a>"):("<a href='" + address + "' target='_blank'" + 'class="route"' + ">" + url + "</a>");
+    return (url.indexOf('//' + document.domain)<0 && url.indexOf('localhost')<0)?("<a href='" + address + "' target='_blank'>" + url + "</a>"):("<a " +" class='route' "+ "href='" + address.replace(/^.*\/\/[^\/]+/, '') + "' >" + url + "</a>");
   }).replace(/\n/g, '<br/>');
 };
 

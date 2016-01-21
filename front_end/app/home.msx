@@ -94,21 +94,23 @@ var Home = {
                 <div className="post">
                   <button className="ui mini primary button"
                        onclick={function(e){
-                        m.redraw.strategy("none");
-                        $('.postWr').addClass('loading');
-                        $.ajax({
-                            type: "POST",
-                            url: "/post",
-                            data: JSON.stringify({content: ctrl.inputPost()}),
-                            contentType: "application/json",
-                            dataType: "text",
-                            success: function(data){
-                               ctrl.inputPost("");
-                               $('.new-post').css('height', 41);
-                               $('.postWr').removeClass('loading');
-                               rd.home(function(){m.redraw()})
-                            }
-                         });
+                        if(ctrl.inputPost().trim().length > 0){
+                          m.redraw.strategy("none");
+                          $('.postWr').addClass('loading');
+                          $.ajax({
+                              type: "POST",
+                              url: "/post",
+                              data: JSON.stringify({content: ctrl.inputPost()}),
+                              contentType: "application/json",
+                              dataType: "text",
+                              success: function(data){
+                                 ctrl.inputPost("");
+                                 $('.new-post').css('height', 41);
+                                 $('.postWr').removeClass('loading');
+                                 rd.home(function(){m.redraw()})
+                              }
+                           });
+                        }
                        }}
                   >Post</button>
                   <span className="clear"></span>
@@ -162,9 +164,23 @@ var Home = {
                                       }
                                     }
                                   }
+                                   onclick = {function(){
+                                    $.post( ((post.likes === undefined || post.likes.length < 0)?"/like":"/unlike") + "/post/" + post.id,
+                                       function(data) {
+                                          if(data === "liked"){
+                                            post.likeCount += 1;
+                                            post.likes = [wsCtrl.userId]
+                                          } else if( data === "unliked"){
+                                            post.likeCount -= 1;
+                                            post.likes = undefined;
+                                          }
+                                          rd.home(function(){m.redraw()});
+                                       }
+                                    );
+                                   }}
                                 >
-                                  <i className="heart icon"></i>
-                                  {post.info.nbLike}
+                                  <i className={((post.likes === undefined || post.likes.length < 0)?"":"blue") + " heart icon"}></i>
+                                  {post.likeCount}
                                 </a>
                               </div>
                               <div className="item">
@@ -181,7 +197,7 @@ var Home = {
                                   }
                                 >
                                   <i className="comment icon"></i>
-                                  {post.info.nbComment}
+                                  {post.commentCount}
                                 </a>
                               </div>
                               <div className="item">
@@ -194,7 +210,7 @@ var Home = {
                                   }
                                 >
                                   <i className="share icon"></i>
-                                  {post.info.nbShare}
+                                  {post.shareCount}
                                 </a>
                               </div>
                             </div>

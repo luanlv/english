@@ -4,39 +4,17 @@ import lila.common.LightUser
 import org.joda.time.DateTime
 import play.api.libs.json._
 
-private[activity] case class Info(
-                                 nbLike: Int,
-                                 liker: List[String],
-                                 nbShare: Int,
-                                 sharer: List[String],
-                                 nbComment: Int
-                                 )
-
-private[activity] object Info {
-  implicit val formatPost = Json.format[Info]
-
-  import reactivemongo.bson._
-
-  private[activity] implicit val BSONReaderPost = new BSONDocumentReader[Info] {
-    def read(doc: BSONDocument): Info = {
-      Info(
-        nbLike = ~doc.getAs[Int]("nbLike"),
-        liker = ~doc.getAs[List[String]]("liker"),
-        nbShare = ~doc.getAs[Int]("nbShare"),
-        sharer = ~doc.getAs[List[String]]("sharer"),
-        nbComment = ~doc.getAs[Int]("nbComment")
-      )
-    }
-  }
-
-}
 
 private[activity] case class Post(
                                         id: String,
                                        content: String,
                                        user: LightUser,
                                        published: DateTime,
-                                        info: Info
+                                        likeCount: Int,
+                                        likes: Option[List[String]],
+                                        shareCount: Int,
+                                        shares: List[String],
+                                        commentCount: Int
                                      )
 
 private[activity] object Post {
@@ -55,7 +33,11 @@ private[activity] object Post {
         content = ~doc.getAs[String]("content"),
         user = lila.user.Env.current.lightUserApi.get(~doc.getAs[String]("userId")).head,
         published = doc.getAs[DateTime]("published").head,
-        info = doc.getAs[Info]("info").head
+        likeCount = ~doc.getAs[Int]("likeCount"),
+        likes = doc.getAs[List[String]]("likes"),
+        shareCount = ~doc.getAs[Int]("shareCount"),
+        shares = ~doc.getAs[List[String]]("shares"),
+        commentCount = ~doc.getAs[Int]("commentCount")
       )
     }
   }

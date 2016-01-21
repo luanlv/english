@@ -3,7 +3,7 @@ var api = require('.././api.msx');
 
 var UserButton = function(ctrl){ return (
     <div>
-      <a href="javascript:void(0)" className="item user-button" data-content="Profile" data-position="bottom right"
+      <a href="javascript:void(0)" className="item user-button" data-content="Profile" data-position="bottom center"
          onclick={function(){rd.nav(ctrl.toggleUser())}}
          config={function(el, isInited){
               if(!isInited){

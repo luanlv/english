@@ -29,14 +29,14 @@ private[activity] final class ActivityActor( postApi: PostApi) extends Actor {
       val listFriend = friendshipApi.friends(userId).await
       val listFollowing = relationApi.following(userId).await
       val listUser = (listFriend ++ listFollowing).+(userId).+("admin")
-      sender ! Json.toJson(postApi.getPost(listUser, DateTime.now()).await)
+      sender ! Json.toJson(postApi.getPost(userId, listUser, DateTime.now()).await)
     }
 
     case NewPost(userId, postId) => {
       val listFriend = friendshipApi.friends(userId).await
       val listFollower = relationApi.followers(userId).await
       val listUser = (listFriend ++ listFollower).+(userId)
-      postApi.getOnePost(postId).map{
+      postApi.getOnePost(userId, postId).map{
         post => bus.publish(SendTos(listUser, "newPost", Json.toJson(post)), 'users)
       }
 

@@ -14,6 +14,9 @@ GET /@/:username/mini          controllers.User.showMini(username: String)
 POST /post                         controllers.API.doPost
 GET  /post/:username               controllers.API.getPost(username: String)
 
+POST /like/post/:postId            controllers.API.likePost(postId: String)
+POST /unlike/post/:postId            controllers.API.unlikePost(postId: String)
+
 GET   /socket                          controllers.Main.websocket
 
 GET   /monitor                         controllers.Monitor.index

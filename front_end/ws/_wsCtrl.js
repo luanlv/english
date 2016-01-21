@@ -149,7 +149,12 @@ var getMissing = function(){
   }
 
   if(m.route().toString().indexOf('/chatroom/') >= 0){
-    wsCtrl.send(wsCtrl.sendData("reconnect", {t: "room", v: m.route.param("roomId")}))
+    if(!wsCtrl.getRoom(ctrl.id).initOk){
+      wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
+    } else {
+      wsCtrl.send(wsCtrl.sendData("reconnect", {t: "room", v: m.route.param("roomId")}))
+    }
+
     if(wsCtrl.data.post.init){
       wsCtrl.send(wsCtrl.sendData("reconnect", {t: "home", v: wsCtrl.data.post.timepoint}));
     }

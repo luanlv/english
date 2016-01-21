@@ -25,22 +25,66 @@ object PostRepo {
   private lazy val coll = Env.current.postColl
 
   def insert(id: String, userId: String, content: String, published: DateTime): Future[WriteResult] = {
-    val info = Info(0, List(), 0, List(), 0)
-    val post = Post(id, content, lila.user.Env.current.lightUserApi.get(userId).get, published, info)
+//    val info = Info(0, List(), 0, List(), 0)
+    val post = Post(id, content, lila.user.Env.current.lightUserApi.get(userId).get, published, 0, Option(List()), 0, List(), 0)
     coll.insert(post)
   }
 
-  def getOnePost(postId: String) = {
-    coll.find(BSONDocument("_id" -> postId))
+  def getOnePost(userId: String, postId: String) = {
+    coll.find(BSONDocument("_id" -> postId),
+      BSONDocument(
+        "_id" -> 1,
+        "content" -> 1,
+        "userId" -> 1,
+        "published" -> 1,
+        "likeCount" -> 1,
+        "likes" -> BSONDocument("$elemMatch" -> BSONDocument("$eq" -> userId)),
+        "shareCount" -> 1,
+        "shares" -> 1,
+        "commentCount" -> 1
+      )
+    )
     .cursor[Post]()
     .headOption
   }
 
-  def getPost(ids: Set[ID], timepoint: DateTime): Fu[List[Post]] = {
-    coll.find(BSONDocument("userId" -> BSONDocument("$in" -> ids)))
+  def getPost(userId: String, ids: Set[ID], timepoint: DateTime): Fu[List[Post]] = {
+    coll.find(BSONDocument("userId" -> BSONDocument("$in" -> ids)),
+      BSONDocument(
+        "_id" -> 1,
+        "content" -> 1,
+        "userId" -> 1,
+        "published" -> 1,
+        "likeCount" -> 1,
+        "likes" -> BSONDocument("$elemMatch" -> BSONDocument("$eq" -> userId)),
+        "shareCount" -> 1,
+        "shares" -> 1,
+        "commentCount" -> 1
+      )
+    )
       .sort(BSONDocument("published" -> -1))
       .cursor[Post]()
       .collect[List](10)
+  }
+
+  def like(userId: String, postId: String) = {
+    coll.update(
+      BSONDocument("_id" -> postId, "likes" -> BSONDocument("$ne" -> userId)),
+      BSONDocument(
+        "$inc" -> BSONDocument("likeCount" -> 1),
+        "$push" -> BSONDocument("likes" -> userId)
+      )
+    ).void
+  }
+
+  def unlike(userId: String, postId: String) = {
+    coll.update(
+      BSONDocument("_id" -> postId, "likes" -> userId),
+      BSONDocument(
+        "$inc" -> BSONDocument("likeCount" -> -1),
+        "$pull" -> BSONDocument("likes" -> userId)
+      )
+    ).void
   }
 
 }
