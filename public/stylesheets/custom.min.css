@@ -1105,9 +1105,7 @@ textarea {
   font-size: 13px;
   color: #eee; }
 .postContainer .content-post {
-  min-height: 30px;
-  word-wrap: break-word;
-  white-space: pre-wrap; }
+  min-height: 30px; }
 .postContainer .extra-post {
   padding-top: 5px !important; }
 .postContainer .avatar {

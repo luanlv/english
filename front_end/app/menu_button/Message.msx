@@ -3,8 +3,20 @@ var api = require('.././api.msx');
 
 var MessageButton = function(ctrl){ return (
     <div>
-      <a className="item nofity border-left-icon message-button"
+      <a className="item nofity border-left-icon message-button pre-show-messages" data-content="Messages" data-position="bottom right"
          onclick={function(){rd.nav(ctrl.displayNofity());}}
+         config={function(el, isInited){
+              if(!isInited){
+                var prepPopup = $(el);
+                prepPopup.popup({inline: true, on: 'manual'});
+                prepPopup.hover(function(){
+                  if(!wsCtrl.data.makeFriend.display){prepPopup.popup('show');}
+                });
+                prepPopup.on('click mouseleave', function(){
+                  prepPopup.popup('hide');
+                });
+              }
+             }}
       >
         <a href="javascript:void(0)"><i className="large mail icon"></i></a>
         {(wsCtrl.data.notify.n>0)?(<div className="floating ui red label num-label">{wsCtrl.data.notify.n}</div>):""}

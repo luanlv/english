@@ -145,25 +145,54 @@ var Home = {
 
                             </div>
 
-                            <p className="content-post">
-                              {post.content}
-                            </p>
+                            <div className="content-post">
+                              {m.trust(api.post(post.content))}
+                            </div>
 
                             <div className="ui horizontal list extra-post">
                               <div className="item">
-                                <a className="mini ui  basic button">
+                                <a className="mini ui  basic button" data-content="like" data-position="top left"
+                                  config={function(el, isInited){
+                                    if(!isInited){
+                                      $(el)
+                                          .popup({
+                                            inline: true
+                                          })
+                                        ;
+                                      }
+                                    }
+                                  }
+                                >
                                   <i className="heart icon"></i>
                                   {post.info.nbLike}
                                 </a>
                               </div>
                               <div className="item">
-                                <a className="mini ui basic button">
+                                <a className="mini ui basic button" data-content="comment" data-position="top left"
+                                   config={function(el, isInited){
+                                    if(!isInited){
+                                      $(el)
+                                          .popup({
+                                            inline: true
+                                          })
+                                        ;
+                                      }
+                                    }
+                                  }
+                                >
                                   <i className="comment icon"></i>
                                   {post.info.nbComment}
                                 </a>
                               </div>
                               <div className="item">
-                                <a className="mini ui basic button">
+                                <a className="mini ui basic button" data-content="share" data-position="top left"
+                                   config={function(el, isInited){
+                                    if(!isInited){
+                                      $(el).popup({inline: true});
+                                    }
+                                    }
+                                  }
+                                >
                                   <i className="share icon"></i>
                                   {post.info.nbShare}
                                 </a>

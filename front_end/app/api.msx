@@ -1,10 +1,23 @@
 var wsCtrl = require('../ws/_wsCtrl.js');
 
+var LINK_DETECTION_REGEX = /\b(https?|ftp|file):\/\/[\-A-Za-z0-9+&@#\/%?=~_|!:,.;]*[\-A-Za-z0-9+&@#\/%=~_|‌​]/gi;
 
 var api = api || {};
 
+
 api.rd = function(name){
   //console.log("Debug: " + name)
+};
+
+
+
+api.post = function(post){
+  return post.replace(LINK_DETECTION_REGEX, function(url) {
+    var address;
+    address = /[a-z]+:\/\//.test(url) ? url : "http://" + url;
+    url = url.replace(/^https?:\/\//, '');
+    return (url.indexOf('//' + document.domain)<0)?("<a href='" + address + "' target='_blank'>" + url + "</a>"):("<a href='" + address + "' target='_blank'" + 'class="route"' + ">" + url + "</a>");
+  }).replace(/\n/g, '<br/>');
 };
 
 api.requestWithFeedback = function(args) {

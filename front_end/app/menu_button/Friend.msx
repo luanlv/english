@@ -3,8 +3,20 @@ var api = require('.././api.msx');
 
 var Friend = function(ctrl){ return (
     <div>
-      <a className="item nofity border-left-icon message-button"
+      <a className="item nofity border-left-icon message-button" data-content="Friend Requests" data-position="bottom right"
          onclick={function(){rd.nav(ctrl.displayFriend());}}
+         config={function(el, isInited){
+              if(!isInited){
+                var prepPopup = $(el);
+                prepPopup.popup({inline: true, on: 'manual'});
+                prepPopup.hover(function(){
+                  if(!wsCtrl.data.notify.display){prepPopup.popup('show');}
+                });
+                prepPopup.on('click mouseleave', function(){
+                  prepPopup.popup('hide');
+                });
+              }
+             }}
       >
         <a href="javascript:void(0)"><i className="large icon add user users-icon"></i></a>
         {(wsCtrl.data.makeFriend.n>0)?(<div className="floating ui red label num-label">{wsCtrl.data.makeFriend.n}</div>):""}
