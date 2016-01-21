@@ -19,15 +19,23 @@ final class PostApi(
                  cached: Cached,
                  actor: ActorSelection) {
 
-  def getPost(ids: Set[String], timepoint: DateTime) = PostRepo.getPost(ids, timepoint)
+  def getPost(userId: String, ids: Set[String], timepoint: DateTime) = PostRepo.getPost(userId, ids, timepoint)
 
   def newPost(userId: String, content: String,  published: DateTime) = {
     val postId = UUID.randomUUID().toString
     PostRepo.insert(postId, userId, content, published) >>- pushPost(userId, postId)
   }
 
-  def getOnePost(postId: String) = {
-    PostRepo.getOnePost(postId)
+  def getOnePost(userId: String, postId: String) = {
+    PostRepo.getOnePost(userId, postId)
+  }
+
+  def like(userId: String, postId: String) = {
+    PostRepo.like(userId, postId)
+  }
+
+  def unlike(userId: String, postId: String) = {
+    PostRepo.unlike(userId, postId)
   }
 
   def pushPost(userId: String, postId: String) = {

@@ -17,7 +17,7 @@ api.post = function(post){
     var address;
     address = /[a-z]+:\/\//.test(url) ? url : "http://" + url;
     url = url.replace(/^https?:\/\//, '');
-    return (url.indexOf('//' + document.domain)<0)?("<a href='" + address + "' target='_blank'>" + url + "</a>"):("<a href='" + address + "' target='_blank'" + 'class="route"' + ">" + url + "</a>");
+    return (url.indexOf('//' + document.domain)<0 && url.indexOf('localhost')<0)?("<a href='" + address + "' target='_blank'>" + url + "</a>"):("<a " +" class='route' "+ "href='" + address.replace(/^.*\/\/[^\/]+/, '') + "' >" + url + "</a>");
   }).replace(/\n/g, '<br/>');
 };
 
@@ -876,21 +876,23 @@ var Home = {
                 {tag: "div", attrs: {className:"post"}, children: [
                   {tag: "button", attrs: {className:"ui mini primary button", 
                        onclick:function(e){
-                        m.redraw.strategy("none");
-                        $('.postWr').addClass('loading');
-                        $.ajax({
-                            type: "POST",
-                            url: "/post",
-                            data: JSON.stringify({content: ctrl.inputPost()}),
-                            contentType: "application/json",
-                            dataType: "text",
-                            success: function(data){
-                               ctrl.inputPost("");
-                               $('.new-post').css('height', 41);
-                               $('.postWr').removeClass('loading');
-                               rd.home(function(){m.redraw()})
-                            }
-                         });
+                        if(ctrl.inputPost().trim().length > 0){
+                          m.redraw.strategy("none");
+                          $('.postWr').addClass('loading');
+                          $.ajax({
+                              type: "POST",
+                              url: "/post",
+                              data: JSON.stringify({content: ctrl.inputPost()}),
+                              contentType: "application/json",
+                              dataType: "text",
+                              success: function(data){
+                                 ctrl.inputPost("");
+                                 $('.new-post').css('height', 41);
+                                 $('.postWr').removeClass('loading');
+                                 rd.home(function(){m.redraw()})
+                              }
+                           });
+                        }
                        }
                   }, children: ["Post"]}, 
                   {tag: "span", attrs: {className:"clear"}}
@@ -942,11 +944,25 @@ var Home = {
                                           })
                                         ;
                                       }
-                                    }
+                                    }, 
                                   
+                                   onclick:function(){
+                                    $.post( ((post.likes === undefined || post.likes.length < 0)?"/like":"/unlike") + "/post/" + post.id,
+                                       function(data) {
+                                          if(data === "liked"){
+                                            post.likeCount += 1;
+                                            post.likes = [wsCtrl.userId]
+                                          } else if( data === "unliked"){
+                                            post.likeCount -= 1;
+                                            post.likes = undefined;
+                                          }
+                                          rd.home(function(){m.redraw()});
+                                       }
+                                    );
+                                   }
                                 }, children: [
-                                  {tag: "i", attrs: {className:"heart icon"}}, 
-                                  post.info.nbLike
+                                  {tag: "i", attrs: {className:((post.likes === undefined || post.likes.length < 0)?"":"blue") + " heart icon"}}, 
+                                  post.likeCount
                                 ]}
                               ]}, 
                               {tag: "div", attrs: {className:"item"}, children: [
@@ -963,7 +979,7 @@ var Home = {
                                   
                                 }, children: [
                                   {tag: "i", attrs: {className:"comment icon"}}, 
-                                  post.info.nbComment
+                                  post.commentCount
                                 ]}
                               ]}, 
                               {tag: "div", attrs: {className:"item"}, children: [
@@ -976,7 +992,7 @@ var Home = {
                                   
                                 }, children: [
                                   {tag: "i", attrs: {className:"share icon"}}, 
-                                  post.info.nbShare
+                                  post.shareCount
                                 ]}
                               ]}
                             ]}
@@ -1330,7 +1346,7 @@ var api = require('.././api.msx');
 
 var UserButton = function(ctrl){ return (
     {tag: "div", attrs: {}, children: [
-      {tag: "a", attrs: {href:"javascript:void(0)", className:"item user-button", "data-content":"Profile", "data-position":"bottom right", 
+      {tag: "a", attrs: {href:"javascript:void(0)", className:"item user-button", "data-content":"Profile", "data-position":"bottom center", 
          onclick:function(){rd.nav(ctrl.toggleUser())}, 
          config:function(el, isInited){
               if(!isInited){
@@ -2347,7 +2363,12 @@ var getMissing = function(){
   }
 
   if(m.route().toString().indexOf('/chatroom/') >= 0){
-    wsCtrl.send(wsCtrl.sendData("reconnect", {t: "room", v: m.route.param("roomId")}))
+    if(!wsCtrl.getRoom(ctrl.id).initOk){
+      wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
+    } else {
+      wsCtrl.send(wsCtrl.sendData("reconnect", {t: "room", v: m.route.param("roomId")}))
+    }
+
     if(wsCtrl.data.post.init){
       wsCtrl.send(wsCtrl.sendData("reconnect", {t: "home", v: wsCtrl.data.post.timepoint}));
     }

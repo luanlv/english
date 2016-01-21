@@ -95,15 +95,29 @@ object API extends LilaController {
       val listFollowing = relationApi.following(username).await
       val listUser = (listFriend ++ listFollowing).+(username)
 //      println(listUser)
-      val fuPost = PostRepo.getPost(listUser, DateTime.now())
+      val fuPost = PostRepo.getPost(ctx.userId.get, listUser, DateTime.now())
       fuPost map {
         posts => Ok(Json.toJson(posts))
       }
     } else {
-      val fuPost = PostRepo.getPost(Set(username), DateTime.now())
+      val fuPost = PostRepo.getPost(ctx.userId.get, Set(username), DateTime.now())
       fuPost map {
         posts => Ok(Json.toJson(posts))
       }
+    }
+  }
+
+  def likePost(postId: String) = Open { implicit ctx =>
+    ctx.userId match {
+      case None => BadRequest.fuccess
+      case Some(id) => postApi.like(id, postId) map (_ => Ok("liked"))
+    }
+  }
+
+  def unlikePost(postId: String) = Open { implicit ctx =>
+    ctx.userId match {
+      case None => BadRequest.fuccess
+      case Some(id) => postApi.unlike(id, postId) map (_ => Ok("unliked"))
     }
   }
 
