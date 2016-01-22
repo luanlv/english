@@ -306,6 +306,10 @@ html, body {
 body {
   overflow-y: scroll !important; }
 
+.dimmed {
+  overflow-y: hidden !important;
+  padding-right: 17px; }
+
 ::-webkit-scrollbar {
   height: 16px;
   overflow: visible;
@@ -467,9 +471,7 @@ textarea:focus:-ms-input-placeholder {
   width: 200px; }
 
 .text {
-  overflow: auto;
-  word-wrap: break-word;
-  white-space: pre-wrap; }
+  overflow: auto; }
 
 .mes {
   word-wrap: break-word;
@@ -979,16 +981,16 @@ textarea {
   border-radius: 3px !important; }
   #powerTip .route {
     font-family: 'Open Sans', sans-serif, Arial, Helvetica !important; }
-  #powerTip .mini {
+  #powerTip .info {
     width: 260px;
     height: 95px; }
-    #powerTip .mini .sub a {
+    #powerTip .info .sub a {
       color: #999; }
-      #powerTip .mini .sub a:hover {
+      #powerTip .info .sub a:hover {
         text-decoration: underline; }
-    #powerTip .mini table {
+    #powerTip .info table {
       width: 100%; }
-    #powerTip .mini .relation_actions > a {
+    #powerTip .info .relation_actions > a {
       width: 49%; }
 
 #powerTip:before, #powerTip:after {
@@ -1118,3 +1120,9 @@ textarea {
   margin-top: 30px;
   color: red;
   font-size: 30px; }
+
+.viewpost {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 550px;
+  margin: 0 auto; }

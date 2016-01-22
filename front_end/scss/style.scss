@@ -29,7 +29,14 @@ html,body {
 
 body{
   overflow-y: scroll!important;
+
 }
+.dimmed{
+  overflow-y: hidden!important;
+  padding-right: 17px;
+}
+
+
 
 ::-webkit-scrollbar{
   height:16px;
@@ -206,8 +213,8 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
 
 .text{
   overflow: auto;
-  word-wrap: break-word;
-  white-space: pre-wrap;
+  //word-wrap: break-word;
+  //white-space: pre-wrap;
 }
 
 .mes{
@@ -816,6 +823,7 @@ textarea {
   100% { transform: perspective(100px) rotateX(0) rotateY(0); }
 }
 
+
 #powerTip {
   .route {
     font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
@@ -825,7 +833,7 @@ textarea {
   color: #333 !important;
   border-radius: 3px !important;
   @extend .sha3;
-  .mini {
+  .info {
     width: 260px;
     height: 95px;
     .sub a {
@@ -1048,4 +1056,18 @@ textarea {
   margin-top: 30px;
   color: red;
   font-size: 30px;
+}
+
+.viewpost {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 550px;
+  margin: 0 auto;
+}
+
+.show-post {
+  //overflow-y: scroll!important;
+  //overflow-y: auto;
+  //width: 650px !important;
+  //margin: 0 auto;
 }

@@ -13,6 +13,7 @@ GET /@/:username/mini          controllers.User.showMini(username: String)
 
 POST /post                         controllers.API.doPost
 GET  /post/:username               controllers.API.getPost(username: String)
+GET  /viewpost/:postId               controllers.API.viewPost(postId: String)
 
 POST /like/post/:postId            controllers.API.likePost(postId: String)
 POST /unlike/post/:postId            controllers.API.unlikePost(postId: String)

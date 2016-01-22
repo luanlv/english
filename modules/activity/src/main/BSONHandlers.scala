@@ -36,4 +36,60 @@ object BSONHandlers {
       )
     }
   }
+
+  implicit val childCommentBSONHandler = new BSON[ChildComment] {
+    def reads(r: BSON.Reader) = {
+      ChildComment(
+        id = r str "_id",
+        parentId = r str "parentId",
+        comment = r str "comment",
+        user = lila.user.Env.current.lightUserApi.get(r str "userId").get,
+        time = r date "time",
+        likeCount = r int "likeCount",
+        likes = r getO[List[String]] "likes"
+      )
+    }
+    def writes(w: BSON.Writer, o: ChildComment) = {
+      BSONDocument(
+        "_id" -> o.id,
+        "parentId" -> o.parentId,
+        "comment" -> o.comment,
+        "userId" -> o.user.id,
+        "time" -> w.date(o.time),
+        "likeCount" -> o.likeCount,
+        "likes" -> o.likes
+      )
+    }
+  }
+
+  implicit val commentBSONHandler = new BSON[Comment] {
+
+    def reads(r: BSON.Reader) = {
+      Comment(
+        id = r str "_id",
+        parentPost = r str "parentPost",
+        comment = r str "comment",
+        user = lila.user.Env.current.lightUserApi.get(r str "userId").get,
+        time = r date "time",
+        likeCount = r int "likeCount",
+        likes = r getO[List[String]] "likes",
+        childCount = r int "childCount",
+        children = r get[List[ChildComment]] "children"
+      )
+    }
+
+    def writes(w: BSON.Writer, o: Comment) = {
+      BSONDocument(
+        "_id" -> o.id,
+        "parentPost" -> o.parentPost,
+        "comment" -> o.comment,
+        "userId" -> o.user.id,
+        "time" -> w.date(o.time),
+        "likeCount" -> o.likeCount,
+        "likes" -> o.likes,
+        "childCount" -> o.childCount,
+        "children" -> o.children
+      )
+    }
+  }
 }

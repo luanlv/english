@@ -35,6 +35,7 @@ wsCtrl.storage = {
 
 
 wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
+wsCtrl.post = m.prop({});
 wsCtrl.data = {
   post: {
     init: false,
@@ -301,7 +302,7 @@ ctrl.listen = function(d){
     rd.home(function(){m.redraw()})
   }
   else if(d.t === "newPost"){
-    console.log("new post")
+
     if(d.d.id !== undefined) {
       wsCtrl.data.post.list.unshift(d.d);
       wsCtrl.data.post.timepoint = d.d.published;
@@ -357,13 +358,26 @@ ctrl.listen = function(d){
     }
   }
 
+  else if(d.t === "newComment"){
+    if(d.d.parentId === undefined) {
+      wsCtrl.post().comment.push(d.d);
+      wsCtrl.post().post.commentCount += 1;
+    } else {
+      var parrentPos = arrayObjectIndexOf(wsCtrl.post().comment, d.d.parentId, "id");
+      wsCtrl.post().post.commentCount += 1;
+      wsCtrl.post().comment[parrentPos].children.push(d.d);
+      wsCtrl.post().comment[parrentPos].childCount +=1;
+    }
+    rd.home(function(){m.redraw(); $('.ui.modal.show-post').modal("refresh");})
+  }
+
   else if(d.t === "following_onlines"){
     data.userOnline = d.d;
     rd.right(function(){m.redraw()})
   }
 
   if(d.t === "following_leaves"){
-    data.userOnline.splice(arrayObjectIndexOf(data.userOnline, d.d.in, "id"), 1);
+    data.userOnline.splice(arrayObjectIndexOf(data.userOnline, d.d.id, "id"), 1);
     rd.right(function(){m.redraw()})
   }
 
@@ -601,7 +615,7 @@ $(document).on('click', '.route', function(e){
   console.log("route")
   e.preventDefault();
   m.route($(this).attr('href'));
-  $('.mini').remove();
+  $('#powertip .mini').remove();
 });
 
 $('body').on('click', '.relation_actions a.relation', function() {
