@@ -3,26 +3,54 @@ var api = require('./api.msx');
 
 var Home = {
   controller: function() {
-    m.redraw.strategy("diff")
-    $.cookie('url', m.route(), {path: "/"})
+    m.redraw.strategy("diff");
+    $.cookie('url', m.route(), {path: "/"});
     api.rd("Controller: Home");
     var ctrl = this;
     ctrl.add = function(input){
       ctrl.inputPost('')
     };
     ctrl.inputPost = m.prop('');
-
+    ctrl.inputComment = m.prop('');
+    
     if(!wsCtrl.data.post.init){
       wsCtrl.send(wsCtrl.sendData("initPost", {}));
     }
 
-    rd.home(function(){m.redraw()});
+    ctrl.setup = function(){
+      //$('.ui.modal.show-post').modal("refresh");
+      wsCtrl.post().comment = wsCtrl.post().comment.reverse();
+    }
+
+    ctrl.addComment = function(postId, input){
+      var ip = input().trim();
+      //input = input.replace(/\n/g, '');
+      if (ip) {
+        wsCtrl.send(wsCtrl.sendData("comment", {parent: "post",  id: postId, c: ip}));
+        input('');
+      }
+      rd.home(function(){m.redraw()})
+    };
+
+    ctrl.addChildComment = function(commentId, input, postId){
+      var ip = input().trim();
+      //input = input.replace(/\n/g, '');
+      if (ip) {
+        wsCtrl.send(wsCtrl.sendData("comment", {parent: "comment", postId: postId,   id: commentId, c: ip}));
+        input('');
+      }
+      rd.home(function(){m.redraw()})
+    };
+
+
+    ctrl.post = m.prop({});
+    console.log("home !!")
+    rd.home(function(){console.log("redraw home!"); m.redraw()});
   },
   view: function(ctrl) {
     api.rd("home:" + redraw.home);
-    redraw.home++;
     return (
-        <div className="ui grid  main-content ">
+        <div className="ui grid  main-content">
           <div className="three wide column">
               <div className="ui  home-post-Wr mh500">
                   <div className="trending">
@@ -117,7 +145,9 @@ var Home = {
                 </div>
               </div>
             </div>
-
+              {!(wsCtrl.post.length > 0)?(
+                  Home.ShowPost(ctrl)
+              ):""}
               {!wsCtrl.data.post.init?(
                   (wsCtrl.userId.length>0)?(
                   <div className="ui segment loading mh300 noBor noSha">
@@ -131,93 +161,7 @@ var Home = {
               ):(
                   wsCtrl.data.post.list.map(function(post){
                     return (
-                        <div className="ui home-post-Wr">
-                          <div className="ui postContainer postDemo">
-
-                            <div className="ui list">
-                              <div className="item">
-                                  <a className="fl avatar route ulpt" href={"/@/" + post.user.id}>
-                                    <img className="image" src={(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)} />
-                                  </a>
-                                  <div className="content">
-                                    <span className="header"><a className="name route ulpt" href={"/@/" + post.user.id}>{post.user.name}</a></span>
-                                    <div className="description">{api.time(post.published)}</div>
-                                  </div>
-                             </div>
-
-                            </div>
-
-                            <div className="content-post">
-                              {m.trust(api.post(post.content))}
-                            </div>
-
-                            <div className="ui horizontal list extra-post">
-                              <div className="item">
-                                <a className="mini ui  basic button" data-content="like" data-position="top left"
-                                  config={function(el, isInited){
-                                    if(!isInited){
-                                      $(el)
-                                          .popup({
-                                            inline: true
-                                          })
-                                        ;
-                                      }
-                                    }
-                                  }
-                                   onclick = {function(){
-                                    $.post( ((post.likes === undefined || post.likes.length < 0)?"/like":"/unlike") + "/post/" + post.id,
-                                       function(data) {
-                                          if(data === "liked"){
-                                            post.likeCount += 1;
-                                            post.likes = [wsCtrl.userId]
-                                          } else if( data === "unliked"){
-                                            post.likeCount -= 1;
-                                            post.likes = undefined;
-                                          }
-                                          rd.home(function(){m.redraw()});
-                                       }
-                                    );
-                                   }}
-                                >
-                                  <i className={((post.likes === undefined || post.likes.length < 0)?"":"blue") + " heart icon"}></i>
-                                  {post.likeCount}
-                                </a>
-                              </div>
-                              <div className="item">
-                                <a className="mini ui basic button" data-content="comment" data-position="top left"
-                                   config={function(el, isInited){
-                                    if(!isInited){
-                                      $(el)
-                                          .popup({
-                                            inline: true
-                                          })
-                                        ;
-                                      }
-                                    }
-                                  }
-                                >
-                                  <i className="comment icon"></i>
-                                  {post.commentCount}
-                                </a>
-                              </div>
-                              <div className="item">
-                                <a className="mini ui basic button" data-content="share" data-position="top left"
-                                   config={function(el, isInited){
-                                    if(!isInited){
-                                      $(el).popup({inline: true});
-                                    }
-                                    }
-                                  }
-                                >
-                                  <i className="share icon"></i>
-                                  {post.shareCount}
-                                </a>
-                              </div>
-                            </div>
-
-
-                          </div>
-                        </div>
+                        Home.post(post, ctrl)
                     )
                   })
               )}
@@ -244,9 +188,294 @@ var Home = {
 
             </div>
           </div>
+
         </div>
     )
   }
 };
+
+
+Home.post = function(post, ctrl){
+  return(
+      <div className="ui home-post-Wr">
+        <div className="ui postContainer postDemo">
+
+          <div className="ui list">
+            <div className="item">
+              <span className="fl avatar">
+                <a className="route ulpt" href={"/@/" + post.user.id}>
+                  <img className="image" src={(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)} />
+                </a>
+              </span>
+              <div className="content">
+                <span className="header"><a className="name route ulpt" href={"/@/" + post.user.id}>{post.user.name}</a></span>
+                <div className="description">{api.time(post.published)}</div>
+              </div>
+            </div>
+
+          </div>
+          <div className="content-post">
+            {m.trust(api.post(post.content))}
+          </div>
+
+          <div className="ui horizontal list extra-post">
+            <div className="item">
+              <a className="mini ui  basic button" data-content="like" data-position="top left"
+                 config={function(el, isInited){
+                                    if(!isInited){
+                                      $(el)
+                                          .popup({
+                                            inline: true
+                                          })
+                                        ;
+                                      }
+                                    }
+                                  }
+                 onclick = {function(){
+                                    $.post( ((post.likes === undefined || post.likes.length < 0)?"/like":"/unlike") + "/post/" + post.id,
+                                       function(data) {
+                                          if(data === "liked"){
+                                            post.likeCount += 1;
+                                            post.likes = [wsCtrl.userId]
+                                          } else if( data === "unliked"){
+                                            post.likeCount -= 1;
+                                            post.likes = undefined;
+                                          }
+                                          rd.home(function(){m.redraw()});
+                                       }
+                                    );
+                                   }}
+              >
+                <i className={((post.likes === undefined || post.likes.length < 0)?"":"blue") + " heart icon"}></i>
+                {post.likeCount}
+              </a>
+            </div>
+            <div className="item">
+              <a className="mini ui basic button" data-content="comment" data-position="top left"
+                 config={function(el, isInited){
+                                    if(!isInited){
+                                      $(el)
+                                          .popup({
+                                            inline: true
+                                          })
+                                        ;
+                                      }
+                                    }
+                                  }
+                 onclick={function(e){
+                    console.log(m.route.param('_post'));
+                    if(m.route.param('_post') === undefined){
+                      if(m.route().indexOf("/?") < 0){
+                        m.route(m.route()+"?_post=" + post.id);
+                      } else {
+                        m.route(m.route()+"_post=" + post.id);
+                      }
+
+                      //console.log(m.route.param("_post"))
+                      wsCtrl.request = api.requestWithFeedback2({method: "GET", url: "/viewpost/" + post.id}, wsCtrl.post, ctrl.setup);
+                      wsCtrl.send(wsCtrl.sendData("subPost", {id: post.id}));
+                      api.showPost(post.id);
+                    }
+                 }}
+              >
+                <i className="comment icon"></i>
+                {post.commentCount}
+              </a>
+            </div>
+            <div className="item">
+              <a className="mini ui basic button" data-content="share" data-position="top left"
+                 config={function(el, isInited){
+                                    if(!isInited){
+                                      $(el).popup({inline: true});
+                                    }
+                                    }
+                                  }
+              >
+                <i className="share icon"></i>
+                {post.shareCount}
+              </a>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+  )
+}
+
+Home.ShowPost = function(ctrl){
+  if(wsCtrl.request !== undefined) console.log(!wsCtrl.request.ready())
+  return(
+      (wsCtrl.request === undefined || !wsCtrl.request.ready())?(
+        <div className="ui  modal show-post" >
+          <div className="ui segment loading" style="min-height: 600px;">
+          </div>
+        </div>
+    ):(
+        <div className="ui modal show-post" >
+          <div className="ui segment" style="min-height: 600px;">
+            <div className="viewpost">
+              {Home.post(wsCtrl.post().post)}
+              <div id="comment">
+
+
+                <div className="ui threaded comments">
+                  {wsCtrl.post().comment.map(function(comment){
+                    return (
+                        <div className="comment">
+                          <span className="avatar">
+                              <a className="route ulpt" href={"/@/" + comment.user.id} >
+                                <img src={(comment.user.avatar.length>0)?("/getimage/small/" + comment.user.avatar):wsCtrl.defaultAvata} />
+                              </a>
+                          </span>
+                          <div className="content">
+                            <span className="author">
+                              <a className="fl route ulpt" href={"/@/" + comment.user.id} >
+                                {comment.user.name}
+                              </a>
+                            </span>
+                            <div className="metadata">
+                              <span className="date">{api.time(comment.time)}</span>
+                            </div>
+                            <div className="text">
+                              {m.trust(api.post(comment.comment))}
+                            </div>
+                            <div className="actions">
+                              <a className="reply"
+                                onclick={function(){
+                                  comment.replay = true;
+                                  comment.input = m.prop('');
+                                  rd.home(function(){m.redraw()});
+                                }}
+                              >Reply</a>
+                            </div>
+                          </div>
+
+                          {(comment.replay || comment.children.length > 0)?(
+                              <div class="comments">
+                                {comment.children.map(function(childComment){
+                                  return (
+                                      <div className="comment">
+                                        <span className="avatar">
+                                            <a className="route ulpt" href={"/@/" + childComment.user.id} >
+                                              <img src={(childComment.user.avatar.length>0)?("/getimage/small/" + childComment.user.avatar):wsCtrl.defaultAvata} />
+                                            </a>
+                                        </span>
+                                                      <div className="content">
+                                          <span className="author">
+                                            <a className="fl route ulpt" href={"/@/" + childComment.user.id} >
+                                              {childComment.user.name}
+                                            </a>
+                                          </span>
+                                                        <div className="metadata">
+                                                          <span className="date">{api.time(childComment.time)}</span>
+                                                        </div>
+                                                        <div className="text">
+                                                          {m.trust(api.post(childComment.comment))}
+                                                        </div>
+
+                                                      </div>
+                                      </div>
+                                  )
+                                })}
+                                {comment.replay?(Home.Comment(ctrl, ctrl.addChildComment, comment.id, comment.input, wsCtrl.post().post.id)):("")}
+                              </div>
+                          ):("") }
+                        </div>
+                    )
+                  })}
+
+                </div>
+
+                <div className="ui threaded comments">
+                  {Home.Comment(ctrl, ctrl.addComment, wsCtrl.post().post.id, ctrl.inputComment)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    )
+  )
+};
+
+
+Home.Comment = function(ctrl, action, actionId, input, actionId2){
+  return (
+      <div className="comment">
+        <a className="avatar">
+          <img src={wsCtrl.defaultAvata} height="35" width="35"/>
+        </a>
+        <div className="ui form content">
+          <div className="field" style="display:inline">
+                        <textarea rows="1" style="max-height: 92px"
+                                  config={function (element, isInit, ctx) {
+                                          if(!isInit) {
+                                            if(wsCtrl.userId.length == 0){
+                                              $(element).on('click input', function(){
+                                                api.signin();
+                                                element.value = ''
+                                              })
+                                            } else {
+                                              $(element).on('input', function(){
+                                                input($(element).val())
+                                              });
+                                            }
+                                            $(element).textareaAutoSize();
+                                            $(element).attrchange({
+                                              //trackValues: true,
+                                              callback: function (event) {
+                                                var boxNode = document.getElementsByClassName('box-comment')[0];
+                                                var box = $('.box-comment');
+                                                var input = $(element);
+
+
+                                                if (box.scrollTop() + box.innerHeight() >= box.prop('scrollHeight')) {
+                                                  box.css('height', 490 + 36 - $(element).outerHeight());
+                                                  boxNode.scrollTop = boxNode.scrollHeight;
+                                                } else {
+                                                  box.css('height', 490 + 36 - $(element).outerHeight());
+                                                }
+
+                                              }
+                                            });
+
+
+                                          }
+                                          element.value = input();
+                                          if(element.value.length<1){
+                                            $(element).css('height', '41')
+                                          }
+                                        }
+                                      }
+                                  onkeypress={function(e){
+                                          if(e.keyCode == 13 && !e.shiftKey) {
+                                            m.redraw.strategy("none");
+                                            if (input().length < 1) {
+                                             console.log("chat length < 1")
+                                              return false;
+                                            } else {
+                                              var source = e.target || e.srcElement;
+                                              if(actionId2 !== undefined) {
+                                                action(actionId, input, actionId2);
+                                              } else {
+                                                action(actionId, input);
+                                              }
+                                              return false;
+                                            }
+                                          }else{
+                                            m.redraw.strategy("none");
+                                            if(e.keyCode == 13 && e.shiftKey && input().length < 1){
+                                              return false;
+                                            }
+                                          }
+                                        }
+                                      }
+                                  placeholder="Click here to type a comment"
+                        >{}</textarea>
+          </div>
+        </div>
+      </div>
+  )
+}
 
 module.exports = Home;

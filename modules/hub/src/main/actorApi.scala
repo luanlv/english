@@ -239,4 +239,6 @@ package chatRoom {
 
 package activity {
   case class InitPost(userId: String)
+  case class CommentPost(userId: String, postId: String, comment: String)
+  case class ChildCommentPost(userId: String, postId: String, parentId: String, comment: String)
 }

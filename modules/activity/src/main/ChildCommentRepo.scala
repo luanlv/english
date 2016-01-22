@@ -20,60 +20,49 @@ import lila.db.Implicits._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-object PostRepo {
+object ChildCommentRepo {
 
-  private lazy val coll = Env.current.postColl
+  private lazy val coll = Env.current.childCommentColl
 
-  def insert(id: String, userId: String, content: String, published: DateTime): Future[WriteResult] = {
-//    val info = Info(0, List(), 0, List(), 0)
-    val post = Post(id, content, lila.user.Env.current.lightUserApi.get(userId).get, published, 0, Option(List()), 0, List(), 0)
-    coll.insert(post)
+  def insert(id: String, parentId: String, userId: String,  comment: String, time: DateTime): Future[WriteResult] = {
+    //    val info = Info(0, List(), 0, List(), 0)
+    val newComment = ChildComment(id, parentId, comment, lila.user.Env.current.lightUserApi.get(userId).get, time, 0, Option(List()))
+    coll.insert(newComment)
   }
 
-  def getOnePost(userId: String, postId: String) = {
-    coll.find(BSONDocument("_id" -> postId),
+  def getOneComment(userId: String, commentId: String):Fu[Option[ChildComment]] = {
+    coll.find(BSONDocument("_id" -> commentId),
       BSONDocument(
         "_id" -> 1,
-        "content" -> 1,
+        "parentId" -> 1,
+        "comment" -> 1,
         "userId" -> 1,
-        "published" -> 1,
+        "time" -> 1,
         "likeCount" -> 1,
-        "likes" -> BSONDocument("$elemMatch" -> BSONDocument("$eq" -> userId)),
-        "shareCount" -> 1,
-        "shares" -> 1,
-        "commentCount" -> 1
+        "likes" -> BSONDocument("$elemMatch" -> BSONDocument("$eq" -> userId))
       )
     )
-    .cursor[Post]()
-    .headOption
+      .cursor[ChildComment]()
+      .headOption
   }
 
-  def newComment(postId: String) = {
-    coll.update(
-      BSONDocument("_id" -> postId),
-      BSONDocument(
-        "$inc" -> BSONDocument("commentCount" -> 1)
-      )
-    )
-  }
-
-  def getPost(userId: String, ids: Set[ID], timepoint: DateTime): Fu[List[Post]] = {
-    coll.find(BSONDocument("userId" -> BSONDocument("$in" -> ids)),
+  def getComment(userId: String, postId: String, timepoint: DateTime, nb: Int): Fu[List[Comment]] = {
+    coll.find(BSONDocument("parentPost" -> postId),
       BSONDocument(
         "_id" -> 1,
-        "content" -> 1,
+        "parentId" -> 1,
+        "comment" -> 1,
         "userId" -> 1,
-        "published" -> 1,
+        "time" -> 1,
         "likeCount" -> 1,
         "likes" -> BSONDocument("$elemMatch" -> BSONDocument("$eq" -> userId)),
-        "shareCount" -> 1,
-        "shares" -> 1,
-        "commentCount" -> 1
+        "childCount" -> 1,
+        "children" -> 1
       )
     )
-      .sort(BSONDocument("published" -> -1))
-      .cursor[Post]()
-      .collect[List](10)
+      .sort(BSONDocument("time" -> -1))
+      .cursor[Comment]()
+      .collect[List](nb)
   }
 
   def like(userId: String, postId: String) = {

@@ -201,6 +201,7 @@ var Nav = {
             <div className="ui segment loading" style="min-height: 300px;">
             </div>
           </div>
+
         </div>
     )
   }

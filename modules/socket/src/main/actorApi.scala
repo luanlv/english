@@ -44,7 +44,11 @@ case class SendFriendRequest(uid: String, data: Set[LightUser])
 case class SendInitNotify(uid: String, data: List[JsValue])
 
 case class Sub(uid: String, s: String, userId: Option[String])
+case class SubPost(uid: String, postId: String)
 case class UnSub(uid: String, s: String)
+case class UnSubPost(uid: String)
 case class InitChatRoom(uid: String, roomId: String, userId: Option[String])
 case class InitChatRooms(uid: String)
 case class GetPrevChat(uid: String, roomId: String, lastTime: Long)
+
+case class SendNewComment(postId: String, comment: JsValue)

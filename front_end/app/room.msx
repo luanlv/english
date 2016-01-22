@@ -263,7 +263,7 @@ var Comments = function(ctrl){
                               <span className="date">{api.time(comment.time)}</span>
                             </div>
                             <div className="text">
-                              {comment.comment}
+                              {m.trust(api.post(comment.comment))}
                             </div>
 
                           </div>

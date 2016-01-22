@@ -18,6 +18,8 @@ final class Env(
 
   private val settings = new {
     val collectionPostColl = config getString "collection.post"
+    val collectionCommentColl = config getString "collection.comment"
+    val collectionChildCommentColl = config getString "collection.childComment"
 //    val collectionNotify = config getString "collection.notify"
     val PaginatorMaxPerPage = 10 //config getInt "paginator.max_per_page"
     val CachedNbTtl = 10 second  //config duration "cached.nb.ttl"
@@ -32,13 +34,28 @@ final class Env(
 
   lazy val postApi = new PostApi(
     cached = cached,
-    actor = hub.actor.activity)
+    actor = hub.actor.activity
+  )
+
+  lazy val commentApi = new CommentApi(
+    cached = cached,
+    actor = hub.actor.activity
+  )
+
+  lazy val childCommentApi = new ChildCommentApi(
+    cached = cached,
+    actor = hub.actor.activity
+  )
 
   private[activity] val actor = system.actorOf(Props(new ActivityActor(
-    postApi = postApi
+    postApi = postApi,
+    commentApi = commentApi,
+    childCommentApi = childCommentApi
   )), name = ActorName)
 
   private[activity] lazy val postColl = db(collectionPostColl)
+  private[activity] lazy val commentColl = db(collectionCommentColl)
+  private[activity] lazy val childCommentColl = db(collectionChildCommentColl)
 
 
 

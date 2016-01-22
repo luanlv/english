@@ -25,6 +25,7 @@ object API extends LilaController {
   private def friendshipApi = Env.relation.friendshipApi
   private def makeFriendApi = Env.relation.makeFriendApi
   private def postApi = Env.activity.postApi
+  private def commentApi = Env.activity.commentApi
 
   def getSelfInformation = Auth { implicit ctx =>
     me => {
@@ -105,6 +106,15 @@ object API extends LilaController {
         posts => Ok(Json.toJson(posts))
       }
     }
+  }
+
+
+  def viewPost(postId: String) = Open { implicit ctx =>
+      (ctx.userId ?? { postApi.getOnePost( _ , postId) }) zip
+      (ctx.userId ?? { commentApi.getComment(_, postId, DateTime.now(), 4) })  map {
+        case (post, comment) =>
+          Ok(Json.obj("post" -> post, "comment" -> comment))
+      }
   }
 
   def likePost(postId: String) = Open { implicit ctx =>

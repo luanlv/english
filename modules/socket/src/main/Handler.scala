@@ -76,6 +76,31 @@ object Handler {
         }
       }
 
+      case("comment", o) => {
+        val obj = (o obj "d").get
+        userId foreach { id =>
+          (obj str "parent").get match {
+            case "post" => {
+              val postId = (obj str "id").get
+              val comment = (obj str "c").get
+              (hub.actor.activity ? CommentPost(id, postId, comment)) map {
+                case c: JsValue => socket ! SendNewComment(postId, c)
+              }
+            }
+            case "comment" => {
+              val parentId = (obj str "id").get
+              val postId = (obj str "postId").get
+              val comment = (obj str "c").get
+              (hub.actor.activity ? ChildCommentPost(id, postId, parentId, comment)) map {
+                case c: JsValue => socket ! SendNewComment(postId, c)
+
+              }
+            }
+          }
+        }
+
+      }
+
       case("sub", o) => {
         val obj = (o obj "d").get
         (obj str "t").get match {
@@ -95,6 +120,16 @@ object Handler {
           case _ =>
         }
       }
+
+      case ("subPost", o) => {
+        val obj = (o obj "d").get
+        (obj str "id") foreach { postId =>
+          socket ! SubPost(uid, postId)
+        }
+      }
+
+      case ("unSubPost", o) => socket ! UnSubPost(uid)
+
 
       case("unSub", o) => {
         ((o obj "d").get str "t").get match {

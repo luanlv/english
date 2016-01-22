@@ -16,7 +16,7 @@ api.post = function(post){
     var address;
     address = /[a-z]+:\/\//.test(url) ? url : "http://" + url;
     url = url.replace(/^https?:\/\//, '');
-    return (url.indexOf('//' + document.domain)<0 && url.indexOf('localhost')<0)?("<a href='" + address + "' target='_blank'>" + url + "</a>"):("<a " +" class='route' "+ "href='" + address.replace(/^.*\/\/[^\/]+/, '') + "' >" + url + "</a>");
+    return (url.indexOf(document.domain)>=0 || url.indexOf('localhost') >= 0)?("<a " +" class='route' "+ "href='" + address.replace(/^.*\/\/[^\/]+/, '') + "' >" + url + "</a>") : ("<a href='" + address + "' target='_blank'>" + url + "</a>");
   }).replace(/\n/g, '<br/>');
 };
 
@@ -60,11 +60,11 @@ api.requestWithFeedback2 = function(args, bind, fn, fnError) {
     };
     return {
         request: m.request(args).then(data).then(function(data){
-            console.log(data);
+            //console.log(data);
             if(bind !== undefined) bind(data);
             if(fn !== undefined) fn();
             complete();
-            m.redraw();
+            rd.all(function(){m.redraw();});
         }, function(error){
             console.log(error)
             if(fnError !== undefined)  fnError()
@@ -150,7 +150,7 @@ api.signin = function(){
   })
   .modal('show');
 };
-window.signin = api.signin
+window.signin = api.signin;
 
 api.signup = function(){
   $('.ui.modal.sign-up').modal({
@@ -169,13 +169,28 @@ api.signup = function(){
         }
       })
     .modal('show');
-}
+};
 window.signup = api.signup;
 
 api.time = function(timestamp){
   return moment.unix(timestamp/1000).fromNow();
 };
 
+
+api.showPost = function(postId){
+  $('.ui.modal.show-post').modal({
+    onVisible: function () {
+      $('.ui.modal.show-post').modal("refresh");
+    },
+    onHide: function(){
+      m.route('/');
+      wsCtrl.data.post.list[wsCtrl.arrayObjectIndexOf(wsCtrl.data.post.list, postId, "id")] = wsCtrl.post().post;
+      wsCtrl.send(wsCtrl.sendData("unSubPost", {}));
+      wsCtrl.request.ready(false);
+      rd.home(function(){m.redraw()})
+    }
+  }).modal('show');
+};
 
 
 

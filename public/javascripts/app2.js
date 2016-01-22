@@ -17,7 +17,7 @@ api.post = function(post){
     var address;
     address = /[a-z]+:\/\//.test(url) ? url : "http://" + url;
     url = url.replace(/^https?:\/\//, '');
-    return (url.indexOf('//' + document.domain)<0 && url.indexOf('localhost')<0)?("<a href='" + address + "' target='_blank'>" + url + "</a>"):("<a " +" class='route' "+ "href='" + address.replace(/^.*\/\/[^\/]+/, '') + "' >" + url + "</a>");
+    return (url.indexOf(document.domain)>=0 || url.indexOf('localhost') >= 0)?("<a " +" class='route' "+ "href='" + address.replace(/^.*\/\/[^\/]+/, '') + "' >" + url + "</a>") : ("<a href='" + address + "' target='_blank'>" + url + "</a>");
   }).replace(/\n/g, '<br/>');
 };
 
@@ -61,11 +61,11 @@ api.requestWithFeedback2 = function(args, bind, fn, fnError) {
     };
     return {
         request: m.request(args).then(data).then(function(data){
-            console.log(data);
+            //console.log(data);
             if(bind !== undefined) bind(data);
             if(fn !== undefined) fn();
             complete();
-            m.redraw();
+            rd.all(function(){m.redraw();});
         }, function(error){
             console.log(error)
             if(fnError !== undefined)  fnError()
@@ -151,7 +151,7 @@ api.signin = function(){
   })
   .modal('show');
 };
-window.signin = api.signin
+window.signin = api.signin;
 
 api.signup = function(){
   $('.ui.modal.sign-up').modal({
@@ -170,13 +170,28 @@ api.signup = function(){
         }
       })
     .modal('show');
-}
+};
 window.signup = api.signup;
 
 api.time = function(timestamp){
   return moment.unix(timestamp/1000).fromNow();
 };
 
+
+api.showPost = function(postId){
+  $('.ui.modal.show-post').modal({
+    onVisible: function () {
+      $('.ui.modal.show-post').modal("refresh");
+    },
+    onHide: function(){
+      m.route('/');
+      wsCtrl.data.post.list[wsCtrl.arrayObjectIndexOf(wsCtrl.data.post.list, postId, "id")] = wsCtrl.post().post;
+      wsCtrl.send(wsCtrl.sendData("unSubPost", {}));
+      wsCtrl.request.ready(false);
+      rd.home(function(){m.redraw()})
+    }
+  }).modal('show');
+};
 
 
 
@@ -785,26 +800,54 @@ var api = require('./api.msx');
 
 var Home = {
   controller: function() {
-    m.redraw.strategy("diff")
-    $.cookie('url', m.route(), {path: "/"})
+    m.redraw.strategy("diff");
+    $.cookie('url', m.route(), {path: "/"});
     api.rd("Controller: Home");
     var ctrl = this;
     ctrl.add = function(input){
       ctrl.inputPost('')
     };
     ctrl.inputPost = m.prop('');
-
+    ctrl.inputComment = m.prop('');
+    
     if(!wsCtrl.data.post.init){
       wsCtrl.send(wsCtrl.sendData("initPost", {}));
     }
 
-    rd.home(function(){m.redraw()});
+    ctrl.setup = function(){
+      //$('.ui.modal.show-post').modal("refresh");
+      wsCtrl.post().comment = wsCtrl.post().comment.reverse();
+    }
+
+    ctrl.addComment = function(postId, input){
+      var ip = input().trim();
+      //input = input.replace(/\n/g, '');
+      if (ip) {
+        wsCtrl.send(wsCtrl.sendData("comment", {parent: "post",  id: postId, c: ip}));
+        input('');
+      }
+      rd.home(function(){m.redraw()})
+    };
+
+    ctrl.addChildComment = function(commentId, input, postId){
+      var ip = input().trim();
+      //input = input.replace(/\n/g, '');
+      if (ip) {
+        wsCtrl.send(wsCtrl.sendData("comment", {parent: "comment", postId: postId,   id: commentId, c: ip}));
+        input('');
+      }
+      rd.home(function(){m.redraw()})
+    };
+
+
+    ctrl.post = m.prop({});
+    console.log("home !!")
+    rd.home(function(){console.log("redraw home!"); m.redraw()});
   },
   view: function(ctrl) {
     api.rd("home:" + redraw.home);
-    redraw.home++;
     return (
-        {tag: "div", attrs: {className:"ui grid  main-content "}, children: [
+        {tag: "div", attrs: {className:"ui grid  main-content"}, children: [
           {tag: "div", attrs: {className:"three wide column"}, children: [
               {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
                   {tag: "div", attrs: {className:"trending"}, children: [
@@ -899,7 +942,9 @@ var Home = {
                 ]}
               ]}
             ]}, 
-
+              !(wsCtrl.post.length > 0)?(
+                  Home.ShowPost(ctrl)
+              ):"", 
               !wsCtrl.data.post.init?(
                   (wsCtrl.userId.length>0)?(
                   {tag: "div", attrs: {className:"ui segment loading mh300 noBor noSha"}
@@ -913,93 +958,7 @@ var Home = {
               ):(
                   wsCtrl.data.post.list.map(function(post){
                     return (
-                        {tag: "div", attrs: {className:"ui home-post-Wr"}, children: [
-                          {tag: "div", attrs: {className:"ui postContainer postDemo"}, children: [
-
-                            {tag: "div", attrs: {className:"ui list"}, children: [
-                              {tag: "div", attrs: {className:"item"}, children: [
-                                  {tag: "a", attrs: {className:"fl avatar route ulpt", href:"/@/" + post.user.id}, children: [
-                                    {tag: "img", attrs: {className:"image", src:(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)}}
-                                  ]}, 
-                                  {tag: "div", attrs: {className:"content"}, children: [
-                                    {tag: "span", attrs: {className:"header"}, children: [{tag: "a", attrs: {className:"name route ulpt", href:"/@/" + post.user.id}, children: [post.user.name]}]}, 
-                                    {tag: "div", attrs: {className:"description"}, children: [api.time(post.published)]}
-                                  ]}
-                             ]}
-
-                            ]}, 
-
-                            {tag: "div", attrs: {className:"content-post"}, children: [
-                              m.trust(api.post(post.content))
-                            ]}, 
-
-                            {tag: "div", attrs: {className:"ui horizontal list extra-post"}, children: [
-                              {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "a", attrs: {className:"mini ui  basic button", "data-content":"like", "data-position":"top left", 
-                                  config:function(el, isInited){
-                                    if(!isInited){
-                                      $(el)
-                                          .popup({
-                                            inline: true
-                                          })
-                                        ;
-                                      }
-                                    }, 
-                                  
-                                   onclick:function(){
-                                    $.post( ((post.likes === undefined || post.likes.length < 0)?"/like":"/unlike") + "/post/" + post.id,
-                                       function(data) {
-                                          if(data === "liked"){
-                                            post.likeCount += 1;
-                                            post.likes = [wsCtrl.userId]
-                                          } else if( data === "unliked"){
-                                            post.likeCount -= 1;
-                                            post.likes = undefined;
-                                          }
-                                          rd.home(function(){m.redraw()});
-                                       }
-                                    );
-                                   }
-                                }, children: [
-                                  {tag: "i", attrs: {className:((post.likes === undefined || post.likes.length < 0)?"":"blue") + " heart icon"}}, 
-                                  post.likeCount
-                                ]}
-                              ]}, 
-                              {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "a", attrs: {className:"mini ui basic button", "data-content":"comment", "data-position":"top left", 
-                                   config:function(el, isInited){
-                                    if(!isInited){
-                                      $(el)
-                                          .popup({
-                                            inline: true
-                                          })
-                                        ;
-                                      }
-                                    }
-                                  
-                                }, children: [
-                                  {tag: "i", attrs: {className:"comment icon"}}, 
-                                  post.commentCount
-                                ]}
-                              ]}, 
-                              {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "a", attrs: {className:"mini ui basic button", "data-content":"share", "data-position":"top left", 
-                                   config:function(el, isInited){
-                                    if(!isInited){
-                                      $(el).popup({inline: true});
-                                    }
-                                    }
-                                  
-                                }, children: [
-                                  {tag: "i", attrs: {className:"share icon"}}, 
-                                  post.shareCount
-                                ]}
-                              ]}
-                            ]}
-
-
-                          ]}
-                        ]}
+                        Home.post(post, ctrl)
                     )
                   })
               )
@@ -1026,10 +985,295 @@ var Home = {
 
             ]}
           ]}
+
         ]}
     )
   }
 };
+
+
+Home.post = function(post, ctrl){
+  return(
+      {tag: "div", attrs: {className:"ui home-post-Wr"}, children: [
+        {tag: "div", attrs: {className:"ui postContainer postDemo"}, children: [
+
+          {tag: "div", attrs: {className:"ui list"}, children: [
+            {tag: "div", attrs: {className:"item"}, children: [
+              {tag: "span", attrs: {className:"fl avatar"}, children: [
+                {tag: "a", attrs: {className:"route ulpt", href:"/@/" + post.user.id}, children: [
+                  {tag: "img", attrs: {className:"image", src:(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)}}
+                ]}
+              ]}, 
+              {tag: "div", attrs: {className:"content"}, children: [
+                {tag: "span", attrs: {className:"header"}, children: [{tag: "a", attrs: {className:"name route ulpt", href:"/@/" + post.user.id}, children: [post.user.name]}]}, 
+                {tag: "div", attrs: {className:"description"}, children: [api.time(post.published)]}
+              ]}
+            ]}
+
+          ]}, 
+          {tag: "div", attrs: {className:"content-post"}, children: [
+            m.trust(api.post(post.content))
+          ]}, 
+
+          {tag: "div", attrs: {className:"ui horizontal list extra-post"}, children: [
+            {tag: "div", attrs: {className:"item"}, children: [
+              {tag: "a", attrs: {className:"mini ui  basic button", "data-content":"like", "data-position":"top left", 
+                 config:function(el, isInited){
+                                    if(!isInited){
+                                      $(el)
+                                          .popup({
+                                            inline: true
+                                          })
+                                        ;
+                                      }
+                                    }, 
+                                  
+                 onclick:function(){
+                                    $.post( ((post.likes === undefined || post.likes.length < 0)?"/like":"/unlike") + "/post/" + post.id,
+                                       function(data) {
+                                          if(data === "liked"){
+                                            post.likeCount += 1;
+                                            post.likes = [wsCtrl.userId]
+                                          } else if( data === "unliked"){
+                                            post.likeCount -= 1;
+                                            post.likes = undefined;
+                                          }
+                                          rd.home(function(){m.redraw()});
+                                       }
+                                    );
+                                   }
+              }, children: [
+                {tag: "i", attrs: {className:((post.likes === undefined || post.likes.length < 0)?"":"blue") + " heart icon"}}, 
+                post.likeCount
+              ]}
+            ]}, 
+            {tag: "div", attrs: {className:"item"}, children: [
+              {tag: "a", attrs: {className:"mini ui basic button", "data-content":"comment", "data-position":"top left", 
+                 config:function(el, isInited){
+                                    if(!isInited){
+                                      $(el)
+                                          .popup({
+                                            inline: true
+                                          })
+                                        ;
+                                      }
+                                    }, 
+                                  
+                 onclick:function(e){
+                    console.log(m.route.param('_post'));
+                    if(m.route.param('_post') === undefined){
+                      if(m.route().indexOf("/?") < 0){
+                        m.route(m.route()+"?_post=" + post.id);
+                      } else {
+                        m.route(m.route()+"_post=" + post.id);
+                      }
+
+                      //console.log(m.route.param("_post"))
+                      wsCtrl.request = api.requestWithFeedback2({method: "GET", url: "/viewpost/" + post.id}, wsCtrl.post, ctrl.setup);
+                      wsCtrl.send(wsCtrl.sendData("subPost", {id: post.id}));
+                      api.showPost(post.id);
+                    }
+                 }
+              }, children: [
+                {tag: "i", attrs: {className:"comment icon"}}, 
+                post.commentCount
+              ]}
+            ]}, 
+            {tag: "div", attrs: {className:"item"}, children: [
+              {tag: "a", attrs: {className:"mini ui basic button", "data-content":"share", "data-position":"top left", 
+                 config:function(el, isInited){
+                                    if(!isInited){
+                                      $(el).popup({inline: true});
+                                    }
+                                    }
+                                  
+              }, children: [
+                {tag: "i", attrs: {className:"share icon"}}, 
+                post.shareCount
+              ]}
+            ]}
+          ]}
+
+
+        ]}
+      ]}
+  )
+}
+
+Home.ShowPost = function(ctrl){
+  if(wsCtrl.request !== undefined) console.log(!wsCtrl.request.ready())
+  return(
+      (wsCtrl.request === undefined || !wsCtrl.request.ready())?(
+        {tag: "div", attrs: {className:"ui  modal show-post"}, children: [
+          {tag: "div", attrs: {className:"ui segment loading", style:"min-height: 600px;"}
+          }
+        ]}
+    ):(
+        {tag: "div", attrs: {className:"ui modal show-post"}, children: [
+          {tag: "div", attrs: {className:"ui segment", style:"min-height: 600px;"}, children: [
+            {tag: "div", attrs: {className:"viewpost"}, children: [
+              Home.post(wsCtrl.post().post), 
+              {tag: "div", attrs: {id:"comment"}, children: [
+
+
+                {tag: "div", attrs: {className:"ui threaded comments"}, children: [
+                  wsCtrl.post().comment.map(function(comment){
+                    return (
+                        {tag: "div", attrs: {className:"comment"}, children: [
+                          {tag: "span", attrs: {className:"avatar"}, children: [
+                              {tag: "a", attrs: {className:"route ulpt", href:"/@/" + comment.user.id}, children: [
+                                {tag: "img", attrs: {src:(comment.user.avatar.length>0)?("/getimage/small/" + comment.user.avatar):wsCtrl.defaultAvata}}
+                              ]}
+                          ]}, 
+                          {tag: "div", attrs: {className:"content"}, children: [
+                            {tag: "span", attrs: {className:"author"}, children: [
+                              {tag: "a", attrs: {className:"fl route ulpt", href:"/@/" + comment.user.id}, children: [
+                                comment.user.name
+                              ]}
+                            ]}, 
+                            {tag: "div", attrs: {className:"metadata"}, children: [
+                              {tag: "span", attrs: {className:"date"}, children: [api.time(comment.time)]}
+                            ]}, 
+                            {tag: "div", attrs: {className:"text"}, children: [
+                              m.trust(api.post(comment.comment))
+                            ]}, 
+                            {tag: "div", attrs: {className:"actions"}, children: [
+                              {tag: "a", attrs: {className:"reply", 
+                                onclick:function(){
+                                  comment.replay = true;
+                                  comment.input = m.prop('');
+                                  rd.home(function(){m.redraw()});
+                                }
+                              }, children: ["Reply"]}
+                            ]}
+                          ]}, 
+
+                          (comment.replay || comment.children.length > 0)?(
+                              {tag: "div", attrs: {class:"comments"}, children: [
+                                comment.children.map(function(childComment){
+                                  return (
+                                      {tag: "div", attrs: {className:"comment"}, children: [
+                                        {tag: "span", attrs: {className:"avatar"}, children: [
+                                            {tag: "a", attrs: {className:"route ulpt", href:"/@/" + childComment.user.id}, children: [
+                                              {tag: "img", attrs: {src:(childComment.user.avatar.length>0)?("/getimage/small/" + childComment.user.avatar):wsCtrl.defaultAvata}}
+                                            ]}
+                                        ]}, 
+                                                      {tag: "div", attrs: {className:"content"}, children: [
+                                          {tag: "span", attrs: {className:"author"}, children: [
+                                            {tag: "a", attrs: {className:"fl route ulpt", href:"/@/" + childComment.user.id}, children: [
+                                              childComment.user.name
+                                            ]}
+                                          ]}, 
+                                                        {tag: "div", attrs: {className:"metadata"}, children: [
+                                                          {tag: "span", attrs: {className:"date"}, children: [api.time(childComment.time)]}
+                                                        ]}, 
+                                                        {tag: "div", attrs: {className:"text"}, children: [
+                                                          m.trust(api.post(childComment.comment))
+                                                        ]}
+
+                                                      ]}
+                                      ]}
+                                  )
+                                }), 
+                                comment.replay?(Home.Comment(ctrl, ctrl.addChildComment, comment.id, comment.input, wsCtrl.post().post.id)):("")
+                              ]}
+                          ):("") 
+                        ]}
+                    )
+                  })
+
+                ]}, 
+
+                {tag: "div", attrs: {className:"ui threaded comments"}, children: [
+                  Home.Comment(ctrl, ctrl.addComment, wsCtrl.post().post.id, ctrl.inputComment)
+                ]}
+              ]}
+            ]}
+          ]}
+        ]}
+    )
+  )
+};
+
+
+Home.Comment = function(ctrl, action, actionId, input, actionId2){
+  return (
+      {tag: "div", attrs: {className:"comment"}, children: [
+        {tag: "a", attrs: {className:"avatar"}, children: [
+          {tag: "img", attrs: {src:wsCtrl.defaultAvata, height:"35", width:"35"}}
+        ]}, 
+        {tag: "div", attrs: {className:"ui form content"}, children: [
+          {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
+                        {tag: "textarea", attrs: {rows:"1", style:"max-height: 92px", 
+                                  config:function (element, isInit, ctx) {
+                                          if(!isInit) {
+                                            if(wsCtrl.userId.length == 0){
+                                              $(element).on('click input', function(){
+                                                api.signin();
+                                                element.value = ''
+                                              })
+                                            } else {
+                                              $(element).on('input', function(){
+                                                input($(element).val())
+                                              });
+                                            }
+                                            $(element).textareaAutoSize();
+                                            $(element).attrchange({
+                                              //trackValues: true,
+                                              callback: function (event) {
+                                                var boxNode = document.getElementsByClassName('box-comment')[0];
+                                                var box = $('.box-comment');
+                                                var input = $(element);
+
+
+                                                if (box.scrollTop() + box.innerHeight() >= box.prop('scrollHeight')) {
+                                                  box.css('height', 490 + 36 - $(element).outerHeight());
+                                                  boxNode.scrollTop = boxNode.scrollHeight;
+                                                } else {
+                                                  box.css('height', 490 + 36 - $(element).outerHeight());
+                                                }
+
+                                              }
+                                            });
+
+
+                                          }
+                                          element.value = input();
+                                          if(element.value.length<1){
+                                            $(element).css('height', '41')
+                                          }
+                                        }, 
+                                      
+                                  onkeypress:function(e){
+                                          if(e.keyCode == 13 && !e.shiftKey) {
+                                            m.redraw.strategy("none");
+                                            if (input().length < 1) {
+                                             console.log("chat length < 1")
+                                              return false;
+                                            } else {
+                                              var source = e.target || e.srcElement;
+                                              if(actionId2 !== undefined) {
+                                                action(actionId, input, actionId2);
+                                              } else {
+                                                action(actionId, input);
+                                              }
+                                              return false;
+                                            }
+                                          }else{
+                                            m.redraw.strategy("none");
+                                            if(e.keyCode == 13 && e.shiftKey && input().length < 1){
+                                              return false;
+                                            }
+                                          }
+                                        }, 
+                                      
+                                  placeholder:"Click here to type a comment"
+                        }}
+          ]}
+        ]}
+      ]}
+  )
+}
 
 module.exports = Home;
 },{"../ws/_wsCtrl.js":16,"./api.msx":1}],8:[function(require,module,exports){
@@ -1618,6 +1862,7 @@ var Nav = {
             {tag: "div", attrs: {className:"ui segment loading", style:"min-height: 300px;"}
             }
           ]}
+
         ]}
     )
   }
@@ -1911,7 +2156,7 @@ var Comments = function(ctrl){
                               {tag: "span", attrs: {className:"date"}, children: [api.time(comment.time)]}
                             ]}, 
                             {tag: "div", attrs: {className:"text"}, children: [
-                              comment.comment
+                              m.trust(api.post(comment.comment))
                             ]}
 
                           ]}
@@ -2249,6 +2494,7 @@ wsCtrl.storage = {
 
 
 wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
+wsCtrl.post = m.prop({});
 wsCtrl.data = {
   post: {
     init: false,
@@ -2515,7 +2761,7 @@ ctrl.listen = function(d){
     rd.home(function(){m.redraw()})
   }
   else if(d.t === "newPost"){
-    console.log("new post")
+
     if(d.d.id !== undefined) {
       wsCtrl.data.post.list.unshift(d.d);
       wsCtrl.data.post.timepoint = d.d.published;
@@ -2571,13 +2817,26 @@ ctrl.listen = function(d){
     }
   }
 
+  else if(d.t === "newComment"){
+    if(d.d.parentId === undefined) {
+      wsCtrl.post().comment.push(d.d);
+      wsCtrl.post().post.commentCount += 1;
+    } else {
+      var parrentPos = arrayObjectIndexOf(wsCtrl.post().comment, d.d.parentId, "id");
+      wsCtrl.post().post.commentCount += 1;
+      wsCtrl.post().comment[parrentPos].children.push(d.d);
+      wsCtrl.post().comment[parrentPos].childCount +=1;
+    }
+    rd.home(function(){m.redraw(); $('.ui.modal.show-post').modal("refresh");})
+  }
+
   else if(d.t === "following_onlines"){
     data.userOnline = d.d;
     rd.right(function(){m.redraw()})
   }
 
   if(d.t === "following_leaves"){
-    data.userOnline.splice(arrayObjectIndexOf(data.userOnline, d.d.in, "id"), 1);
+    data.userOnline.splice(arrayObjectIndexOf(data.userOnline, d.d.id, "id"), 1);
     rd.right(function(){m.redraw()})
   }
 
@@ -2815,7 +3074,7 @@ $(document).on('click', '.route', function(e){
   console.log("route")
   e.preventDefault();
   m.route($(this).attr('href'));
-  $('.mini').remove();
+  $('#powertip .mini').remove();
 });
 
 $('body').on('click', '.relation_actions a.relation', function() {
