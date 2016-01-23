@@ -133,6 +133,6 @@ class ImageCtrl @Inject() (
   def get(size: String, uuid: String) = Action.async { request =>
     import play.modules.reactivemongo.json._
     val image = gridFS.find[JsObject, JSONReadFile](Json.obj("metadata.uuid" -> uuid, "metadata.size" -> size))
-    serve[JsString, JSONReadFile](gridFS)(image, CONTENT_DISPOSITION_INLINE).map(_.withHeaders("Cache-Control" -> "public; max-age=%d".format(60 * 60 * 24)))
+    serve[JsString, JSONReadFile](gridFS)(image, CONTENT_DISPOSITION_INLINE).map(_.withHeaders("cache-Control" -> "public, max-age=%d".format(60 * 60 * 24 * 30)))
   }
 }
