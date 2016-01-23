@@ -58,13 +58,13 @@ class ImageCtrl @Inject() (
     import play.modules.reactivemongo.json.collection._
     GridFS[BSONSerializationPack.type](db)
   }
-
-  gfs.files.indexesManager.ensure(
-    Index(List("metadata.uuid" -> IndexType.Ascending))
-  )
-  gfs.files.indexesManager.ensure(
-    Index(List("username" -> IndexType.Ascending))
-  )
+//
+//  gfs.files.indexesManager.ensure(
+//    Index(List("metadata.uuid" -> IndexType.Ascending))
+//  )
+//  gfs.files.indexesManager.ensure(
+//    Index(List("username" -> IndexType.Ascending))
+//  )
 
   def getList(name: String, page: Int) = Action.async { request =>
     val futureList = ImageRepo.find(name, page)
@@ -133,6 +133,6 @@ class ImageCtrl @Inject() (
   def get(size: String, uuid: String) = Action.async { request =>
     import play.modules.reactivemongo.json._
     val image = gridFS.find[JsObject, JSONReadFile](Json.obj("metadata.uuid" -> uuid, "metadata.size" -> size))
-    serve[JsString, JSONReadFile](gridFS)(image, CONTENT_DISPOSITION_INLINE)
+    serve[JsString, JSONReadFile](gridFS)(image, CONTENT_DISPOSITION_INLINE).map(_.withHeaders("Cache-Control" -> "public; max-age=%d".format(60 * 60 * 24)))
   }
 }
