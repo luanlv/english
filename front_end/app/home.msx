@@ -20,7 +20,8 @@ var Home = {
     ctrl.setup = function(){
       //$('.ui.modal.show-post').modal("refresh");
       wsCtrl.post().comment = wsCtrl.post().comment.reverse();
-    }
+      api.showPost(wsCtrl.post().post.id);
+    };
 
     ctrl.addComment = function(postId, input){
       var ip = input().trim();
@@ -42,129 +43,151 @@ var Home = {
       rd.home(function(){m.redraw()})
     };
 
+    if(m.route.param("postId") !== undefined){
+      wsCtrl.request = api.requestWithFeedback2({method: "GET", url: "/viewpost/" + m.route.param("postId")}, wsCtrl.post, ctrl.setup);
+      wsCtrl.send(wsCtrl.sendData("subPost", {id: m.route.param("postId")}));
+    }
 
     ctrl.post = m.prop({});
-    console.log("home !!")
+
+    ctrl.onunload = function() {
+      if(m.route.param("postId") === undefined){
+        console.log("leave")
+        wsCtrl.data.post.list[wsCtrl.arrayObjectIndexOf(wsCtrl.data.post.list, wsCtrl.post().post.id, "id")] = wsCtrl.post().post;
+        wsCtrl.send(wsCtrl.sendData("unSubPost", {}));
+        wsCtrl.request.ready(false);
+      }
+    };
+
     rd.home(function(){console.log("redraw home!"); m.redraw()});
+
   },
   view: function(ctrl) {
     api.rd("home:" + redraw.home);
     return (
         <div className="ui grid  main-content">
           <div className="three wide column">
-              <div className="ui  home-post-Wr mh500">
-                  <div className="trending">
-                      <h3>Trending Now (fake)</h3>
-                      <ul>
-                          <li>What should I know about food in Cancun, Mexico?</li>
-                          <li>What films were so bad, they destroyed the actors' careers?</li>
-                          <li>Why do Americans think eggs are a dairy product?</li>
-                          <li>I have good grades but I feel like I do not know anything properly. How should I deal with this situation?</li>
-                          <li>2016 Academy Award Nominations</li>
-                          <li>Death of Alan Rickman</li>
-                          <li>Death of David Bowie</li>
-                          <li>Sherlock: The Abominable Bride</li>
-                          <li>Making a Murderer</li>
-                      </ul>
-                  </div>
-
+            <div className="ui  home-post-Wr mh500">
+              <div className="trending">
+                <h3>Trending Now (fake)</h3>
+                <ul>
+                  <li>What should I know about food in Cancun, Mexico?</li>
+                  <li>What films were so bad, they destroyed the actors' careers?</li>
+                  <li>Why do Americans think eggs are a dairy product?</li>
+                  <li>I have good grades but I feel like I do not know anything properly. How should I deal with this situation?</li>
+                  <li>2016 Academy Award Nominations</li>
+                  <li>Death of Alan Rickman</li>
+                  <li>Death of David Bowie</li>
+                  <li>Sherlock: The Abominable Bride</li>
+                  <li>Making a Murderer</li>
+                </ul>
               </div>
-              <div className="ui  home-post-Wr mh300"></div>
+
+            </div>
+            <div className="ui  home-post-Wr mh300"></div>
           </div>
 
-            <div className="nine wide column">
+          <div className="nine wide column">
 
-            <div className="ui home-post-Wr ">
 
-              <div className="ui form postWr postContainer">
-                <div className="field">
-                  <textarea className="auto-size new-post"
-                            rows="2"
-                            placeholder="What's on your mind?"
-                            config={function (element, isInit, ctx) {
 
-                                        if(!isInit) {
-                                          if(wsCtrl.userId.length == 0){
-                                            $(element).on('click input', function(){
-                                              api.signin();
-                                              element.value = ''
+
+
+            {!wsCtrl.data.post.init?(
+                (wsCtrl.userId.length>0)?(
+                    <div className="ui home-post-Wr ">
+                      <div className="ui segment loading mh300 noBor noSha">
+
+                      </div>
+                    </div>
+                ):(
+                    <div className="ui home-post-Wr ">
+                      <div className="ui segment mh300 noBor noSha" style="text-align: center">
+                        Please login to see posts!
+                      </div>
+                    </div>
+                )
+            ):(
+                (m.route.param("postId") !== undefined)?(
+                    Home.ShowPost(ctrl)
+                ):[
+                  <div className="ui home-post-Wr ">
+                    <div className="ui form postWr postContainer">
+                      <div className="field">
+                           <textarea className="auto-size new-post"
+                                     rows="2"
+                                     placeholder="What's on your mind?"
+                                     config={function (element, isInit, ctx) {
+
+                                          if(!isInit) {
+                                            if(wsCtrl.userId.length == 0){
+                                              $(element).on('click input', function(){
+                                                api.signin();
+                                                element.value = ''
+                                              })
+                                            }
+
+                                            $(element).textareaAutoSize();
+                                            $(element).on('input', function(){
+                                                ctrl.inputPost($(element).val())
                                             })
                                           }
+                                          element.value = ctrl.inputPost();
+                                          if(element.value.length<1){
 
-                                          $(element).textareaAutoSize();
-                                          $(element).on('input', function(){
-                                              ctrl.inputPost($(element).val())
-                                          })
-                                        }
-                                        element.value = ctrl.inputPost();
-                                        if(element.value.length<1){
-
-                                          //$(element).css('height', '41px')
+                                            //$(element).css('height', '41px')
+                                          }
                                         }
                                       }
-                                    }
-                            onkeypress={function(e){
-                                                if(e.keyCode == 13 && !e.shiftKey) {
-                                                  m.redraw.strategy("none");
-                                                  if (ctrl.inputPost().length < 1) {
-                                                    return false;
+                                     onkeypress={function(e){
+                                                  if(e.keyCode == 13 && !e.shiftKey) {
+                                                    m.redraw.strategy("none");
+                                                    if (ctrl.inputPost().length < 1) {
+                                                      return false;
+                                                    }
+                                                  }else{
+                                                    m.redraw.strategy("none");
+                                                    if(e.keyCode == 13 && e.shiftKey && ctrl.inputPost().length < 1){
+                                                      return false;
+                                                    }
                                                   }
-                                                }else{
-                                                  m.redraw.strategy("none");
-                                                  if(e.keyCode == 13 && e.shiftKey && ctrl.inputPost().length < 1){
-                                                    return false;
-                                                  }
-                                                }
-                                            }
-                                        }
-                  >{ctrl.inputPost()}</textarea>
-                </div>
-                <div className="post">
-                  <button className="ui mini primary button"
-                       onclick={function(e){
-                        if(ctrl.inputPost().trim().length > 0){
-                          m.redraw.strategy("none");
-                          $('.postWr').addClass('loading');
-                          $.ajax({
-                              type: "POST",
-                              url: "/post",
-                              data: JSON.stringify({content: ctrl.inputPost()}),
-                              contentType: "application/json",
-                              dataType: "text",
-                              success: function(data){
-                                 ctrl.inputPost("");
-                                 $('.new-post').css('height', 41);
-                                 $('.postWr').removeClass('loading');
-                                 rd.home(function(){m.redraw()})
-                              }
-                           });
-                        }
-                       }}
-                  >Post</button>
-                  <span className="clear"></span>
-                </div>
-              </div>
-            </div>
-              {!(wsCtrl.post.length > 0)?(
-                  Home.ShowPost(ctrl)
-              ):""}
-              {!wsCtrl.data.post.init?(
-                  (wsCtrl.userId.length>0)?(
-                  <div className="ui segment loading mh300 noBor noSha">
-
-                  </div>
-                  ):(
-                  <div className="ui segment mh300 noBor noSha" style="text-align: center">
-                    Please login to see posts!
-                  </div>
-              )
-              ):(
+                                              }
+                                          }
+                           >{ctrl.inputPost()}</textarea>
+                      </div>
+                      <div className="post">
+                        <button className="ui mini primary button"
+                                onclick={function(e){
+                          if(ctrl.inputPost().trim().length > 0){
+                            m.redraw.strategy("none");
+                            $('.postWr').addClass('loading');
+                            $.ajax({
+                                type: "POST",
+                                url: "/post",
+                                data: JSON.stringify({content: ctrl.inputPost()}),
+                                contentType: "application/json",
+                                dataType: "text",
+                                success: function(data){
+                                   ctrl.inputPost("");
+                                   $('.new-post').css('height', 41);
+                                   $('.postWr').removeClass('loading');
+                                   rd.home(function(){m.redraw()})
+                                }
+                             });
+                          }
+                         }}
+                        >Post</button>
+                        <span className="clear"></span>
+                      </div>
+                    </div>
+                  </div>,
                   wsCtrl.data.post.list.map(function(post){
                     return (
                         Home.post(post, ctrl)
                     )
                   })
-              )}
+                ]
+            )}
 
 
           </div>
@@ -263,18 +286,13 @@ Home.post = function(post, ctrl){
                                     }
                                   }
                  onclick={function(e){
-                    console.log(m.route.param('_post'));
-                    if(m.route.param('_post') === undefined){
-                      if(m.route().indexOf("/?") < 0){
-                        m.route(m.route()+"?_post=" + post.id);
-                      } else {
-                        m.route(m.route()+"_post=" + post.id);
-                      }
-
+                    if(m.route.param('post') === undefined){
+                      m.route('/post/' + post.id);
                       //console.log(m.route.param("_post"))
-                      wsCtrl.request = api.requestWithFeedback2({method: "GET", url: "/viewpost/" + post.id}, wsCtrl.post, ctrl.setup);
-                      wsCtrl.send(wsCtrl.sendData("subPost", {id: post.id}));
-                      api.showPost(post.id);
+                      //wsCtrl.request = api.requestWithFeedback2({method: "GET", url: "/viewpost/" + post.id}, wsCtrl.post, ctrl.setup);
+                      //wsCtrl.send(wsCtrl.sendData("subPost", {id: post.id}));
+                      //api.showPost(post.id);
+                      rd.home(function(){m.redraw()})
                     }
                  }}
               >
@@ -301,20 +319,20 @@ Home.post = function(post, ctrl){
         </div>
       </div>
   )
-}
+};
 
 Home.ShowPost = function(ctrl){
-  if(wsCtrl.request !== undefined) console.log(!wsCtrl.request.ready())
   return(
       (wsCtrl.request === undefined || !wsCtrl.request.ready())?(
-        <div className="ui  modal show-post" >
-          <div className="ui segment loading" style="min-height: 600px;">
+          <div className="ui home-post-Wr">
+            <div className="ui postContainer postDemo">
+              <div className="ui segment loading" style="min-height: 600px;">
+              </div>
+            </div>
           </div>
-        </div>
-    ):(
-        <div className="ui modal show-post" >
-          <div className="ui segment" style="min-height: 600px;">
-            <div className="viewpost">
+      ):(
+          <div className="ui home-post-Wr">
+            <div className="ui postContainer postDemo">
               {Home.post(wsCtrl.post().post)}
               <div id="comment">
 
@@ -342,7 +360,7 @@ Home.ShowPost = function(ctrl){
                             </div>
                             <div className="actions">
                               <a className="reply"
-                                onclick={function(){
+                                 onclick={function(){
                                   comment.replay = true;
                                   comment.input = m.prop('');
                                   rd.home(function(){m.redraw()});
@@ -351,36 +369,49 @@ Home.ShowPost = function(ctrl){
                             </div>
                           </div>
 
-                          {(comment.replay || comment.children.length > 0)?(
-                              <div class="comments">
-                                {comment.children.map(function(childComment){
-                                  return (
-                                      <div className="comment">
+                          {(comment.replay || comment.children.length > 0)?[
+                            (comment.children.length>0)?(
+                            <div class="comments">
+                              {comment.children.map(function(childComment){
+                                return (
+                                    <div className="comment">
                                         <span className="avatar">
                                             <a className="route ulpt" href={"/@/" + childComment.user.id} >
                                               <img src={(childComment.user.avatar.length>0)?("/getimage/small/" + childComment.user.avatar):wsCtrl.defaultAvata} />
                                             </a>
                                         </span>
-                                                      <div className="content">
+                                      <div className="content">
                                           <span className="author">
                                             <a className="fl route ulpt" href={"/@/" + childComment.user.id} >
                                               {childComment.user.name}
                                             </a>
                                           </span>
-                                                        <div className="metadata">
-                                                          <span className="date">{api.time(childComment.time)}</span>
-                                                        </div>
-                                                        <div className="text">
-                                                          {m.trust(api.post(childComment.comment))}
-                                                        </div>
-
-                                                      </div>
+                                        <div className="metadata">
+                                          <span className="date">{api.time(childComment.time)}</span>
+                                        </div>
+                                        <div className="text">
+                                          {m.trust(api.post(childComment.comment))}
+                                        </div>
+                                        <div className="actions">
+                                          <a className="reply"
+                                             onclick={function(){
+                                                comment.replay = true;
+                                                comment.input = m.prop('');
+                                                rd.home(function(){m.redraw()});
+                                              }}
+                                          >Reply</a>
+                                        </div>
                                       </div>
-                                  )
-                                })}
-                                {comment.replay?(Home.Comment(ctrl, ctrl.addChildComment, comment.id, comment.input, wsCtrl.post().post.id)):("")}
-                              </div>
-                          ):("") }
+                                    </div>
+                                )
+                              })}
+                            </div>):(""),
+                            (comment.replay)?(
+                                <div className="comments childComment">
+                                  {Home.Comment(ctrl, ctrl.addChildComment, comment.id, comment.input, wsCtrl.post().post.id)}
+                                </div>
+                            ):("")
+                          ]:("") }
                         </div>
                     )
                   })}
@@ -390,11 +421,12 @@ Home.ShowPost = function(ctrl){
                 <div className="ui threaded comments">
                   {Home.Comment(ctrl, ctrl.addComment, wsCtrl.post().post.id, ctrl.inputComment)}
                 </div>
+
               </div>
             </div>
           </div>
-        </div>
-    )
+
+      )
   )
 };
 
@@ -403,7 +435,7 @@ Home.Comment = function(ctrl, action, actionId, input, actionId2){
   return (
       <div className="comment">
         <a className="avatar">
-          <img src={wsCtrl.defaultAvata} height="35" width="35"/>
+          <img src={(wsCtrl.avatar.length>0)?("/getimage/small/" + wsCtrl.avatar):wsCtrl.defaultAvata} height="35" width="35"/>
         </a>
         <div className="ui form content">
           <div className="field" style="display:inline">
@@ -421,24 +453,6 @@ Home.Comment = function(ctrl, action, actionId, input, actionId2){
                                               });
                                             }
                                             $(element).textareaAutoSize();
-                                            $(element).attrchange({
-                                              //trackValues: true,
-                                              callback: function (event) {
-                                                var boxNode = document.getElementsByClassName('box-comment')[0];
-                                                var box = $('.box-comment');
-                                                var input = $(element);
-
-
-                                                if (box.scrollTop() + box.innerHeight() >= box.prop('scrollHeight')) {
-                                                  box.css('height', 490 + 36 - $(element).outerHeight());
-                                                  boxNode.scrollTop = boxNode.scrollHeight;
-                                                } else {
-                                                  box.css('height', 490 + 36 - $(element).outerHeight());
-                                                }
-
-                                              }
-                                            });
-
 
                                           }
                                           element.value = input();

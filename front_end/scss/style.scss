@@ -33,7 +33,7 @@ body{
 }
 .dimmed{
   overflow-y: hidden!important;
-  padding-right: 17px;
+  //padding-right: 17px;
 }
 
 
@@ -1070,4 +1070,8 @@ textarea {
   //overflow-y: auto;
   //width: 650px !important;
   //margin: 0 auto;
+}
+
+.childComment {
+  padding-top: 5px !important;
 }

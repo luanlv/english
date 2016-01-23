@@ -307,8 +307,7 @@ body {
   overflow-y: scroll !important; }
 
 .dimmed {
-  overflow-y: hidden !important;
-  padding-right: 17px; }
+  overflow-y: hidden !important; }
 
 ::-webkit-scrollbar {
   height: 16px;
@@ -1126,3 +1125,6 @@ textarea {
   padding-bottom: 20px;
   width: 550px;
   margin: 0 auto; }
+
+.childComment {
+  padding-top: 5px !important; }

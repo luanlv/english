@@ -2,6 +2,7 @@
 
 
 GET /                      controllers.Application.index
+GET /post/:postId          controllers.Application.post(postId: String)
 GET /dashboard             controllers.Application.index
 GET /chatroom              controllers.Chat.chatRooms
 GET /chatroom/:id          controllers.Chat.chatRoom(id: String)
