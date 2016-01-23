@@ -51,8 +51,7 @@ var Home = {
     ctrl.post = m.prop({});
 
     ctrl.onunload = function() {
-      if(m.route.param("postId") === undefined){
-        console.log("leave")
+      if(wsCtrl.request !== undefined && wsCtrl.request.ready()){
         wsCtrl.data.post.list[wsCtrl.arrayObjectIndexOf(wsCtrl.data.post.list, wsCtrl.post().post.id, "id")] = wsCtrl.post().post;
         wsCtrl.send(wsCtrl.sendData("unSubPost", {}));
         wsCtrl.request.ready(false);
