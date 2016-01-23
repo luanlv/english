@@ -760,6 +760,7 @@ var Count = {
 window.initRoute = function(){
   m.route(document.getElementById('app'), "/", {
     "/": tenant('home', route(Home)),
+    "/post/:postId": tenant('home', route(Home)),
     "/dashboard": tenant('dashboard', route(Dashboard)),
     "/chatroom": tenant('chatroom', route(ChatRoom)),
     "/chatroom/:roomId": tenant('room', route(Room)),
@@ -817,7 +818,8 @@ var Home = {
     ctrl.setup = function(){
       //$('.ui.modal.show-post').modal("refresh");
       wsCtrl.post().comment = wsCtrl.post().comment.reverse();
-    }
+      api.showPost(wsCtrl.post().post.id);
+    };
 
     ctrl.addComment = function(postId, input){
       var ip = input().trim();
@@ -839,129 +841,151 @@ var Home = {
       rd.home(function(){m.redraw()})
     };
 
+    if(m.route.param("postId") !== undefined){
+      wsCtrl.request = api.requestWithFeedback2({method: "GET", url: "/viewpost/" + m.route.param("postId")}, wsCtrl.post, ctrl.setup);
+      wsCtrl.send(wsCtrl.sendData("subPost", {id: m.route.param("postId")}));
+    }
 
     ctrl.post = m.prop({});
-    console.log("home !!")
+
+    ctrl.onunload = function() {
+      if(m.route.param("postId") === undefined){
+        console.log("leave")
+        wsCtrl.data.post.list[wsCtrl.arrayObjectIndexOf(wsCtrl.data.post.list, wsCtrl.post().post.id, "id")] = wsCtrl.post().post;
+        wsCtrl.send(wsCtrl.sendData("unSubPost", {}));
+        wsCtrl.request.ready(false);
+      }
+    };
+
     rd.home(function(){console.log("redraw home!"); m.redraw()});
+
   },
   view: function(ctrl) {
     api.rd("home:" + redraw.home);
     return (
         {tag: "div", attrs: {className:"ui grid  main-content"}, children: [
           {tag: "div", attrs: {className:"three wide column"}, children: [
-              {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
-                  {tag: "div", attrs: {className:"trending"}, children: [
-                      {tag: "h3", attrs: {}, children: ["Trending Now (fake)"]}, 
-                      {tag: "ul", attrs: {}, children: [
-                          {tag: "li", attrs: {}, children: ["What should I know about food in Cancun, Mexico?"]}, 
-                          {tag: "li", attrs: {}, children: ["What films were so bad, they destroyed the actors' careers?"]}, 
-                          {tag: "li", attrs: {}, children: ["Why do Americans think eggs are a dairy product?"]}, 
-                          {tag: "li", attrs: {}, children: ["I have good grades but I feel like I do not know anything properly. How should I deal with this situation?"]}, 
-                          {tag: "li", attrs: {}, children: ["2016 Academy Award Nominations"]}, 
-                          {tag: "li", attrs: {}, children: ["Death of Alan Rickman"]}, 
-                          {tag: "li", attrs: {}, children: ["Death of David Bowie"]}, 
-                          {tag: "li", attrs: {}, children: ["Sherlock: The Abominable Bride"]}, 
-                          {tag: "li", attrs: {}, children: ["Making a Murderer"]}
-                      ]}
-                  ]}
-
-              ]}, 
-              {tag: "div", attrs: {className:"ui  home-post-Wr mh300"}}
-          ]}, 
-
-            {tag: "div", attrs: {className:"nine wide column"}, children: [
-
-            {tag: "div", attrs: {className:"ui home-post-Wr "}, children: [
-
-              {tag: "div", attrs: {className:"ui form postWr postContainer"}, children: [
-                {tag: "div", attrs: {className:"field"}, children: [
-                  {tag: "textarea", attrs: {className:"auto-size new-post", 
-                            rows:"2", 
-                            placeholder:"What's on your mind?", 
-                            config:function (element, isInit, ctx) {
-
-                                        if(!isInit) {
-                                          if(wsCtrl.userId.length == 0){
-                                            $(element).on('click input', function(){
-                                              api.signin();
-                                              element.value = ''
-                                            })
-                                          }
-
-                                          $(element).textareaAutoSize();
-                                          $(element).on('input', function(){
-                                              ctrl.inputPost($(element).val())
-                                          })
-                                        }
-                                        element.value = ctrl.inputPost();
-                                        if(element.value.length<1){
-
-                                          //$(element).css('height', '41px')
-                                        }
-                                      }, 
-                                    
-                            onkeypress:function(e){
-                                                if(e.keyCode == 13 && !e.shiftKey) {
-                                                  m.redraw.strategy("none");
-                                                  if (ctrl.inputPost().length < 1) {
-                                                    return false;
-                                                  }
-                                                }else{
-                                                  m.redraw.strategy("none");
-                                                  if(e.keyCode == 13 && e.shiftKey && ctrl.inputPost().length < 1){
-                                                    return false;
-                                                  }
-                                                }
-                                            }
-                                        
-                  }, children: [ctrl.inputPost()]}
-                ]}, 
-                {tag: "div", attrs: {className:"post"}, children: [
-                  {tag: "button", attrs: {className:"ui mini primary button", 
-                       onclick:function(e){
-                        if(ctrl.inputPost().trim().length > 0){
-                          m.redraw.strategy("none");
-                          $('.postWr').addClass('loading');
-                          $.ajax({
-                              type: "POST",
-                              url: "/post",
-                              data: JSON.stringify({content: ctrl.inputPost()}),
-                              contentType: "application/json",
-                              dataType: "text",
-                              success: function(data){
-                                 ctrl.inputPost("");
-                                 $('.new-post').css('height', 41);
-                                 $('.postWr').removeClass('loading');
-                                 rd.home(function(){m.redraw()})
-                              }
-                           });
-                        }
-                       }
-                  }, children: ["Post"]}, 
-                  {tag: "span", attrs: {className:"clear"}}
+            {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
+              {tag: "div", attrs: {className:"trending"}, children: [
+                {tag: "h3", attrs: {}, children: ["Trending Now (fake)"]}, 
+                {tag: "ul", attrs: {}, children: [
+                  {tag: "li", attrs: {}, children: ["What should I know about food in Cancun, Mexico?"]}, 
+                  {tag: "li", attrs: {}, children: ["What films were so bad, they destroyed the actors' careers?"]}, 
+                  {tag: "li", attrs: {}, children: ["Why do Americans think eggs are a dairy product?"]}, 
+                  {tag: "li", attrs: {}, children: ["I have good grades but I feel like I do not know anything properly. How should I deal with this situation?"]}, 
+                  {tag: "li", attrs: {}, children: ["2016 Academy Award Nominations"]}, 
+                  {tag: "li", attrs: {}, children: ["Death of Alan Rickman"]}, 
+                  {tag: "li", attrs: {}, children: ["Death of David Bowie"]}, 
+                  {tag: "li", attrs: {}, children: ["Sherlock: The Abominable Bride"]}, 
+                  {tag: "li", attrs: {}, children: ["Making a Murderer"]}
                 ]}
               ]}
-            ]}, 
-              !(wsCtrl.post.length > 0)?(
-                  Home.ShowPost(ctrl)
-              ):"", 
-              !wsCtrl.data.post.init?(
-                  (wsCtrl.userId.length>0)?(
-                  {tag: "div", attrs: {className:"ui segment loading mh300 noBor noSha"}
 
-                  }
-                  ):(
-                  {tag: "div", attrs: {className:"ui segment mh300 noBor noSha", style:"text-align: center"}, children: [
-                    "Please login to see posts!"
-                  ]}
-              )
-              ):(
+            ]}, 
+            {tag: "div", attrs: {className:"ui  home-post-Wr mh300"}}
+          ]}, 
+
+          {tag: "div", attrs: {className:"nine wide column"}, children: [
+
+
+
+
+
+            !wsCtrl.data.post.init?(
+                (wsCtrl.userId.length>0)?(
+                    {tag: "div", attrs: {className:"ui home-post-Wr "}, children: [
+                      {tag: "div", attrs: {className:"ui segment loading mh300 noBor noSha"}
+
+                      }
+                    ]}
+                ):(
+                    {tag: "div", attrs: {className:"ui home-post-Wr "}, children: [
+                      {tag: "div", attrs: {className:"ui segment mh300 noBor noSha", style:"text-align: center"}, children: [
+                        "Please login to see posts!"
+                      ]}
+                    ]}
+                )
+            ):(
+                (m.route.param("postId") !== undefined)?(
+                    Home.ShowPost(ctrl)
+                ):[
+                  {tag: "div", attrs: {className:"ui home-post-Wr "}, children: [
+                    {tag: "div", attrs: {className:"ui form postWr postContainer"}, children: [
+                      {tag: "div", attrs: {className:"field"}, children: [
+                           {tag: "textarea", attrs: {className:"auto-size new-post", 
+                                     rows:"2", 
+                                     placeholder:"What's on your mind?", 
+                                     config:function (element, isInit, ctx) {
+
+                                          if(!isInit) {
+                                            if(wsCtrl.userId.length == 0){
+                                              $(element).on('click input', function(){
+                                                api.signin();
+                                                element.value = ''
+                                              })
+                                            }
+
+                                            $(element).textareaAutoSize();
+                                            $(element).on('input', function(){
+                                                ctrl.inputPost($(element).val())
+                                            })
+                                          }
+                                          element.value = ctrl.inputPost();
+                                          if(element.value.length<1){
+
+                                            //$(element).css('height', '41px')
+                                          }
+                                        }, 
+                                      
+                                     onkeypress:function(e){
+                                                  if(e.keyCode == 13 && !e.shiftKey) {
+                                                    m.redraw.strategy("none");
+                                                    if (ctrl.inputPost().length < 1) {
+                                                      return false;
+                                                    }
+                                                  }else{
+                                                    m.redraw.strategy("none");
+                                                    if(e.keyCode == 13 && e.shiftKey && ctrl.inputPost().length < 1){
+                                                      return false;
+                                                    }
+                                                  }
+                                              }
+                                          
+                           }, children: [ctrl.inputPost()]}
+                      ]}, 
+                      {tag: "div", attrs: {className:"post"}, children: [
+                        {tag: "button", attrs: {className:"ui mini primary button", 
+                                onclick:function(e){
+                          if(ctrl.inputPost().trim().length > 0){
+                            m.redraw.strategy("none");
+                            $('.postWr').addClass('loading');
+                            $.ajax({
+                                type: "POST",
+                                url: "/post",
+                                data: JSON.stringify({content: ctrl.inputPost()}),
+                                contentType: "application/json",
+                                dataType: "text",
+                                success: function(data){
+                                   ctrl.inputPost("");
+                                   $('.new-post').css('height', 41);
+                                   $('.postWr').removeClass('loading');
+                                   rd.home(function(){m.redraw()})
+                                }
+                             });
+                          }
+                         }
+                        }, children: ["Post"]}, 
+                        {tag: "span", attrs: {className:"clear"}}
+                      ]}
+                    ]}
+                  ]},
                   wsCtrl.data.post.list.map(function(post){
                     return (
                         Home.post(post, ctrl)
                     )
                   })
-              )
+                ]
+            )
 
 
           ]}, 
@@ -1060,18 +1084,13 @@ Home.post = function(post, ctrl){
                                     }, 
                                   
                  onclick:function(e){
-                    console.log(m.route.param('_post'));
-                    if(m.route.param('_post') === undefined){
-                      if(m.route().indexOf("/?") < 0){
-                        m.route(m.route()+"?_post=" + post.id);
-                      } else {
-                        m.route(m.route()+"_post=" + post.id);
-                      }
-
+                    if(m.route.param('post') === undefined){
+                      m.route('/post/' + post.id);
                       //console.log(m.route.param("_post"))
-                      wsCtrl.request = api.requestWithFeedback2({method: "GET", url: "/viewpost/" + post.id}, wsCtrl.post, ctrl.setup);
-                      wsCtrl.send(wsCtrl.sendData("subPost", {id: post.id}));
-                      api.showPost(post.id);
+                      //wsCtrl.request = api.requestWithFeedback2({method: "GET", url: "/viewpost/" + post.id}, wsCtrl.post, ctrl.setup);
+                      //wsCtrl.send(wsCtrl.sendData("subPost", {id: post.id}));
+                      //api.showPost(post.id);
+                      rd.home(function(){m.redraw()})
                     }
                  }
               }, children: [
@@ -1098,20 +1117,20 @@ Home.post = function(post, ctrl){
         ]}
       ]}
   )
-}
+};
 
 Home.ShowPost = function(ctrl){
-  if(wsCtrl.request !== undefined) console.log(!wsCtrl.request.ready())
   return(
       (wsCtrl.request === undefined || !wsCtrl.request.ready())?(
-        {tag: "div", attrs: {className:"ui  modal show-post"}, children: [
-          {tag: "div", attrs: {className:"ui segment loading", style:"min-height: 600px;"}
-          }
-        ]}
-    ):(
-        {tag: "div", attrs: {className:"ui modal show-post"}, children: [
-          {tag: "div", attrs: {className:"ui segment", style:"min-height: 600px;"}, children: [
-            {tag: "div", attrs: {className:"viewpost"}, children: [
+          {tag: "div", attrs: {className:"ui home-post-Wr"}, children: [
+            {tag: "div", attrs: {className:"ui postContainer postDemo"}, children: [
+              {tag: "div", attrs: {className:"ui segment loading", style:"min-height: 600px;"}
+              }
+            ]}
+          ]}
+      ):(
+          {tag: "div", attrs: {className:"ui home-post-Wr"}, children: [
+            {tag: "div", attrs: {className:"ui postContainer postDemo"}, children: [
               Home.post(wsCtrl.post().post), 
               {tag: "div", attrs: {id:"comment"}, children: [
 
@@ -1139,7 +1158,7 @@ Home.ShowPost = function(ctrl){
                             ]}, 
                             {tag: "div", attrs: {className:"actions"}, children: [
                               {tag: "a", attrs: {className:"reply", 
-                                onclick:function(){
+                                 onclick:function(){
                                   comment.replay = true;
                                   comment.input = m.prop('');
                                   rd.home(function(){m.redraw()});
@@ -1148,36 +1167,49 @@ Home.ShowPost = function(ctrl){
                             ]}
                           ]}, 
 
-                          (comment.replay || comment.children.length > 0)?(
-                              {tag: "div", attrs: {class:"comments"}, children: [
-                                comment.children.map(function(childComment){
-                                  return (
-                                      {tag: "div", attrs: {className:"comment"}, children: [
+                          (comment.replay || comment.children.length > 0)?[
+                            (comment.children.length>0)?(
+                            {tag: "div", attrs: {class:"comments"}, children: [
+                              comment.children.map(function(childComment){
+                                return (
+                                    {tag: "div", attrs: {className:"comment"}, children: [
                                         {tag: "span", attrs: {className:"avatar"}, children: [
                                             {tag: "a", attrs: {className:"route ulpt", href:"/@/" + childComment.user.id}, children: [
                                               {tag: "img", attrs: {src:(childComment.user.avatar.length>0)?("/getimage/small/" + childComment.user.avatar):wsCtrl.defaultAvata}}
                                             ]}
                                         ]}, 
-                                                      {tag: "div", attrs: {className:"content"}, children: [
+                                      {tag: "div", attrs: {className:"content"}, children: [
                                           {tag: "span", attrs: {className:"author"}, children: [
                                             {tag: "a", attrs: {className:"fl route ulpt", href:"/@/" + childComment.user.id}, children: [
                                               childComment.user.name
                                             ]}
                                           ]}, 
-                                                        {tag: "div", attrs: {className:"metadata"}, children: [
-                                                          {tag: "span", attrs: {className:"date"}, children: [api.time(childComment.time)]}
-                                                        ]}, 
-                                                        {tag: "div", attrs: {className:"text"}, children: [
-                                                          m.trust(api.post(childComment.comment))
-                                                        ]}
-
-                                                      ]}
+                                        {tag: "div", attrs: {className:"metadata"}, children: [
+                                          {tag: "span", attrs: {className:"date"}, children: [api.time(childComment.time)]}
+                                        ]}, 
+                                        {tag: "div", attrs: {className:"text"}, children: [
+                                          m.trust(api.post(childComment.comment))
+                                        ]}, 
+                                        {tag: "div", attrs: {className:"actions"}, children: [
+                                          {tag: "a", attrs: {className:"reply", 
+                                             onclick:function(){
+                                                comment.replay = true;
+                                                comment.input = m.prop('');
+                                                rd.home(function(){m.redraw()});
+                                              }
+                                          }, children: ["Reply"]}
+                                        ]}
                                       ]}
-                                  )
-                                }), 
-                                comment.replay?(Home.Comment(ctrl, ctrl.addChildComment, comment.id, comment.input, wsCtrl.post().post.id)):("")
-                              ]}
-                          ):("") 
+                                    ]}
+                                )
+                              })
+                            ]}):(""),
+                            (comment.replay)?(
+                                {tag: "div", attrs: {className:"comments childComment"}, children: [
+                                  Home.Comment(ctrl, ctrl.addChildComment, comment.id, comment.input, wsCtrl.post().post.id)
+                                ]}
+                            ):("")
+                          ]:("") 
                         ]}
                     )
                   })
@@ -1187,11 +1219,12 @@ Home.ShowPost = function(ctrl){
                 {tag: "div", attrs: {className:"ui threaded comments"}, children: [
                   Home.Comment(ctrl, ctrl.addComment, wsCtrl.post().post.id, ctrl.inputComment)
                 ]}
+
               ]}
             ]}
           ]}
-        ]}
-    )
+
+      )
   )
 };
 
@@ -1200,7 +1233,7 @@ Home.Comment = function(ctrl, action, actionId, input, actionId2){
   return (
       {tag: "div", attrs: {className:"comment"}, children: [
         {tag: "a", attrs: {className:"avatar"}, children: [
-          {tag: "img", attrs: {src:wsCtrl.defaultAvata, height:"35", width:"35"}}
+          {tag: "img", attrs: {src:(wsCtrl.avatar.length>0)?("/getimage/small/" + wsCtrl.avatar):wsCtrl.defaultAvata, height:"35", width:"35"}}
         ]}, 
         {tag: "div", attrs: {className:"ui form content"}, children: [
           {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
@@ -1218,24 +1251,6 @@ Home.Comment = function(ctrl, action, actionId, input, actionId2){
                                               });
                                             }
                                             $(element).textareaAutoSize();
-                                            $(element).attrchange({
-                                              //trackValues: true,
-                                              callback: function (event) {
-                                                var boxNode = document.getElementsByClassName('box-comment')[0];
-                                                var box = $('.box-comment');
-                                                var input = $(element);
-
-
-                                                if (box.scrollTop() + box.innerHeight() >= box.prop('scrollHeight')) {
-                                                  box.css('height', 490 + 36 - $(element).outerHeight());
-                                                  boxNode.scrollTop = boxNode.scrollHeight;
-                                                } else {
-                                                  box.css('height', 490 + 36 - $(element).outerHeight());
-                                                }
-
-                                              }
-                                            });
-
 
                                           }
                                           element.value = input();

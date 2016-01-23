@@ -122,6 +122,7 @@ var Count = {
 window.initRoute = function(){
   m.route(document.getElementById('app'), "/", {
     "/": tenant('home', route(Home)),
+    "/post/:postId": tenant('home', route(Home)),
     "/dashboard": tenant('dashboard', route(Dashboard)),
     "/chatroom": tenant('chatroom', route(ChatRoom)),
     "/chatroom/:roomId": tenant('room', route(Room)),

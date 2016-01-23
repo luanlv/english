@@ -63,8 +63,6 @@ object CommentRepo {
   }
 
   def getComment(userId: String, postId: String, timepoint: DateTime, nb: Int): Fu[List[Comment]] = {
-    println(userId)
-    println(postId)
     coll.find(BSONDocument("parentPost" -> postId),
       BSONDocument(
         "_id" -> 1,

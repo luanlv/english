@@ -31,6 +31,9 @@ object Application extends LilaController{
   def index = Open { implicit  ctx =>
       Ok(views.html.index.home()).fuccess
   }
+  def post(postId: String) = Open { implicit  ctx =>
+      Ok(views.html.index.home()).fuccess
+  }
 
   def json = Open { implicit ctx =>
       val fuJson = Future(Json.obj("data" -> "data recieved from sever!!!"))
