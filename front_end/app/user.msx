@@ -33,7 +33,7 @@ var User = {
               <div className="head-user ui grid">
                 <div className="four wide column" style="  min-height: 250px">
                   <div className="avatarWr">
-                    <img id="avatarImg" src={(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
+                    <img id="avatarImg" src={(ctrl.user().avatar.length>0)?(wsCtrl.static + "/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
                   </div>
 
                 </div>

@@ -290,7 +290,7 @@ var Chat = {
                                 }
                               
                     }, children: [
-                      {tag: "img", attrs: {class:"ui avatar image", src:(user.avatar.length>0)?("/getimage/small/" + user.avatar):wsCtrl.defaultAvata}}, 
+                      {tag: "img", attrs: {class:"ui avatar image", src:(user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + user.avatar):wsCtrl.defaultAvata}}, 
                         {tag: "div", attrs: {class:"content"}, children: [
                           {tag: "div", attrs: {class:"header"}, children: [user.name]}
                         ]}
@@ -888,8 +888,6 @@ var Home = {
 
 
 
-
-
             !wsCtrl.data.post.init?(
                 (wsCtrl.userId.length>0)?(
                     {tag: "div", attrs: {className:"ui home-post-Wr "}, children: [
@@ -1019,12 +1017,22 @@ Home.post = function(post, ctrl){
   return(
       {tag: "div", attrs: {className:"ui home-post-Wr"}, children: [
         {tag: "div", attrs: {className:"ui postContainer postDemo"}, children: [
-
           {tag: "div", attrs: {className:"ui list"}, children: [
             {tag: "div", attrs: {className:"item"}, children: [
+              {tag: "span", attrs: {className:"right floated"}, children: [
+                {tag: "a", attrs: {className:"route", "data-content":(m.route.param('postId') === undefined)?"Post":"Home", "data-position":"bottom left", 
+                   href:(m.route.param('postId') === undefined)?("/post/" + post.id):("/"), 
+                   config:function(el, isInited){
+                                    if(!isInited){
+                                      $(el).popup({inline: true});
+                                    }
+                                    }
+                                  
+                }, children: [{tag: "i", attrs: {class:"large long grey arrow " + ((m.route.param('postId') === undefined)?"right":"left") +" icon"}}]}
+              ]}, 
               {tag: "span", attrs: {className:"fl avatar"}, children: [
                 {tag: "a", attrs: {className:"route ulpt", href:"/@/" + post.user.id}, children: [
-                  {tag: "img", attrs: {className:"image", src:(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)}}
+                  {tag: "img", attrs: {className:"image", src:(post.user.avatar.length>0)?(wsCtrl.static + "/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)}}
                 ]}
               ]}, 
               {tag: "div", attrs: {className:"content"}, children: [
@@ -1135,12 +1143,14 @@ Home.ShowPost = function(ctrl){
 
 
                 {tag: "div", attrs: {className:"ui threaded comments"}, children: [
+                  {tag: "h2", attrs: {}, children: ["Comments"]}, 
+                  {tag: "a", attrs: {href:""}, children: ["View xx more comments"]}, 
                   wsCtrl.post().comment.map(function(comment){
                     return (
                         {tag: "div", attrs: {className:"comment"}, children: [
                           {tag: "span", attrs: {className:"avatar"}, children: [
                               {tag: "a", attrs: {className:"route ulpt", href:"/@/" + comment.user.id}, children: [
-                                {tag: "img", attrs: {src:(comment.user.avatar.length>0)?("/getimage/small/" + comment.user.avatar):wsCtrl.defaultAvata}}
+                                {tag: "img", attrs: {src:(comment.user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + comment.user.avatar):wsCtrl.defaultAvata}}
                               ]}
                           ]}, 
                           {tag: "div", attrs: {className:"content"}, children: [
@@ -1169,12 +1179,13 @@ Home.ShowPost = function(ctrl){
                           (comment.replay || comment.children.length > 0)?[
                             (comment.children.length>0)?(
                             {tag: "div", attrs: {class:"comments"}, children: [
+                              {tag: "a", attrs: {href:""}, children: ["View xx more comments"]}, 
                               comment.children.map(function(childComment){
                                 return (
                                     {tag: "div", attrs: {className:"comment"}, children: [
                                         {tag: "span", attrs: {className:"avatar"}, children: [
                                             {tag: "a", attrs: {className:"route ulpt", href:"/@/" + childComment.user.id}, children: [
-                                              {tag: "img", attrs: {src:(childComment.user.avatar.length>0)?("/getimage/small/" + childComment.user.avatar):wsCtrl.defaultAvata}}
+                                              {tag: "img", attrs: {src:(childComment.user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + childComment.user.avatar):wsCtrl.defaultAvata}}
                                             ]}
                                         ]}, 
                                       {tag: "div", attrs: {className:"content"}, children: [
@@ -1232,7 +1243,7 @@ Home.Comment = function(ctrl, action, actionId, input, actionId2){
   return (
       {tag: "div", attrs: {className:"comment"}, children: [
         {tag: "a", attrs: {className:"avatar"}, children: [
-          {tag: "img", attrs: {src:(wsCtrl.avatar.length>0)?("/getimage/small/" + wsCtrl.avatar):wsCtrl.defaultAvata, height:"35", width:"35"}}
+          {tag: "img", attrs: {src:(wsCtrl.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + wsCtrl.avatar):wsCtrl.defaultAvata, height:"35", width:"35"}}
         ]}, 
         {tag: "div", attrs: {className:"ui form content"}, children: [
           {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
@@ -1354,7 +1365,7 @@ var Friend = function(ctrl){ return (
                           {tag: "div", attrs: {className:"notifyFriend clearfix"}, children: [
                             {tag: "span", attrs: {className:"ui list fleft"}, children: [
                               {tag: "div", attrs: {className:"item"}, children: [
-                                {tag: "img", attrs: {className:"ui avatar image", src:(friend.avatar.length>0)?("/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata}}, 
+                                {tag: "img", attrs: {className:"ui avatar image", src:(friend.avatar.length>0)?(wsCtrl.static + "/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata}}, 
                                   {tag: "div", attrs: {className:"content"}, children: [
                                     {tag: "a", attrs: {className:"header", href:"/@/" + friend.id, config:m.route}, children: [friend.name]}, 
                                     {tag: "div", attrs: {className:"description"}, children: ["wanting to make friend with you"]}
@@ -1808,7 +1819,7 @@ var Nav = {
                    config:function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
-                          $(element).transition('jiggle')
+                          $(element).transition('jiggle');
                           if(ctrl.ping() > 0 || ctrl.ping <= 500){
                             setTimeout(fnJiggle, 1000)
                           } else {
@@ -1992,7 +2003,7 @@ var Room = {
                   {tag: "div", attrs: {className:"ui comments mar0"}, children: [
                     {tag: "div", attrs: {className:"comment"}, children: [
                       {tag: "a", attrs: {className:"avatar"}, children: [
-                        {tag: "img", attrs: {src:(wsCtrl.avatar.length>0)?("/getimage/thumb/" + wsCtrl.avatar):("/assets/avatar/2.jpg")}}
+                        {tag: "img", attrs: {src:(wsCtrl.avatar.length>0)?(wsCtrl.static + "/getimage/thumb/" + wsCtrl.avatar):("/assets/avatar/2.jpg")}}
                       ]}, 
                       {tag: "div", attrs: {className:"ui form content"}, children: [
                         {tag: "div", attrs: {className:"field", style:"display:inline"}, children: [
@@ -2224,7 +2235,7 @@ var User = {
               {tag: "div", attrs: {className:"head-user ui grid"}, children: [
                 {tag: "div", attrs: {className:"four wide column", style:"  min-height: 250px"}, children: [
                   {tag: "div", attrs: {className:"avatarWr"}, children: [
-                    {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
+                    {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?(wsCtrl.static + "/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
                   ]}
 
                 ]}, 
@@ -2436,7 +2447,7 @@ var avatarWr = function(ctrl){
                                                                                     processData: false,
                                                                                     type: 'POST',
                                                                                     success: function(data){
-                                                                                        var url = "/getimage/small/" + data;
+                                                                                        var url = wsCtrl.static + "/getimage/small/" + data;
                                                                                         $('#avatarImg').attr('src', url);
                                                                                         $('.avatarWr').removeClass('loading');
                                                                                         wsCtrl.avatar = data;
@@ -2459,7 +2470,7 @@ var avatarWr = function(ctrl){
                   ]}
                 ]}
               ]}, 
-              {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
+              {tag: "img", attrs: {id:"avatarImg", src:(ctrl.user().avatar.length>0)?(wsCtrl.static + "/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg", width:"180", height:"180"}}
             ]}
           ]}
         ]}
@@ -2487,6 +2498,11 @@ var mRVersion = wsCtrl.mRVersion;
 
 var prevTime;
 
+if(document.domain === "localhost"){
+  wsCtrl.static = "";
+} else {
+  wsCtrl.static = "http://static.luanlv.info"
+}
 
 
 wsCtrl.ping = 0;
@@ -2927,7 +2943,7 @@ ctrl.listen = function(d){
           var mes = d.d.d;
           wsCtrl.commentsInRoom(roomId).push(
               {
-                avatar: (mes.user.avatar.length>0)?("/getimage/thumb/" + mes.user.avatar):wsCtrl.defaultAvata,
+                avatar: (mes.user.avatar.length>0)?(wsCtrl.static + "/getimage/thumb/" + mes.user.avatar):wsCtrl.defaultAvata,
                 userId: mes.user.id,
                 user: mes.user.name,
                 time: Date.now(),

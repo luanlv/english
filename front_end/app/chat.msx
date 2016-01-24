@@ -91,7 +91,7 @@ var Chat = {
                                 }
                               }
                     >
-                      <img class="ui avatar image" src={(user.avatar.length>0)?("/getimage/small/" + user.avatar):wsCtrl.defaultAvata}/>
+                      <img class="ui avatar image" src={(user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + user.avatar):wsCtrl.defaultAvata}/>
                         <div class="content">
                           <div class="header">{user.name}</div>
                         </div>

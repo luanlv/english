@@ -17,8 +17,8 @@ trait AssetHelper { self: I18nHelper =>
 
   //val assetBaseUrl = s"http://$assetDomain"
   val assetBaseUrl = ""
-//  val staticUrl = ""
-  val staticUrl = "http://static.luanlv.info"
+  val staticUrl = ""
+//  val staticUrl = "http://static.luanlv.info"
 
   def cdnUrl(path: String) = s"$assetBaseUrl$path"
   def staticUrl(path: String) = s"$assetBaseUrl${routes.Assets.at(path)}"

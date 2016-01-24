@@ -14,6 +14,11 @@ var mRVersion = wsCtrl.mRVersion;
 
 var prevTime;
 
+if(document.domain === "localhost"){
+  wsCtrl.static = "";
+} else {
+  wsCtrl.static = "http://static.luanlv.info"
+}
 
 
 wsCtrl.ping = 0;
@@ -454,7 +459,7 @@ ctrl.listen = function(d){
           var mes = d.d.d;
           wsCtrl.commentsInRoom(roomId).push(
               {
-                avatar: (mes.user.avatar.length>0)?("/getimage/thumb/" + mes.user.avatar):wsCtrl.defaultAvata,
+                avatar: (mes.user.avatar.length>0)?(wsCtrl.static + "/getimage/thumb/" + mes.user.avatar):wsCtrl.defaultAvata,
                 userId: mes.user.id,
                 user: mes.user.name,
                 time: Date.now(),
