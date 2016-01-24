@@ -85,7 +85,7 @@ var Room = {
                   <div className="ui comments mar0">
                     <div className="comment">
                       <a className="avatar">
-                        <img src={(wsCtrl.avatar.length>0)?("/getimage/thumb/" + wsCtrl.avatar):("/assets/avatar/2.jpg")}/>
+                        <img src={(wsCtrl.avatar.length>0)?(wsCtrl.static + "/getimage/thumb/" + wsCtrl.avatar):("/assets/avatar/2.jpg")}/>
                       </a>
                       <div className="ui form content">
                         <div className="field" style="display:inline">

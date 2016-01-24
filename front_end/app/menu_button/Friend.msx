@@ -61,7 +61,7 @@ var Friend = function(ctrl){ return (
                           <div className="notifyFriend clearfix">
                             <span className="ui list fleft">
                               <div className="item">
-                                <img className="ui avatar image" src={(friend.avatar.length>0)?("/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata} />
+                                <img className="ui avatar image" src={(friend.avatar.length>0)?(wsCtrl.static + "/getimage/thumb/" + friend.avatar):wsCtrl.defaultAvata} />
                                   <div className="content">
                                     <a className="header" href={"/@/" + friend.id} config={m.route}>{friend.name}</a>
                                     <div className="description">wanting to make friend with you</div>

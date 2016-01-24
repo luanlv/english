@@ -113,7 +113,7 @@ var avatarWr = function(ctrl){
                                                                                     processData: false,
                                                                                     type: 'POST',
                                                                                     success: function(data){
-                                                                                        var url = "/getimage/small/" + data;
+                                                                                        var url = wsCtrl.static + "/getimage/small/" + data;
                                                                                         $('#avatarImg').attr('src', url);
                                                                                         $('.avatarWr').removeClass('loading');
                                                                                         wsCtrl.avatar = data;
@@ -136,7 +136,7 @@ var avatarWr = function(ctrl){
                   </div>
                 </div>
               </div>
-              <img id="avatarImg" src={(ctrl.user().avatar.length>0)?("/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
+              <img id="avatarImg" src={(ctrl.user().avatar.length>0)?(wsCtrl.static + "/getimage/small/" + ctrl.user().avatar):"/assets/img/user.jpg"} width="180" height="180"/>
             </div>
           </div>
         </div>

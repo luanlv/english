@@ -40,6 +40,7 @@ POST  /password/reset/confirm/:token   controllers.Auth.passwordResetConfirmAppl
 POST  /set-fingerprint/:hash/:ms       controllers.Auth.setFingerprint(hash: String, ms: Int)
 
 # Images
+GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl.get(size: String, uuid: String)
 GET      /getimage/:size/:uuid        @controllers.ImageCtrl.get(size: String, uuid: String)
 POST     /upload/image                @controllers.ImageCtrl.upload
 #User

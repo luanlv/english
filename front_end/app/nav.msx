@@ -133,7 +133,7 @@ var Nav = {
                    config={function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
-                          $(element).transition('jiggle')
+                          $(element).transition('jiggle');
                           if(ctrl.ping() > 0 || ctrl.ping <= 500){
                             setTimeout(fnJiggle, 1000)
                           } else {

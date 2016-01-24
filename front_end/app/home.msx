@@ -90,8 +90,6 @@ var Home = {
 
 
 
-
-
             {!wsCtrl.data.post.init?(
                 (wsCtrl.userId.length>0)?(
                     <div className="ui home-post-Wr ">
@@ -221,12 +219,22 @@ Home.post = function(post, ctrl){
   return(
       <div className="ui home-post-Wr">
         <div className="ui postContainer postDemo">
-
           <div className="ui list">
             <div className="item">
+              <span className="right floated">
+                <a className="route" data-content={(m.route.param('postId') === undefined)?"Post":"Home"} data-position="bottom left"
+                   href={(m.route.param('postId') === undefined)?("/post/" + post.id):("/")}
+                   config={function(el, isInited){
+                                    if(!isInited){
+                                      $(el).popup({inline: true});
+                                    }
+                                    }
+                                  }
+                ><i class={"large long grey arrow " + ((m.route.param('postId') === undefined)?"right":"left") +" icon"}></i></a>
+              </span>
               <span className="fl avatar">
                 <a className="route ulpt" href={"/@/" + post.user.id}>
-                  <img className="image" src={(post.user.avatar.length>0)?("/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)} />
+                  <img className="image" src={(post.user.avatar.length>0)?(wsCtrl.static + "/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)} />
                 </a>
               </span>
               <div className="content">
@@ -337,12 +345,14 @@ Home.ShowPost = function(ctrl){
 
 
                 <div className="ui threaded comments">
+                  <h2>Comments</h2>
+                  <a href="">View xx more comments</a>
                   {wsCtrl.post().comment.map(function(comment){
                     return (
                         <div className="comment">
                           <span className="avatar">
                               <a className="route ulpt" href={"/@/" + comment.user.id} >
-                                <img src={(comment.user.avatar.length>0)?("/getimage/small/" + comment.user.avatar):wsCtrl.defaultAvata} />
+                                <img src={(comment.user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + comment.user.avatar):wsCtrl.defaultAvata} />
                               </a>
                           </span>
                           <div className="content">
@@ -371,12 +381,13 @@ Home.ShowPost = function(ctrl){
                           {(comment.replay || comment.children.length > 0)?[
                             (comment.children.length>0)?(
                             <div class="comments">
+                              <a href="">View xx more comments</a>
                               {comment.children.map(function(childComment){
                                 return (
                                     <div className="comment">
                                         <span className="avatar">
                                             <a className="route ulpt" href={"/@/" + childComment.user.id} >
-                                              <img src={(childComment.user.avatar.length>0)?("/getimage/small/" + childComment.user.avatar):wsCtrl.defaultAvata} />
+                                              <img src={(childComment.user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + childComment.user.avatar):wsCtrl.defaultAvata} />
                                             </a>
                                         </span>
                                       <div className="content">
@@ -434,7 +445,7 @@ Home.Comment = function(ctrl, action, actionId, input, actionId2){
   return (
       <div className="comment">
         <a className="avatar">
-          <img src={(wsCtrl.avatar.length>0)?("/getimage/small/" + wsCtrl.avatar):wsCtrl.defaultAvata} height="35" width="35"/>
+          <img src={(wsCtrl.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + wsCtrl.avatar):wsCtrl.defaultAvata} height="35" width="35"/>
         </a>
         <div className="ui form content">
           <div className="field" style="display:inline">
