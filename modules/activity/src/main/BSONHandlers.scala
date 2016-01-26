@@ -18,7 +18,7 @@ object BSONHandlers {
         likeCount = r int "likeCount",
         likes = r getO[List[String]] "likes",
         shareCount = r int "shareCount",
-        shares = r get[List[String]] "shares",
+        shares = r getO[List[String]] "shares",
         commentCount = r int "commentCount"
       )
     }

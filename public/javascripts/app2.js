@@ -32,13 +32,13 @@ api.requestWithFeedback = function(args) {
     xhr.timeout = 4000
     xhr.ontimeout = function() {
       complete()
-      rd.dashboard(function(){ console.log("json error");m.redraw()})
+      rd.qa(function(){ console.log("json error");m.redraw()})
     }
   };
   return {
     request: m.request(args).then(data).then(function(){
       complete()
-      rd.dashboard(function(){ console.log("json ok");m.redraw()})
+      rd.qa(function(){ console.log("json ok");m.redraw()})
     }),
     data: data,
     ready: completed
@@ -192,8 +192,6 @@ api.showPost = function(postId){
     }
   }).modal('show');
 };
-
-
 
 module.exports = api;
 },{"../ws/_wsCtrl.js":16}],2:[function(require,module,exports){
@@ -587,60 +585,11 @@ var Create = function(){
 
 module.exports = ChatRoom;
 },{"../ws/_wsCtrl.js":16,"./api.msx":1}],4:[function(require,module,exports){
-var wsCtrl = require('../ws/_wsCtrl.js');
-var api = require('./api.msx');
-var initData = {}
-//initData.dashboard = {}
-//initData.dashboard.data = {}
-
-var Dashboard = {
-  controller: function() {
-    console.log("controller dashboard!")
-    $.cookie('url', m.route(), {path: "/"})
-    var ctrl = this;
-    ctrl.server = initData.dashboard || {server: false};
-    ctrl.request = (!ctrl.server.server)? api.requestWithFeedback({method: "GET", url: "/json"}) : {
-      ready: function(){return true},
-      data: m.prop(initData.dashboard.data)
-    };
-    ctrl.server.server = false;
-    rd.dashboard()
-  },
-  view: function(ctrl) {
-    api.rd("dashBoard:" + redraw.dashboard);
-    redraw.dashboard++;
-    if(!ctrl.request.ready()) {
-      return (
-          {tag: "div", attrs: {className:"ui grid main-content "}, children: [
-            {tag: "div", attrs: {className:"sixteen wide column"}, children: [
-              {tag: "div", attrs: {className:"ui segment loading mh300 noBor noSha"}, children: [
-                "Loading"
-              ]}
-            ]}
-          ]}
-      )
-    } else {
-      return ({tag: "div", attrs: {className:"ui center aligned grid main-content"}, children: [
-        {tag: "div", attrs: {className:"ui segment mh300 noBor noSha"}, children: [
-          {tag: "div", attrs: {className:"sixteen wide column"}, children: [
-            {tag: "div", attrs: {className:"building"}, children: [
-              "this page is under construction!"
-            ]}
-          ]}
-        ]}
-      ]})
-    }
-  }
-};
-
-
-module.exports = Dashboard;
-},{"../ws/_wsCtrl.js":16,"./api.msx":1}],5:[function(require,module,exports){
 "user strict";
 
 var Nav = require('./nav.msx');
 var Home = require('./home.msx');
-var Dashboard = require('./dashboard.msx');
+var Qa = require('./qa.msx');
 var ChatRoom = require('./chatroom.msx');
 var User = require('./user.msx');
 var UserSetting = require('./userSetting.msx');
@@ -691,8 +640,8 @@ window.rd = {
   home: function(callback){
     local(['home'], callback).call()
   },
-  dashboard: function(callback){
-    local(['dashboard'], callback).call()
+  qa: function(callback){
+    local(['qa'], callback).call()
   },
   app: function(callback){
     local(['app'], callback).call()
@@ -713,7 +662,7 @@ window.rd = {
     local(['setting'], callback).call()
   },
   all: function(callback){
-    local(["home", "dashboard", "nav", "app", "right", "chatroom", "room", "user", "setting"], callback).call()
+    local(["home", "qa", "nav", "app", "right", "chatroom", "room", "user", "setting"], callback).call()
   }
 };
 
@@ -761,7 +710,9 @@ window.initRoute = function(){
   m.route(document.getElementById('app'), "/", {
     "/": tenant('home', route(Home)),
     "/post/:postId": tenant('home', route(Home)),
-    "/dashboard": tenant('dashboard', route(Dashboard)),
+    "/qa": tenant('qa', route(Qa)),
+    "/qa/new": tenant('qa', route(Qa)),
+    "/qa/:questionId": tenant('qa', route(Qa)),
     "/chatroom": tenant('chatroom', route(ChatRoom)),
     "/chatroom/:roomId": tenant('room', route(Room)),
     "/settings": tenant('setting', route(UserSetting)),
@@ -775,7 +726,7 @@ window.initComponent = function() {
   m.mount(document.getElementById('footer'), tenant('footer', Footer));
   m.mount(document.getElementById('rightContainer'), tenant('right', Chat));
 }
-},{"./chat.msx":2,"./chatroom.msx":3,"./dashboard.msx":4,"./footer.msx":6,"./home.msx":7,"./nav.msx":12,"./room.msx":13,"./user.msx":14,"./userSetting.msx":15}],6:[function(require,module,exports){
+},{"./chat.msx":2,"./chatroom.msx":3,"./footer.msx":5,"./home.msx":6,"./nav.msx":11,"./qa.msx":12,"./room.msx":13,"./user.msx":14,"./userSetting.msx":15}],5:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -795,7 +746,7 @@ var Footer = {
 
 
 module.exports = Footer;
-},{"../ws/_wsCtrl.js":16,"./api.msx":1}],7:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],6:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -1020,7 +971,7 @@ Home.post = function(post, ctrl){
           {tag: "div", attrs: {className:"ui list"}, children: [
             {tag: "div", attrs: {className:"item"}, children: [
               {tag: "span", attrs: {className:"right floated"}, children: [
-                {tag: "a", attrs: {className:"route", "data-content":(m.route.param('postId') === undefined)?"Post":"Home", "data-position":"bottom left", 
+                {tag: "a", attrs: {className:"route", "data-content":(m.route.param('postId') === undefined)?"Post":"Home", "data-position":"top left", 
                    href:(m.route.param('postId') === undefined)?("/post/" + post.id):("/"), 
                    config:function(el, isInited){
                                     if(!isInited){
@@ -1261,7 +1212,6 @@ Home.Comment = function(ctrl, action, actionId, input, actionId2){
                                               });
                                             }
                                             $(element).textareaAutoSize();
-
                                           }
                                           element.value = input();
                                           if(element.value.length<1){
@@ -1301,7 +1251,7 @@ Home.Comment = function(ctrl, action, actionId, input, actionId2){
 }
 
 module.exports = Home;
-},{"../ws/_wsCtrl.js":16,"./api.msx":1}],8:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],7:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -1431,7 +1381,7 @@ var Friend = function(ctrl){ return (
 ) };
 
 module.exports = Friend;
-},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],9:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],8:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -1501,7 +1451,7 @@ var LoginButton = function(ctrl){ return(
 )}
 
 module.exports = LoginButton;
-},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],10:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],9:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -1609,7 +1559,7 @@ var MessageButton = function(ctrl){ return (
 ) }
 
 module.exports = MessageButton;
-},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],11:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],10:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
@@ -1683,7 +1633,7 @@ var UserButton = function(ctrl){ return (
 ) }
 
 module.exports = UserButton;
-},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],12:[function(require,module,exports){
+},{"../../ws/_wsCtrl.js":16,".././api.msx":1}],11:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -1759,15 +1709,15 @@ var Nav = {
               }
              }
           }, children: [{tag: "i", attrs: {className:"large icon home users-icon"}}]}, 
-          {tag: "a", attrs: {href:"/dashboard", "data-content":"Article", "data-position":"bottom left", 
-             className:((m.route() == "/dashboard")?"active":"") + " item route-button route", 
+          {tag: "a", attrs: {href:"/qa", "data-content":"Question & Answer", "data-position":"bottom left", 
+             className:((m.route() == "/qa")?"active":"") + " item route-button route", 
              config:function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
               }
              }
           }, children: [
-            {tag: "i", attrs: {className:"large icon newspaper"}}
+            {tag: "i", attrs: {className:"large browser icon"}}
           ]}, 
           {tag: "a", attrs: {href:"/chatroom", "data-content":"Chat Room", "data-position":"bottom left", 
              className:((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button route", 
@@ -1819,7 +1769,7 @@ var Nav = {
                    config:function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
-                          $(element).transition('jiggle');
+                          $(element).transition('jiggle')
                           if(ctrl.ping() > 0 || ctrl.ping <= 500){
                             setTimeout(fnJiggle, 1000)
                           } else {
@@ -1915,7 +1865,310 @@ var Messages = function(ctrl){
   )
 };
 module.exports = Nav;
-},{"../ws/_wsCtrl.js":16,"./api.msx":1,"./menu_button/Friend.msx":8,"./menu_button/Login.msx":9,"./menu_button/Message.msx":10,"./menu_button/User.msx":11}],13:[function(require,module,exports){
+},{"../ws/_wsCtrl.js":16,"./api.msx":1,"./menu_button/Friend.msx":7,"./menu_button/Login.msx":8,"./menu_button/Message.msx":9,"./menu_button/User.msx":10}],12:[function(require,module,exports){
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+var initData = {}
+//initData.dashboard = {}
+//initData.dashboard.data = {}
+
+var Qa = {
+  controller: function() {
+    console.log("controller dashboard!")
+    $.cookie('url', m.route(), {path: "/"})
+    var ctrl = this;
+    ctrl.server = initData.dashboard || {server: false};
+    ctrl.request = (!ctrl.server.server)? api.requestWithFeedback({method: "GET", url: "/json"}) : {
+      ready: function(){return true},
+      data: m.prop(initData.dashboard.data)
+    };
+    ctrl.server.server = false;
+    rd.qa(function(){m.redraw()})
+  },
+  view: function(ctrl) {
+    if(!ctrl.request.ready()) {
+      return (
+          {tag: "div", attrs: {className:"ui grid main-content "}, children: [
+            {tag: "div", attrs: {className:"sixteen wide column"}, children: [
+              {tag: "div", attrs: {className:"ui segment loading mh300 noBor noSha"}, children: [
+                "Loading"
+              ]}
+            ]}
+          ]}
+      )
+    } else {
+      return (
+          {tag: "div", attrs: {id:"qa", className:"ui grid main-content"}, children: [
+            {tag: "div", attrs: {className:"eleven wide column mh500"}, children: [
+              (m.route.param('questionId') !== undefined)?(
+                  {tag: "div", attrs: {className:"ui"}, children: [
+
+                    {tag: "div", attrs: {class:"content"}, children: [
+                      {tag: "div", attrs: {className:"ui grid qaWr"}, children: [
+                        {tag: "div", attrs: {className:"one wide column voteWr"}, children: [
+                          {tag: "div", attrs: {class:"ui relaxed list"}, children: [
+                            {tag: "a", attrs: {class:"item"}, children: [
+                              {tag: "i", attrs: {class:"big caret up icon"}}
+                            ]}, 
+                            {tag: "div", attrs: {class:"item"}, children: [
+                              {tag: "span", attrs: {className:"numVote"}, children: ["10"]}
+                            ]}, 
+                            {tag: "a", attrs: {class:"item"}, children: [
+                              {tag: "i", attrs: {class:"big caret down icon"}}
+                            ]}
+                          ]}
+                        ]}, 
+                        {tag: "div", attrs: {className:"fifteen wide column"}, children: [
+
+                          {tag: "div", attrs: {class:"ui middle aligned divided list qa"}, children: [
+                            {tag: "div", attrs: {class:"item question"}, children: [
+                                {tag: "div", attrs: {class:"ui large header"}, children: ["Large Header"]}, 
+                                {tag: "div", attrs: {class:"content"}, children: [
+                                  "The conversion would need to take place in real-time, when an HTTP client requested the converted file. Ideally the file would be streamed back to the HTTP client as it is being transcoded (and not afterwards at the end, since that would potentially take a while before any data starts being sent back)." + ' ' +
+
+                                  "This would be fine, except that in today's browsers, an HTML5 audio or video tag requests the media file in multiple HTTP requests with the Range header. See this question for details." + ' ' +
+
+                                  "In that question linked above, you can see that Safari requests weird chunks of the file, including the ending few bytes. This poses a problem in that the web server WOULD have to wait for the conversion to finish, in order to deliver the final bytes of the file to conform to the Range request."
+                                ]}
+                            ]}, 
+                            {tag: "div", attrs: {class:"item comment"}, children: [
+                                {tag: "div", attrs: {class:"content"}, children: [
+                                  "Caching the converted file is what I was already considering at this point. But my application is intended to be locked down to a few users anyways, as openly allowing HTTP access to your entire iTunes library is not so much a good idea in my opinion."
+                                ]}
+                            ]}, 
+                            {tag: "div", attrs: {class:"item comment"}, children: [
+                                {tag: "div", attrs: {class:"content"}, children: [
+                                  "I would go with YouTube's approach (Seth's suggestion above)-- I'm guessing they asked this question at some point :)"
+                                ]}
+                            ]}
+                          ]}
+                        ]}
+                      ]}, 
+
+
+
+                      {tag: "div", attrs: {className:"ui grid qaWr"}, children: [
+                        {tag: "div", attrs: {className:"one wide column voteWr"}, children: [
+                          {tag: "div", attrs: {class:"ui relaxed list"}, children: [
+                            {tag: "a", attrs: {class:"item"}, children: [
+                              {tag: "i", attrs: {class:"big caret up icon"}}
+                            ]}, 
+                            {tag: "div", attrs: {class:"item"}, children: [
+                              {tag: "span", attrs: {className:"numVote"}, children: ["10"]}
+                            ]}, 
+                            {tag: "a", attrs: {class:"item"}, children: [
+                              {tag: "i", attrs: {class:"big caret down icon"}}
+                            ]}
+                          ]}
+                        ]}, 
+                        {tag: "div", attrs: {className:"fifteen wide column"}, children: [
+
+                          {tag: "div", attrs: {class:"ui middle aligned divided list qa"}, children: [
+                            {tag: "div", attrs: {class:"item question"}, children: [
+                              {tag: "div", attrs: {class:"content"}, children: [
+                                "I think that the Ruby on Rails 3.0 method is now request.fullpath."
+                              ]}
+                            ]}, 
+                            {tag: "div", attrs: {class:"item comment"}, children: [
+                              {tag: "div", attrs: {class:"content"}, children: [
+                                "fullpath doesn't include the domain"
+                              ]}
+                            ]}
+                          ]}
+
+                        ]}
+                      ]}, 
+
+
+                      {tag: "div", attrs: {className:"ui grid qaWr"}, children: [
+                        {tag: "div", attrs: {className:"one wide column voteWr"}, children: [
+                          {tag: "div", attrs: {class:"ui relaxed list"}, children: [
+                            {tag: "a", attrs: {class:"item"}, children: [
+                              {tag: "i", attrs: {class:"big caret up icon"}}
+                            ]}, 
+                            {tag: "div", attrs: {class:"item"}, children: [
+                              {tag: "span", attrs: {className:"numVote"}, children: ["10"]}
+                            ]}, 
+                            {tag: "a", attrs: {class:"item"}, children: [
+                              {tag: "i", attrs: {class:"big caret down icon"}}
+                            ]}
+                          ]}
+                        ]}, 
+                        {tag: "div", attrs: {className:"fifteen wide column"}, children: [
+
+                          {tag: "div", attrs: {class:"ui middle aligned divided list qa"}, children: [
+                            {tag: "div", attrs: {class:"item question"}, children: [
+                              {tag: "div", attrs: {class:"content"}, children: [
+                                "I think that the Ruby on Rails 3.0 method is now request.fullpath."
+                              ]}
+                            ]}, 
+                            {tag: "div", attrs: {class:"item comment"}, children: [
+                              {tag: "div", attrs: {class:"content"}, children: [
+                                "fullpath doesn't include the domain"
+                              ]}
+                            ]}
+                          ]}
+
+                        ]}
+                      ]}
+
+                    ]}
+                  ]}
+              ):(Qa.list(ctrl))
+            ]}, 
+            {tag: "div", attrs: {className:"five wide column mh500"}, children: [
+              {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
+                {tag: "div", attrs: {className:"trending"}, children: [
+                  {tag: "h3", attrs: {}, children: ["HOT NETWORK QUESTIONS (fake)"]}, 
+                  {tag: "ul", attrs: {}, children: [
+                    {tag: "li", attrs: {}, children: ["What is the most terrifying experience you have had while travelling?"]}, 
+                    {tag: "li", attrs: {}, children: ["Which actors have won Oscars without an Oscar-worthy performance?"]}, 
+                    {tag: "li", attrs: {}, children: ["Does vending machine black coffee contain sugar?"]}, 
+                    {tag: "li", attrs: {}, children: ["What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?"]}, 
+                    {tag: "li", attrs: {}, children: ["Which is the most astonishing piece of code you've ever seen in your life?"]}, 
+                    {tag: "li", attrs: {}, children: ["What do natives call San Francisco?"]}, 
+                    {tag: "li", attrs: {}, children: ["Why does \"The Force Awakens\" use an image language associated with national socialism for the First Order?"]}, 
+                    {tag: "li", attrs: {}, children: ["A Treasure Chest for your Post-apocalyptic Children"]}, 
+                    {tag: "li", attrs: {}, children: ["Phrase when you offer someone something but it's really them who are paying for it"]}, 
+                    {tag: "li", attrs: {}, children: ["Why do academic journals usually have continuous page numbering?"]}
+                  ]}
+                ]}
+
+              ]}
+            ]}
+          ]}
+      )
+    }
+  }
+};
+
+
+Qa.list = function(ctrl){
+  return (
+      {tag: "div", attrs: {className:"list-question"}, children: [
+        {tag: "div", attrs: {class:"ui top attached tabular menu"}, children: [
+          {tag: "a", attrs: {class:((m.route() === '/qa')?"active":"") + " item route", href:"/qa"}, children: [
+            "New Questions"
+          ]}, 
+          {tag: "a", attrs: {class:"item"}, children: [
+            "Hot Questions"
+          ]}, 
+          {tag: "a", attrs: {class:((m.route() === '/qa/new')?"active":"") + " item route", href:"/qa/new"}, children: [
+            "Add a new question"
+          ]}, 
+          {tag: "div", attrs: {class:"right menu"}, children: [
+            {tag: "div", attrs: {class:"item"}, children: [
+              {tag: "div", attrs: {class:"ui transparent icon input"}, children: [
+                {tag: "input", attrs: {type:"text", placeholder:"Search users..."}}, 
+                  {tag: "i", attrs: {class:"search link icon"}}
+              ]}
+            ]}
+          ]}
+        ]}, 
+        {tag: "div", attrs: {class:"ui bottom attached segment "}, children: [
+          (m.route() !== '/qa/new')?(
+          {tag: "div", attrs: {class:"ui large relaxed divided list"}, children: [
+            [0,1,2,3,4,5,6,7,8,9,10].map(function(question){
+              return (
+                  Qa.question(question)
+              )
+            })
+          ]}
+          ):(
+              {tag: "form", attrs: {className:"ui form", method:"post", action:"/qa/new", 
+                config:function(el, isInited){
+                  if(!isInited){
+                   $(el).on('submit', function(e) {
+                      e.preventDefault();
+                      var formData = $(this).serializeObject();
+                      $(el).addClass('loading');
+                      $.ajax({
+                          type: "POST",
+                          url: $(this).attr('action'),
+                          data: JSON.stringify(formData),
+                          contentType: "application/json"
+                      })
+                      .done(function(data, textStatus, jqXHR){
+                          el.reset();
+                          $(el).removeClass('loading');
+                      })
+                      .fail(function(jqXHR, textStatus, errorThrown){
+                          console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+                      });
+                    });
+                   }
+                }
+              }, children: [
+                {tag: "div", attrs: {class:"field"}, children: [
+                  {tag: "label", attrs: {}, children: ["Question"]}, 
+                  {tag: "input", attrs: {name:"question", type:"text"}}
+                ]}, 
+                {tag: "div", attrs: {class:"field"}, children: [
+                  {tag: "label", attrs: {}, children: ["Description"]}, 
+                  {tag: "textarea", attrs: {name:"description", rows:"2", style:"margin-top: 0px; margin-bottom: 0px; height: 58px;"}}
+                ]}, 
+                {tag: "button", attrs: {type:"submit", className:"ui primary button"}, children: ["Ask"]}
+              ]}
+          )
+          
+        ]}
+      ]}
+  )
+};
+
+Qa.question = function(question){
+  return (
+      {tag: "div", attrs: {class:"item"}, children: [
+        {tag: "div", attrs: {class:"mini ui statistics"}, children: [
+          {tag: "div", attrs: {class:" red statistic"}, children: [
+            {tag: "div", attrs: {class:"value"}, children: [
+              Math.ceil(Math.random()*100)
+            ]}, 
+            {tag: "div", attrs: {class:"label"}, children: [
+              "votes"
+            ]}
+          ]}, 
+          {tag: "div", attrs: {class:"orange statistic"}, children: [
+            {tag: "div", attrs: {class:"value"}, children: [
+              Math.ceil(Math.random()*100)
+            ]}, 
+            {tag: "div", attrs: {class:"label"}, children: [
+              "Answers"
+            ]}
+          ]}, 
+          {tag: "div", attrs: {class:"yellow statistic"}, children: [
+            {tag: "div", attrs: {class:"value"}, children: [
+              Math.ceil(Math.random()*100)
+            ]}, 
+            {tag: "div", attrs: {class:"label"}, children: [
+              "Views"
+            ]}
+          ]}
+        ]}, 
+        {tag: "div", attrs: {class:"content"}, children: [
+          {tag: "a", attrs: {class:"header route", 
+            href:"/qa/" + m.route.param("questionId")
+          }, children: [demo[question%(demo.length-1)]]}, 
+          "An excellent companion"
+        ]}
+      ]}
+  )
+};
+
+var demo = [
+    "What is the most terrifying experience you have had while travelling? ",
+    "Which actors have won Oscars without an Oscar-worthy performance?",
+    "Does vending machine black coffee contain sugar?",
+    "What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?",
+    "Which is the most astonishing piece of code you've ever seen in your life?",
+    "What do natives call San Francisco?",
+    "A Treasure Chest for your Post-apocalyptic Children",
+    "Phrase when you offer someone something but it's really them who are paying for it",
+    "Why do academic journals usually have continuous page numbering?"
+]
+
+module.exports = Qa;
+},{"../ws/_wsCtrl.js":16,"./api.msx":1}],13:[function(require,module,exports){
 var wsCtrl = require('../ws/_wsCtrl.js');
 var api = require('./api.msx');
 
@@ -2522,7 +2775,6 @@ wsCtrl.storage = {
   chat: $.localStorage.get('chat:' + wsCtrl.userId) || []
 };
 
-
 wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
 wsCtrl.post = m.prop({});
 wsCtrl.data = {
@@ -2857,7 +3109,7 @@ ctrl.listen = function(d){
       wsCtrl.post().comment[parrentPos].children.push(d.d);
       wsCtrl.post().comment[parrentPos].childCount +=1;
     }
-    rd.home(function(){m.redraw(); $('.ui.modal.show-post').modal("refresh");})
+    rd.home(function(){m.redraw();});
   }
 
   else if(d.t === "following_onlines"){
@@ -3124,4 +3376,4 @@ $('body').on('click', '.relation_actions a.relation', function() {
 
 
 module.exports = wsCtrl;
-},{}]},{},[5])
+},{}]},{},[4])

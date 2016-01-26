@@ -2,7 +2,7 @@
 
 var Nav = require('./nav.msx');
 var Home = require('./home.msx');
-var Dashboard = require('./dashboard.msx');
+var Qa = require('./qa.msx');
 var ChatRoom = require('./chatroom.msx');
 var User = require('./user.msx');
 var UserSetting = require('./userSetting.msx');
@@ -53,8 +53,8 @@ window.rd = {
   home: function(callback){
     local(['home'], callback).call()
   },
-  dashboard: function(callback){
-    local(['dashboard'], callback).call()
+  qa: function(callback){
+    local(['qa'], callback).call()
   },
   app: function(callback){
     local(['app'], callback).call()
@@ -75,7 +75,7 @@ window.rd = {
     local(['setting'], callback).call()
   },
   all: function(callback){
-    local(["home", "dashboard", "nav", "app", "right", "chatroom", "room", "user", "setting"], callback).call()
+    local(["home", "qa", "nav", "app", "right", "chatroom", "room", "user", "setting"], callback).call()
   }
 };
 
@@ -123,7 +123,9 @@ window.initRoute = function(){
   m.route(document.getElementById('app'), "/", {
     "/": tenant('home', route(Home)),
     "/post/:postId": tenant('home', route(Home)),
-    "/dashboard": tenant('dashboard', route(Dashboard)),
+    "/qa": tenant('qa', route(Qa)),
+    "/qa/new": tenant('qa', route(Qa)),
+    "/qa/:questionId": tenant('qa', route(Qa)),
     "/chatroom": tenant('chatroom', route(ChatRoom)),
     "/chatroom/:roomId": tenant('room', route(Room)),
     "/settings": tenant('setting', route(UserSetting)),

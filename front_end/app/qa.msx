@@ -1,0 +1,302 @@
+var wsCtrl = require('../ws/_wsCtrl.js');
+var api = require('./api.msx');
+var initData = {}
+//initData.dashboard = {}
+//initData.dashboard.data = {}
+
+var Qa = {
+  controller: function() {
+    console.log("controller dashboard!")
+    $.cookie('url', m.route(), {path: "/"})
+    var ctrl = this;
+    ctrl.server = initData.dashboard || {server: false};
+    ctrl.request = (!ctrl.server.server)? api.requestWithFeedback({method: "GET", url: "/json"}) : {
+      ready: function(){return true},
+      data: m.prop(initData.dashboard.data)
+    };
+    ctrl.server.server = false;
+    rd.qa(function(){m.redraw()})
+  },
+  view: function(ctrl) {
+    if(!ctrl.request.ready()) {
+      return (
+          <div className="ui grid main-content ">
+            <div className="sixteen wide column">
+              <div className="ui segment loading mh300 noBor noSha">
+                Loading
+              </div>
+            </div>
+          </div>
+      )
+    } else {
+      return (
+          <div id="qa" className="ui grid main-content">
+            <div className="eleven wide column mh500">
+              {(m.route.param('questionId') !== undefined)?(
+                  <div className="ui">
+
+                    <div class="content">
+                      <div className="ui grid qaWr">
+                        <div className="one wide column voteWr">
+                          <div class="ui relaxed list">
+                            <a class="item">
+                              <i class="big caret up icon"></i>
+                            </a>
+                            <div class="item">
+                              <span className="numVote">10</span>
+                            </div>
+                            <a class="item">
+                              <i class="big caret down icon"></i>
+                            </a>
+                          </div>
+                        </div>
+                        <div className="fifteen wide column">
+
+                          <div class="ui middle aligned divided list qa">
+                            <div class="item question">
+                                <div class="ui large header">Large Header</div>
+                                <div class="content">
+                                  The conversion would need to take place in real-time, when an HTTP client requested the converted file. Ideally the file would be streamed back to the HTTP client as it is being transcoded (and not afterwards at the end, since that would potentially take a while before any data starts being sent back).
+
+                                  This would be fine, except that in today's browsers, an HTML5 audio or video tag requests the media file in multiple HTTP requests with the Range header. See this question for details.
+
+                                  In that question linked above, you can see that Safari requests weird chunks of the file, including the ending few bytes. This poses a problem in that the web server WOULD have to wait for the conversion to finish, in order to deliver the final bytes of the file to conform to the Range request.
+                                </div>
+                            </div>
+                            <div class="item comment">
+                                <div class="content">
+                                  Caching the converted file is what I was already considering at this point. But my application is intended to be locked down to a few users anyways, as openly allowing HTTP access to your entire iTunes library is not so much a good idea in my opinion.
+                                </div>
+                            </div>
+                            <div class="item comment">
+                                <div class="content">
+                                  I would go with YouTube's approach (Seth's suggestion above)-- I'm guessing they asked this question at some point :)
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+                      <div className="ui grid qaWr">
+                        <div className="one wide column voteWr">
+                          <div class="ui relaxed list">
+                            <a class="item">
+                              <i class="big caret up icon"></i>
+                            </a>
+                            <div class="item">
+                              <span className="numVote">10</span>
+                            </div>
+                            <a class="item">
+                              <i class="big caret down icon"></i>
+                            </a>
+                          </div>
+                        </div>
+                        <div className="fifteen wide column">
+
+                          <div class="ui middle aligned divided list qa">
+                            <div class="item question">
+                              <div class="content">
+                                I think that the Ruby on Rails 3.0 method is now request.fullpath.
+                              </div>
+                            </div>
+                            <div class="item comment">
+                              <div class="content">
+                                fullpath doesn't include the domain
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+
+                      <div className="ui grid qaWr">
+                        <div className="one wide column voteWr">
+                          <div class="ui relaxed list">
+                            <a class="item">
+                              <i class="big caret up icon"></i>
+                            </a>
+                            <div class="item">
+                              <span className="numVote">10</span>
+                            </div>
+                            <a class="item">
+                              <i class="big caret down icon"></i>
+                            </a>
+                          </div>
+                        </div>
+                        <div className="fifteen wide column">
+
+                          <div class="ui middle aligned divided list qa">
+                            <div class="item question">
+                              <div class="content">
+                                I think that the Ruby on Rails 3.0 method is now request.fullpath.
+                              </div>
+                            </div>
+                            <div class="item comment">
+                              <div class="content">
+                                fullpath doesn't include the domain
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+              ):(Qa.list(ctrl))}
+            </div>
+            <div className="five wide column mh500">
+              <div className="ui  home-post-Wr mh500">
+                <div className="trending">
+                  <h3>HOT NETWORK QUESTIONS (fake)</h3>
+                  <ul>
+                    <li>What is the most terrifying experience you have had while travelling?</li>
+                    <li>Which actors have won Oscars without an Oscar-worthy performance?</li>
+                    <li>Does vending machine black coffee contain sugar?</li>
+                    <li>What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?</li>
+                    <li>Which is the most astonishing piece of code you've ever seen in your life?</li>
+                    <li>What do natives call San Francisco?</li>
+                    <li>Why does "The Force Awakens" use an image language associated with national socialism for the First Order?</li>
+                    <li>A Treasure Chest for your Post-apocalyptic Children</li>
+                    <li>Phrase when you offer someone something but it's really them who are paying for it</li>
+                    <li>Why do academic journals usually have continuous page numbering?</li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+          </div>
+      )
+    }
+  }
+};
+
+
+Qa.list = function(ctrl){
+  return (
+      <div className="list-question">
+        <div class="ui top attached tabular menu">
+          <a class={((m.route() === '/qa')?"active":"") + " item route" }  href="/qa">
+            New Questions
+          </a>
+          <a class="item">
+            Hot Questions
+          </a>
+          <a class={((m.route() === '/qa/new')?"active":"") + " item route"} href="/qa/new">
+            Add a new question
+          </a>
+          <div class="right menu">
+            <div class="item">
+              <div class="ui transparent icon input">
+                <input type="text" placeholder="Search users..." />
+                  <i class="search link icon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui bottom attached segment ">
+          {(m.route() !== '/qa/new')?(
+          <div class="ui large relaxed divided list">
+            {[0,1,2,3,4,5,6,7,8,9,10].map(function(question){
+              return (
+                  Qa.question(question)
+              )
+            })}
+          </div>
+          ):(
+              <form className="ui form" method="post" action="/qa/new"
+                config={function(el, isInited){
+                  if(!isInited){
+                   $(el).on('submit', function(e) {
+                      e.preventDefault();
+                      var formData = $(this).serializeObject();
+                      $(el).addClass('loading');
+                      $.ajax({
+                          type: "POST",
+                          url: $(this).attr('action'),
+                          data: JSON.stringify(formData),
+                          contentType: "application/json"
+                      })
+                      .done(function(data, textStatus, jqXHR){
+                          el.reset();
+                          $(el).removeClass('loading');
+                      })
+                      .fail(function(jqXHR, textStatus, errorThrown){
+                          console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+                      });
+                    });
+                   }
+                }}
+              >
+                <div class="field">
+                  <label>Question</label>
+                  <input name="question" type="text" />
+                </div>
+                <div class="field">
+                  <label>Description</label>
+                  <textarea name="description" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 58px;"></textarea>
+                </div>
+                <button type="submit" className="ui primary button">Ask</button>
+              </form>
+          )
+          }
+        </div>
+      </div>
+  )
+};
+
+Qa.question = function(question){
+  return (
+      <div class="item">
+        <div class="mini ui statistics">
+          <div class=" red statistic">
+            <div class="value">
+              {Math.ceil(Math.random()*100)}
+            </div>
+            <div class="label">
+              votes
+            </div>
+          </div>
+          <div class="orange statistic">
+            <div class="value">
+              {Math.ceil(Math.random()*100)}
+            </div>
+            <div class="label">
+              Answers
+            </div>
+          </div>
+          <div class="yellow statistic">
+            <div class="value">
+              {Math.ceil(Math.random()*100)}
+            </div>
+            <div class="label">
+              Views
+            </div>
+          </div>
+        </div>
+        <div class="content">
+          <a class="header route"
+            href={"/qa/" + m.route.param("questionId")}
+          >{demo[question%(demo.length-1)]}</a>
+          An excellent companion
+        </div>
+      </div>
+  )
+};
+
+var demo = [
+    "What is the most terrifying experience you have had while travelling? ",
+    "Which actors have won Oscars without an Oscar-worthy performance?",
+    "Does vending machine black coffee contain sugar?",
+    "What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?",
+    "Which is the most astonishing piece of code you've ever seen in your life?",
+    "What do natives call San Francisco?",
+    "A Treasure Chest for your Post-apocalyptic Children",
+    "Phrase when you offer someone something but it's really them who are paying for it",
+    "Why do academic journals usually have continuous page numbering?"
+]
+
+module.exports = Qa;

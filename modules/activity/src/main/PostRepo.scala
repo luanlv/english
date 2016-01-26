@@ -24,9 +24,8 @@ object PostRepo {
 
   private lazy val coll = Env.current.postColl
 
-  def insert(id: String, userId: String, content: String, published: DateTime): Future[WriteResult] = {
-//    val info = Info(0, List(), 0, List(), 0)
-    val post = Post(id, content, lila.user.Env.current.lightUserApi.get(userId).get, published, 0, Option(List()), 0, List(), 0)
+  def insert(id: String, userId: String, content: String): Future[WriteResult] = {
+    val post = Post(id, content, lila.user.Env.current.lightUserApi.get(userId).get)
     coll.insert(post)
   }
 

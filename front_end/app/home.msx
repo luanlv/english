@@ -222,7 +222,7 @@ Home.post = function(post, ctrl){
           <div className="ui list">
             <div className="item">
               <span className="right floated">
-                <a className="route" data-content={(m.route.param('postId') === undefined)?"Post":"Home"} data-position="bottom left"
+                <a className="route" data-content={(m.route.param('postId') === undefined)?"Post":"Home"} data-position="top left"
                    href={(m.route.param('postId') === undefined)?("/post/" + post.id):("/")}
                    config={function(el, isInited){
                                     if(!isInited){
@@ -463,7 +463,6 @@ Home.Comment = function(ctrl, action, actionId, input, actionId2){
                                               });
                                             }
                                             $(element).textareaAutoSize();
-
                                           }
                                           element.value = input();
                                           if(element.value.length<1){
