@@ -62,6 +62,7 @@ final class Env(
       //Env.relay
       Env.user,
       Env.activity,
+      Env.question,
       Env.security,
       Env.monitor
     )
@@ -96,5 +97,6 @@ object Env {
   def relation = lila.relation.Env.current
   def chatRoom = lila.chatRoom.Env.current
   def activity = lila.activity.Env.current
+  def question = lila.question.Env.current
 
 }

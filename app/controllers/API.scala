@@ -26,6 +26,7 @@ object API extends LilaController {
   private def makeFriendApi = Env.relation.makeFriendApi
   private def postApi = Env.activity.postApi
   private def commentApi = Env.activity.commentApi
+  private def questionApi = Env.question.questionApi
 
   def getSelfInformation = Auth { implicit ctx =>
     me => {
@@ -77,7 +78,7 @@ object API extends LilaController {
     val content = ((Json.parse(req.body.toString).as[JsObject]\"content").as[String]).replaceAll("\\n\\n\\s*\\n", "\n\n").replaceAll("[ \\t\\x0B\\f]+", " ").trim()
     ctx.userId match {
       case Some(id) => {
-        postApi.newPost(id, content, DateTime.now()) map {
+        postApi.newPost(id, content) map {
           writeResult =>
             if(writeResult.ok){
               Ok(Json.obj("action" -> "ok"))
@@ -88,6 +89,31 @@ object API extends LilaController {
       }
       case None => BadRequest.fuccess
     }
+  }
+
+
+  def doAsk =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
+    val req = ctx.body
+    println(Json.parse(req.body.toString).as[JsObject])
+    val question = ((Json.parse(req.body.toString).as[JsObject]\"question").as[String])
+    val description = ((Json.parse(req.body.toString).as[JsObject]\"description").as[String]).replaceAll("\\n\\n\\s*\\n", "\n\n").replaceAll("[ \\t\\x0B\\f]+", " ").trim()
+    ctx.userId match {
+      case Some(uid) => {
+        questionApi.newQuestion(uid, question, description) map {
+          writeResult =>
+            if(writeResult.ok){
+              Ok(Json.obj("action" -> "ok"))
+            } else {
+              Ok(Json.obj("action" -> "error"))
+            }
+        }
+      }
+      case None => BadRequest.fuccess
+    }
+  }
+
+  def getQuestion(questionId: String) = Open { implicit  ctx =>
+    Ok(views.html.index.home()).fuccess
   }
 
   def getPost(username: String) = Open { implicit ctx =>

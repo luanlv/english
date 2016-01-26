@@ -1075,3 +1075,66 @@ textarea {
 .childComment {
   padding-top: 5px !important;
 }
+
+#comment {
+  .author {
+    .route {
+      color: #555 !important;
+    }
+  }
+}
+
+
+#qa {
+  .statistics {
+    float: left;
+    width: 150px;
+    margin: 0 !important;
+    .statistic{
+      margin: 0 5px  !important;
+      .label {
+        font-size: 10px !important;
+      }
+    }
+  }
+  
+  .list-question {
+    .bottom.segment{
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+    .item:hover {
+      background: rgba(152,152,152, 0.1);
+    }
+
+  }
+
+  .voteWr {
+    padding-right: 0 !important;
+    .item {
+      padding: 0 !important;
+      text-align: center;
+      .icon {
+        padding: 0!important;
+      }
+    }
+  }
+  .numVote {
+    font-size: 16px !important;
+  }
+
+  .qa {
+    .question {
+      padding-bottom: 25px;
+    }
+    .comment {
+      margin-left: 20px;
+    }
+
+  }
+
+  .qaWr {
+    padding-bottom: 50px;
+    border-bottom: 1px solid #ccc;
+  }
+}

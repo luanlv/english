@@ -1,0 +1,35 @@
+package lila.question
+
+import play.modules.reactivemongo.json._
+import reactivemongo.api.commands.WriteResult
+
+import scala.concurrent.Future
+import scala.concurrent.duration._
+
+import org.joda.time.DateTime
+import play.api.libs.json._
+import reactivemongo.bson._
+
+import spray.caching.{ LruCache, Cache }
+
+import lila.common.LightUser
+import lila.db.api.{ $count, $primitive }
+import BSONHandlers._
+import lila.db.BSON._
+import lila.db.Implicits._
+import scala.concurrent.ExecutionContext.Implicits.global
+
+
+object QuestionRepo {
+
+  private lazy val coll = Env.current.questionColl
+
+  def insert(id: String, userId: String, question: String, description: String): Future[WriteResult] = {
+    val newQuestion = Question(id, question, description, lila.user.Env.current.lightUserApi.get(userId).get)
+    coll.insert(newQuestion)
+  }
+
+}
+
+
+//val bson = BSONFormats.toBSON(o).get.asInstanceOf[BSONDocument]

@@ -73,15 +73,15 @@ var Nav = {
               }
              }}
           ><i  className="large icon home users-icon"></i></a>
-          <a href="/dashboard" data-content="Article" data-position="bottom left"
-             className={((m.route() == "/dashboard")?"active":"") + " item route-button route"}
+          <a href="/qa" data-content="Question & Answer" data-position="bottom left"
+             className={((m.route() == "/qa")?"active":"") + " item route-button route"}
              config={function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
               }
              }}
           >
-            <i className="large icon newspaper"></i>
+            <i className="large browser icon"></i>
           </a>
           <a href="/chatroom" data-content="Chat Room" data-position="bottom left"
              className={((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button route"}
@@ -133,7 +133,7 @@ var Nav = {
                    config={function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
-                          $(element).transition('jiggle');
+                          $(element).transition('jiggle')
                           if(ctrl.ping() > 0 || ctrl.ping <= 500){
                             setTimeout(fnJiggle, 1000)
                           } else {

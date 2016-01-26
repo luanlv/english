@@ -7,14 +7,14 @@ import play.modules.reactivemongo.json._
 
 private[activity] case class Post(
                                         id: String,
-                                       content: String,
-                                       user: LightUser,
-                                       published: DateTime,
-                                        likeCount: Int,
-                                        likes: Option[List[String]],
-                                        shareCount: Int,
-                                        shares: List[String],
-                                        commentCount: Int
+                                        content: String,
+                                        user: LightUser,
+                                        published: DateTime = DateTime.now(),
+                                        likeCount: Int = 0,
+                                        likes: Option[List[String]] = Option(List()),
+                                        shareCount: Int = 0,
+                                        shares: Option[List[String]] = Option(List()),
+                                        commentCount: Int = 0
                                      )
 
 private[activity] object Post {
@@ -36,7 +36,7 @@ private[activity] object Post {
         likeCount = ~doc.getAs[Int]("likeCount"),
         likes = doc.getAs[List[String]]("likes"),
         shareCount = ~doc.getAs[Int]("shareCount"),
-        shares = ~doc.getAs[List[String]]("shares"),
+        shares = doc.getAs[List[String]]("shares"),
         commentCount = ~doc.getAs[Int]("commentCount")
       )
     }

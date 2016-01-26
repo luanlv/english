@@ -38,7 +38,6 @@ wsCtrl.storage = {
   chat: $.localStorage.get('chat:' + wsCtrl.userId) || []
 };
 
-
 wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
 wsCtrl.post = m.prop({});
 wsCtrl.data = {
@@ -373,7 +372,7 @@ ctrl.listen = function(d){
       wsCtrl.post().comment[parrentPos].children.push(d.d);
       wsCtrl.post().comment[parrentPos].childCount +=1;
     }
-    rd.home(function(){m.redraw(); $('.ui.modal.show-post').modal("refresh");})
+    rd.home(function(){m.redraw();});
   }
 
   else if(d.t === "following_onlines"){
