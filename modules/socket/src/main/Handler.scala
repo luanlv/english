@@ -6,6 +6,7 @@ import lila.common.LightUser
 import lila.hub.actorApi.userMessage._
 import lila.hub.actorApi.relation._
 import lila.hub.actorApi.activity._
+import lila.hub.actorApi.question._
 import lila.hub.actorApi.chatRoom._
 import play.api.libs.iteratee.{ Iteratee, Enumerator }
 import play.api.libs.json._
@@ -76,6 +77,32 @@ object Handler {
         }
       }
 
+      case ("answer", o) => {
+        val obj = (o obj "d").get
+        userId foreach { userId =>
+          (obj str "questionId") foreach { questionId =>
+            val answer = (obj str "answer").get
+            (hub.actor.question ? AnswerQA(userId, questionId, answer)) map {
+            case c: JsValue => socket ! SendNewAnswer(questionId, c)
+            }
+          }
+        }
+      }
+
+      case ("commentQA", o) => {
+        val obj = (o obj "d").get
+        userId foreach { userId =>
+          (obj str "id") foreach { parentId =>
+            val comment = (obj str "comment").get
+            val questionId = (obj str "questionId").get
+            val parentType = (obj str "parentType").get
+            (hub.actor.question ? CommentQA(userId, parentId, parentType, comment)) map {
+              case c: JsValue => socket ! SendNewCommentQA(questionId, c)
+            }
+          }
+        }
+      }
+
       case("comment", o) => {
         val obj = (o obj "d").get
         userId foreach { id =>
@@ -128,7 +155,16 @@ object Handler {
         }
       }
 
+      case ("subQuestion", o) => {
+        val obj = (o obj "d").get
+        (obj str "id") foreach { questionId =>
+          socket ! SubQuestion(uid, questionId)
+        }
+      }
+
       case ("unSubPost", o) => socket ! UnSubPost(uid)
+
+      case ("unSubQuestion", o) => socket ! UnSubQuestion(uid)
 
 
       case("unSub", o) => {
@@ -190,6 +226,13 @@ object Handler {
           }
         }
       }
+
+      case ("initQA", o) =>
+          (hub.actor.question ? InitQA(userId)) foreach {
+            case posts: JsValue => {
+              socket ! SendInitQA(uid, posts)
+            }
+          }
 
       case ("init_chat", o) => userId foreach { fromId =>
         if(fromId.length() > 0) {

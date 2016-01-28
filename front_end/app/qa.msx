@@ -6,147 +6,60 @@ var initData = {}
 
 var Qa = {
   controller: function() {
-    console.log("controller dashboard!")
-    $.cookie('url', m.route(), {path: "/"})
+    console.log("controller dashboard!");
+    $.cookie('url', m.route(), {path: "/"});
     var ctrl = this;
     ctrl.server = initData.dashboard || {server: false};
-    ctrl.request = (!ctrl.server.server)? api.requestWithFeedback({method: "GET", url: "/json"}) : {
-      ready: function(){return true},
-      data: m.prop(initData.dashboard.data)
+
+    if(!wsCtrl.data.qa.init && m.route.param("questionId") === undefined){
+      wsCtrl.send(wsCtrl.sendData("initQA", {}));
+    }
+
+    ctrl.setup = function(){
+      wsCtrl.question().answer = wsCtrl.question().answer.reverse();
+      //api.showPost(wsCtrl.post().post.id);
     };
+
+    ctrl.inputAnswer = m.prop("");
+    ctrl.sendAnswer = function(){
+      wsCtrl.send(wsCtrl.sendData("answer", {questionId: m.route.param("questionId"), answer: ctrl.inputAnswer()}))
+      ctrl.inputAnswer("")
+    }
+    ctrl.input = {};
+    ctrl.getInput= function(id){
+      if(ctrl.input[id] === undefined) ctrl.input[id] = m.prop("");
+      return ctrl.input[id]
+    }
+    ctrl.addComment = function(actionId, input, type){
+      wsCtrl.send(wsCtrl.sendData("commentQA", {id: actionId, parentType:type, comment: input(), questionId: m.route.param("questionId")}))
+    };
+
+    if(m.route.param("questionId") !== undefined){
+      wsCtrl.requestQa = api.requestWithFeedback2({method: "GET", url: "/viewquestion/" + m.route.param("questionId")}, wsCtrl.question, ctrl.setup);
+      wsCtrl.send(wsCtrl.sendData("subQuestion", {id: m.route.param("questionId")}));
+    }
     ctrl.server.server = false;
     rd.qa(function(){m.redraw()})
   },
   view: function(ctrl) {
-    if(!ctrl.request.ready()) {
-      return (
-          <div className="ui grid main-content ">
-            <div className="sixteen wide column">
-              <div className="ui segment loading mh300 noBor noSha">
-                Loading
-              </div>
-            </div>
-          </div>
-      )
-    } else {
       return (
           <div id="qa" className="ui grid main-content">
             <div className="eleven wide column mh500">
               {(m.route.param('questionId') !== undefined)?(
-                  <div className="ui">
-
-                    <div class="content">
-                      <div className="ui grid qaWr">
-                        <div className="one wide column voteWr">
-                          <div class="ui relaxed list">
-                            <a class="item">
-                              <i class="big caret up icon"></i>
-                            </a>
-                            <div class="item">
-                              <span className="numVote">10</span>
-                            </div>
-                            <a class="item">
-                              <i class="big caret down icon"></i>
-                            </a>
-                          </div>
-                        </div>
-                        <div className="fifteen wide column">
-
-                          <div class="ui middle aligned divided list qa">
-                            <div class="item question">
-                                <div class="ui large header">Large Header</div>
-                                <div class="content">
-                                  The conversion would need to take place in real-time, when an HTTP client requested the converted file. Ideally the file would be streamed back to the HTTP client as it is being transcoded (and not afterwards at the end, since that would potentially take a while before any data starts being sent back).
-
-                                  This would be fine, except that in today's browsers, an HTML5 audio or video tag requests the media file in multiple HTTP requests with the Range header. See this question for details.
-
-                                  In that question linked above, you can see that Safari requests weird chunks of the file, including the ending few bytes. This poses a problem in that the web server WOULD have to wait for the conversion to finish, in order to deliver the final bytes of the file to conform to the Range request.
-                                </div>
-                            </div>
-                            <div class="item comment">
-                                <div class="content">
-                                  Caching the converted file is what I was already considering at this point. But my application is intended to be locked down to a few users anyways, as openly allowing HTTP access to your entire iTunes library is not so much a good idea in my opinion.
-                                </div>
-                            </div>
-                            <div class="item comment">
-                                <div class="content">
-                                  I would go with YouTube's approach (Seth's suggestion above)-- I'm guessing they asked this question at some point :)
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                !wsCtrl.requestQa.ready()?(
+                    <div className="ui loading segment mh500"></div>
+                ):(
+                    Qa.viewQuestion(ctrl, wsCtrl.question().question, wsCtrl.question().answer)
+                )
+              ):(
+                  (wsCtrl.data.qa.init)?(
+                      Qa.list(ctrl, wsCtrl.data.qa.list)
+                  ):(
+                      <div className="ui loading segment mh500"></div>
+                  )
 
 
-
-                      <div className="ui grid qaWr">
-                        <div className="one wide column voteWr">
-                          <div class="ui relaxed list">
-                            <a class="item">
-                              <i class="big caret up icon"></i>
-                            </a>
-                            <div class="item">
-                              <span className="numVote">10</span>
-                            </div>
-                            <a class="item">
-                              <i class="big caret down icon"></i>
-                            </a>
-                          </div>
-                        </div>
-                        <div className="fifteen wide column">
-
-                          <div class="ui middle aligned divided list qa">
-                            <div class="item question">
-                              <div class="content">
-                                I think that the Ruby on Rails 3.0 method is now request.fullpath.
-                              </div>
-                            </div>
-                            <div class="item comment">
-                              <div class="content">
-                                fullpath doesn't include the domain
-                              </div>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-
-
-                      <div className="ui grid qaWr">
-                        <div className="one wide column voteWr">
-                          <div class="ui relaxed list">
-                            <a class="item">
-                              <i class="big caret up icon"></i>
-                            </a>
-                            <div class="item">
-                              <span className="numVote">10</span>
-                            </div>
-                            <a class="item">
-                              <i class="big caret down icon"></i>
-                            </a>
-                          </div>
-                        </div>
-                        <div className="fifteen wide column">
-
-                          <div class="ui middle aligned divided list qa">
-                            <div class="item question">
-                              <div class="content">
-                                I think that the Ruby on Rails 3.0 method is now request.fullpath.
-                              </div>
-                            </div>
-                            <div class="item comment">
-                              <div class="content">
-                                fullpath doesn't include the domain
-                              </div>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-              ):(Qa.list(ctrl))}
+              )}
             </div>
             <div className="five wide column mh500">
               <div className="ui  home-post-Wr mh500">
@@ -170,37 +83,36 @@ var Qa = {
             </div>
           </div>
       )
-    }
   }
 };
 
 
-Qa.list = function(ctrl){
+Qa.list = function(ctrl, questions){
   return (
       <div className="list-question">
-        <div class="ui top attached tabular menu">
-          <a class={((m.route() === '/qa')?"active":"") + " item route" }  href="/qa">
+        <div className="ui top attached tabular menu">
+          <a className={((m.route() === '/qa')?"active":"") + " item route" }  href="/qa">
             New Questions
           </a>
-          <a class="item">
+          <a className="item">
             Hot Questions
           </a>
-          <a class={((m.route() === '/qa/new')?"active":"") + " item route"} href="/qa/new">
+          <a className={((m.route() === '/qa/new')?"active":"") + " item route"} href="/qa/new">
             Add a new question
           </a>
-          <div class="right menu">
-            <div class="item">
-              <div class="ui transparent icon input">
+          <div className="right menu">
+            <div className="item">
+              <div className="ui transparent icon input">
                 <input type="text" placeholder="Search users..." />
-                  <i class="search link icon"></i>
+                  <i className="search link icon"></i>
               </div>
             </div>
           </div>
         </div>
-        <div class="ui bottom attached segment ">
+        <div className="ui bottom attached segment ">
           {(m.route() !== '/qa/new')?(
-          <div class="ui large relaxed divided list">
-            {[0,1,2,3,4,5,6,7,8,9,10].map(function(question){
+          <div className="ui large relaxed divided list">
+            {questions.map(function(question){
               return (
                   Qa.question(question)
               )
@@ -231,11 +143,11 @@ Qa.list = function(ctrl){
                    }
                 }}
               >
-                <div class="field">
+                <div className="field">
                   <label>Question</label>
                   <input name="question" type="text" />
                 </div>
-                <div class="field">
+                <div className="field">
                   <label>Description</label>
                   <textarea name="description" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 58px;"></textarea>
                 </div>
@@ -250,53 +162,369 @@ Qa.list = function(ctrl){
 
 Qa.question = function(question){
   return (
-      <div class="item">
-        <div class="mini ui statistics">
-          <div class=" red statistic">
-            <div class="value">
-              {Math.ceil(Math.random()*100)}
+      <div className="item">
+        <div className="mini ui statistics">
+          <div className=" red statistic">
+            <div className="value">
+              {question.voteCount}
             </div>
-            <div class="label">
+            <div className="label">
               votes
             </div>
           </div>
-          <div class="orange statistic">
-            <div class="value">
-              {Math.ceil(Math.random()*100)}
+          <div className="orange statistic">
+            <div className="value">
+              {question.answerCount}
             </div>
-            <div class="label">
+            <div className="label">
               Answers
             </div>
           </div>
-          <div class="yellow statistic">
-            <div class="value">
-              {Math.ceil(Math.random()*100)}
+          <div className="yellow statistic">
+            <div className="value">
+              {question.views}
             </div>
-            <div class="label">
+            <div className="label">
               Views
             </div>
           </div>
         </div>
-        <div class="content">
-          <a class="header route"
-            href={"/qa/" + m.route.param("questionId")}
-          >{demo[question%(demo.length-1)]}</a>
-          An excellent companion
+        <div className="content">
+          <a className="header route"
+            href={"/qa/" + (question.id)}
+          >
+            {question.question}
+          </a>
+          {<question className="description"></question>}
         </div>
       </div>
   )
 };
 
-var demo = [
-    "What is the most terrifying experience you have had while travelling? ",
-    "Which actors have won Oscars without an Oscar-worthy performance?",
-    "Does vending machine black coffee contain sugar?",
-    "What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?",
-    "Which is the most astonishing piece of code you've ever seen in your life?",
-    "What do natives call San Francisco?",
-    "A Treasure Chest for your Post-apocalyptic Children",
-    "Phrase when you offer someone something but it's really them who are paying for it",
-    "Why do academic journals usually have continuous page numbering?"
-]
+Qa.viewQuestion = function(ctrl, question, answers){
+  return(
+      <div className="ui">
+        <div className="content">
+          <div className="ui grid qaWr">
+            <div className="one wide column voteWr">
+              <div className="ui relaxed list">
+                <a className="item"
+                  onclick={function(e){
+                    e.preventDefault();
+                    var data ;
+                    if(question.votes === undefined){
+                      data = "up"
+                    } else {
+                      if(question.votes[0].vote === -1){
+                        data = "reup"
+                      }
+                    }
+                    if(question.votes === undefined || (question.votes !== undefined && question.votes[0].vote === -1) ){
+                      $.ajax({
+                        type: "POST",
+                        url: "/vote/question/" + question.id,
+                        data: JSON.stringify({vote: data}),
+                        contentType: "application/json",
+                        dataType: "text",
+                        success: function(res){
+                          if(res === "voted"){
+                            wsCtrl.question().question.votes = [{userId: wsCtrl.userId, vote: 1}]
+                            if(data === "up") question.voteCount +=1;
+                            if(data === "reup") question.voteCount +=2;
+                            rd.qa(function(){m.redraw()})
+                          }
+                        }
+                      });
+                     }
+                  }}
+                >
+                  <i className={((question.votes !== undefined && question.votes[0].vote === 1)?"blue":"")  + " big caret up icon"}></i>
+                </a>
+                <div className="item">
+                  <span className="numVote">{question.voteCount}</span>
+                </div>
+                <a className="item"
+                   onclick={function(e){
+                    e.preventDefault();
+                    var data ;
+                    if(question.votes === undefined){
+                      data = "down"
+                    } else {
+                      if(question.votes[0].vote === 1){
+                        data = "redown"
+                      }
+                    }
+                    if(question.votes === undefined || (question.votes !== undefined && question.votes[0].vote === 1) ){
+                      $.ajax({
+                        type: "POST",
+                        url: "/vote/question/" + question.id,
+                        data: JSON.stringify({vote: data}),
+                        contentType: "application/json",
+                        dataType: "text",
+                        success: function(res){
+                          if(res === "voted"){
+                            wsCtrl.question().question.votes = [{userId: wsCtrl.userId, vote: -1}]
+                            if(data === "down") question.voteCount -=1;
+                            if(data === "redown") question.voteCount -=2;
+                            rd.qa(function(){m.redraw()})
+                          }
+                        }
+                       });
+                    }
+                  }}
+                >
+                  <i className={((question.votes !== undefined && question.votes[0].vote === -1)?"blue":"")  +  " big caret down icon"}></i>
+                </a>
+              </div>
+            </div>
+            <div className="fifteen wide column">
+
+              <div className="ui middle aligned divided list qa">
+                <div className="item question">
+                  <div className="ui large header">{m.trust(api.post(question.question))}</div>
+                  <div className="content">
+                    {question.description}
+                  </div>
+                  <div class="content clearfix">
+                    <a class="right floated author route ulpt" href={"/@/" + question.user.id}>
+                      <img class="ui avatar image" src={(question.user.avatar.length>0)?("/getimage/small/" + question.user.avatar):wsCtrl.defaultAvata}/> {question.user.name}
+                    </a>
+                  </div>
+                </div>
+
+                {question.comment.map(function(comment){
+                  return (
+                      <div className="item comment">
+                        <div className="content">
+                          {comment.comment} - <a class="route ulpt" href={"/@/" + comment.user.id}>{comment.user.name}</a>
+                        </div>
+                      </div>
+                  )
+                })}
+
+
+                <div className="item">
+                  {Qa.comment(ctrl, ctrl.addComment, question.id, ctrl.getInput(question.id), "q")}
+                </div>
+              </div>
+            </div>
+            <h2 className="">Answers</h2>
+          </div>
+
+
+          {answers.map(function(answer){
+            return(
+                <div className="ui grid qaWr">
+                  <div className="one wide column voteWr">
+                    <div className="ui relaxed list">
+                      <a className="item"
+                         onclick={function(e){
+                            e.preventDefault();
+                            var data ;
+                            if(answer.votes === undefined){
+                              data = "up"
+                            } else {
+                              if(answer.votes[0].vote === -1){
+                                data = "reup"
+                              }
+                            }
+                            if(answer.votes === undefined || (answer.votes !== undefined && answer.votes[0].vote === -1) ){
+                              $.ajax({
+                                type: "POST",
+                                url: "/vote/answer/" + answer.id,
+                                data: JSON.stringify({vote: data}),
+                                contentType: "application/json",
+                                dataType: "text",
+                                success: function(res){
+                                  if(res === "voted"){
+                                    answer.votes = [{userId: wsCtrl.userId, vote: 1}]
+                                    if(data === "up") answer.voteCount +=1;
+                                    if(data === "reup") answer.voteCount +=2;
+                                    rd.qa(function(){m.redraw()})
+                                  }
+                                }
+                              });
+                             }
+                          }}
+                      >
+                        <i className={((answer.votes !== undefined && answer.votes[0].vote === 1)?"blue":"")  + " big caret up icon"}></i>
+                      </a>
+                      <div className="item">
+                        <span className="numVote">{answer.voteCount}</span>
+                      </div>
+                      <a className="item"
+                         onclick={function(e){
+                            e.preventDefault();
+                            var data ;
+                            if(answer.votes === undefined){
+                              data = "down"
+                            } else {
+                              if(answer.votes[0].vote === 1){
+                                data = "redown"
+                              }
+                            }
+                            if(answer.votes === undefined || (answer.votes !== undefined && answer.votes[0].vote === 1) ){
+                              $.ajax({
+                                type: "POST",
+                                url: "/vote/answer/" + answer.id,
+                                data: JSON.stringify({vote: data}),
+                                contentType: "application/json",
+                                dataType: "text",
+                                success: function(res){
+                                  if(res === "voted"){
+                                    answer.votes = [{userId: wsCtrl.userId, vote: -1}]
+                                    if(data === "down") answer.voteCount -=1;
+                                    if(data === "redown") answer.voteCount -=2;
+                                    rd.qa(function(){m.redraw()})
+                                  }
+                                }
+                               });
+                            }
+                          }}
+                      >
+                        <i className={((answer.votes !== undefined && answer.votes[0].vote === -1)?"blue":"")  + " big caret down icon"}></i>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="fifteen wide column">
+
+                    <div className="ui middle aligned divided list qa">
+                      <div className="item answer">
+
+                        <div className="content">
+                          {m.trust(api.post(answer.answer))}
+                        </div>
+
+                        <div class="content clearfix">
+                          <a class="right floated author route ulpt" href={"/@/" + question.user.id}>
+                            <img class="ui avatar image" src={(question.user.avatar.length>0)?("/getimage/small/" + question.user.avatar):wsCtrl.defaultAvata}/> {question.user.name}
+                          </a>
+                        </div>
+                      </div>
+
+                      {answer.comment.map(function(comment){
+                        return (
+                            <div className="item comment">
+                              <div className="content">
+                                {comment.comment} - <a class="route ulpt" href={"/@/" + comment.user.id}>{comment.user.name}</a>
+                              </div>
+                            </div>
+                        )
+                      })}
+
+
+                      <div className="item">
+                        {Qa.comment(ctrl, ctrl.addComment, answer.id, ctrl.getInput(answer.id), "a")}
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+            )
+          })}
+
+
+
+          <div className="ui form answerWr">
+              <div className="field">
+                <label>Text</label>
+                <input name="questionId" type="hidden" value={question.id}/>
+                <textarea name="answer"  style="max-height: 68px"
+                    config={function (element, isInit, ctx) {
+                        if(!isInit) {
+                          if(wsCtrl.userId.length == 0){
+                            $(element).on('click input', function(){
+                              api.signin();
+                              element.value = ''
+                            })
+                          } else {
+                            $(element).on('input', function(){
+                              ctrl.inputAnswer($(element).val())
+                            });
+                          }
+                          $(element).textareaAutoSize();
+                        }
+                        element.value = ctrl.inputAnswer();
+                        if(element.value.length<1){
+                          $(element).css('height', '24')
+                        }
+                      }
+                    }
+                          onkeypress={function(e){
+
+                        if(e.keyCode == 13 && !e.shiftKey) {
+                          m.redraw.strategy("none");
+                          if(e.keyCode == 13 && e.shiftKey && ctrl.inputAnswer().length < 1){
+                            return false;
+                          }
+                        }
+                      }
+                    }
+                >{}</textarea>
+              </div>
+              <div className="field">
+                <button  type="submit"
+                  onclick={function(){
+                    ctrl.sendAnswer();
+                  }}
+                >Answer</button>
+              </div>
+          </div>
+        </div>
+      </div>
+  )
+};
+
+
+Qa.comment = function(ctrl, action, actionId, input, type){
+  return (
+      <textarea rows="1" style="max-height: 74px; padding: 5px;" className="commentQA"
+                config={function (element, isInit, ctx) {
+                        if(!isInit) {
+                          if(wsCtrl.userId.length == 0){
+                            $(element).on('click input', function(){
+                              api.signin();
+                              element.value = ''
+                            })
+                          } else {
+                            $(element).on('input', function(){
+                              input($(element).val())
+                            });
+                          }
+                          $(element).textareaAutoSize();
+                        }
+                        element.value = input();
+                        if(element.value.length<1){
+                          $(element).css('height', '26')
+                        }
+                      }
+                    }
+                onkeypress={function(e){
+
+                        if(e.keyCode == 13 && !e.shiftKey) {
+                          //var source = e.target || e.srcElement;
+                          m.redraw.strategy("none");
+                          //input($(source).val());
+                          if (input().length < 1) {
+                           console.log("chat length < 1")
+                            return false;
+                          } else {
+                              action(actionId, input, type);
+                              input("")
+                            return false;
+                          }
+                        }else{
+                          m.redraw.strategy("none");
+                          if(e.keyCode == 13 && e.shiftKey && input().length < 1){
+                            return false;
+                          }
+                        }
+                      }
+                    }
+                placeholder="Click here to type a comment"
+      >{}</textarea>
+  )
+}
 
 module.exports = Qa;

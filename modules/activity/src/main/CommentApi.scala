@@ -23,7 +23,7 @@ final class CommentApi(
 
   def newComment(userId: String, postId: String,  comment: String) = {
     val commentId = UUID.randomUUID().toString
-    CommentRepo.insert(commentId, postId, userId, comment, DateTime.now()) >> PostRepo.newComment(postId) >> getOneComment(userId, commentId)
+    CommentRepo.insert(commentId, postId, userId, comment, DateTime.now()) >> getOneComment(userId, commentId) >>- PostRepo.newComment(postId)
   }
 
   def getOneComment(userId: String, commentId: String) = {

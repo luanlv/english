@@ -23,4 +23,38 @@ final class QuestionApi(
     val questionId = UUID.randomUUID().toString
     QuestionRepo.insert(questionId, userId, question, description) // >>- pushPost(userId, postId)
   }
+
+  def addComment(parentId: String, comment: Comment) = {
+    QuestionRepo.addComment(parentId, comment)
+  }
+
+  def voteUp(userId: String, questionId: String) = {
+    QuestionRepo.voteUp(userId, questionId)
+  }
+
+  def voteDown(userId: String, questionId: String) = {
+    QuestionRepo.voteDown(userId, questionId)
+  }
+
+  def revoteUp(userId: String, questionId: String) = {
+    QuestionRepo.revoteUp(userId, questionId)
+  }
+
+  def revoteDown(userId: String, questionId: String) = {
+    QuestionRepo.revoteDown(userId, questionId)
+  }
+
+  def getOneQuestion(userId: Option[String], questionId: String) = {
+    userId match {
+      case None => QuestionRepo.getOneQuestion(questionId)
+      case Some(uid) => QuestionRepo.getOneQuestion(uid, questionId)
+    }
+  }
+
+  def getQuestion(userId: Option[String], timepoint: DateTime) = {
+    userId match {
+      case None => QuestionRepo.getQuestion(timepoint)
+      case Some(uid) => QuestionRepo.getQuestion(uid, timepoint)
+    }
+  }
 }
