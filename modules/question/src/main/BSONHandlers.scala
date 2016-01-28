@@ -38,7 +38,26 @@ object BSONHandlers {
     }
   }
 
-
+  implicit val commentBSONHandler = new BSON[Comment] {
+    def reads(r: BSON.Reader) = {
+      Comment(
+        id = r str "_id",
+        parentId = r str "parentId",
+        comment = r str "comment",
+        user = lila.user.Env.current.lightUserApi.get(r str "userId").get,
+        time = r date "time"
+      )
+    }
+    def writes(w: BSON.Writer, o: Comment) = {
+      BSONDocument(
+        "_id" -> o.id,
+        "parentId" -> o.parentId,
+        "comment" -> o.comment,
+        "userId" -> o.user.id,
+        "time" -> w.date(o.time)
+      )
+    }
+  }
 
   implicit val questionBSONHandler = new BSON[Question] {
     def reads(r: BSON.Reader) = {
@@ -54,6 +73,8 @@ object BSONHandlers {
         votes = r getO[List[Vote]] "votes",
         shareCount = r int "shareCount",
         shares = r get[List[String]] "shares",
+        commentCount = r int "commentCount",
+        comment = r getO[List[Comment]] "comment",
         answerCount = r int "answerCount"
       )
     }
@@ -70,6 +91,8 @@ object BSONHandlers {
         "votes" -> o.votes,
         "shareCount" -> o.shareCount,
         "shares" -> o.shares,
+        "commentCount" -> o.commentCount,
+        "comment" -> o.comment,
         "answerCount" -> o.answerCount
       )
     }
@@ -85,7 +108,9 @@ object BSONHandlers {
         user = lila.user.Env.current.lightUserApi.get(r str "userId").get,
         published = r date "published",
         voteCount = r int "voteCount",
-        votes = r getO[List[Vote]] "votes"
+        votes = r getO[List[Vote]] "votes",
+        commentCount = r int "commentCount",
+        comment = r getO[List[Comment]] "comment"
       )
     }
 
@@ -97,7 +122,9 @@ object BSONHandlers {
         "userId" -> o.user.id,
         "published" -> w.date(o.published),
         "voteCount" -> o.voteCount,
-        "votes" -> o.votes
+        "votes" -> o.votes,
+        "commentCount" -> o.commentCount,
+        "comment" -> o.comment
       )
     }
   }

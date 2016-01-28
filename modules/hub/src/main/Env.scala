@@ -31,6 +31,7 @@ final class Env(config: Config, system: ActorSystem) {
     val userRegister = select("actor.user_register")
     val userMessage = select("actor.user_message")
     val activity = select("actor.activity")
+    val question = select("actor.question")
     val chatRoom = select("actor.chat_room")
   }
 

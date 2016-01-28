@@ -290,6 +290,10 @@ html, body {
   background: #fff !important;
   font-family: 'Open Sans', sans-serif, Arial, Helvetica !important; }
 
+.dimmed {
+  overflow-y: hidden !important;
+  padding-right: 17px; }
+
 .mh500 {
   min-height: 500px; }
 
@@ -1154,10 +1158,22 @@ textarea {
       padding: 0 !important; }
 #qa .numVote {
   font-size: 16px !important; }
-#qa .qa .question {
+#qa .qa .question, #qa .qa .answer {
   padding-bottom: 25px; }
 #qa .qa .comment {
-  margin-left: 20px; }
+  margin-left: 10px;
+  font-size: 14px;
+  word-wrap: break-word; }
+  #qa .qa .comment a {
+    color: #0077CC !important; }
 #qa .qaWr {
-  padding-bottom: 50px;
+  padding-bottom: 10px;
   border-bottom: 1px solid #ccc; }
+  #qa .qaWr a {
+    color: #005999 !important; }
+#qa .answerWr {
+  margin-top: 30px; }
+#qa .commentQA {
+  margin-left: 0px;
+  border: none;
+  width: 100%; }

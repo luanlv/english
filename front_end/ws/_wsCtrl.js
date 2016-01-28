@@ -39,8 +39,15 @@ wsCtrl.storage = {
 };
 
 wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
+wsCtrl.qa = m.prop({});
 wsCtrl.post = m.prop({});
+wsCtrl.question = m.prop({});
 wsCtrl.data = {
+  qa: {
+    init: false,
+    list: [],
+    timepoint: Date.now
+  },
   post: {
     init: false,
     list: [],
@@ -314,6 +321,13 @@ ctrl.listen = function(d){
     rd.home(function(){m.redraw()})
   }
 
+  else if(d.t === "initQA"){
+    wsCtrl.data.qa.list = d.d;
+    wsCtrl.data.qa.init = true;
+    if(wsCtrl.data.qa.list.length > 0) wsCtrl.data.qa.timepoint = wsCtrl.data.qa.list[wsCtrl.data.qa.list.length - 1].published;
+    rd.qa(function(){m.redraw()})
+  }
+
   else if(d.t === "mes"){
     //--------------test
     if(d.d.m === "stop"){
@@ -360,6 +374,21 @@ ctrl.listen = function(d){
       }, 1500)
 
     }
+  }
+
+  else if(d.t === "newAnswer"){
+    wsCtrl.question().answer.push(d.d);
+    rd.qa(function(){m.redraw()})
+  }
+
+  else if(d.t === "newCommentQA"){
+    if(wsCtrl.question().question.id === d.d.parentId){
+      wsCtrl.question().question.comment.push(d.d);
+    } else {
+      var parrentPos = arrayObjectIndexOf(wsCtrl.question().answer, d.d.parentId, "id");
+      wsCtrl.question().answer[parrentPos].comment.push(d.d)
+    }
+    rd.qa(function(){m.redraw()})
   }
 
   else if(d.t === "newComment"){

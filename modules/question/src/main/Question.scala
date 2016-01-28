@@ -51,7 +51,37 @@ private[question] object DayViews {
       )
     }
   }
+}
 
+private[question] case class Comment(
+                                           id: String,
+                                           parentId: String,
+                                           comment: String,
+                                           user: LightUser,
+                                           time: DateTime = DateTime.now()
+                                         )
+
+
+private[question] object Comment {
+  implicit val formatChildComment = Json.format[Comment]
+
+  import reactivemongo.bson._
+
+  private[question] implicit val BSONReaderChildComment = new BSONDocumentReader[Comment] {
+    implicit object BSONDateTimeHandler extends BSONHandler[BSONDateTime, DateTime] {
+      def read(time: BSONDateTime) = new DateTime(time.value)
+      def write(jdtime: DateTime) = BSONDateTime(jdtime.getMillis)
+    }
+    def read(doc: BSONDocument): Comment = {
+      Comment(
+        id = ~doc.getAs[String]("_id"),
+        parentId = ~doc.getAs[String]("parentId"),
+        comment = ~doc.getAs[String]("comment"),
+        user = lila.user.Env.current.lightUserApi.get(~doc.getAs[String]("userId")).head,
+        time = doc.getAs[DateTime]("time").head
+      )
+    }
+  }
 }
 
 
@@ -67,6 +97,8 @@ private[question] case class Question(
                                    votes: Option[List[Vote]] = Option(List()),
                                    shareCount: Int = 0,
                                    shares: List[String] = List(),
+                                   commentCount: Int = 0,
+                                   comment: Option[List[Comment]] = Option(List()),
                                    answerCount: Int = 0
                                  )
 
@@ -95,6 +127,8 @@ private[question] object Question {
         votes = doc.getAs[List[Vote]]("votes"),
         shareCount = ~doc.getAs[Int]("shareCount"),
         shares = ~doc.getAs[List[String]]("shares"),
+        commentCount = ~doc.getAs[Int]("commentCount"),
+        comment = doc.getAs[List[Comment]]("comment"),
         answerCount = ~doc.getAs[Int]("answerCount")
       )
     }
@@ -109,7 +143,9 @@ private[question] case class Answer(
                                        user: LightUser,
                                        published: DateTime = DateTime.now(),
                                        voteCount: Int = 0,
-                                       votes: Option[List[Vote]] = Option(List())
+                                       votes: Option[List[Vote]] = Option(List()),
+                                       commentCount: Int = 0,
+                                       comment: Option[List[Comment]] = Option(List())
                                      )
 
 private[question] object Answer {
@@ -132,7 +168,9 @@ private[question] object Answer {
         user = lila.user.Env.current.lightUserApi.get(~doc.getAs[String]("userId")).head,
         published = doc.getAs[DateTime]("published").head,
         voteCount = ~doc.getAs[Int]("voteCount"),
-        votes = doc.getAs[List[Vote]]("votes")
+        votes = doc.getAs[List[Vote]]("votes"),
+        commentCount = ~doc.getAs[Int]("commentCount"),
+        comment = doc.getAs[List[Comment]]("comment")
       )
     }
   }

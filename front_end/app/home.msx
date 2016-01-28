@@ -20,7 +20,7 @@ var Home = {
     ctrl.setup = function(){
       //$('.ui.modal.show-post').modal("refresh");
       wsCtrl.post().comment = wsCtrl.post().comment.reverse();
-      api.showPost(wsCtrl.post().post.id);
+      //api.showPost(wsCtrl.post().post.id);
     };
 
     ctrl.addComment = function(postId, input){

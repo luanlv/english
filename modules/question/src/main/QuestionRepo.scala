@@ -29,6 +29,152 @@ object QuestionRepo {
     coll.insert(newQuestion)
   }
 
+
+  def addComment(parentId: String, comment: Comment) = {
+    //    val childComment = BSONFormats.toBSON(Json.toJson(comment)).get.asInstanceOf[BSONDocument]
+    coll.update(
+      BSONDocument("_id" -> parentId),
+      BSONDocument(
+        "$push" -> BSONDocument("comment" -> BSONDocument(
+          "$each" -> BSONArray(comment),
+          "$slice" -> -4
+        )
+        )
+      )
+    )
+  }
+
+  def newAnswer(questionId: String) = {
+    coll.update(
+      BSONDocument("_id" -> questionId),
+      BSONDocument(
+        "$inc" -> BSONDocument("answerCount" -> 1)
+      )
+    )
+  }
+
+  def getOneQuestion(questionId: String) = {
+    coll.find(BSONDocument("_id" -> questionId),
+      BSONDocument(
+        "_id" -> 1,
+        "question" -> 1,
+        "description" -> 1,
+        "userId" -> 1,
+        "published" -> 1,
+        "views" -> 1,
+        "voteCount" -> 1,
+        "shareCount" -> 1,
+        "shares" -> 1,
+        "commentCount" -> 1,
+        "comment" -> 1,
+        "answerCount" -> 1
+      )
+    )
+      .cursor[Question]()
+      .headOption
+  }
+
+  def getOneQuestion(userId: String, questionId: String) = {
+    coll.find(BSONDocument("_id" -> questionId),
+      BSONDocument(
+        "_id" -> 1,
+        "question" -> 1,
+        "description" -> 1,
+        "userId" -> 1,
+        "published" -> 1,
+        "views" -> 1,
+        "voteCount" -> 1,
+        "votes" -> BSONDocument("$elemMatch" -> BSONDocument("userId"  ->  "luan")),
+        "shareCount" -> 1,
+        "shares" -> 1,
+        "commentCount" -> 1,
+        "comment" -> 1,
+        "answerCount" -> 1
+      )
+    )
+      .cursor[Question]()
+      .headOption
+  }
+
+  def voteUp(userId: String, questionId: String) = {
+    coll.update(BSONDocument("_id" -> questionId, "votes.userId" -> BSONDocument("$ne" -> userId)),
+      BSONDocument(
+        "$inc" -> BSONDocument("voteCount" -> 1),
+        "$push" -> BSONDocument("votes" -> BSONDocument("userId" -> userId, "vote" -> 1))
+      )
+    ).void
+  }
+
+  def voteDown(userId: String, questionId: String) = {
+    coll.update(BSONDocument("_id" -> questionId, "votes.userId" -> BSONDocument("$ne" -> userId)),
+      BSONDocument(
+        "$inc" -> BSONDocument("voteCount" -> -1),
+        "$push" -> BSONDocument("votes" -> BSONDocument("userId" -> userId, "vote" -> -1))
+      )
+    ).void
+  }
+
+  def revoteUp(userId: String, questionId: String) = {
+    coll.update(BSONDocument("_id" -> questionId, "votes.userId" -> userId, "votes.vote" -> -1),
+      BSONDocument(
+        "$inc" -> BSONDocument("voteCount" -> 2),
+        "$set" -> BSONDocument("votes.$.vote" -> 1)
+      )
+    ).void
+  }
+
+  def revoteDown(userId: String, questionId: String) = {
+    coll.update(BSONDocument("_id" -> questionId, "votes.userId" -> userId, "votes.vote" -> 1),
+      BSONDocument(
+        "$inc" -> BSONDocument("voteCount" -> -2),
+        "$set" -> BSONDocument("votes.$.vote" -> -1)
+      )
+    ).void
+  }
+
+  def getQuestion(timepoint: DateTime): Fu[List[Question]] = {
+    coll.find(BSONDocument(),
+      BSONDocument(
+        "_id" -> 1,
+        "question" -> 1,
+        "description" -> 1,
+        "userId" -> 1,
+        "published" -> 1,
+        "views" -> 1,
+        "voteCount" -> 1,
+        "shareCount" -> 1,
+        "shares" -> 1,
+        "commentCount" -> 1,
+        "answerCount" -> 1
+      )
+    )
+      .sort(BSONDocument("published" -> -1))
+      .cursor[Question]()
+      .collect[List](10)
+  }
+
+  def getQuestion(userId: String, timepoint: DateTime): Fu[List[Question]] = {
+    coll.find(BSONDocument(),
+      BSONDocument(
+        "_id" -> 1,
+        "question" -> 1,
+        "description" -> 1,
+        "userId" -> 1,
+        "published" -> 1,
+        "views" -> 1,
+        "voteCount" -> 1,
+        "votes" -> BSONDocument("$elemMatch" -> BSONDocument("userId"  ->  userId)),
+        "shareCount" -> 1,
+        "shares" -> 1,
+        "commentCount" -> 1,
+        "answerCount" -> 1
+      )
+    )
+      .sort(BSONDocument("published" -> -1))
+      .cursor[Question]()
+      .collect[List](10)
+  }
+
 }
 
 

@@ -242,3 +242,9 @@ package activity {
   case class CommentPost(userId: String, postId: String, comment: String)
   case class ChildCommentPost(userId: String, postId: String, parentId: String, comment: String)
 }
+
+package question {
+  case class InitQA(userId: Option[String])
+  case class CommentQA(userId: String, parentId: String, parentType: String, comment: String)
+  case class AnswerQA(userId: String, questionId: String, answer: String)
+}

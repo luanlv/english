@@ -27,6 +27,7 @@ object API extends LilaController {
   private def postApi = Env.activity.postApi
   private def commentApi = Env.activity.commentApi
   private def questionApi = Env.question.questionApi
+  private def answerApi = Env.question.answerApi
 
   def getSelfInformation = Auth { implicit ctx =>
     me => {
@@ -37,7 +38,6 @@ object API extends LilaController {
   def updateInformation =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
     val req = ctx.body
     val name = (Json.parse(req.body.toString).as[JsObject]\"name").as[String]
-    println(name)
     UserRepo.updateName(ctx.userId.get, name) map {
       lila.user.Env.current.lightUserApi.refresh(ctx.userId.get)
       result => Ok("")
@@ -91,10 +91,28 @@ object API extends LilaController {
     }
   }
 
+//  def doAnswer =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
+//    val req = ctx.body
+//    println(Json.parse(req.body.toString).as[JsObject])
+//    val questionId = ((Json.parse(req.body.toString).as[JsObject]\"questionId").as[String])
+//    val answer = ((Json.parse(req.body.toString).as[JsObject]\"answer").as[String]).replaceAll("\\n\\n\\s*\\n", "\n\n").replaceAll("[ \\t\\x0B\\f]+", " ").trim()
+//    ctx.userId match {
+//      case Some(uid) => {
+//        answerApi.newAnswer(uid, questionId, answer) map {
+//          writeResult =>
+//            if(writeResult.ok){
+//              Ok(Json.obj("action" -> "ok"))
+//            } else {
+//              Ok(Json.obj("action" -> "error"))
+//            }
+//        }
+//      }
+//      case None => BadRequest.fuccess
+//    }
+//  }
 
   def doAsk =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
     val req = ctx.body
-    println(Json.parse(req.body.toString).as[JsObject])
     val question = ((Json.parse(req.body.toString).as[JsObject]\"question").as[String])
     val description = ((Json.parse(req.body.toString).as[JsObject]\"description").as[String]).replaceAll("\\n\\n\\s*\\n", "\n\n").replaceAll("[ \\t\\x0B\\f]+", " ").trim()
     ctx.userId match {
@@ -115,6 +133,14 @@ object API extends LilaController {
   def getQuestion(questionId: String) = Open { implicit  ctx =>
     Ok(views.html.index.home()).fuccess
   }
+
+  def getAllQuestion = Open { implicit ctx =>
+    questionApi.getQuestion(ctx.userId, DateTime.now()).map {
+      listQuestion => Ok(Json.toJson(listQuestion))
+    }
+  }
+
+
 
   def getPost(username: String) = Open { implicit ctx =>
     if(ctx.userId.get == username) {
@@ -143,12 +169,56 @@ object API extends LilaController {
       }
   }
 
+  def viewQuestion(questionId: String) = Open {implicit ctx =>
+    questionApi.getOneQuestion( ctx.userId , questionId) zip
+    answerApi.getAnswer( ctx.userId , questionId, DateTime.now()) map {
+      case (question, answers) => Ok(Json.obj("question" -> question, "answer" -> answers))
+    }
+  }
+
   def likePost(postId: String) = Open { implicit ctx =>
     ctx.userId match {
       case None => BadRequest.fuccess
       case Some(id) => postApi.like(id, postId) map (_ => Ok("liked"))
     }
   }
+
+  def vote(questionId: String) =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
+    val req = ctx.body
+    val kind = ((Json.parse(req.body.toString).as[JsObject]\"vote").as[String])
+
+    ctx.userId match {
+      case Some(uid) => {
+        kind match {
+          case "up" => questionApi.voteUp(uid, questionId) map (_ => Ok("voted"))
+          case "down" => questionApi.voteDown(uid, questionId) map (_ => Ok("voted"))
+          case "reup" => questionApi.revoteUp(uid, questionId) map (_ => Ok("voted"))
+          case "redown" => questionApi.revoteDown(uid, questionId) map (_ => Ok("voted"))
+          case _ => BadRequest.fuccess
+        }
+      }
+      case None => BadRequest.fuccess
+    }
+  }
+
+ def voteAnswer(answerId: String) =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
+    val req = ctx.body
+    val kind = ((Json.parse(req.body.toString).as[JsObject]\"vote").as[String])
+
+    ctx.userId match {
+      case Some(uid) => {
+        kind match {
+          case "up" => answerApi.voteUp(uid, answerId) map (_ => Ok("voted"))
+          case "down" => answerApi.voteDown(uid, answerId) map (_ => Ok("voted"))
+          case "reup" => answerApi.revoteUp(uid, answerId) map (_ => Ok("voted"))
+          case "redown" => answerApi.revoteDown(uid, answerId) map (_ => Ok("voted"))
+          case _ => BadRequest.fuccess
+        }
+      }
+      case None => BadRequest.fuccess
+    }
+  }
+
 
   def unlikePost(postId: String) = Open { implicit ctx =>
     ctx.userId match {

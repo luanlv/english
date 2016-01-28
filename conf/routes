@@ -5,8 +5,10 @@ GET /                      controllers.Application.index
 GET /post/:postId          controllers.Application.post(postId: String)
 GET /qa                    controllers.Application.index
 GET /qa/new                controllers.Application.index
+#POST /qa/answer            controllers.API.doAnswer
 POST /qa/new               controllers.API.doAsk
 
+GET /qa/allquestion        controllers.API.getAllQuestion
 GET /qa/:questionId        controllers.API.getQuestion(questionId: String)
 
 GET /chatroom              controllers.Chat.chatRooms
@@ -20,9 +22,13 @@ GET /@/:username/mini          controllers.User.showMini(username: String)
 POST /post                           controllers.API.doPost
 GET  /post/:username                 controllers.API.getPost(username: String)
 GET  /viewpost/:postId               controllers.API.viewPost(postId: String)
+GET  /viewquestion/:questionId       controllers.API.viewQuestion(questionId: String)
 
-POST /like/post/:postId            controllers.API.likePost(postId: String)
-POST /unlike/post/:postId            controllers.API.unlikePost(postId: String)
+POST /like/post/:postId               controllers.API.likePost(postId: String)
+POST /unlike/post/:postId             controllers.API.unlikePost(postId: String)
+POST  /vote/question/:questionId       controllers.API.vote(questionId: String)
+POST  /vote/answer/:answerId           controllers.API.voteAnswer(answerId: String)
+
 
 GET   /socket                          controllers.Main.websocket
 

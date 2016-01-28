@@ -10,6 +10,11 @@ html,body {
   font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
 }
 
+.dimmed {
+  overflow-y: hidden !important;
+  padding-right: 17px;
+}
+
 .mh500{
   min-height: 500px;
 }
@@ -306,6 +311,7 @@ textarea {
   padding: 3px !important;
   position: relative;
 }
+
 
 #user-list{
   box-sizing: border-box;
@@ -1124,17 +1130,36 @@ textarea {
   }
 
   .qa {
-    .question {
+    .question, .answer {
       padding-bottom: 25px;
     }
     .comment {
-      margin-left: 20px;
+      margin-left: 10px;
+      font-size: 14px;
+      word-wrap:break-word;
+      a {
+        color: #0077CC !important;
+      }
     }
+
 
   }
 
   .qaWr {
-    padding-bottom: 50px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #ccc;
+    a {
+      color: #005999 !important;
+    }
+  }
+
+  .answerWr {
+    margin-top: 30px;
+  }
+
+  .commentQA {
+    margin-left: 0px;
+    border: none;
+    width: 100%;
   }
 }

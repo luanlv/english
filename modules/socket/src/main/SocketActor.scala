@@ -25,6 +25,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
   val listSidPost  = scala.collection.mutable.Map.empty[String, String]
 
+  val listSidQuestion  = scala.collection.mutable.Map.empty[String, String]
+
   val members = scala.collection.mutable.Map.empty[String, M]
   val aliveUids = new ExpireSetMemo(uidTtl)
   var pong = Socket.initialPong
@@ -70,6 +72,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case SendInitPost(uid, posts) => sendInitPost(uid, posts)
 
+    case SendInitQA(uid, questions) => sendInitQA(uid, questions)
+
     case SendInitNotify(uid, data) => sendInitNotify(uid, data)
 
     case InitChatRoom(uid, roomId, userId) => {
@@ -83,12 +87,19 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case SubPost(uid, postId) => subPost(uid, postId)
 
+    case SubQuestion(uid, questionId) => subQuestion(uid, questionId)
+
     case UnSub(uid, roomId) => unSub(uid, roomId)
 
     case UnSubPost(uid) => unSubPost(uid)
 
+    case UnSubQuestion(uid) => unSubQuestion(uid)
+
+    case SendNewAnswer(questionId, answer) => sendNewAnswer(questionId, answer)
 
     case SendNewComment(postId, comment) => sendNewComment(postId, comment)
+
+    case SendNewCommentQA(questionId, comment) => sendNewCommentQA(questionId, comment)
 
     case UserEnterRoom(user, roomId) => notifyUserEnterRoom(user, roomId)
 
@@ -106,6 +117,7 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     case Quit(uid)             => {
       if(listSid.keySet.contains(uid)) unSub(uid)
       if(listSidPost.keySet.contains(uid)) unSubPost(uid)
+      if(listSidQuestion.keySet.contains(uid)) unSubQuestion(uid)
       quit(uid)
     }
 
@@ -222,9 +234,31 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     }
   }
 
+  def sendNewCommentQA(questionId: String, comment: JsValue) = {
+    listSidQuestion collect {
+      case (uid, pId) if (pId == questionId) =>  uid
+    } foreach { uid =>
+      withMember(uid)(_ push makeMessage("newCommentQA", comment))
+    }
+  }
+
+  def sendNewAnswer(questionId: String, answer: JsValue) = {
+    listSidQuestion collect {
+      case (uid, pId) if (pId == questionId) =>  uid
+    } foreach { uid =>
+      withMember(uid)(_ push makeMessage("newAnswer", answer))
+    }
+  }
+
   def subPost(uid: String, postId: String) = {
     if(!listSidPost.contains(uid)){
       listSidPost += (uid -> postId)
+    }
+  }
+
+  def subQuestion(uid: String, questionId: String) = {
+    if(!listSidQuestion.contains(uid)){
+      listSidQuestion += (uid -> questionId)
     }
   }
 
@@ -232,6 +266,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     listSidPost -= uid
   }
 
+  def unSubQuestion(uid: String) = {
+    listSidQuestion -= uid
+  }
 
   def sub(uid: String, roomId: String, userId: Option[String]) = {
     if(!listSid.contains(uid)){
@@ -318,6 +355,18 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
       }
     }
 
+    listSidPost.keys foreach { uid =>
+      if (!aliveUids.get(uid)) {
+        listSidPost -= uid
+      }
+    }
+
+   listSidQuestion.keys foreach { uid =>
+      if (!aliveUids.get(uid)) {
+        listSidQuestion -= uid
+      }
+    }
+
   }
 
   def eject(uid: String) {
@@ -374,6 +423,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
   def sendInitPost(uid: String, posts: JsValue) = {
     withMember(uid)(_ push makeMessage("initPost", posts))
+  }
+
+  def sendInitQA(uid: String, questions: JsValue) = {
+    withMember(uid)(_ push makeMessage("initQA", questions))
   }
 
   def sendMissingMes(uid: String, f: Int, t: Int, data: List[JsValue]){

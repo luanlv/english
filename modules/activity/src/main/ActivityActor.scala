@@ -60,7 +60,7 @@ private[activity] final class ActivityActor(
   def childCommentPost(userId: String, postId: String, parentId: String, comment: String) = {
     val opComment = childCommentApi.newChildComment(userId, postId, parentId, comment).await
     opComment foreach {
-      comment =>  commentApi.addChild(parentId, comment)
+        comment =>  commentApi.addChild(parentId, comment)
     }
     opComment
   }
