@@ -191,36 +191,20 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
   /*right: 300px;*/
 }
 
-
-.comment-right{
-  overflow: auto;
-  width: 200px;
-  float: right;
-  text-align: right;
-}
-
-.comment-left{
-  overflow: auto;
-  width: 200px;
-}
-
-.chat-right{
+.chat-right, .chat-left{
   margin-bottom: 3px !important;
-  width: 200px;
-  float: right;
+  width: 215px;
   .mes {
     font-weight: normal !important;
+    font-size: 13px !important;
+    word-wrap:break-word;
   }
 }
 
-.chat-left{
-  margin-bottom: 3px !important;
-  width: 200px;
-  //overflow: auto;
-  .mes {
-    font-weight: normal !important;
-  }
+.chat-right {
+  float: right;
 }
+
 
 .text{
   overflow: auto;

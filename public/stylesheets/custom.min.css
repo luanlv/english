@@ -454,28 +454,16 @@ textarea:focus:-ms-input-placeholder {
   position: fixed;
   /*right: 300px;*/ }
 
-.comment-right {
-  overflow: auto;
-  width: 200px;
-  float: right;
-  text-align: right; }
-
-.comment-left {
-  overflow: auto;
-  width: 200px; }
+.chat-right, .chat-left {
+  margin-bottom: 3px !important;
+  width: 215px; }
+  .chat-right .mes, .chat-left .mes {
+    font-weight: normal !important;
+    font-size: 13px !important;
+    word-wrap: break-word; }
 
 .chat-right {
-  margin-bottom: 3px !important;
-  width: 200px;
   float: right; }
-  .chat-right .mes {
-    font-weight: normal !important; }
-
-.chat-left {
-  margin-bottom: 3px !important;
-  width: 200px; }
-  .chat-left .mes {
-    font-weight: normal !important; }
 
 .text {
   overflow: auto; }

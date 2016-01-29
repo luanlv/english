@@ -186,6 +186,11 @@ trait WithPlay { self: PackageObject =>
         a => println(s"[$msg] [success] $a")
       )
     }
+
+    def awaitSeconds(seconds: Int): A = {
+      import scala.concurrent.duration._
+      scala.concurrent.Await.result(fua, seconds.seconds)
+    }
   }
 
   implicit final class LilaPimpedFutureZero[A: Zero](fua: Fu[A]) {

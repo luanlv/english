@@ -40,7 +40,6 @@ object Handler {
             (hub.actor.userMessage ? PingVersion(user)) zip
             (hub.actor.relation ? PingVersion(user)) map {
               case (notify: Int, makeFriend: Int) => socket ! Ping(uid, notify, makeFriend)
-              case _ => //println("unhander !!!")
             }
           }
         }
@@ -73,7 +72,6 @@ object Handler {
             }
             socket ! InitChatRoom(uid, roomId, userId)
           }
-          case _ =>
         }
       }
 
@@ -144,7 +142,6 @@ object Handler {
               if(userId.length()>0) hub.actor.chatRoom ! UserSubscribe(userId, roomId)
             }
           }
-          case _ =>
         }
       }
 
@@ -174,7 +171,6 @@ object Handler {
           }
           case "room" => socket ! UnSub(uid, ((o obj "d").get str "v").get)
 
-          case _ =>
         }
       }
 
@@ -182,7 +178,6 @@ object Handler {
         (hub.actor.relation ? GetOnlineUser(u)) foreach {
           case data: List[LightUser] =>
               socket ! SendOnlineFriends(uid, data)
-          case _ =>
         }
       }
 
@@ -191,7 +186,6 @@ object Handler {
         (hub.actor.userMessage ? GetName(id)) foreach {
           case "error" => //println("errror:" +id)
           case name:String  => socket ! SendName(uid, id, name)
-          case _ =>
         }
       }
 
@@ -203,7 +197,6 @@ object Handler {
             case dataFu: Future[List[JsValue]] => dataFu.map{
               data => socket ! SendMissingMes(uid, f, t, data)
             }
-            case _ => //println("gmm from " + userId + " error!")
           }
         }
       }
@@ -241,7 +234,6 @@ object Handler {
               case data => {
                 socket ! SendInitMes(uid, data)
               }
-              case _ => //println("init_chat from " + userId + " error!")
             }
           }
         }
@@ -252,7 +244,6 @@ object Handler {
           (hub.actor.userMessage ? InitNotify(userId)) foreach {
             case dataFu: Future[List[JsValue]] => dataFu.map{
               case data => socket ! SendInitNotify(uid, data)
-              case _ => //println("gnm from" + userId + " error!")
             }
 
           }
@@ -267,7 +258,6 @@ object Handler {
                 data => socket ! SendFriendRequest(uid, data)
               }
             }
-            case _ =>
           }
         }
       }
@@ -292,7 +282,6 @@ object Handler {
           }
         }
       }
-      case _ => // logwarn("Unhandled msg: " + msg)
     }
 
     def iteratee(controller: Controller, member: SocketMember): JsIteratee = {
