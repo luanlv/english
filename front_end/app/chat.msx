@@ -68,44 +68,94 @@ var Chat = {
     redraw.right++;
     return (
         <div>
+          <div id="dock-left"
+          onmouseover={function(){
+              wsCtrl.friendFlag = true;
+              rd.right(function(){m.redraw()})
+            }}
+          ></div>
           {wsCtrl.userId.length>0?(
-          ctrl.showChatDock?(<div id="user-list">
-            <div className="ui segment pad0">
-            <div className="ui top attached inverted header chat-title"
-                 onclick={function(){rd.right(ctrl.toggleChatDock())}}
-            >Online</div>
-              <div class="ui tiny middle aligned selection list">
-              {wsCtrl.data.userOnline.map(function(user){
-                  return (
-                    <a class=" item ulptr ulpt" href={"/@/" + user.id}
-                       config={function(el, isInited){
-                                  $(el).click(function(){
-                                    if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
-                                  });
+          ctrl.showChatDock?(
+          <div id="user-list" className={"ui gray segment pad0 sha3 mar0 " + (wsCtrl.friendFlag?("user-show"):("user-hide"))}
+            onmouseleave={function(){
+              wsCtrl.friendFlag = false;
+              rd.right(function(){m.redraw()})
+            }}
+          >
+            <div className="ui segment  noSha noBor pad0">
+              <div className="ui top attached tabular two item  menu" style="margin-top: 5px;">
+                <a className={(!wsCtrl.data.showOnline?("active"):("")) + " item pad0"}
+                  onclick={function(){
+                    wsCtrl.data.showOnline = false;
+                    if(!wsCtrl.data.initAllFriends) wsCtrl.send(wsCtrl.sendData("getAllFriends", {}));
+                    rd.right(function(){m.redraw()})
+                  }}
+                >
+                  All Friends
+                </a>
+                <a className={(wsCtrl.data.showOnline?("active"):("")) + " item pad0"}
+                   onclick={function(){
+                    wsCtrl.data.showOnline = true;
+                    rd.right(function(){m.redraw()})
+                  }}
+                >
+                  Online ({wsCtrl.data.userOnline.length})
+                </a>
 
-                                  if(!isInited){
-                                    $(el).click(function(){
-                                        return false;
-                                    })
+              </div>
+                <div className={ ((!wsCtrl.data.showOnline && !wsCtrl.data.initAllFriends)?("loading"):("")) + " ui segment  noSha noBor pad0 mh500"}>
+                  <div className=" ui tiny middle aligned selection list noSha noBor ">
+
+                    {wsCtrl.data.showOnline?(wsCtrl.data.userOnline.map(function(user){
+                      return (
+                        <a className=" item ulpt" href={"/@/" + user.id}
+                           config={function(el, isInited){
+                                      $(el).click(function(){
+                                        if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
+                                      });
+
+                                      if(!isInited){
+                                        $(el).click(function(){
+                                            return false;
+                                        })
+                                      }
+                                    }
                                   }
-                                }
-                              }
-                    >
-                      <img class="ui avatar image" src={(user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + user.avatar):wsCtrl.defaultAvata}/>
-                        <div class="content">
-                          <div class="header">{user.name}</div>
-                        </div>
-                    </a>
-                  )
-                  })}
+                        >
+                          <img className="ui avatar image" src={(user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + user.avatar):wsCtrl.defaultAvata}/>
+                            <div className="content">
+                              <div className="header">{user.name}</div>
+                            </div>
+                        </a>
+                      )
+                      })):(wsCtrl.data.allFriends.map(function(user){
+                      return (
+                          <a className=" item ulpt" href={"/@/" + user.id}
+                             config={function(el, isInited){
+                                      $(el).click(function(){
+                                        if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
+                                      });
+
+                                      if(!isInited){
+                                        $(el).click(function(){
+                                            return false;
+                                        })
+                                      }
+                                    }
+                                  }
+                          >
+                            <img className="ui avatar image" src={(user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + user.avatar):wsCtrl.defaultAvata}/>
+                            <div className="content">
+                              <div className="header">{user.name}</div>
+                            </div>
+                          </a>
+                      )
+                    }))
+
+                    }
+                  </div>
+                </div>
               </div>
-            <div className="ui search">
-              <div className="ui left icon input">
-                <input className="search-friend" type="text" placeholder="Search"/>
-                  <i className="search icon"></i>
-              </div>
-            </div>
-            </div>
           </div>):(<div id="user-list">
             <div className="ui top attached inverted header chat-title"
                  onclick={function(){rd.right(ctrl.toggleChatDock())}}
@@ -113,7 +163,7 @@ var Chat = {
           </div>)):""
           }
 
-          <div id="dock-bot">
+          <div id="dock-bot" class={(wsCtrl.friendFlag?("uShow"):("uHide"))}>
             {wsCtrl.data.chat.map(function(chat, rank){
                 return (!chat.display)?"":(
                     <div className={"chatWr " + (chat.hide?"w2":"w1")}>

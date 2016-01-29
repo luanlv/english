@@ -126,6 +126,8 @@ object Handler {
 
       }
 
+
+
       case("sub", o) => {
         val obj = (o obj "d").get
         (obj str "t").get match {
@@ -178,6 +180,13 @@ object Handler {
         (hub.actor.relation ? GetOnlineUser(u)) foreach {
           case data: List[LightUser] =>
               socket ! SendOnlineFriends(uid, data)
+        }
+      }
+
+      case ("getAllFriends", _) => userId foreach { u =>
+        (hub.actor.relation ? GetFriends(u)) foreach {
+          case data: List[LightUser] =>
+            socket ! SendFriendsList(uid, data)
         }
       }
 

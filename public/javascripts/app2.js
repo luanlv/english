@@ -269,44 +269,94 @@ var Chat = {
     redraw.right++;
     return (
         {tag: "div", attrs: {}, children: [
+          {tag: "div", attrs: {id:"dock-left", 
+          onmouseover:function(){
+              wsCtrl.friendFlag = true;
+              rd.right(function(){m.redraw()})
+            }
+          }}, 
           wsCtrl.userId.length>0?(
-          ctrl.showChatDock?({tag: "div", attrs: {id:"user-list"}, children: [
-            {tag: "div", attrs: {className:"ui segment pad0"}, children: [
-            {tag: "div", attrs: {className:"ui top attached inverted header chat-title", 
-                 onclick:function(){rd.right(ctrl.toggleChatDock())}
-            }, children: ["Online"]}, 
-              {tag: "div", attrs: {class:"ui tiny middle aligned selection list"}, children: [
-              wsCtrl.data.userOnline.map(function(user){
-                  return (
-                    {tag: "a", attrs: {class:" item ulptr ulpt", href:"/@/" + user.id, 
-                       config:function(el, isInited){
-                                  $(el).click(function(){
-                                    if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
-                                  });
+          ctrl.showChatDock?(
+          {tag: "div", attrs: {id:"user-list", className:"ui gray segment pad0 sha3 mar0 " + (wsCtrl.friendFlag?("user-show"):("user-hide")), 
+            onmouseleave:function(){
+              wsCtrl.friendFlag = false;
+              rd.right(function(){m.redraw()})
+            }
+          }, children: [
+            {tag: "div", attrs: {className:"ui segment  noSha noBor pad0"}, children: [
+              {tag: "div", attrs: {className:"ui top attached tabular two item  menu", style:"margin-top: 5px;"}, children: [
+                {tag: "a", attrs: {className:(!wsCtrl.data.showOnline?("active"):("")) + " item pad0", 
+                  onclick:function(){
+                    wsCtrl.data.showOnline = false;
+                    if(!wsCtrl.data.initAllFriends) wsCtrl.send(wsCtrl.sendData("getAllFriends", {}));
+                    rd.right(function(){m.redraw()})
+                  }
+                }, children: [
+                  "All Friends"
+                ]}, 
+                {tag: "a", attrs: {className:(wsCtrl.data.showOnline?("active"):("")) + " item pad0", 
+                   onclick:function(){
+                    wsCtrl.data.showOnline = true;
+                    rd.right(function(){m.redraw()})
+                  }
+                }, children: [
+                  "Online (", wsCtrl.data.userOnline.length, ")"
+                ]}
 
-                                  if(!isInited){
-                                    $(el).click(function(){
-                                        return false;
-                                    })
-                                  }
-                                }
-                              
-                    }, children: [
-                      {tag: "img", attrs: {class:"ui avatar image", src:(user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + user.avatar):wsCtrl.defaultAvata}}, 
-                        {tag: "div", attrs: {class:"content"}, children: [
-                          {tag: "div", attrs: {class:"header"}, children: [user.name]}
-                        ]}
-                    ]}
-                  )
-                  })
               ]}, 
-            {tag: "div", attrs: {className:"ui search"}, children: [
-              {tag: "div", attrs: {className:"ui left icon input"}, children: [
-                {tag: "input", attrs: {className:"search-friend", type:"text", placeholder:"Search"}}, 
-                  {tag: "i", attrs: {className:"search icon"}}
+                {tag: "div", attrs: {className: ((!wsCtrl.data.showOnline && !wsCtrl.data.initAllFriends)?("loading"):("")) + " ui segment  noSha noBor pad0 mh500"}, children: [
+                  {tag: "div", attrs: {className:" ui tiny middle aligned selection list noSha noBor "}, children: [
+
+                    wsCtrl.data.showOnline?(wsCtrl.data.userOnline.map(function(user){
+                      return (
+                        {tag: "a", attrs: {className:" item ulpt", href:"/@/" + user.id, 
+                           config:function(el, isInited){
+                                      $(el).click(function(){
+                                        if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
+                                      });
+
+                                      if(!isInited){
+                                        $(el).click(function(){
+                                            return false;
+                                        })
+                                      }
+                                    }
+                                  
+                        }, children: [
+                          {tag: "img", attrs: {className:"ui avatar image", src:(user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + user.avatar):wsCtrl.defaultAvata}}, 
+                            {tag: "div", attrs: {className:"content"}, children: [
+                              {tag: "div", attrs: {className:"header"}, children: [user.name]}
+                            ]}
+                        ]}
+                      )
+                      })):(wsCtrl.data.allFriends.map(function(user){
+                      return (
+                          {tag: "a", attrs: {className:" item ulpt", href:"/@/" + user.id, 
+                             config:function(el, isInited){
+                                      $(el).click(function(){
+                                        if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
+                                      });
+
+                                      if(!isInited){
+                                        $(el).click(function(){
+                                            return false;
+                                        })
+                                      }
+                                    }
+                                  
+                          }, children: [
+                            {tag: "img", attrs: {className:"ui avatar image", src:(user.avatar.length>0)?(wsCtrl.static + "/getimage/small/" + user.avatar):wsCtrl.defaultAvata}}, 
+                            {tag: "div", attrs: {className:"content"}, children: [
+                              {tag: "div", attrs: {className:"header"}, children: [user.name]}
+                            ]}
+                          ]}
+                      )
+                    }))
+
+                    
+                  ]}
+                ]}
               ]}
-            ]}
-            ]}
           ]}):({tag: "div", attrs: {id:"user-list"}, children: [
             {tag: "div", attrs: {className:"ui top attached inverted header chat-title", 
                  onclick:function(){rd.right(ctrl.toggleChatDock())}
@@ -314,7 +364,7 @@ var Chat = {
           ]})):"", 
           
 
-          {tag: "div", attrs: {id:"dock-bot"}, children: [
+          {tag: "div", attrs: {id:"dock-bot", class:(wsCtrl.friendFlag?("uShow"):("uHide"))}, children: [
             wsCtrl.data.chat.map(function(chat, rank){
                 return (!chat.display)?"":(
                     {tag: "div", attrs: {className:"chatWr " + (chat.hide?"w2":"w1")}, children: [
@@ -3007,6 +3057,9 @@ wsCtrl.storage = {
   chat: $.localStorage.get('chat:' + wsCtrl.userId) || []
 };
 
+
+wsCtrl.friendFlag = false;
+
 wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
 wsCtrl.qa = m.prop({});
 wsCtrl.post = m.prop({});
@@ -3024,7 +3077,10 @@ wsCtrl.data = {
   },
   chatrooms: {},
   chatroom: {},
+  showOnline: true,
   userOnline: [],
+  initAllFriends: false,
+  allFriends: [],
   user: {},
   chat: [],
   makeFriend: {
@@ -3375,6 +3431,12 @@ ctrl.listen = function(d){
 
   else if(d.t === "following_onlines"){
     data.userOnline = d.d;
+    rd.right(function(){m.redraw()});
+  }
+
+  else if(d.t === "friends_list"){
+    data.allFriends = d.d;
+    wsCtrl.data.initAllFriends = true;
     rd.right(function(){m.redraw()})
   }
 

@@ -38,6 +38,9 @@ wsCtrl.storage = {
   chat: $.localStorage.get('chat:' + wsCtrl.userId) || []
 };
 
+
+wsCtrl.friendFlag = false;
+
 wsCtrl.defaultAvata = "/assets/avatar/2.jpg";
 wsCtrl.qa = m.prop({});
 wsCtrl.post = m.prop({});
@@ -55,7 +58,10 @@ wsCtrl.data = {
   },
   chatrooms: {},
   chatroom: {},
+  showOnline: true,
   userOnline: [],
+  initAllFriends: false,
+  allFriends: [],
   user: {},
   chat: [],
   makeFriend: {
@@ -406,6 +412,12 @@ ctrl.listen = function(d){
 
   else if(d.t === "following_onlines"){
     data.userOnline = d.d;
+    rd.right(function(){m.redraw()});
+  }
+
+  else if(d.t === "friends_list"){
+    data.allFriends = d.d;
+    wsCtrl.data.initAllFriends = true;
     rd.right(function(){m.redraw()})
   }
 

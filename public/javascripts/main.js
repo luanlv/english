@@ -60,7 +60,6 @@ var userPowertip = function($els, placement) {
 $( document ).ready(function() {
 
   function updatePowertips() {
-    userPowertip($('.ulptr.ulpt'), 'nw');
     userPowertip($('.ulpt'), 'sw-alt');
   };
 

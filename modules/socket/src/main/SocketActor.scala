@@ -66,6 +66,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case SendOnlineFriends(uid, listUser) => sendOnlineFriend(uid, listUser)
 
+    case SendFriendsList(uid, listUser) => sendFriendsList(uid, listUser)
+
     case SendMissingMes(uid, f, t, data) => sendMissingMes(uid, f, t, data)
 
     case SendInitMes(uid, data) => sendInitMes(uid, data)
@@ -419,6 +421,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
   def sendOnlineFriend(uid: String, listUser: List[LightUser]) {
     withMember(uid)(_ push makeMessage("following_onlines", listUser))
+  }
+
+  def sendFriendsList(uid: String, listUser: List[LightUser]) {
+    withMember(uid)(_ push makeMessage("friends_list", listUser))
   }
 
   def sendInitPost(uid: String, posts: JsValue) = {
