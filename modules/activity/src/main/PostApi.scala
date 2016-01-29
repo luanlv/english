@@ -7,7 +7,6 @@ import lila.activity.actorApi._
 import lila.common.LightUser
 import org.joda.time.DateTime
 import scala.util.Success
-import lila.activity.Cached
 import lila.db.api._
 import lila.db.Implicits._
 

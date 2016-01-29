@@ -39,7 +39,6 @@ private[chatRoom] final class ChatRoomActor(
     case GetInitChatRoom(roomId) => sender ! initChat(roomId).await
     case ChatRoomMessage(userId, roomId, chat) => doChat(userId, roomId, chat)
     case PrevChat(roomId, lastTime) => sender ! Json.toJson(doPrevChat(roomId, lastTime).await)
-    case _ =>
   }
   private def onlineIds: Set[ID] = onlines.keySet
 

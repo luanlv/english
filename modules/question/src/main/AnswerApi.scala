@@ -7,7 +7,6 @@ import akka.actor.ActorSelection
 import lila.common.LightUser
 import org.joda.time.DateTime
 import scala.util.Success
-import lila.question.Cached
 import lila.db.api._
 import lila.db.Implicits._
 
