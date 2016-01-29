@@ -38,24 +38,29 @@
 
 		<div class="red"></div>
 		<script>
-				head.load(
-						'@cssTagName("custom.min.css")',
+				var static = "";
+				if(document.domain === "localhost"){
+					static = "";
+				} else {
+					static = "http://static.venglish.net"
+				}
+				head.load(static +'@cssTagName("custom.min.css")',
 						"https://cdnjs.cloudflare.com/ajax/libs/jquery-powertip/1.2.0/css/jquery.powertip.min.css",
 //			  "/assets/semantic/semantic.min.css?v=3");
 						"https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css");
 				//"https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.css");
-				head.load('@jsTagName("vendor/jquery.min.js")')
+				head.load(static + '@jsTagName("vendor/jquery.min.js")')
 				head.load("https://cdnjs.cloudflare.com/ajax/libs/jquery-powertip/1.2.0/jquery.powertip.min.js")
 						//head.load("/assets/javascripts/vendor/jquery.min.js")
-						.js('@jsTagName("jquery.cookie.min.js")')
-						.js('@jsTagName("jquery.storageapi.min.js")')
+						.js(static + '@jsTagName("jquery.cookie.min.js")')
+						.js(static + '@jsTagName("jquery.storageapi.min.js")')
 						.js("https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js")
-						.js('@jsTagName("jquery.textarea_autosize.js")')
-						.js('@jsTagName("attrchange.js")')
-						.js('@jsTagName("moment.min.js")')
-						.js('@jsTagName("mithril.js")')
-						.js('@jsTagName("mithril-storage.js")')
-						.js('@jsTagName("main.js")')
+						.js(static + '@jsTagName("jquery.textarea_autosize.js")')
+						.js(static + '@jsTagName("attrchange.js")')
+						.js(static + '@jsTagName("moment.min.js")')
+						.js(static + '@jsTagName("mithril.js")')
+						.js(static + '@jsTagName("mithril-storage.js")')
+						.js(static + '@jsTagName("main.js")')
 						.js({app: '@jsTagName("app2.js")'})
 				head.ready('app', function() {
 					var f1 = function(){

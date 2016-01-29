@@ -211,6 +211,7 @@ case class Block(u1: String, u2: String)
 case class UnBlock(u1: String, u2: String)
 case class GetFriendRequest(userId: String)
 case class GetOnlineUser(userId: String)
+case class GetFriends(userId: String)
 }
 
 

@@ -32,6 +32,11 @@ private[relation] final class RelationActor(
       sender ! makeFriendApi.requester(userId).map(setId => setId.map(id => lightUser(id).get))
     }
 
+    case GetFriends(userId) => {
+      val friends = friendshipApi.friends(userId).await
+      sender ! friends.map(id => lightUser(id).get).toList
+    }
+
     case GetOnlineUser(userId) => sender ! onlineFriends(userId).await
 
     case ReloadNotify(userId) => reloadNotify(userId)
