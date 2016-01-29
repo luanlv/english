@@ -468,10 +468,14 @@ textarea:focus:-ms-input-placeholder {
   margin-bottom: 3px !important;
   width: 200px;
   float: right; }
+  .chat-right .mes {
+    font-weight: normal !important; }
 
 .chat-left {
   margin-bottom: 3px !important;
   width: 200px; }
+  .chat-left .mes {
+    font-weight: normal !important; }
 
 .text {
   overflow: auto; }
