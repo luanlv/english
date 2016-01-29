@@ -208,12 +208,18 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
   margin-bottom: 3px !important;
   width: 200px;
   float: right;
+  .mes {
+    font-weight: normal !important;
+  }
 }
 
 .chat-left{
   margin-bottom: 3px !important;
   width: 200px;
   //overflow: auto;
+  .mes {
+    font-weight: normal !important;
+  }
 }
 
 .text{

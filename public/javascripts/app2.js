@@ -349,7 +349,7 @@ var Chat = {
                                   return {tag: "div", attrs: {}, children: [
                                     chat.init?({tag: "div", attrs: {className:"loading_chat"}, children: ["\"Loading previous ...\""]}):"", 
                                     {tag: "div", attrs: {className:(item.f.id == wsCtrl.userId)?"ui left pointing basic label chat-left": "ui right pointing basic label chat-right"}, children: [
-                                      {tag: "div", attrs: {className:"mes"}, children: [item.mes]}
+                                      {tag: "div", attrs: {className:"mes"}, children: [m.trust(api.post(item.mes))]}
                                     ]}
                                   ]}
                                   })

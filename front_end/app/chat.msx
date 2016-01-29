@@ -148,7 +148,7 @@ var Chat = {
                                   return <div>
                                     {chat.init?(<div className="loading_chat">"Loading previous ..."</div>):""}
                                     <div className={(item.f.id == wsCtrl.userId)?"ui left pointing basic label chat-left": "ui right pointing basic label chat-right"}>
-                                      <div className="mes">{item.mes}</div>
+                                      <div className="mes">{m.trust(api.post(item.mes))}</div>
                                     </div>
                                   </div>
                                   })}
