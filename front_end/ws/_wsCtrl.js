@@ -538,7 +538,7 @@ ctrl.listen = function(d){
           listChats.map(function(chat){
             wsCtrl.commentsInRoom(roomId).unshift(
                 {
-                  avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):wsCtrl.defaultAvata,
+                  avatar: chat.user.avatar.length>0?(wsCtrl.static + '/getimage/thumb/' + chat.user.avatar):wsCtrl.defaultAvata,
                   userId: chat.user.id,
                   user: chat.user.name,
                   time: chat.time,
@@ -554,7 +554,7 @@ ctrl.listen = function(d){
             var listComments = listChats.map(function(chat){
 
             return {
-              avatar: chat.user.avatar.length>0?('/getimage/thumb/' + chat.user.avatar):wsCtrl.defaultAvata,
+              avatar: chat.user.avatar.length>0?(wsCtrl.static + '/getimage/thumb/' + chat.user.avatar):wsCtrl.defaultAvata,
               userId: chat.user.userId,
               user: chat.user.name,
               time: chat.time,
