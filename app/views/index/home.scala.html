@@ -42,7 +42,8 @@
 				if(document.domain === "localhost"){
 					static = "";
 				} else {
-					static = "http://static.venglish.net"
+//					static = "http://static.venglish.net"
+					static = ""
 				}
 				head.load(static +'@cssTagName("custom.min.css")',
 						"https://cdnjs.cloudflare.com/ajax/libs/jquery-powertip/1.2.0/css/jquery.powertip.min.css",
@@ -61,7 +62,7 @@
 						.js(static + '@jsTagName("mithril.js")')
 						.js(static + '@jsTagName("mithril-storage.js")')
 						.js(static + '@jsTagName("main.js")')
-						.js({app: '@jsTagName("app2.js")'})
+						.js({app: static + '@jsTagName("app2.js")'})
 				head.ready('app', function() {
 					var f1 = function(){
 						if(typeof(initRoute) == "function" && typeof($) == "function" && $('.red').css('color') != 'rgb(0, 0, 0)'){

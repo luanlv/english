@@ -17,7 +17,8 @@ var prevTime;
 if(document.domain === "localhost"){
   wsCtrl.static = "";
 } else {
-  wsCtrl.static = "http://static.venglish.net"
+  //wsCtrl.static = "http://static.venglish.net"
+  wsCtrl.static = ""
 }
 
 
