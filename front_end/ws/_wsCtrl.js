@@ -205,9 +205,9 @@ function initWs(){
   if(document.domain === "localhost") {
     wsCtrl.ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
   } else if(document.domain === "dedi.luanlv.info"){
-    wsCtrl.ws = new WebSocket("ws://socket." + document.domain + ":9000/socket?sri=" + sri);
+    wsCtrl.ws = new WebSocket("ws://socket." + document.domain + ":9903/socket?sri=" + sri);
   } else if(document.domain === "hostus.luanlv.info"){
-    wsCtrl.ws = new WebSocket("ws://socket." + document.domain + ":9000/socket?sri=" + sri);
+    wsCtrl.ws = new WebSocket("ws://socket." + document.domain + ":9903/socket?sri=" + sri);
   } else {
     wsCtrl.ws = new WebSocket("ws://" + document.domain + ":9903/socket?sri=" + sri);
   }
