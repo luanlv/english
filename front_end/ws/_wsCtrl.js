@@ -124,6 +124,10 @@ function initWs(){
   var sri = Math.random().toString(36).substring(2);
   if(document.domain === "localhost") {
     wsCtrl.ws = new WebSocket("ws://" + document.domain + ":9000/socket?sri=" + sri);
+  } else if(document.domain === "dedi.luanlv.info"){
+    wsCtrl.ws = new WebSocket("ws://45.114.117.87:9903/socket?sri=" + sri);
+  } else if(document.domain === "hostus.luanlv.info"){
+    wsCtrl.ws = new WebSocket("ws://103.192.177.156:9903/socket?sri=" + sri);
   } else {
     wsCtrl.ws = new WebSocket("ws://" + document.domain + ":9903/socket?sri=" + sri);
   }
