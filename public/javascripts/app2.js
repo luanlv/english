@@ -56,10 +56,8 @@ var Cookie =
       {
         // append "." to current domain
         domain = '.'+host;
-        console.log(domain)
-        console.log(document.cookie)
-        console.log(name+"="+value+expires+"; path=/; domain="+domain)
         document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
+        document.cookie = name+"="+value+expires+"; path=/; domain=.socket"+domain;
       }
     }
   },
