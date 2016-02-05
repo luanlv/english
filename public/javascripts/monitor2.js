@@ -155,6 +155,9 @@ $(function() {
     wsUrl = new WebSocket("ws://socket." + document.domain + ":9000/monitor/socket?sri=" + sri);
   } else if(document.domain === "hostus.luanlv.info"){
     wsUrl = new WebSocket("ws://socket." + document.domain + ":9000/monitor/socket?sri=" + sri);
+  } else if(document.domain === "venglish.net" || document.domain === "www.venglish.net"){
+    console.log("venglish")
+    wsUrl = new WebSocket("ws://socket.venglish.net:9903/socket?sri=" + sri);
   } else {
     wsUrl = new WebSocket("ws://" + document.domain + ":9903/monitor/socket?sri=" + sri);
   }
