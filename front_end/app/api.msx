@@ -85,8 +85,12 @@ var Cookie =
 api.Cookie = Cookie;
 
 var cookie = Cookie.get('venglish');
-Cookie.erase('venglish');
-Cookie.set('venglish', cookie);
+if(cookie){
+  Cookie.erase('venglish');
+  Cookie.set('venglish', cookie);
+  console.log('reset cookie')
+}
+
 
 
 api.post = function(post){
