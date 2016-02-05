@@ -47,7 +47,7 @@ var Cookie =
       domainParts = host.split('.');
       domainParts.shift();
       domain = '.'+domainParts.join('.');
-
+      console.log(domain)
       document.cookie = name+"="+value+expires+"; path=/; domain=."+ domain;
 
       // check if cookie was successfuly set to the given domain
@@ -57,6 +57,8 @@ var Cookie =
         // append "." to current domain
         domain = '.'+host;
         console.log(domain)
+        console.log(document.cookie)
+        console.log(name+"="+value+expires+"; path=/; domain="+domain)
         document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
       }
     }
