@@ -56,6 +56,7 @@ var Cookie =
       {
         // append "." to current domain
         domain = '.'+host;
+        console.log(domain)
         document.cookie = name+"="+value+expires+"; path=/; domain="+domain;
       }
     }
