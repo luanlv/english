@@ -3242,6 +3242,7 @@ function initWs(){
   } else if(document.domain === "hostus.luanlv.info"){
     wsCtrl.ws = new WebSocket("ws://socket." + document.domain + ":9903/socket?sri=" + sri);
   } else if(document.domain === "venglish.net" || document.domain === "www.venglish.net"){
+    console.log("venglish")
     wsCtrl.ws = new WebSocket("ws://socket.venglish:9903/socket?sri=" + sri);
   } else {
     wsCtrl.ws = new WebSocket("ws://" + document.domain + ":9903/socket?sri=" + sri);
