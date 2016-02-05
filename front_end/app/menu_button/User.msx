@@ -60,11 +60,7 @@ var UserButton = function(ctrl){ return (
               Profile
             </a>
             <br/>
-            <a href="/logout" class="fluid ui small button"
-              onclick={function(){
-                api.Cookie.erase('venglish');
-              }}
-            >
+            <a href="/logout" class="fluid ui small button">
               <i class="sign out icon"></i>
               Logout
             </a>
