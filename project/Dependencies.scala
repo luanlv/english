@@ -26,15 +26,15 @@ object Dependencies {
       t2v, jgitMaven, sprayRepo)
   }
 
-  val scalaz = "org.scalaz" %% "scalaz-core" % "7.1.3"
+  val scalaz = "org.scalaz" %% "scalaz-core" % "7.1.7"
   val scalalib = "com.github.ornicar" %% "scalalib" % "5.4"
   val config = "com.typesafe" % "config" % "1.3.0"
   val apache = "org.apache.commons" % "commons-lang3" % "3.4"
-  val guava = "com.google.guava" % "guava" % "18.0"
-  val findbugs = "com.google.code.findbugs" % "jsr305" % "2.0.3"
-  val hasher = "com.roundeights" %% "hasher" % "1.0.0"
+  val guava = "com.google.guava" % "guava" % "19.0"
+  val findbugs = "com.google.code.findbugs" % "jsr305" % "3.0.1"
+  val hasher = "com.roundeights" %% "hasher" % "1.2.0"
   val jgit = "org.eclipse.jgit" % "org.eclipse.jgit" % "3.2.0.201312181205-r"
-  val jodaTime = "joda-time" % "joda-time" % "2.8.1"
+  val jodaTime = "joda-time" % "joda-time" % "2.9.2"
   val RM = "org.reactivemongo" %% "reactivemongo" % "0.11.9"
   val PRM = "org.reactivemongo" %% "play2-reactivemongo" % "0.11.9"
   val maxmind = "com.sanoma.cda" %% "maxmind-geoip2-scala" % "1.2.3-THIB"
@@ -58,7 +58,7 @@ object Dependencies {
   }
 
   object akka {
-      val version = "2.4.1"
+      val version = "2.4.2"
       val actor = "com.typesafe.akka" %% "akka-actor" % version
       val slf4j = "com.typesafe.akka" %% "akka-slf4j" % version
     }

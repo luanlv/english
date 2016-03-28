@@ -1,9 +1,14 @@
 logs
-target
+#target
 node_modules
+/.sass-cache
 /.idea
 /.idea_modules
 /.classpath
 /.project
 /.settings
 /RUNNING_PID
+/project/target
+/target
+nohup.out
+/modules/*/target

@@ -1,0 +1,33 @@
+[0m[[0minfo[0m] [0mPackaging /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/notification_2.11-2.0.jar ...[0m
+[0m[[0mdebug[0m] [0mInput file mappings:[0m
+[0m[[0mdebug[0m] [0m	lila/notification/package.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/package.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/Api$$anonfun$add$1.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/Api$$anonfun$add$1.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/Notification.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/Notification.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/package$actorApi$RenderNotification.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/package$actorApi$RenderNotification.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/package$.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/package$.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/Notification$.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/Notification$.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/Env$$anonfun$current$1.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/Env$$anonfun$current$1.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification[0m
+[0m[[0mdebug[0m] [0m	lila/notification/Api$$anonfun$remove$1.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/Api$$anonfun$remove$1.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/Env$.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/Env$.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/Api.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/Api.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/Env.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/Env.class[0m
+[0m[[0mdebug[0m] [0m	lila/notification/package$actorApi$RenderNotification$.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/package$actorApi$RenderNotification$.class[0m
+[0m[[0mdebug[0m] [0m	lila[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila[0m
+[0m[[0mdebug[0m] [0m	lila/notification/package$actorApi$.class[0m
+[0m[[0mdebug[0m] [0m	  /mnt/ramdisk/mainapp/modules/notification/target/scala-2.11/classes/lila/notification/package$actorApi$.class[0m
+[0m[[0minfo[0m] [0mDone packaging.[0m

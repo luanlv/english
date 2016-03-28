@@ -1,0 +1,6 @@
+[0m[[0mdebug[0m] [0mCopy resource mappings: [0m
+[0m[[0mdebug[0m] [0m	(/mnt/ramdisk/mainapp/conf/routes,/mnt/ramdisk/mainapp/target/scala-2.11/classes/routes)[0m
+[0m[[0mdebug[0m] [0m	(/mnt/ramdisk/mainapp/conf/messages.vi,/mnt/ramdisk/mainapp/target/scala-2.11/classes/messages.vi)[0m
+[0m[[0mdebug[0m] [0m	(/mnt/ramdisk/mainapp/conf/messages,/mnt/ramdisk/mainapp/target/scala-2.11/classes/messages)[0m
+[0m[[0mdebug[0m] [0m	(/mnt/ramdisk/mainapp/conf/application.conf,/mnt/ramdisk/mainapp/target/scala-2.11/classes/application.conf)[0m
+[0m[[0mdebug[0m] [0m	(/mnt/ramdisk/mainapp/conf/application-logger.xml,/mnt/ramdisk/mainapp/target/scala-2.11/classes/application-logger.xml)[0m

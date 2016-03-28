@@ -32,8 +32,8 @@ object LilaCookie {
     value,
     maxAge orElse Session.maxAge orElse 86400.some,
     "/",
-//    domain(req).some,
-    Some(".venglish.net"),
+    domain(req).some,
+//    Some(".englishsector.com"),
     Session.secure,
     //httpOnly | Session.httpOnly)
     false)
