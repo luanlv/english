@@ -75,7 +75,7 @@ Seq[Any](format.raw/*1.4*/("""
 object worldMap extends worldMap_Scope0.worldMap
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:35 ICT 2016
+                  DATE: Sun Apr 17 11:11:26 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/site/worldMap.scala.html
                   HASH: b89de07aeb541bba3864c0e4285433b6a6568d8e
                   MATRIX: 803->1|899->3|927->5|1060->112|1074->118|1135->159

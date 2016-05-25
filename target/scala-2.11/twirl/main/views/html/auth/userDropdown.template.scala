@@ -51,7 +51,7 @@ Seq[Any](format.raw/*1.53*/("""
 object userDropdown extends userDropdown_Scope0.userDropdown
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:36 ICT 2016
+                  DATE: Sun Apr 17 11:11:27 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/auth/userDropdown.scala.html
                   HASH: d5772944f67f43795a37828916f7e0c4aa710679
                   MATRIX: 832->1|978->52

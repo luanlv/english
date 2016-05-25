@@ -101,6 +101,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case SendNewComment(postId, comment) => sendNewComment(postId, comment)
 
+    case SendMoreComment(uid, postId, comment) => sendMoreComment(uid, postId, comment)
+
     case SendNewCommentQA(questionId, comment) => sendNewCommentQA(questionId, comment)
 
     case UserEnterRoom(user, roomId) => notifyUserEnterRoom(user, roomId)
@@ -236,6 +238,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
     }
   }
 
+  def sendMoreComment(uid: String, postId: String, comment: JsValue) = {
+    withMember(uid)(_ push makeMessage("moreComment", comment))
+  }
+
   def sendNewCommentQA(questionId: String, comment: JsValue) = {
     listSidQuestion collect {
       case (uid, pId) if (pId == questionId) =>  uid
@@ -243,6 +249,7 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
       withMember(uid)(_ push makeMessage("newCommentQA", comment))
     }
   }
+
 
   def sendNewAnswer(questionId: String, answer: JsValue) = {
     listSidQuestion collect {
@@ -466,5 +473,9 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
   def withMember(uid: String)(f: M => Unit) {
     members get uid foreach f
+  }
+
+  def newAction = {
+    "abc 123"
   }
 }

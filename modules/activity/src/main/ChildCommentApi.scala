@@ -21,8 +21,8 @@ final class ChildCommentApi(
   def getComment(userId: String, postId: String, timepoint: DateTime, nb:Int) = CommentRepo.getComment(userId, postId, timepoint, nb)
 
   def newChildComment(userId: String, postId: String, parentId: String, comment: String) = {
-    val commentId = UUID.randomUUID().toString
-    ChildCommentRepo.insert(commentId, parentId, userId, comment, DateTime.now()) >> PostRepo.newComment(postId) >> getOneComment(userId, commentId)
+    val commentId = UUID.randomUUID().toString.replaceAll("-", "")
+    ChildCommentRepo.insert(commentId, parentId, userId, comment, DateTime.now())  >> getOneComment(userId, commentId) >>-  CommentRepo.newChildComment(parentId) >>-  PostRepo.newComment(postId)
   }
 
   def getOneComment(userId: String, commentId: String) = {

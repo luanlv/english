@@ -118,7 +118,6 @@ object Handler {
               val comment = (obj str "c").get
               (hub.actor.activity ? ChildCommentPost(id, postId, parentId, comment)) map {
                 case c: JsValue => socket ! SendNewComment(postId, c)
-
               }
             }
           }
@@ -126,7 +125,14 @@ object Handler {
 
       }
 
-
+      case("moreComment", o) => {
+        val obj = (o obj "d").get
+        val postId = (obj str "id").get
+        val time = (obj long "time").get
+        (hub.actor.activity ? MoreCommentPost(postId, time)) map {
+          case c: JsValue => socket ! SendMoreComment(uid, postId, c)
+        }
+      }
 
       case("sub", o) => {
         val obj = (o obj "d").get

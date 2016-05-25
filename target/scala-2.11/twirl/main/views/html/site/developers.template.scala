@@ -137,7 +137,7 @@ Seq[Any](format.raw/*1.27*/("""
 object developers extends developers_Scope0.developers
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:35 ICT 2016
+                  DATE: Sun Apr 17 11:11:26 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/site/developers.scala.html
                   HASH: b33facb445b6027e82e27b096696d0f73b224659
                   MATRIX: 815->1|935->26|963->29|974->33|1011->62|1050->64|1078->66|1376->337|1406->346|1814->727|1844->736|2021->886|2051->895|2248->1065|2261->1069|2326->1112|2704->1463|2734->1472|2918->1629|2948->1638|3151->1814|3164->1818|3229->1861|3848->2450

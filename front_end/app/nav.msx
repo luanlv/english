@@ -64,17 +64,22 @@ var Nav = {
     api.rd("nav: " + redraw.nav);
     redraw.nav++;
     return (
-        <div className="ui top small blue inverted fixed  menu sha">
+      <div className="ui top small blue inverted fixed  menu sha">
+        <div className="ui top small blue inverted fixed  menu sha" style="width: 1000px;left: 0; right: 0; margin: 0 auto;">
+
+
           <a href="/"  data-content="Home" data-position="bottom left"
-             className={((m.route() == "/")?"active":"") + " item route-button route"}
+             className={((m.route() == "/")?"active":"") + " item route-button route fix-icon"}
              config={function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
               }
              }}
           ><i  className="large icon home users-icon"></i></a>
+
+
           <a href="/qa" data-content="Question & Answer" data-position="bottom left"
-             className={((m.route() == "/qa")?"active":"") + " item route-button route"}
+             className={((m.route() == "/qa")?"active":"") + " item route-button route fix-icon"}
              config={function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
@@ -83,8 +88,10 @@ var Nav = {
           >
             <i className="large browser icon"></i>
           </a>
+
+
           <a href="/chatroom" data-content="Chat Room" data-position="bottom left"
-             className={((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button route"}
+             className={((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button route fix-icon"}
              config={function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
@@ -93,29 +100,31 @@ var Nav = {
           >
             <i className="large icon comments"></i>
           </a>
-          <div className="ui category search item">
+
+          <div className="ui category search item fix-icon">
             <div className="ui icon input">
-              <input className="" type="text" style="width: 400px;" placeholder="Search ..."/>
-                <i className="search link icon"></i>
+              <input className="" type="text" style="width: 300px;" placeholder="Search ..."/>
+              <i className="search link icon"></i>
             </div>
             <div className="results"></div>
           </div>
 
 
-           {(wsCtrl.userId.length>0)?(<div className="right menu">
 
-             <div className="item" data-content="Users Online" data-position="bottom right"
-              config={function(el, isInited){
+          {(wsCtrl.userId.length>0)?(<div className="right menu ">
+
+            <div className="item fix-icon" data-content="Users Online" data-position="bottom right"
+                 config={function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
               }
              }}
-             >
-               <i className="large icon  users">{}</i>
-               <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):("?")}</div>
-             </div>
-             <a href="javascript:void(0)" className="item"
-                config={function(el, isInit, ctx){
+            >
+              <i className="large icon  users">{}</i>
+              <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):("?")}</div>
+            </div>
+            <a href="javascript:void(0)" className="item fix-icon"
+               config={function(el, isInit, ctx){
                           if(!isInit){
                             $(el).popup({
                               popup : $('.ui.popup.show-ping'),
@@ -125,12 +134,12 @@ var Nav = {
                           }
                       }
                     }
-             >
-               {(ctrl.ping()>8000 || ctrl.ping() < 0)?(
-                <i className={"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}></i>
-                   ):(
-                <i className={"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
-                   config={function(element, isInit, ctx){
+            >
+              {(ctrl.ping()>8000 || ctrl.ping() < 0)?(
+                  <i className={"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}></i>
+              ):(
+                  <i className={"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
+                     config={function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
                           $(element).transition('jiggle')
@@ -143,19 +152,19 @@ var Nav = {
                       }
                      }
                    }
-                >{}</i>
-               )}
-             </a>
-           {FriendButton(ctrl)}
+                  >{}</i>
+              )}
+            </a>
+            {FriendButton(ctrl)}
             {MessageButton(ctrl)}
             {UserButton(ctrl)}
           </div>):(
               <div className="right menu">
-                <div className="item">
+                <div className="item fix-icon">
                   <i className="large icon users"></i>
                   <div className="bold">{ctrl.userNumber()?(ctrl.userNumber()):("?")}</div>
                 </div>
-                <a href="javascript:void(0)" className="item"
+                <a href="javascript:void(0)" className="item fix-icon"
                    config={function(el, isInit, ctx){
                           if(!isInit){
                             $(el).popup({
@@ -168,10 +177,10 @@ var Nav = {
                     }
                 >
                   {(ctrl.ping()>8000 || ctrl.ping() < 0)?(
-                  <i className={"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}></i>
-                      ):(
-                  <i className={"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
-                     config={function(element, isInit, ctx){
+                      <i className={"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}></i>
+                  ):(
+                      <i className={"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right"}
+                         config={function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
                           $(element).transition('jiggle');
@@ -184,12 +193,12 @@ var Nav = {
                       }
                      }
                    }
-                  >{}</i>
-                      )}
+                      >{}</i>
+                  )}
                 </a>
                 {LoginButton(ctrl)}
               </div>
-              )}
+          )}
           {Ping(ctrl)}
           {MakeFriend(ctrl)}
           {Messages(ctrl)}
@@ -202,7 +211,9 @@ var Nav = {
             </div>
           </div>
 
+
         </div>
+      </div>
     )
   }
 };

@@ -18,7 +18,7 @@ api.post = function(post){
     var address;
     address = /[a-z]+:\/\//.test(url) ? url : "http://" + url;
     url = url.replace(/^https?:\/\//, '');
-    return (url.indexOf(document.domain)>=0 || url.indexOf('localhost') >= 0)?("<a " +" class='route' "+ "href='" + address.replace(/^.*\/\/[^\/]+/, '') + "' >" + url + "</a>") : ("<a href='" + address + "' target='_blank'>" + url + "</a>");
+    return (url.indexOf(document.domain)>=0 || url.indexOf('localhost') >= 0)?("<a " +" class='route' "+ "href='" + address.replace(/^.*\/\/[^\/]+/, '') + "' >" + url + "</a>") : ("<a href='" + address + "' target='_blank'>" + address + "</a>");
   }).replace(/\n/g, '<br/>');
 };
 
@@ -270,20 +270,26 @@ var Chat = {
     redraw.right++;
     return (
         {tag: "div", attrs: {}, children: [
-          {tag: "div", attrs: {id:"dock-left", 
-          onmouseover:function(){
+          {tag: "div", attrs: {id:"dock-icon", 
+            className:(wsCtrl.friendFlag?"hide":""), 
+          onclick:function(){
               wsCtrl.friendFlag = true;
               rd.right(function(){m.redraw()})
             }
-          }}, 
+          }, children: [
+            {tag: "i", attrs: {className:"blue huge comments outline icon"}}
+          ]}, 
           wsCtrl.userId.length>0?(
           ctrl.showChatDock?(
-          {tag: "div", attrs: {id:"user-list", className:"ui gray segment pad0 sha3 mar0 " + (wsCtrl.friendFlag?("user-show"):("user-hide")), 
-            onmouseleave:function(){
-              wsCtrl.friendFlag = false;
-              rd.right(function(){m.redraw()})
-            }
+          {tag: "div", attrs: {id:"user-list", className:"ui gray segment pad0 sha3 mar0 " + (wsCtrl.friendFlag?("user-show"):("user-hide"))
+
           }, children: [
+            {tag: "span", attrs: {class:"dock-close", 
+                onclick:function(){
+                  wsCtrl.friendFlag = false;
+                  rd.right(function(){m.redraw()})
+                }
+            }}, 
             {tag: "div", attrs: {className:"ui segment  noSha noBor pad0"}, children: [
               {tag: "div", attrs: {className:"ui top attached tabular two item  menu", style:"margin-top: 5px;"}, children: [
                 {tag: "a", attrs: {className:(!wsCtrl.data.showOnline?("active"):("")) + " item pad0", 
@@ -307,10 +313,9 @@ var Chat = {
               ]}, 
                 {tag: "div", attrs: {className: ((!wsCtrl.data.showOnline && !wsCtrl.data.initAllFriends)?("loading"):("")) + " ui segment  noSha noBor pad0 mh500"}, children: [
                   {tag: "div", attrs: {className:" ui tiny middle aligned selection list noSha noBor "}, children: [
-
                     wsCtrl.data.showOnline?(wsCtrl.data.userOnline.map(function(user){
                       return (
-                        {tag: "a", attrs: {className:" item ulpt", href:"/@/" + user.id, 
+                        {tag: "a", attrs: {className:" item ulptr", href:"/@/" + user.id, 
                            config:function(el, isInited){
                                       $(el).click(function(){
                                         if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)
@@ -495,6 +500,9 @@ var ChatRoom = {
     };
     ctrl.roomList = [
       {id: "01", name: "Room 1", description: "???"},
+      {id: "02", name: "Room 2", description: "???"},
+      {id: "03", name: "Room 3", description: "???"},
+      {id: "03", name: "Room 4", description: "???"},
       //{id: "02", name: "Room 2", description: "High intermediate level of English"},
       //{id: "03", name: "Room 3", description: "Advanced level of English"},
       //{id: "04", name: "Room 4", description: "Proficient in English"},
@@ -512,7 +520,7 @@ var ChatRoom = {
             {tag: "div", attrs: {className:"ui grid"}, children: [
               ctrl.roomList.map(function(room){
                 return (
-                    {tag: "div", attrs: {className:"eight wide column"}, children: [
+                    {tag: "div", attrs: {className:"sixteen wide column"}, children: [
                     {tag: "div", attrs: {className:"ui segment"}, children: [
                       {tag: "div", attrs: {className:"ui relaxed divided list"}, children: [
                         {tag: "a", attrs: {href:"/chatroom/" + room.id, className:"item", 
@@ -824,6 +832,9 @@ var Home = {
     ctrl.setup = function(){
       //$('.ui.modal.show-post').modal("refresh");
       wsCtrl.post().comment = wsCtrl.post().comment.reverse();
+      wsCtrl.post().post.commentLoading = false;
+      wsCtrl.post().post.commentShow = (wsCtrl.post().post.commentCount >= 4)?4:wsCtrl.post().post.commentCount;
+      // console.log(wsCtrl.post().post.commentShow );
       //api.showPost(wsCtrl.post().post.id);
     };
 
@@ -835,6 +846,10 @@ var Home = {
         input('');
       }
       rd.home(function(){m.redraw()})
+    };
+
+    ctrl.moreComment = function(postId, time){
+      wsCtrl.send(wsCtrl.sendData("moreComment", {id: postId, time: time}));
     };
 
     ctrl.addChildComment = function(commentId, input, postId){
@@ -1025,17 +1040,7 @@ Home.post = function(post, ctrl){
         {tag: "div", attrs: {className:"ui postContainer postDemo"}, children: [
           {tag: "div", attrs: {className:"ui list"}, children: [
             {tag: "div", attrs: {className:"item"}, children: [
-              {tag: "span", attrs: {className:"right floated"}, children: [
-                {tag: "a", attrs: {className:"route", "data-content":(m.route.param('postId') === undefined)?"Post":"Home", "data-position":"top left", 
-                   href:(m.route.param('postId') === undefined)?("/post/" + post.id):("/"), 
-                   config:function(el, isInited){
-                                    if(!isInited){
-                                      $(el).popup({inline: true});
-                                    }
-                                    }
-                                  
-                }, children: [{tag: "i", attrs: {class:"large long grey arrow " + ((m.route.param('postId') === undefined)?"right":"left") +" icon"}}]}
-              ]}, 
+
               {tag: "span", attrs: {className:"fl avatar"}, children: [
                 {tag: "a", attrs: {className:"route ulpt", href:"/@/" + post.user.id}, children: [
                   {tag: "img", attrs: {className:"image", src:(post.user.avatar.length>0)?(wsCtrl.static + "/getimage/thumb/" + post.user.avatar):(wsCtrl.defaultAvata)}}
@@ -1124,10 +1129,21 @@ Home.post = function(post, ctrl){
                 post.shareCount
               ]}
             ]}
+
+
           ]}
-
-
-        ]}
+        ]}, 
+          {tag: "span", attrs: {className:"right floated post-arrow"}, children: [
+            {tag: "a", attrs: {className:"route", "data-content":(m.route.param('postId') === undefined)?"View":"Back", "data-position":"top left", 
+               href:(m.route.param('postId') === undefined)?("/post/" + post.id):("/"), 
+               config:function(el, isInited){
+                                if(!isInited){
+                                  $(el).popup({inline: true});
+                                }
+                                }
+                              
+            }, children: [{tag: "i", attrs: {className:"large  grey arrow " + ((m.route.param('postId') === undefined)?"right":"left") +" icon"}}]}
+          ]}
       ]}
   )
 };
@@ -1150,7 +1166,16 @@ Home.ShowPost = function(ctrl){
 
                 {tag: "div", attrs: {className:"ui threaded comments"}, children: [
                   {tag: "h2", attrs: {}, children: ["Comments"]}, 
-                  {tag: "a", attrs: {href:""}, children: ["View xx more comments"]}, 
+                  ((wsCtrl.post().post.commentCount - wsCtrl.post().post.commentShow) > 0)?[
+                      {tag: "a", attrs: {href:"#comment", 
+                        style:"color: #3b5998; font-size: 13px !important;", 
+                        onclick:function(){
+                          ctrl.moreComment(wsCtrl.post().post.id, wsCtrl.post().comment[0].time);
+                          // alert("123");
+                        }
+                      }, children: ["View more comments"]},
+                      " Loading..."
+                  ]:(""), 
                   wsCtrl.post().comment.map(function(comment){
                     return (
                         {tag: "div", attrs: {className:"comment"}, children: [
@@ -1184,8 +1209,8 @@ Home.ShowPost = function(ctrl){
 
                           (comment.replay || comment.children.length > 0)?[
                             (comment.children.length>0)?(
-                            {tag: "div", attrs: {class:"comments"}, children: [
-                              {tag: "a", attrs: {href:""}, children: ["View xx more comments"]}, 
+                            {tag: "div", attrs: {className:"comments"}, children: [
+                              comment.childCount > 2 ?({tag: "a", attrs: {href:"#"}, children: ["View more comments"]}):(""), 
                               comment.children.map(function(childComment){
                                 return (
                                     {tag: "div", attrs: {className:"comment"}, children: [
@@ -1310,9 +1335,8 @@ module.exports = Home;
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
-var Friend = function(ctrl){ return (
-    {tag: "div", attrs: {}, children: [
-      {tag: "a", attrs: {className:"item nofity border-left-icon message-button", "data-content":"Friend Requests", "data-position":"bottom right", 
+var Friend = function(ctrl){ return [
+      {tag: "a", attrs: {className:"item nofity  message-button fix-icon", "data-content":"Friend Requests", "data-position":"bottom right", 
          onclick:function(){rd.nav(ctrl.displayFriend());}, 
          config:function(el, isInited){
               if(!isInited){
@@ -1329,7 +1353,7 @@ var Friend = function(ctrl){ return (
       }, children: [
         {tag: "a", attrs: {href:"javascript:void(0)"}, children: [{tag: "i", attrs: {className:"large icon add user users-icon"}}]}, 
         (wsCtrl.data.makeFriend.n>0)?({tag: "div", attrs: {className:"floating ui red label num-label"}, children: [wsCtrl.data.makeFriend.n]}):""
-      ]}, 
+      ]},
       {tag: "div", attrs: {className:"notifyWr"}, children: [
         (wsCtrl.data.makeFriend.display)?(
             {tag: "div", attrs: {className:"inNotify", 
@@ -1432,8 +1456,7 @@ var Friend = function(ctrl){ return (
             ]}
         ):""
       ]}
-    ]}
-) };
+] };
 
 module.exports = Friend;
 },{"../../ws/_wsCtrl.js":16,".././api.msx":1}],8:[function(require,module,exports){
@@ -1441,14 +1464,13 @@ var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
 
-var LoginButton = function(ctrl){ return(
-    {tag: "div", attrs: {className:"border-left-icon login-button"}, children: [
-      {tag: "a", attrs: {className:"item", 
-         onclick:function(){rd.nav(ctrl.toggleLogin())}
+var LoginButton = function(ctrl){ return [
+      {tag: "a", attrs: {className:"item fix-icon", 
+         onclick:function(){api.signin();}
       }, children: [
         {tag: "i", attrs: {className:"large icon user"}}, 
         "Login"
-      ]}, 
+      ]},
       {tag: "div", attrs: {className:"notifyWr"}, children: [
         ctrl.displayLogin?(
         {tag: "div", attrs: {className:"inLogin", 
@@ -1502,17 +1524,15 @@ var LoginButton = function(ctrl){ return(
           ]}
         ]}):""
       ]}
-    ]}
-)}
+]}
 
 module.exports = LoginButton;
 },{"../../ws/_wsCtrl.js":16,".././api.msx":1}],9:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
-var MessageButton = function(ctrl){ return (
-    {tag: "div", attrs: {}, children: [
-      {tag: "a", attrs: {className:"item nofity border-left-icon message-button pre-show-messages", "data-content":"Messages", "data-position":"bottom right", 
+var MessageButton = function(ctrl){ return [
+      {tag: "a", attrs: {className:"item nofity  message-button pre-show-messages fix-icon", "data-content":"Messages", "data-position":"bottom right", 
          onclick:function(){rd.nav(ctrl.displayNofity());}, 
          config:function(el, isInited){
               if(!isInited){
@@ -1529,7 +1549,7 @@ var MessageButton = function(ctrl){ return (
       }, children: [
         {tag: "a", attrs: {href:"javascript:void(0)"}, children: [{tag: "i", attrs: {className:"large mail icon"}}]}, 
         (wsCtrl.data.notify.n>0)?({tag: "div", attrs: {className:"floating ui red label num-label"}, children: [wsCtrl.data.notify.n]}):""
-      ]}, 
+      ]},
       {tag: "div", attrs: {className:"notifyWr"}, children: [
         !wsCtrl.data.notify.display?"":(
         {tag: "div", attrs: {className:"inNotify", 
@@ -1610,17 +1630,15 @@ var MessageButton = function(ctrl){ return (
         ]}
             )
       ]}
-    ]}
-) }
+] }
 
 module.exports = MessageButton;
 },{"../../ws/_wsCtrl.js":16,".././api.msx":1}],10:[function(require,module,exports){
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
-var UserButton = function(ctrl){ return (
-    {tag: "div", attrs: {}, children: [
-      {tag: "a", attrs: {href:"javascript:void(0)", className:"item user-button", "data-content":"Profile", "data-position":"bottom center", 
+var UserButton = function(ctrl){ return [
+      {tag: "a", attrs: {href:"javascript:void(0)", className:"item user-button fix-icon", "data-content":"Profile", "data-position":"bottom center", 
          onclick:function(){rd.nav(ctrl.toggleUser())}, 
          config:function(el, isInited){
               if(!isInited){
@@ -1637,7 +1655,7 @@ var UserButton = function(ctrl){ return (
       }, children: [
         {tag: "i", attrs: {className:"large user icon"}}, 
         wsCtrl.userName
-      ]}, 
+      ]},
       {tag: "div", attrs: {className:"notifyWr"}, children: [
         ctrl.displayUser?(
         {tag: "div", attrs: {className:"inUser", 
@@ -1684,8 +1702,7 @@ var UserButton = function(ctrl){ return (
           ]}
         ]}):""
       ]}
-    ]}
-) }
+] }
 
 module.exports = UserButton;
 },{"../../ws/_wsCtrl.js":16,".././api.msx":1}],11:[function(require,module,exports){
@@ -1755,17 +1772,22 @@ var Nav = {
     api.rd("nav: " + redraw.nav);
     redraw.nav++;
     return (
-        {tag: "div", attrs: {className:"ui top small blue inverted fixed  menu sha"}, children: [
+      {tag: "div", attrs: {className:"ui top small blue inverted fixed  menu sha"}, children: [
+        {tag: "div", attrs: {className:"ui top small blue inverted fixed  menu sha", style:"width: 1000px;left: 0; right: 0; margin: 0 auto;"}, children: [
+
+
           {tag: "a", attrs: {href:"/", "data-content":"Home", "data-position":"bottom left", 
-             className:((m.route() == "/")?"active":"") + " item route-button route", 
+             className:((m.route() == "/")?"active":"") + " item route-button route fix-icon", 
              config:function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
               }
              }
           }, children: [{tag: "i", attrs: {className:"large icon home users-icon"}}]}, 
+
+
           {tag: "a", attrs: {href:"/qa", "data-content":"Question & Answer", "data-position":"bottom left", 
-             className:((m.route() == "/qa")?"active":"") + " item route-button route", 
+             className:((m.route() == "/qa")?"active":"") + " item route-button route fix-icon", 
              config:function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
@@ -1774,8 +1796,10 @@ var Nav = {
           }, children: [
             {tag: "i", attrs: {className:"large browser icon"}}
           ]}, 
+
+
           {tag: "a", attrs: {href:"/chatroom", "data-content":"Chat Room", "data-position":"bottom left", 
-             className:((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button route", 
+             className:((m.route().substring(0, 9) == "/chatroom")?"active":"") + " item route-button route fix-icon", 
              config:function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
@@ -1784,29 +1808,31 @@ var Nav = {
           }, children: [
             {tag: "i", attrs: {className:"large icon comments"}}
           ]}, 
-          {tag: "div", attrs: {className:"ui category search item"}, children: [
+
+          {tag: "div", attrs: {className:"ui category search item fix-icon"}, children: [
             {tag: "div", attrs: {className:"ui icon input"}, children: [
-              {tag: "input", attrs: {className:"", type:"text", style:"width: 400px;", placeholder:"Search ..."}}, 
-                {tag: "i", attrs: {className:"search link icon"}}
+              {tag: "input", attrs: {className:"", type:"text", style:"width: 300px;", placeholder:"Search ..."}}, 
+              {tag: "i", attrs: {className:"search link icon"}}
             ]}, 
             {tag: "div", attrs: {className:"results"}}
           ]}, 
 
 
-           (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu"}, children: [
 
-             {tag: "div", attrs: {className:"item", "data-content":"Users Online", "data-position":"bottom right", 
-              config:function(el, isInited){
+          (wsCtrl.userId.length>0)?({tag: "div", attrs: {className:"right menu "}, children: [
+
+            {tag: "div", attrs: {className:"item fix-icon", "data-content":"Users Online", "data-position":"bottom right", 
+                 config:function(el, isInited){
               if(!isInited){
                 $(el).popup({inline: true});
               }
              }
-             }, children: [
-               {tag: "i", attrs: {className:"large icon  users"}}, 
-               {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):("?")]}
-             ]}, 
-             {tag: "a", attrs: {href:"javascript:void(0)", className:"item", 
-                config:function(el, isInit, ctx){
+            }, children: [
+              {tag: "i", attrs: {className:"large icon  users"}}, 
+              {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):("?")]}
+            ]}, 
+            {tag: "a", attrs: {href:"javascript:void(0)", className:"item fix-icon", 
+               config:function(el, isInit, ctx){
                           if(!isInit){
                             $(el).popup({
                               popup : $('.ui.popup.show-ping'),
@@ -1816,12 +1842,12 @@ var Nav = {
                           }
                       }
                     
-             }, children: [
-               (ctrl.ping()>8000 || ctrl.ping() < 0)?(
-                {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}}
-                   ):(
-                {tag: "i", attrs: {className:"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
-                   config:function(element, isInit, ctx){
+            }, children: [
+              (ctrl.ping()>8000 || ctrl.ping() < 0)?(
+                  {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}}
+              ):(
+                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
+                     config:function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
                           $(element).transition('jiggle')
@@ -1834,19 +1860,19 @@ var Nav = {
                       }
                      }
                    
-                }}
-               )
-             ]}, 
-           FriendButton(ctrl), 
+                  }}
+              )
+            ]}, 
+            FriendButton(ctrl), 
             MessageButton(ctrl), 
             UserButton(ctrl)
           ]}):(
               {tag: "div", attrs: {className:"right menu"}, children: [
-                {tag: "div", attrs: {className:"item"}, children: [
+                {tag: "div", attrs: {className:"item fix-icon"}, children: [
                   {tag: "i", attrs: {className:"large icon users"}}, 
                   {tag: "div", attrs: {className:"bold"}, children: [ctrl.userNumber()?(ctrl.userNumber()):("?")]}
                 ]}, 
-                {tag: "a", attrs: {href:"javascript:void(0)", className:"item", 
+                {tag: "a", attrs: {href:"javascript:void(0)", className:"item fix-icon", 
                    config:function(el, isInit, ctx){
                           if(!isInit){
                             $(el).popup({
@@ -1859,10 +1885,10 @@ var Nav = {
                     
                 }, children: [
                   (ctrl.ping()>8000 || ctrl.ping() < 0)?(
-                  {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}}
-                      ):(
-                  {tag: "i", attrs: {className:"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
-                     config:function(element, isInit, ctx){
+                      {tag: "i", attrs: {className:"large spinner loading " + ((ctrl.ping()>6000)?"red":"") + " icon zero-margin-right"}}
+                  ):(
+                      {tag: "i", attrs: {className:"large " + ((ctrl.ping()<1500)?"":((ctrl.ping()<3000)?"yellow":"red")) + " icon heartbeat zero-margin-right", 
+                         config:function(element, isInit, ctx){
                       if(!isInit){
                         setTimeout(function fnJiggle(){
                           $(element).transition('jiggle');
@@ -1875,12 +1901,12 @@ var Nav = {
                       }
                      }
                    
-                  }}
-                      )
+                      }}
+                  )
                 ]}, 
                 LoginButton(ctrl)
               ]}
-              ), 
+          ), 
           Ping(ctrl), 
           MakeFriend(ctrl), 
           Messages(ctrl), 
@@ -1893,7 +1919,9 @@ var Nav = {
             }
           ]}
 
+
         ]}
+      ]}
     )
   }
 };
@@ -3432,6 +3460,14 @@ ctrl.listen = function(d){
       wsCtrl.post().comment[parrentPos].children.push(d.d);
       wsCtrl.post().comment[parrentPos].childCount +=1;
     }
+    rd.home(function(){m.redraw();});
+  }
+
+  else if (d.t === "moreComment"){
+    // var parrentPos = arrayObjectIndexOf(wsCtrl.post().comment, d.d[0].parentPost, "id");
+    wsCtrl.post().post.commentShow += d.d.length;
+    wsCtrl.post().comment = d.d.reverse().concat(wsCtrl.post().comment);
+    
     rd.home(function(){m.redraw();});
   }
 

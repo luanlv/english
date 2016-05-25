@@ -54,7 +54,7 @@ Seq[Any](format.raw/*1.27*/("""
 object noBooster extends noBooster_Scope0.noBooster
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:35 ICT 2016
+                  DATE: Sun Apr 17 11:11:26 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/site/noBooster.scala.html
                   HASH: 375c03bb757ec319a094f98255a7828ee59ddfd8
                   MATRIX: 813->1|933->26|961->29|972->33|1006->59|1045->61|1072->62|1164->125

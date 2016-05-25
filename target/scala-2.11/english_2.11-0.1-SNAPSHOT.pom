@@ -14,7 +14,7 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>2.11.7</version>
+            <version>2.11.8</version>
         </dependency>
         <dependency>
             <groupId>org.lichess</groupId>
@@ -90,12 +90,12 @@
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor_2.11</artifactId>
-            <version>2.4.2</version>
+            <version>2.4.3</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-slf4j_2.11</artifactId>
-            <version>2.4.2</version>
+            <version>2.4.3</version>
         </dependency>
         <dependency>
             <groupId>io.spray</groupId>
@@ -126,6 +126,11 @@
             <groupId>com.ybrikman.ping</groupId>
             <artifactId>big-pipe_2.11</artifactId>
             <version>0.0.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-java8-compat_2.11</artifactId>
+            <version>0.7.0</version>
         </dependency>
     </dependencies>
     <repositories>

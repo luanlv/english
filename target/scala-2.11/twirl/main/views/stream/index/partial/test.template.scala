@@ -67,7 +67,7 @@ Seq[Any](format.raw/*1.64*/("""
 object test extends test_Scope0.test
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:35 ICT 2016
+                  DATE: Sun Apr 17 11:11:26 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/index/partial/test.scala.stream
                   HASH: 845fb7458a05f28518c8b64adf97e4097f977a2a
                   MATRIX: 946->1|1129->63|1157->66|1175->76|1239->120|1267->123|1281->130|1296->137|1346->150|1376->155|1412->171|1441->174|1512->219|1549->240|1589->242|1619->246|1656->262|1689->265|1719->269|1738->279|1803->323|1836->326

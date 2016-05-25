@@ -45,6 +45,7 @@ object Dependencies {
   val scrimageIo = "com.sksamuel.scrimage" %% "scrimage-io" % "2.1.0.M2"
   val batikCodec = "org.apache.xmlgraphics" % "batik-codec" % "1.8"
   val bigPipe = "com.ybrikman.ping" %% "big-pipe" % "0.0.12"
+  val java8compat = "org.scala-lang.modules" %% "scala-java8-compat" % "0.7.0"
 
   object play {
     val version = "2.4.6"
@@ -58,7 +59,7 @@ object Dependencies {
   }
 
   object akka {
-      val version = "2.4.2"
+      val version = "2.4.3"
       val actor = "com.typesafe.akka" %% "akka-actor" % version
       val slf4j = "com.typesafe.akka" %% "akka-slf4j" % version
     }

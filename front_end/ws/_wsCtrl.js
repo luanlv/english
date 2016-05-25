@@ -415,6 +415,14 @@ ctrl.listen = function(d){
     rd.home(function(){m.redraw();});
   }
 
+  else if (d.t === "moreComment"){
+    // var parrentPos = arrayObjectIndexOf(wsCtrl.post().comment, d.d[0].parentPost, "id");
+    wsCtrl.post().post.commentShow += d.d.length;
+    wsCtrl.post().comment = d.d.reverse().concat(wsCtrl.post().comment);
+    
+    rd.home(function(){m.redraw();});
+  }
+
   else if(d.t === "following_onlines"){
     data.userOnline = d.d;
     rd.right(function(){m.redraw()});

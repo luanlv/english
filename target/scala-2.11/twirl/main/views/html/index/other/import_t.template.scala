@@ -61,7 +61,7 @@ Seq[Any](format.raw/*1.1*/("""<meta name="viewport" content="width = device-widt
 object import_t extends import_t_Scope0.import_t
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:35 ICT 2016
+                  DATE: Sun Apr 17 11:11:26 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/index/other/import_t.scala.html
                   HASH: 459eaa23b17004db74da332002af6ea4197db1d6
                   MATRIX: 899->0|1051->126|1065->132|1110->157|1139->161|1177->179|1204->180|1260->210|1274->216|1333->255|1392->288|1406->294|1480->348|1509->352|1544->367|1573->456|1602->545|1631->640|1660->729

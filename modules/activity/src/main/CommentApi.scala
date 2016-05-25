@@ -21,12 +21,16 @@ final class CommentApi(
   def getComment(userId: String, postId: String, timepoint: DateTime, nb:Int) = CommentRepo.getComment(userId, postId, timepoint, nb)
 
   def newComment(userId: String, postId: String,  comment: String) = {
-    val commentId = UUID.randomUUID().toString
+    val commentId = UUID.randomUUID().toString.replaceAll("-", "")
     CommentRepo.insert(commentId, postId, userId, comment, DateTime.now()) >> getOneComment(userId, commentId) >>- PostRepo.newComment(postId)
   }
 
   def getOneComment(userId: String, commentId: String) = {
     CommentRepo.getOneComment(userId, commentId)
+  }
+
+  def getMoreComment(postId: String, time: Long) = {
+    CommentRepo.getMoreComment(postId, time)
   }
 
   def addChild(parentId: String, comment: ChildComment) = {

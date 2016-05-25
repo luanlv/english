@@ -70,7 +70,7 @@ Seq[Any](format.raw/*1.77*/("""
 object message extends message_Scope0.message
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:35 ICT 2016
+                  DATE: Sun Apr 17 11:11:26 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/site/message.scala.html
                   HASH: ccae3b88f395703fd7c5f3fb17d68b32c636945a
                   MATRIX: 829->1|999->76|1027->79|1038->83|1068->105|1107->107|1135->109|1227->175|1252->180|1322->224|1350->231|1380->234|1423->251|1440->259|1480->261|1510->264|1635->359|1663->360|1701->368

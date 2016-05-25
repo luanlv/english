@@ -281,7 +281,7 @@ trait UserRepo {
       "password" -> hash(password, salt),
       "salt" -> salt,
       F.perfs -> Json.obj(),
-      F.count -> Count.default,
+//      F.count -> Count.default,
       F.enabled -> true,
       F.createdAt -> DateTime.now,
       F.createdWithApiVersion -> mobileApiVersion,

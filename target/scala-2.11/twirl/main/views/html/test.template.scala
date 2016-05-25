@@ -88,7 +88,7 @@ Seq[Any](format.raw/*4.28*/("""
 object test extends test_Scope0.test_Scope1.test
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:35 ICT 2016
+                  DATE: Sun Apr 17 11:11:25 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/test.scala.html
                   HASH: 9df9ccceef74abba0d26104c450936ccc2be8134
                   MATRIX: 934->106|1055->132|1085->137|1718->750

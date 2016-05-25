@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 case class User(
                    id: String,
                    username: String,
-                   count: Count,
+//                   count: Count,
                    troll: Boolean = false,
                    ipBan: Boolean = false,
                    enabled: Boolean,
@@ -33,7 +33,7 @@ case class User(
   }
 
   override def toString =
-    s"User: games:${count.game}${troll ?? " troll"}${engine ?? " engine"}"
+    s"User: ${troll ?? " troll"}${engine ?? " engine"}"
 
   def light = lila.common.LightUser(id = id, name = name, title = title, avatar = avatar)
 
@@ -53,9 +53,6 @@ case class User(
 
   def profileOrDefault = profile | Profile.default
 
-  def hasGames = count.game > 0
-
-  def countRated = count.rated
 
   def hasTitle = title.isDefined
 
@@ -143,7 +140,6 @@ object User {
       id = r str id,
       username = r str username,
 
-      count = r.get[Count](count),
       troll = r boolD troll,
       ipBan = r boolD ipBan,
       enabled = r bool enabled,
@@ -166,7 +162,6 @@ object User {
       id -> o.id,
       username -> o.username,
       name -> o.username,
-      count -> o.count,
       troll -> w.boolO(o.troll),
       ipBan -> w.boolO(o.ipBan),
       enabled -> o.enabled,

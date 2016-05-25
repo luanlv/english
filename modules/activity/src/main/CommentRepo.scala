@@ -48,6 +48,24 @@ object CommentRepo {
       .headOption
   }
 
+  def getMoreComment(postId: String, time: Long):Fu[List[Comment]] = {
+    val datetime = new DateTime(time)
+    val bs = BSONDocument("parentPost" -> postId, "time" -> Json.obj("$lt" -> BSONDateTime(time)))
+    coll.find(bs)
+      .sort(BSONDocument("time" -> -1))
+      .cursor[Comment]()
+      .collect[List](10)
+  }
+
+  def newChildComment(parentId: String) = {
+    coll.update(
+      BSONDocument("_id" -> parentId),
+      BSONDocument(
+        "$inc" -> BSONDocument("childCount" -> 1)
+      )
+    )
+  }
+
   def addChild(parentId: String, comment: ChildComment) = {
 //    val childComment = BSONFormats.toBSON(Json.toJson(comment)).get.asInstanceOf[BSONDocument]
     coll.update(

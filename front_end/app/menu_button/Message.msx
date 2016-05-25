@@ -1,9 +1,8 @@
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
-var MessageButton = function(ctrl){ return (
-    <div>
-      <a className="item nofity border-left-icon message-button pre-show-messages" data-content="Messages" data-position="bottom right"
+var MessageButton = function(ctrl){ return [
+      <a className="item nofity  message-button pre-show-messages fix-icon" data-content="Messages" data-position="bottom right"
          onclick={function(){rd.nav(ctrl.displayNofity());}}
          config={function(el, isInited){
               if(!isInited){
@@ -20,7 +19,7 @@ var MessageButton = function(ctrl){ return (
       >
         <a href="javascript:void(0)"><i className="large mail icon"></i></a>
         {(wsCtrl.data.notify.n>0)?(<div className="floating ui red label num-label">{wsCtrl.data.notify.n}</div>):""}
-      </a>
+      </a>,
       <div className="notifyWr">
         {!wsCtrl.data.notify.display?"":(
         <div className="inNotify"
@@ -101,7 +100,6 @@ var MessageButton = function(ctrl){ return (
         </div>
             )}
       </div>
-    </div>
-) }
+] }
 
 module.exports = MessageButton;

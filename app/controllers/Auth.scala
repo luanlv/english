@@ -58,10 +58,14 @@ object Auth extends LilaController {
 
 
   private def authRecovery(implicit ctx: Context): PartialFunction[Throwable, Fu[Result]] = {
-    case lila.security.Api.AuthFromTorExitNode => noTorResponse
-    case lila.security.Api.MustConfirmEmail(userId) => UserRepo byId userId map {
-      case Some(user) => BadRequest(html.auth.checkYourEmail(user))
-      case None       => BadRequest
+    case lila.security.Api.AuthFromTorExitNode => {
+      noTorResponse
+    }
+    case lila.security.Api.MustConfirmEmail(userId) => {
+      UserRepo byId userId map {
+        case Some(user) => BadRequest(html.auth.checkYourEmail(user))
+        case None       => BadRequest
+      }
     }
   }
 
@@ -81,7 +85,14 @@ object Auth extends LilaController {
       api.loginForm.bindFromRequest.fold(
         err => {
           negotiate(
-            html = Unauthorized(html.auth.login(err, get("referrer"))).fuccess,
+            html = Unauthorized("ok").fuccess,
+//            html = Redirect {
+//              val url = req.cookies.get("url") match {
+//                case None => "/"
+//                case Some(cookie) => cookie.value.replaceAll("%2F", "/")
+//              }
+//              get("referrer").filter(_.nonEmpty) orElse req.session.get(api.AccessUri) getOrElse url
+//            }.fuccess,
             api = _ => Unauthorized(err.errorsAsJson).fuccess
           )
         },

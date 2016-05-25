@@ -62,7 +62,7 @@ zen = true)/*5.12*/ {_display_(Seq[Any](format.raw/*5.14*/("""
 object checkYourEmail extends checkYourEmail_Scope0.checkYourEmail
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:36 ICT 2016
+                  DATE: Sun Apr 17 11:11:27 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/auth/checkYourEmail.scala.html
                   HASH: 3b6e3b0d1585f8d3df11a088cc0eea308e313c60
                   MATRIX: 828->1|955->33|983->36|994->40|1050->88|1089->90|1116->91|1517->462

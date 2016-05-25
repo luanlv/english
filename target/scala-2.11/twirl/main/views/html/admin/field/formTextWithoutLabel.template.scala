@@ -58,7 +58,7 @@ Seq[Any](format.raw/*1.60*/("""
 object formTextWithoutLabel extends formTextWithoutLabel_Scope0.formTextWithoutLabel
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:36 ICT 2016
+                  DATE: Sun Apr 17 11:11:27 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/admin/field/formTextWithoutLabel.scala.html
                   HASH: 0721523b2a8bbbda15132e6def6dcef454980f42
                   MATRIX: 855->1|1008->59|1037->62|1112->112|1125->117|1150->122|1183->130|1196->135|1219->138|1256->149|1269->154|1295->160|1338->177|1369->188|1401->194

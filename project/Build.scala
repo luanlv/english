@@ -29,7 +29,7 @@ object ApplicationBuild extends Build {
       scalaz, scalalib, hasher, config, apache,
       jgit, findbugs, RM, PRM, akka.actor, akka.slf4j,
       spray.caching, maxmind, scrimageCore,
-      scrimageIo, batikCodec, bigPipe),
+      scrimageIo, batikCodec, bigPipe, java8compat),
       TwirlKeys.templateImports ++= Seq(
         "lila.user.{ User, UserContext }",
         "lila.security.Permission",

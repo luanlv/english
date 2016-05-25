@@ -59,3 +59,5 @@ case class GetPrevChat(uid: String, roomId: String, lastTime: Long)
 case class SendNewComment(postId: String, comment: JsValue)
 case class SendNewCommentQA(questionId: String, comment: JsValue)
 case class SendNewAnswer(questionId: String, answer: JsValue)
+
+case class SendMoreComment(uid: String, postId: String, c: JsValue)

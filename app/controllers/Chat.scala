@@ -13,8 +13,6 @@ import lila.user.{ UserRepo, User => UserModel }
 import views._
 import scala.concurrent.Future
 
-
-
 object Chat extends LilaController {
   private def env = Env.security
   private def api = env.api

@@ -51,6 +51,10 @@ private[activity] final class ActivityActor(
       }
     }
 
+    case MoreCommentPost(postId, time) => {
+      sender ! Json.toJson(commentApi.getMoreComment(postId, time).await)
+    }
+
   }
 
   def commentPost(userId: String, postId: String, comment: String) = {

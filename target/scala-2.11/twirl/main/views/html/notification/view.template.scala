@@ -60,7 +60,7 @@ Seq[Any](format.raw/*1.127*/("""
 object view extends view_Scope0.view
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:35 ICT 2016
+                  DATE: Sun Apr 17 11:11:26 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/notification/view.scala.html
                   HASH: 5514a323d155f5e766433634dd76bcd7eb4ee6f7
                   MATRIX: 853->1|1074->126|1102->128|1138->138|1160->140|1208->162|1224->170|1263->172|1291->173|1330->182|1358->184|1386->192|1417->198|1437->210|1476->212|1506->280|1539->284|1568->288|1579->292|1591->296|1638->306|1668->310|1723->336|1753->339|1800->359|1825->363

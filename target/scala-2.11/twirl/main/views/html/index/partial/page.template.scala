@@ -51,7 +51,7 @@ Seq[Any](format.raw/*1.16*/("""
 object page extends page_Scope0.page
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:35 ICT 2016
+                  DATE: Sun Apr 17 11:11:26 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/index/partial/page.scala.html
                   HASH: 7a33298422d6fbc9a91aa84d97eadd4b712f9437
                   MATRIX: 811->1|920->15|948->17|984->27

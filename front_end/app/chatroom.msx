@@ -20,6 +20,9 @@ var ChatRoom = {
     };
     ctrl.roomList = [
       {id: "01", name: "Room 1", description: "???"},
+      {id: "02", name: "Room 2", description: "???"},
+      {id: "03", name: "Room 3", description: "???"},
+      {id: "03", name: "Room 4", description: "???"},
       //{id: "02", name: "Room 2", description: "High intermediate level of English"},
       //{id: "03", name: "Room 3", description: "Advanced level of English"},
       //{id: "04", name: "Room 4", description: "Proficient in English"},
@@ -37,7 +40,7 @@ var ChatRoom = {
             <div className="ui grid">
               {ctrl.roomList.map(function(room){
                 return (
-                    <div className="eight wide column">
+                    <div className="sixteen wide column">
                     <div className="ui segment">
                       <div className="ui relaxed divided list">
                         <a href={"/chatroom/" + room.id} className="item"

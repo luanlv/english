@@ -64,7 +64,6 @@ trait UserHelper { self: StringHelper with NumberHelper =>
 
   def describeUser(user: User) = {
     val name = user.titleUsername
-    val nbGames = user.count.game
     val createdAt = org.joda.time.format.DateTimeFormat forStyle "M-" print user.createdAt
   }
 }

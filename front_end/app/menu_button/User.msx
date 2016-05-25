@@ -1,9 +1,8 @@
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
-var UserButton = function(ctrl){ return (
-    <div>
-      <a href="javascript:void(0)" className="item user-button" data-content="Profile" data-position="bottom center"
+var UserButton = function(ctrl){ return [
+      <a href="javascript:void(0)" className="item user-button fix-icon" data-content="Profile" data-position="bottom center"
          onclick={function(){rd.nav(ctrl.toggleUser())}}
          config={function(el, isInited){
               if(!isInited){
@@ -20,7 +19,7 @@ var UserButton = function(ctrl){ return (
       >
         <i className="large user icon"></i>
         {wsCtrl.userName}
-      </a>
+      </a>,
       <div className="notifyWr">
         {ctrl.displayUser?(
         <div className="inUser"
@@ -67,7 +66,6 @@ var UserButton = function(ctrl){ return (
           </div>
         </div>):""}
       </div>
-    </div>
-) }
+] }
 
 module.exports = UserButton;

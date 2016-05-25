@@ -21,7 +21,7 @@ final class PostApi(
   def getPost(userId: String, ids: Set[String], timepoint: DateTime) = PostRepo.getPost(userId, ids, timepoint)
 
   def newPost(userId: String, content: String) = {
-    val postId = UUID.randomUUID().toString
+    val postId = UUID.randomUUID().toString.replaceAll("-", "")
     PostRepo.insert(postId, userId, content) >>- pushPost(userId, postId)
   }
 

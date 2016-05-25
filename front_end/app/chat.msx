@@ -68,20 +68,26 @@ var Chat = {
     redraw.right++;
     return (
         <div>
-          <div id="dock-left"
-          onmouseover={function(){
+          <div id="dock-icon"
+            className={(wsCtrl.friendFlag?"hide":"")}
+          onclick={function(){
               wsCtrl.friendFlag = true;
               rd.right(function(){m.redraw()})
             }}
-          ></div>
+          >
+            <i className="blue huge comments outline icon"></i>
+          </div>
           {wsCtrl.userId.length>0?(
           ctrl.showChatDock?(
           <div id="user-list" className={"ui gray segment pad0 sha3 mar0 " + (wsCtrl.friendFlag?("user-show"):("user-hide"))}
-            onmouseleave={function(){
-              wsCtrl.friendFlag = false;
-              rd.right(function(){m.redraw()})
-            }}
+
           >
+            <span class="dock-close"
+                onclick={function(){
+                  wsCtrl.friendFlag = false;
+                  rd.right(function(){m.redraw()})
+                }}
+            ></span>
             <div className="ui segment  noSha noBor pad0">
               <div className="ui top attached tabular two item  menu" style="margin-top: 5px;">
                 <a className={(!wsCtrl.data.showOnline?("active"):("")) + " item pad0"}
@@ -105,10 +111,9 @@ var Chat = {
               </div>
                 <div className={ ((!wsCtrl.data.showOnline && !wsCtrl.data.initAllFriends)?("loading"):("")) + " ui segment  noSha noBor pad0 mh500"}>
                   <div className=" ui tiny middle aligned selection list noSha noBor ">
-
                     {wsCtrl.data.showOnline?(wsCtrl.data.userOnline.map(function(user){
                       return (
-                        <a className=" item ulpt" href={"/@/" + user.id}
+                        <a className=" item ulptr" href={"/@/" + user.id}
                            config={function(el, isInited){
                                       $(el).click(function(){
                                         if(wsCtrl.userId.length > 0 && wsCtrl.userId !== user.id) ctrl.makechat(user)

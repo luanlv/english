@@ -1,9 +1,8 @@
 var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
-var Friend = function(ctrl){ return (
-    <div>
-      <a className="item nofity border-left-icon message-button" data-content="Friend Requests" data-position="bottom right"
+var Friend = function(ctrl){ return [
+      <a className="item nofity  message-button fix-icon" data-content="Friend Requests" data-position="bottom right"
          onclick={function(){rd.nav(ctrl.displayFriend());}}
          config={function(el, isInited){
               if(!isInited){
@@ -20,7 +19,7 @@ var Friend = function(ctrl){ return (
       >
         <a href="javascript:void(0)"><i className="large icon add user users-icon"></i></a>
         {(wsCtrl.data.makeFriend.n>0)?(<div className="floating ui red label num-label">{wsCtrl.data.makeFriend.n}</div>):""}
-      </a>
+      </a>,
       <div className="notifyWr">
         {(wsCtrl.data.makeFriend.display)?(
             <div className="inNotify"
@@ -123,7 +122,6 @@ var Friend = function(ctrl){ return (
             </div>
         ):""}
       </div>
-    </div>
-) };
+] };
 
 module.exports = Friend;

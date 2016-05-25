@@ -52,7 +52,7 @@ Seq[Any](format.raw/*1.40*/("""
 object passwordResetSent extends passwordResetSent_Scope0.passwordResetSent
               /*
                   -- GENERATED --
-                  DATE: Sat Mar 26 00:44:36 ICT 2016
+                  DATE: Sun Apr 17 11:11:27 ICT 2016
                   SOURCE: /mnt/ramdisk/mainapp/app/views/auth/passwordResetSent.scala.html
                   HASH: 6c19ab851d2afa705b259458edcb00295cc3d557
                   MATRIX: 836->1|969->39

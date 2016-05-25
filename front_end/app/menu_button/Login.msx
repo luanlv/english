@@ -2,14 +2,13 @@ var wsCtrl = require('../../ws/_wsCtrl.js');
 var api = require('.././api.msx');
 
 
-var LoginButton = function(ctrl){ return(
-    <div className="border-left-icon login-button">
-      <a className="item"
-         onclick={function(){rd.nav(ctrl.toggleLogin())}}
+var LoginButton = function(ctrl){ return [
+      <a className="item fix-icon"
+         onclick={function(){api.signin();}}
       >
         <i className="large icon user"></i>
         Login
-      </a>
+      </a>,
       <div className="notifyWr">
         {ctrl.displayLogin?(
         <div className="inLogin"
@@ -63,7 +62,6 @@ var LoginButton = function(ctrl){ return(
           </div>
         </div>):""}
       </div>
-    </div>
-)}
+]}
 
 module.exports = LoginButton;

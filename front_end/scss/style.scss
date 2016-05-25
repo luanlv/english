@@ -27,10 +27,14 @@ html,body {
   min-height: 700px;
   z-index: 1;
   width: 1000px;
-  margin: 59px auto 0 auto;
+  margin: 30px auto 0 auto;
   padding: 0;
 }
 
+.main-content {
+  width: 1000px !important;
+  margin: 0 !important;
+}
 
 body{
   overflow-y: scroll!important;
@@ -41,6 +45,10 @@ body{
   //padding-right: 17px;
 }
 
+.fix-icon {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
 
 
 ::-webkit-scrollbar{
@@ -201,6 +209,10 @@ textarea:focus:-ms-input-placeholder { color:transparent!important; } /* IE 10+ 
   }
 }
 
+.chat-left {
+  float: left;
+}
+
 .chat-right {
   float: right;
 }
@@ -234,51 +246,75 @@ textarea {
   position: fixed;
   bottom: 0;
 
-  width: 170px;
-  height: calc(100vh - 38px);
+  width: 220px;
+  height: calc(100vh - 36px);
+
   .header {
     font-family: 'Open Sans', sans-serif, Arial, Helvetica !important;
   }
   .ulptr {
-    padding-top: 0px !important;
+    //padding-top: 0px !important;
     //padding-bottom: 10px !important;
+  }
+
+  div:first-child {
+    margin: 0 !important;
   }
 }
 
 .user-show {
-  left: 0px;
-  transition: left 0.4s;
+  right: 0px;
+  transition: right 0.3s;
+  .dock-close{
+    display: block;
+  }
 }
 
 .user-hide {
-  left: -175px;
-  transition: left 0.2s;
+  right: -225px;
+  transition: right 0.2s;
+  .dock-close{
+    display: none;
+  }
 }
 
-#dock-left{
-  width: 5px;
-  height: calc(100vh - 44px);
+.dock-close{
+  width: 25px;
+  height: 35px;
+  position: absolute;
+  top: 0;
+  left: -25px;
+  background: #2bbbff;
+  cursor: pointer;
+}
+
+#dock-icon{
+  width: 70px;
+  height: 70px;
   position: fixed;
   bottom: 0;
-  left: 0;
+  right: 0;
+  .icon {
+    cursor: pointer;
+  }
 }
 
 .uShow {
-  left: 175px;
-  transition: left 0.4s;
+  right: 225px;
+  transition: right 0.3s;
 }
 .uHide {
-  left: 5px;
-  transition: left 0.2s;
+  right: 75px;
+  transition: right 0.2s;
 }
 
 #dock-bot{
   position: fixed;
   height: 24px;
   padding: 0;
-  right: auto;
+  left: auto;
   line-height: 16px;
-  text-align: left;
+  text-align: right;
   bottom: 0;
 }
 
@@ -287,7 +323,7 @@ textarea {
   position: relative;
   height: 28px;
   margin-right: 10px;
-  float: left;
+  float: right;
 }
 .w1{
   width: 260px;
@@ -403,7 +439,7 @@ textarea {
 
 .notifyWr{
   position: relative;
-
+  margin-top: 36px;
 }
 
 .inNotify {
@@ -724,6 +760,12 @@ textarea {
   border-bottom: 1px solid $border;
   padding-bottom: 5px;
   margin-bottom: 10px;
+  position: relative;
+}
+.post-arrow {
+  position: absolute;
+  right: 0;
+  bottom: 5px;
 }
 
 .postWr textarea{
