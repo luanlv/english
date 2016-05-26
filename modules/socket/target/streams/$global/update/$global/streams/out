@@ -1,7 +1,7 @@
 [0m[[0minfo[0m] [0mUpdating {file:/mnt/ramdisk/mainapp/}socket...[0m
 [0m[[0mdebug[0m] [0m:: building artificial module descriptors from org.lichess#socket_2.11;2.0[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.scala-lang#scala-compiler;2.11.8 {scala-tool=[default, optional(default)]} (artifacts: )[0m
-[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@736537b7 (artifacts: )[0m
+[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@1fb6e02e (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#common_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#hub_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#memo_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m

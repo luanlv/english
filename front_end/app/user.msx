@@ -13,9 +13,24 @@ var User = {
     //        ctrl.user(user);
     //    }
     //);
+    ctrl.initFollower = false;
+    ctrl.initFriend = false;
+    ctrl.followers = m.prop([]);
+    ctrl.friends = m.prop([]);
     ctrl.setup = function(){
       rd.user();
     };
+
+    ctrl.setupFollower = function(){
+      ctrl.initFollower  = true;
+    };
+
+    ctrl.setupFriend = function(){
+      ctrl.initFriend = true;
+    };
+
+    wsCtrl.request1 = api.requestWithFeedback2({method: "GET", url: "/api/listfollow/" + ctrl.userId }, ctrl.followers, ctrl.setupFollower);
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/api/listfriend/" + ctrl.userId }, ctrl.friends, ctrl.setupFriend);
 
     ctrl.error = function(){
       m.route('/');
@@ -28,7 +43,7 @@ var User = {
             <div className="ui segment loading mh500">
 
             </div>
-        ):(
+        ):[
             <div className="ui grid main-content sha2">
               <div className="head-user ui grid">
                 <div className="four wide column" style="  min-height: 250px">
@@ -37,7 +52,7 @@ var User = {
                   </div>
 
                 </div>
-                <div className="twelve wide column" style="b min-height: 250px">
+                <div className="twelve wide column" style="min-height: 250px">
                   <h2 className="ui header">
                     {ctrl.user().name}
                   </h2>
@@ -54,7 +69,6 @@ var User = {
 
                   </div>
                   <div className="ui divider"></div>
-                  ...
 
                   <br/><br/><br/><br/><br/>
 
@@ -121,8 +135,39 @@ var User = {
                   </div>
                 </div>
               </div>
+            </div>,
+          <div className="ui grid main-content sha2">
+            <div className="body-user ui grid">
+                <div className="eight wide column" style="min-height: 200px; border-right: 1px solid #ddd">
+                  <h3>List Followers</h3>
+                  {!ctrl.initFollower?(
+                      "loading ..."
+                  ):(
+                      <ul>
+                        {ctrl.followers().map(function(user){
+                        return (
+                          <li><a className="route ulpt" href={"/@/" + user}>{user}</a></li>
+                        )
+                      })}
+                      </ul>
+                  )}
+                </div>
+                <div className="eight wide column" style="min-height: 200px">
+                  <h3>List Friends</h3>
+                  {!ctrl.initFriend?(
+                      "loading ..."
+                  ):(<ul>
+                    {ctrl.friends().map(function(user){
+                        return (
+                          <li><a className="route ulpt" href={"/@/" + user}>{user}</a></li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
+              </div>
             </div>
-        )
+        ]
     )
   }
 };

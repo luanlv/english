@@ -13,6 +13,7 @@ var Home = {
     ctrl.inputPost = m.prop('');
     ctrl.inputComment = m.prop('');
     
+    
     if(!wsCtrl.data.post.init){
       wsCtrl.send(wsCtrl.sendData("initPost", {}));
     }
@@ -21,10 +22,26 @@ var Home = {
       //$('.ui.modal.show-post').modal("refresh");
       wsCtrl.post().comment = wsCtrl.post().comment.reverse();
       wsCtrl.post().post.commentLoading = false;
-      wsCtrl.post().post.commentShow = (wsCtrl.post().post.commentCount >= 4)?4:wsCtrl.post().post.commentCount;
-      // console.log(wsCtrl.post().post.commentShow );
+      wsCtrl.post().post.commentShow = wsCtrl.post().comment.length;
+      wsCtrl.post().comment.forEach(function(comment){
+        wsCtrl.post().post.commentShow += comment.childCount;
+      });
+      console.log(wsCtrl.post().post.commentShow );
       //api.showPost(wsCtrl.post().post.id);
     };
+
+    ctrl.setupNewQuestion = function(){
+      wsCtrl.initNewQuestion = true;
+    };
+
+    ctrl.setupHotQuestion = function(){
+      wsCtrl.initHotQuestion = true;
+    };
+
+    wsCtrl.request1 = api.requestWithFeedback2({method: "GET", url: "/qa/newquestion" }, wsCtrl.newQuestion, ctrl.setupNewQuestion);
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/qa/hotquestion" }, wsCtrl.hotQuestion, ctrl.setupHotQuestion);
+
+
 
     ctrl.addComment = function(postId, input){
       var ip = input().trim();
@@ -39,6 +56,7 @@ var Home = {
     ctrl.moreComment = function(postId, time){
       wsCtrl.send(wsCtrl.sendData("moreComment", {id: postId, time: time}));
     };
+
 
     ctrl.addChildComment = function(commentId, input, postId){
       var ip = input().trim();
@@ -75,18 +93,30 @@ var Home = {
           <div className="three wide column">
             <div className="ui  home-post-Wr mh500">
               <div className="trending">
-                <h3>Trending Now (fake)</h3>
-                <ul>
-                  <li>What should I know about food in Cancun, Mexico?</li>
-                  <li>What films were so bad, they destroyed the actors' careers?</li>
-                  <li>Why do Americans think eggs are a dairy product?</li>
-                  <li>I have good grades but I feel like I do not know anything properly. How should I deal with this situation?</li>
-                  <li>2016 Academy Award Nominations</li>
-                  <li>Death of Alan Rickman</li>
-                  <li>Death of David Bowie</li>
-                  <li>Sherlock: The Abominable Bride</li>
-                  <li>Making a Murderer</li>
-                </ul>
+                <h3>Câu hỏi mới</h3>
+                {!wsCtrl.initNewQuestion?(
+                    "loading !!"
+                ):(
+                    <ul>
+                      {wsCtrl.newQuestion().map(function(question){
+                        return (<li>
+                          <a className="route" href={"/qa/" + question.id}>{question.question}</a>
+                        </li>)
+                      })}
+                    </ul>
+                )}
+                {/*<ul>*/}
+
+                  {/*<li>What should I know about food in Cancun, Mexico?</li>*/}
+                  {/*<li>What films were so bad, they destroyed the actors' careers?</li>*/}
+                  {/*<li>Why do Americans think eggs are a dairy product?</li>*/}
+                  {/*<li>I have good grades but I feel like I do not know anything properly. How should I deal with this situation?</li>*/}
+                  {/*<li>2016 Academy Award Nominations</li>*/}
+                  {/*<li>Death of Alan Rickman</li>*/}
+                  {/*<li>Death of David Bowie</li>*/}
+                  {/*<li>Sherlock: The Abominable Bride</li>*/}
+                  {/*<li>Making a Murderer</li>*/}
+                {/*</ul>*/}
               </div>
 
             </div>
@@ -189,7 +219,15 @@ var Home = {
                     return (
                         Home.post(post, ctrl)
                     )
-                  })
+                  }),
+                  (wsCtrl.data.post.list[wsCtrl.data.post.list.length-1].published === 1460882188511)?"":(<div className="ui button"
+                    onclick={
+                        function(){
+                          console.log(wsCtrl.data.post.list[wsCtrl.data.post.list.length-1])
+                          wsCtrl.send(wsCtrl.sendData("morePost", {time: wsCtrl.data.post.list[wsCtrl.data.post.list.length-1].published}));
+                        }
+                    }
+                  >More post</div>)
                 ]
             )}
 
@@ -198,19 +236,30 @@ var Home = {
           <div className="four wide column">
             <div className="ui  home-post-Wr mh500">
               <div className="trending">
-                <h3>HOT NETWORK QUESTIONS (fake)</h3>
-                <ul>
-                  <li>What is the most terrifying experience you have had while travelling?</li>
-                  <li>Which actors have won Oscars without an Oscar-worthy performance?</li>
-                  <li>Does vending machine black coffee contain sugar?</li>
-                  <li>What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?</li>
-                  <li>Which is the most astonishing piece of code you've ever seen in your life?</li>
-                  <li>What do natives call San Francisco?</li>
-                  <li>Why does "The Force Awakens" use an image language associated with national socialism for the First Order?</li>
-                  <li>A Treasure Chest for your Post-apocalyptic Children</li>
-                  <li>Phrase when you offer someone something but it's really them who are paying for it</li>
-                  <li>Why do academic journals usually have continuous page numbering?</li>
-                </ul>
+                <h3>Câu hỏi HOT</h3>
+                {!wsCtrl.initHotQuestion?(
+                    "loading !!"
+                ):(
+                    <ul>
+                      {wsCtrl.hotQuestion().map(function(question){
+                        return (<li>
+                          <a className="route" href={"/qa/" + question.id}>{question.question}</a>
+                        </li>)
+                      })}
+                    </ul>
+                )}
+                {/*<ul>*/}
+                  {/*<li>What is the most terrifying experience you have had while travelling?</li>*/}
+                  {/*<li>Which actors have won Oscars without an Oscar-worthy performance?</li>*/}
+                  {/*<li>Does vending machine black coffee contain sugar?</li>*/}
+                  {/*<li>What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?</li>*/}
+                  {/*<li>Which is the most astonishing piece of code you've ever seen in your life?</li>*/}
+                  {/*<li>What do natives call San Francisco?</li>*/}
+                  {/*<li>Why does "The Force Awakens" use an image language associated with national socialism for the First Order?</li>*/}
+                  {/*<li>A Treasure Chest for your Post-apocalyptic Children</li>*/}
+                  {/*<li>Phrase when you offer someone something but it's really them who are paying for it</li>*/}
+                  {/*<li>Why do academic journals usually have continuous page numbering?</li>*/}
+                {/*</ul>*/}
               </div>
 
             </div>
@@ -304,19 +353,19 @@ Home.post = function(post, ctrl){
                 {post.commentCount}
               </a>
             </div>
-            <div className="item">
-              <a className="mini ui basic button" data-content="share" data-position="top left"
-                 config={function(el, isInited){
-                                    if(!isInited){
-                                      $(el).popup({inline: true});
-                                    }
-                                    }
-                                  }
-              >
-                <i className="share icon"></i>
-                {post.shareCount}
-              </a>
-            </div>
+            {/*<div className="item">*/}
+              {/*<a className="mini ui basic button" data-content="share" data-position="top left"*/}
+                 {/*config={function(el, isInited){*/}
+                                    {/*if(!isInited){*/}
+                                      {/*$(el).popup({inline: true});*/}
+                                    {/*}*/}
+                                    {/*}*/}
+                                  {/*}*/}
+              {/*>*/}
+                {/*<i className="share icon"></i>*/}
+                {/*{post.shareCount}*/}
+              {/*</a>*/}
+            {/*</div>*/}
 
 
           </div>
@@ -359,13 +408,14 @@ Home.ShowPost = function(ctrl){
                         style="color: #3b5998; font-size: 13px !important;"
                         onclick={function(e){
                          var source = e.target || e.srcElement;
-                         source.innerHTML = "Loading"
+
                           ctrl.moreComment(wsCtrl.post().post.id, wsCtrl.post().comment[0].time);
                           // alert("123");
                         }}
                       >View more comments</a>
                   ]:("")}
                   {wsCtrl.post().comment.map(function(comment){
+
                     return (
                         <div className="comment">
                           <span className="avatar">
@@ -399,7 +449,7 @@ Home.ShowPost = function(ctrl){
                           {(comment.replay || comment.children.length > 0)?[
                             (comment.children.length>0)?(
                             <div className="comments">
-                              {comment.childCount > 2 ?(<a href="#">View more comments</a>):("")}
+                              {/*{comment.childCount > 2 ?(<a href="#">View more comments</a>):("")}*/}
                               {comment.children.map(function(childComment){
                                 return (
                                     <div className="comment">

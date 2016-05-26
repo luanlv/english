@@ -20,6 +20,12 @@ var Room = {
       rd.room(function(){m.redraw()})
     };
 
+    ctrl.setupHotQuestion = function(){
+      wsCtrl.initHotQuestion = true;
+    };
+
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/qa/hotquestion" }, wsCtrl.hotQuestion, ctrl.setupHotQuestion);
+
     wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
 
     var intervalRoom = setInterval(function(){
@@ -165,7 +171,20 @@ var Room = {
 
           <div className="five wide column">
             <div className="ui mh500">
-
+              <div className="trending">
+                <h3>Câu hỏi HOT</h3>
+                   {!wsCtrl.initHotQuestion?(
+                       "loading !!"
+                   ):(
+                       <ul>
+                         {wsCtrl.hotQuestion().map(function(question){
+                           return (<li>
+                             <a className="route" href={"/qa/" + question.id}>{question.question}</a>
+                           </li>)
+                         })}
+                       </ul>
+                   )}
+              </div>
             </div>
           </div>
         </div>

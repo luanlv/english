@@ -1,7 +1,7 @@
 [0m[[0minfo[0m] [0mUpdating {file:/mnt/ramdisk/mainapp/}chatRoom...[0m
 [0m[[0mdebug[0m] [0m:: building artificial module descriptors from org.lichess#chatroom_2.11;2.0[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.scala-lang#scala-compiler;2.11.8 {scala-tool=[default, optional(default)]} (artifacts: )[0m
-[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@5dbc94f6 (artifacts: )[0m
+[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@8e7cf8c (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#common_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#db_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#memo_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m

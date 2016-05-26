@@ -85,14 +85,14 @@ object Auth extends LilaController {
       api.loginForm.bindFromRequest.fold(
         err => {
           negotiate(
-            html = Unauthorized("ok").fuccess,
-//            html = Redirect {
-//              val url = req.cookies.get("url") match {
-//                case None => "/"
-//                case Some(cookie) => cookie.value.replaceAll("%2F", "/")
-//              }
-//              get("referrer").filter(_.nonEmpty) orElse req.session.get(api.AccessUri) getOrElse url
-//            }.fuccess,
+//            html = Unauthorized().fuccess,
+            html = Redirect {
+              val url = req.cookies.get("url") match {
+                case None => "/"
+                case Some(cookie) => cookie.value.replaceAll("%2F", "/")
+              }
+              get("referrer").filter(_.nonEmpty) orElse req.session.get(api.AccessUri) getOrElse url
+            }.fuccess,
             api = _ => Unauthorized(err.errorsAsJson).fuccess
           )
         },

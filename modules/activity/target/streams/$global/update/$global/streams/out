@@ -1,7 +1,7 @@
 [0m[[0minfo[0m] [0mUpdating {file:/mnt/ramdisk/mainapp/}activity...[0m
 [0m[[0mdebug[0m] [0m:: building artificial module descriptors from org.lichess#activity_2.11;2.0[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.scala-lang#scala-compiler;2.11.8 {scala-tool=[default, optional(default)]} (artifacts: )[0m
-[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@5ebf9a5b (artifacts: )[0m
+[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@69fc641c (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#common_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#db_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#memo_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
@@ -18,7 +18,6 @@
 [0m[[0mdebug[0m] [0m::: dd: dependency: com.typesafe.play#play_2.11;2.4.6 {provided=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.reactivemongo#reactivemongo_2.11;0.11.9 {provided=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.reactivemongo#play2-reactivemongo_2.11;0.11.9 {provided=[default(compile)]} (artifacts: )[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/dynamic/2016-04-17/424b4ec7/org.lichess/relation_2.11/2.0_temp-resolve-51e79454ef9260c9904c004499b10173115cf7f4/graphs/graph.json[0m
 [0m[[0mdebug[0m] [0m:: merging update reports[0m
 [0m[[0mdebug[0m] [0m::: -----------[0m
 [0m[[0mdebug[0m] [0m:: compile: loop: List()[0m

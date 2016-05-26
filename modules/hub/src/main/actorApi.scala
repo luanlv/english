@@ -212,6 +212,7 @@ case class UnBlock(u1: String, u2: String)
 case class GetFriendRequest(userId: String)
 case class GetOnlineUser(userId: String)
 case class GetFriends(userId: String)
+
 }
 
 
@@ -240,9 +241,11 @@ package chatRoom {
 
 package activity {
   case class InitPost(userId: String)
+  case class MorePost(userId: String, time: Long)
   case class CommentPost(userId: String, postId: String, comment: String)
   case class ChildCommentPost(userId: String, postId: String, parentId: String, comment: String)
   case class MoreCommentPost(postId: String, time: Long)
+
 }
 
 package question {

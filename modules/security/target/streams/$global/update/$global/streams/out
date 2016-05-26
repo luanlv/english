@@ -1,7 +1,7 @@
 [0m[[0minfo[0m] [0mUpdating {file:/mnt/ramdisk/mainapp/}security...[0m
 [0m[[0mdebug[0m] [0m:: building artificial module descriptors from org.lichess#security_2.11;2.0[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.scala-lang#scala-compiler;2.11.8 {scala-tool=[default, optional(default)]} (artifacts: )[0m
-[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@30a31aba (artifacts: )[0m
+[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@2e40e19 (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#common_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#hub_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.lichess#db_2.11;2.0 {compile=[default(compile)]} (artifacts: )[0m
@@ -17,7 +17,6 @@
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.reactivemongo#play2-reactivemongo_2.11;0.11.9 {provided=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: com.sanoma.cda#maxmind-geoip2-scala_2.11;1.2.3-THIB {provided=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: com.roundeights#hasher_2.11;1.2.0 {provided=[default(compile)]} (artifacts: )[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/com.sanoma.cda/maxmind-geoip2-scala_2.11/1.2.3-THIB_temp-resolve-ed1a9590b54bd2b035b700a2f3226962c9788e4f/graphs/graph.json[0m
 [0m[[0mdebug[0m] [0m:: merging update reports[0m
 [0m[[0mdebug[0m] [0m::: -----------[0m
 [0m[[0mdebug[0m] [0m:: compile: loop: List()[0m

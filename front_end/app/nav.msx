@@ -101,13 +101,13 @@ var Nav = {
             <i className="large icon comments"></i>
           </a>
 
-          <div className="ui category search item fix-icon">
-            <div className="ui icon input">
-              <input className="" type="text" style="width: 300px;" placeholder="Search ..."/>
-              <i className="search link icon"></i>
-            </div>
-            <div className="results"></div>
-          </div>
+          {/*<div className="ui category search item fix-icon">*/}
+            {/*<div className="ui icon input">*/}
+              {/*<input className="" type="text" style="width: 300px;" placeholder="Search ..."/>*/}
+              {/*<i className="search link icon"></i>*/}
+            {/*</div>*/}
+            {/*<div className="results"></div>*/}
+          {/*</div>*/}
 
 
 

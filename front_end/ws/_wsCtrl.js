@@ -41,6 +41,10 @@ wsCtrl.storage = {
   chat: $.localStorage.get('chat:' + wsCtrl.userId) || []
 };
 
+wsCtrl.initNewQuestion = false;
+wsCtrl.initHotQuestion = false;
+wsCtrl.newQuestion = m.prop([]);
+wsCtrl.hotQuestion = m.prop([]);
 
 wsCtrl.friendFlag = false;
 
@@ -323,6 +327,13 @@ ctrl.listen = function(d){
     if(wsCtrl.data.post.list.length > 0) wsCtrl.data.post.timepoint = wsCtrl.data.post.list[wsCtrl.data.post.list.length - 1].published;
     rd.home(function(){m.redraw()})
   }
+
+  else if(d.t === "morePost"){
+    console.log(d.d)
+    wsCtrl.data.post.list = wsCtrl.data.post.list.concat(d.d);
+    rd.home(function(){m.redraw()})
+  }
+
   else if(d.t === "newPost"){
 
     if(d.d.id !== undefined) {
@@ -418,8 +429,10 @@ ctrl.listen = function(d){
   else if (d.t === "moreComment"){
     // var parrentPos = arrayObjectIndexOf(wsCtrl.post().comment, d.d[0].parentPost, "id");
     wsCtrl.post().post.commentShow += d.d.length;
+    d.d.forEach(function(comment){
+      wsCtrl.post().post.commentShow += comment.childCount
+    })
     wsCtrl.post().comment = d.d.reverse().concat(wsCtrl.post().comment);
-    
     rd.home(function(){m.redraw();});
   }
 

@@ -9,7 +9,7 @@ var Footer = {
   view: function(ctrl) {
     return (
         <div className="footer">
-          FOOTER !
+          {/*FOOTER !*/}
         </div>
     )
   }

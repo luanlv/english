@@ -29,6 +29,8 @@ final class PostApi(
     PostRepo.getOnePost(userId, postId)
   }
 
+  def getMorePost(userId: String, ids: Set[String], timepoint: DateTime) = PostRepo.getMorePost(userId, ids, timepoint)
+
   def like(userId: String, postId: String) = {
     PostRepo.like(userId, postId)
   }

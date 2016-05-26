@@ -74,6 +74,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
     case SendInitPost(uid, posts) => sendInitPost(uid, posts)
 
+    case SendMorePost(uid, posts) => sendMorePost(uid, posts)
+
     case SendInitQA(uid, questions) => sendInitQA(uid, questions)
 
     case SendInitNotify(uid, data) => sendInitNotify(uid, data)
@@ -436,6 +438,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration) extends Socket w
 
   def sendInitPost(uid: String, posts: JsValue) = {
     withMember(uid)(_ push makeMessage("initPost", posts))
+  }
+
+  def sendMorePost(uid: String, posts: JsValue) = {
+    withMember(uid)(_ push makeMessage("morePost", posts))
   }
 
   def sendInitQA(uid: String, questions: JsValue) = {

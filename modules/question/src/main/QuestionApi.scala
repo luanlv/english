@@ -56,4 +56,12 @@ final class QuestionApi(
       case Some(uid) => QuestionRepo.getQuestion(uid, timepoint)
     }
   }
+
+  def getNewQuestion = {
+    QuestionRepo.getNewQuestion
+  }
+
+  def getHotQuestion = {
+    QuestionRepo.getHotQuestion
+  }
 }

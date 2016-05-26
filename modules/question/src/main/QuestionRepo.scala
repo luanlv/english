@@ -75,6 +75,7 @@ object QuestionRepo {
   }
 
   def getOneQuestion(userId: String, questionId: String) = {
+    println(userId)
     coll.find(BSONDocument("_id" -> questionId),
       BSONDocument(
         "_id" -> 1,
@@ -84,7 +85,7 @@ object QuestionRepo {
         "published" -> 1,
         "views" -> 1,
         "voteCount" -> 1,
-        "votes" -> BSONDocument("$elemMatch" -> BSONDocument("userId"  ->  "luan")),
+        "votes" -> BSONDocument("$elemMatch" -> BSONDocument("userId"  ->  userId)),
         "shareCount" -> 1,
         "shares" -> 1,
         "commentCount" -> 1,
@@ -149,6 +150,20 @@ object QuestionRepo {
       )
     )
       .sort(BSONDocument("published" -> -1))
+      .cursor[Question]()
+      .collect[List](10)
+  }
+
+  def getNewQuestion: Fu[List[Question]] = {
+    coll.find(BSONDocument())
+      .sort(BSONDocument("published" -> -1))
+      .cursor[Question]()
+      .collect[List](10)
+  }
+
+  def getHotQuestion: Fu[List[Question]] = {
+    coll.find(BSONDocument())
+      .sort(BSONDocument("voteCount" -> -1))
       .cursor[Question]()
       .collect[List](10)
   }

@@ -33,6 +33,14 @@ private[activity] final class ActivityActor(
 
     case CommentPost(userId, postId, comment) => sender ! Json.toJson(commentPost(userId, postId, comment).await)
 
+    case MorePost(userId, time) => {
+      val listFriend = friendshipApi.friends(userId).await
+      val listFollowing = relationApi.following(userId).await
+      val listUser = (listFriend ++ listFollowing).+(userId).+("admin")
+
+      sender ! Json.toJson(postApi.getMorePost(userId, listUser, new DateTime(time)).await)
+    }
+
     case ChildCommentPost(userId, postId, parentId, comment) => sender ! Json.toJson(childCommentPost(userId, postId, parentId, comment))
 
     case InitPost(userId) => {
@@ -50,6 +58,7 @@ private[activity] final class ActivityActor(
         post => bus.publish(SendTos(listUser, "newPost", Json.toJson(post)), 'users)
       }
     }
+
 
     case MoreCommentPost(postId, time) => {
       sender ! Json.toJson(commentApi.getMoreComment(postId, time).await)

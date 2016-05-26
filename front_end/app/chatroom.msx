@@ -13,16 +13,24 @@ var ChatRoom = {
     var intervalChatRooms = setInterval(function(){
       wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
     }, 30000);
+
+    ctrl.setupHotQuestion = function(){
+      wsCtrl.initHotQuestion = true;
+    };
+
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/qa/hotquestion" }, wsCtrl.hotQuestion, ctrl.setupHotQuestion);
+
     ctrl.onunload = function() {
       wsCtrl.data.chatrooms = {};
       wsCtrl.send(wsCtrl.sendData("unSub", {t: "chatrooms"}));
       clearInterval(intervalChatRooms);
     };
     ctrl.roomList = [
-      {id: "01", name: "Room 1", description: "???"},
-      {id: "02", name: "Room 2", description: "???"},
-      {id: "03", name: "Room 3", description: "???"},
-      {id: "03", name: "Room 4", description: "???"},
+      {id: "01", name: "Room 1", description: ""},
+      {id: "02", name: "Room 2", description: ""},
+      {id: "03", name: "Room 3", description: ""},
+      {id: "04", name: "Room 4", description: ""},
+      {id: "05", name: "Room 5", description: ""},
       //{id: "02", name: "Room 2", description: "High intermediate level of English"},
       //{id: "03", name: "Room 3", description: "Advanced level of English"},
       //{id: "04", name: "Room 4", description: "Proficient in English"},
@@ -77,8 +85,22 @@ var ChatRoom = {
             {Create()}
           </div>
         </div>
-        <div className="five wide column">
-          <div className="ui mh500">
+        <div className="five wide column mh500">
+          <div className="ui  home-post-Wr mh500">
+            <div className="trending">
+              <h3>Câu hỏi HOT</h3>
+                 {!wsCtrl.initHotQuestion?(
+                     "loading !!"
+                 ):(
+                     <ul>
+                       {wsCtrl.hotQuestion().map(function(question){
+                         return (<li>
+                           <a className="route" href={"/qa/" + question.id}>{question.question}</a>
+                         </li>)
+                       })}
+                     </ul>
+                 )}
+            </div>
 
           </div>
         </div>

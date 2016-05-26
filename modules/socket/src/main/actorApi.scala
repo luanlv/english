@@ -61,3 +61,4 @@ case class SendNewCommentQA(questionId: String, comment: JsValue)
 case class SendNewAnswer(questionId: String, answer: JsValue)
 
 case class SendMoreComment(uid: String, postId: String, c: JsValue)
+case class SendMorePost(uid: String, posts: JsValue)

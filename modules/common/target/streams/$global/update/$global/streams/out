@@ -1,7 +1,7 @@
 [0m[[0minfo[0m] [0mUpdating {file:/mnt/ramdisk/mainapp/}common...[0m
 [0m[[0mdebug[0m] [0m:: building artificial module descriptors from org.lichess#common_2.11;2.0[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.scala-lang#scala-compiler;2.11.8 {scala-tool=[default, optional(default)]} (artifacts: )[0m
-[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@6fcc333e (artifacts: )[0m
+[0m[[0mdebug[0m] [0m::: dd: sbt.ivyint.MergedDescriptors@7f991f61 (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.scalaz#scalaz-core_2.11;7.1.7 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: com.github.ornicar#scalalib_2.11;5.4 {compile=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: joda-time#joda-time;2.9.2 {compile=[default(compile)]} (artifacts: )[0m
@@ -11,17 +11,6 @@
 [0m[[0mdebug[0m] [0m::: dd: dependency: com.typesafe.play#play_2.11;2.4.6 {provided=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: com.typesafe.play#play-test_2.11;2.4.6 {provided=[default(compile)]} (artifacts: )[0m
 [0m[[0mdebug[0m] [0m::: dd: dependency: org.reactivemongo#reactivemongo_2.11;0.11.9 {provided=[default(compile)]} (artifacts: )[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/org.scala-lang/scala-compiler/2.11.8_temp-resolve-534fc4db3abd9dc387803b4487361ed7a71f4c9c/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/org.scala-lang/scala-library/2.11.8_temp-resolve-38d84d9f9f6ebc5b95acb57c1d72ca7fa549aba4/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/org.scalaz/scalaz-core_2.11/7.1.7_temp-resolve-1279eb5c23128eb0ad88d5349cac1ce27cd48bc6/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/com.github.ornicar/scalalib_2.11/5.4_temp-resolve-046a2e29fb7b11c8fd653224213e45eb265dccd6/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/joda-time/joda-time/2.9.2_temp-resolve-29cf30c244ed27640c2819e19b5394de4496d5cb/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/io.spray/spray-util_2.11/1.3.3_temp-resolve-58e186e6790a38df833b1f51a13103b739224f57/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/com.typesafe.play/play-ws_2.11/2.4.6_temp-resolve-13ff3c16efab5cb507489256e08f44b56b1deef7/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/org.scala-lang.modules/scala-java8-compat_2.11/0.7.0_temp-resolve-f4634edeb8b733583dd8b721da44aef06f062bca/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/com.typesafe.play/play_2.11/2.4.6_temp-resolve-415d9b38683734cb89085eae516f09555842aa97/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/com.typesafe.play/play-test_2.11/2.4.6_temp-resolve-59f0c364a30a71d3d38bc3671a53905206c8a45d/graphs/graph.json[0m
-[0m[[0mdebug[0m] [0mparsing /home/lvl/.sbt/0.13/dependency/module/static/org.reactivemongo/reactivemongo_2.11/0.11.9_temp-resolve-f7be852e6a8ffa7e9a47595717e0b6d84f515759/graphs/graph.json[0m
 [0m[[0mdebug[0m] [0m:: merging update reports[0m
 [0m[[0mdebug[0m] [0m::: -----------[0m
 [0m[[0mdebug[0m] [0m:: compile: loop: List()[0m

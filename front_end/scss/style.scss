@@ -280,12 +280,13 @@ textarea {
 
 .dock-close{
   width: 25px;
-  height: 35px;
+  height: 25px;
   position: absolute;
   top: 0;
   left: -25px;
-  background: #2bbbff;
+  background: #ddd;
   cursor: pointer;
+  padding: 3px 0 0 7px;
 }
 
 #dock-icon{
@@ -938,9 +939,12 @@ textarea {
   text-decoration: underline;
 }
 
-.head-user{
-  width: 100%;
+.head-user {
   height: 250px;
+}
+
+.head-user, .body-user{
+  width: 100%;
 
   padding: 0 !important;
   margin: 0 !important;
@@ -949,6 +953,23 @@ textarea {
     > a.custom {
       min-width: 150px;
       border-color: transparent !important;
+    }
+  }
+}
+
+.body-user {
+  h3 {
+    text-align: center;
+  }
+  li {
+    display: inline-block;
+    border-left: 1px solid #ddd;
+    margin-left: 5px;
+    padding-left: 5px;
+    &:first-child {
+      margin-left: 0;
+      padding-left: 0;
+      border-left: none;
     }
   }
 }

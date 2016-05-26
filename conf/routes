@@ -8,6 +8,9 @@ GET /qa/new                controllers.Application.index
 #POST /qa/answer            controllers.API.doAnswer
 POST /qa/new               controllers.API.doAsk
 
+GET /qa/newquestion        controllers.API.newQuestion
+GET /qa/hotquestion        controllers.API.hotQuestion
+
 GET /qa/allquestion        controllers.API.getAllQuestion
 GET /qa/:questionId        controllers.API.getQuestion(questionId: String)
 
@@ -72,6 +75,8 @@ POST    /settings                       controllers.API.getSelfInformation
 POST    /settings/updateInfo            controllers.API.updateInformation
 
 GET     /api/getUser/:user             controllers.API.getInformationUser(user: String)
+GET     /api/listfollow/:userId        controllers.API.getListFollower(userId: String)
+GET     /api/listfriend/:userId        controllers.API.getListFriend(userId: String)
 
 #API
 # Assets

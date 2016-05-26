@@ -289,7 +289,7 @@ var Chat = {
                   wsCtrl.friendFlag = false;
                   rd.right(function(){m.redraw()})
                 }
-            }}, 
+            }, children: [" X "]}, 
             {tag: "div", attrs: {className:"ui segment  noSha noBor pad0"}, children: [
               {tag: "div", attrs: {className:"ui top attached tabular two item  menu", style:"margin-top: 5px;"}, children: [
                 {tag: "a", attrs: {className:(!wsCtrl.data.showOnline?("active"):("")) + " item pad0", 
@@ -493,16 +493,24 @@ var ChatRoom = {
     var intervalChatRooms = setInterval(function(){
       wsCtrl.send(wsCtrl.sendData("sub", {t: "chatrooms"}));
     }, 30000);
+
+    ctrl.setupHotQuestion = function(){
+      wsCtrl.initHotQuestion = true;
+    };
+
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/qa/hotquestion" }, wsCtrl.hotQuestion, ctrl.setupHotQuestion);
+
     ctrl.onunload = function() {
       wsCtrl.data.chatrooms = {};
       wsCtrl.send(wsCtrl.sendData("unSub", {t: "chatrooms"}));
       clearInterval(intervalChatRooms);
     };
     ctrl.roomList = [
-      {id: "01", name: "Room 1", description: "???"},
-      {id: "02", name: "Room 2", description: "???"},
-      {id: "03", name: "Room 3", description: "???"},
-      {id: "03", name: "Room 4", description: "???"},
+      {id: "01", name: "Room 1", description: ""},
+      {id: "02", name: "Room 2", description: ""},
+      {id: "03", name: "Room 3", description: ""},
+      {id: "04", name: "Room 4", description: ""},
+      {id: "05", name: "Room 5", description: ""},
       //{id: "02", name: "Room 2", description: "High intermediate level of English"},
       //{id: "03", name: "Room 3", description: "Advanced level of English"},
       //{id: "04", name: "Room 4", description: "Proficient in English"},
@@ -557,10 +565,24 @@ var ChatRoom = {
             Create()
           ]}
         ]}, 
-        {tag: "div", attrs: {className:"five wide column"}, children: [
-          {tag: "div", attrs: {className:"ui mh500"}
+        {tag: "div", attrs: {className:"five wide column mh500"}, children: [
+          {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
+            {tag: "div", attrs: {className:"trending"}, children: [
+              {tag: "h3", attrs: {}, children: ["Câu hỏi HOT"]}, 
+                 !wsCtrl.initHotQuestion?(
+                     "loading !!"
+                 ):(
+                     {tag: "ul", attrs: {}, children: [
+                       wsCtrl.hotQuestion().map(function(question){
+                         return ({tag: "li", attrs: {}, children: [
+                           {tag: "a", attrs: {className:"route", href:"/qa/" + question.id}, children: [question.question]}
+                         ]})
+                       })
+                     ]}
+                 )
+            ]}
 
-          }
+          ]}
         ]}
       ]}
     )
@@ -800,9 +822,9 @@ var Footer = {
   },
   view: function(ctrl) {
     return (
-        {tag: "div", attrs: {className:"footer"}, children: [
-          "FOOTER !"
-        ]}
+        {tag: "div", attrs: {className:"footer"}
+          /*FOOTER !*/
+        }
     )
   }
 };
@@ -825,6 +847,7 @@ var Home = {
     ctrl.inputPost = m.prop('');
     ctrl.inputComment = m.prop('');
     
+    
     if(!wsCtrl.data.post.init){
       wsCtrl.send(wsCtrl.sendData("initPost", {}));
     }
@@ -833,10 +856,26 @@ var Home = {
       //$('.ui.modal.show-post').modal("refresh");
       wsCtrl.post().comment = wsCtrl.post().comment.reverse();
       wsCtrl.post().post.commentLoading = false;
-      wsCtrl.post().post.commentShow = (wsCtrl.post().post.commentCount >= 4)?4:wsCtrl.post().post.commentCount;
-      // console.log(wsCtrl.post().post.commentShow );
+      wsCtrl.post().post.commentShow = wsCtrl.post().comment.length;
+      wsCtrl.post().comment.forEach(function(comment){
+        wsCtrl.post().post.commentShow += comment.childCount;
+      });
+      console.log(wsCtrl.post().post.commentShow );
       //api.showPost(wsCtrl.post().post.id);
     };
+
+    ctrl.setupNewQuestion = function(){
+      wsCtrl.initNewQuestion = true;
+    };
+
+    ctrl.setupHotQuestion = function(){
+      wsCtrl.initHotQuestion = true;
+    };
+
+    wsCtrl.request1 = api.requestWithFeedback2({method: "GET", url: "/qa/newquestion" }, wsCtrl.newQuestion, ctrl.setupNewQuestion);
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/qa/hotquestion" }, wsCtrl.hotQuestion, ctrl.setupHotQuestion);
+
+
 
     ctrl.addComment = function(postId, input){
       var ip = input().trim();
@@ -851,6 +890,7 @@ var Home = {
     ctrl.moreComment = function(postId, time){
       wsCtrl.send(wsCtrl.sendData("moreComment", {id: postId, time: time}));
     };
+
 
     ctrl.addChildComment = function(commentId, input, postId){
       var ip = input().trim();
@@ -887,18 +927,30 @@ var Home = {
           {tag: "div", attrs: {className:"three wide column"}, children: [
             {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
               {tag: "div", attrs: {className:"trending"}, children: [
-                {tag: "h3", attrs: {}, children: ["Trending Now (fake)"]}, 
-                {tag: "ul", attrs: {}, children: [
-                  {tag: "li", attrs: {}, children: ["What should I know about food in Cancun, Mexico?"]}, 
-                  {tag: "li", attrs: {}, children: ["What films were so bad, they destroyed the actors' careers?"]}, 
-                  {tag: "li", attrs: {}, children: ["Why do Americans think eggs are a dairy product?"]}, 
-                  {tag: "li", attrs: {}, children: ["I have good grades but I feel like I do not know anything properly. How should I deal with this situation?"]}, 
-                  {tag: "li", attrs: {}, children: ["2016 Academy Award Nominations"]}, 
-                  {tag: "li", attrs: {}, children: ["Death of Alan Rickman"]}, 
-                  {tag: "li", attrs: {}, children: ["Death of David Bowie"]}, 
-                  {tag: "li", attrs: {}, children: ["Sherlock: The Abominable Bride"]}, 
-                  {tag: "li", attrs: {}, children: ["Making a Murderer"]}
-                ]}
+                {tag: "h3", attrs: {}, children: ["Câu hỏi mới"]}, 
+                !wsCtrl.initNewQuestion?(
+                    "loading !!"
+                ):(
+                    {tag: "ul", attrs: {}, children: [
+                      wsCtrl.newQuestion().map(function(question){
+                        return ({tag: "li", attrs: {}, children: [
+                          {tag: "a", attrs: {className:"route", href:"/qa/" + question.id}, children: [question.question]}
+                        ]})
+                      })
+                    ]}
+                )
+                /*<ul>*/
+
+                  /*<li>What should I know about food in Cancun, Mexico?</li>*/
+                  /*<li>What films were so bad, they destroyed the actors' careers?</li>*/
+                  /*<li>Why do Americans think eggs are a dairy product?</li>*/
+                  /*<li>I have good grades but I feel like I do not know anything properly. How should I deal with this situation?</li>*/
+                  /*<li>2016 Academy Award Nominations</li>*/
+                  /*<li>Death of Alan Rickman</li>*/
+                  /*<li>Death of David Bowie</li>*/
+                  /*<li>Sherlock: The Abominable Bride</li>*/
+                  /*<li>Making a Murderer</li>*/
+                /*</ul>*/
               ]}
 
             ]}, 
@@ -1001,7 +1053,15 @@ var Home = {
                     return (
                         Home.post(post, ctrl)
                     )
-                  })
+                  }),
+                  (wsCtrl.data.post.list[wsCtrl.data.post.list.length-1].published === 1460882188511)?"":({tag: "div", attrs: {className:"ui button", 
+                    onclick:
+                        function(){
+                          console.log(wsCtrl.data.post.list[wsCtrl.data.post.list.length-1])
+                          wsCtrl.send(wsCtrl.sendData("morePost", {time: wsCtrl.data.post.list[wsCtrl.data.post.list.length-1].published}));
+                        }
+                    
+                  }, children: ["More post"]})
                 ]
             )
 
@@ -1010,19 +1070,30 @@ var Home = {
           {tag: "div", attrs: {className:"four wide column"}, children: [
             {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
               {tag: "div", attrs: {className:"trending"}, children: [
-                {tag: "h3", attrs: {}, children: ["HOT NETWORK QUESTIONS (fake)"]}, 
-                {tag: "ul", attrs: {}, children: [
-                  {tag: "li", attrs: {}, children: ["What is the most terrifying experience you have had while travelling?"]}, 
-                  {tag: "li", attrs: {}, children: ["Which actors have won Oscars without an Oscar-worthy performance?"]}, 
-                  {tag: "li", attrs: {}, children: ["Does vending machine black coffee contain sugar?"]}, 
-                  {tag: "li", attrs: {}, children: ["What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?"]}, 
-                  {tag: "li", attrs: {}, children: ["Which is the most astonishing piece of code you've ever seen in your life?"]}, 
-                  {tag: "li", attrs: {}, children: ["What do natives call San Francisco?"]}, 
-                  {tag: "li", attrs: {}, children: ["Why does \"The Force Awakens\" use an image language associated with national socialism for the First Order?"]}, 
-                  {tag: "li", attrs: {}, children: ["A Treasure Chest for your Post-apocalyptic Children"]}, 
-                  {tag: "li", attrs: {}, children: ["Phrase when you offer someone something but it's really them who are paying for it"]}, 
-                  {tag: "li", attrs: {}, children: ["Why do academic journals usually have continuous page numbering?"]}
-                ]}
+                {tag: "h3", attrs: {}, children: ["Câu hỏi HOT"]}, 
+                !wsCtrl.initHotQuestion?(
+                    "loading !!"
+                ):(
+                    {tag: "ul", attrs: {}, children: [
+                      wsCtrl.hotQuestion().map(function(question){
+                        return ({tag: "li", attrs: {}, children: [
+                          {tag: "a", attrs: {className:"route", href:"/qa/" + question.id}, children: [question.question]}
+                        ]})
+                      })
+                    ]}
+                )
+                /*<ul>*/
+                  /*<li>What is the most terrifying experience you have had while travelling?</li>*/
+                  /*<li>Which actors have won Oscars without an Oscar-worthy performance?</li>*/
+                  /*<li>Does vending machine black coffee contain sugar?</li>*/
+                  /*<li>What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?</li>*/
+                  /*<li>Which is the most astonishing piece of code you've ever seen in your life?</li>*/
+                  /*<li>What do natives call San Francisco?</li>*/
+                  /*<li>Why does "The Force Awakens" use an image language associated with national socialism for the First Order?</li>*/
+                  /*<li>A Treasure Chest for your Post-apocalyptic Children</li>*/
+                  /*<li>Phrase when you offer someone something but it's really them who are paying for it</li>*/
+                  /*<li>Why do academic journals usually have continuous page numbering?</li>*/
+                /*</ul>*/
               ]}
 
             ]}
@@ -1115,20 +1186,20 @@ Home.post = function(post, ctrl){
                 {tag: "i", attrs: {className:"comment icon"}}, 
                 post.commentCount
               ]}
-            ]}, 
-            {tag: "div", attrs: {className:"item"}, children: [
-              {tag: "a", attrs: {className:"mini ui basic button", "data-content":"share", "data-position":"top left", 
-                 config:function(el, isInited){
-                                    if(!isInited){
-                                      $(el).popup({inline: true});
-                                    }
-                                    }
-                                  
-              }, children: [
-                {tag: "i", attrs: {className:"share icon"}}, 
-                post.shareCount
-              ]}
             ]}
+            /*<div className="item">*/
+              /*<a className="mini ui basic button" data-content="share" data-position="top left"*/
+                 /*config={function(el, isInited){*/
+                                    /*if(!isInited){*/
+                                      /*$(el).popup({inline: true});*/
+                                    /*}*/
+                                    /*}*/
+                                  /*}*/
+              /*>*/
+                /*<i className="share icon"></i>*/
+                /*{post.shareCount}*/
+              /*</a>*/
+            /*</div>*/
 
 
           ]}
@@ -1169,14 +1240,16 @@ Home.ShowPost = function(ctrl){
                   ((wsCtrl.post().post.commentCount - wsCtrl.post().post.commentShow) > 0)?[
                       {tag: "a", attrs: {href:"#comment", 
                         style:"color: #3b5998; font-size: 13px !important;", 
-                        onclick:function(){
+                        onclick:function(e){
+                         var source = e.target || e.srcElement;
+
                           ctrl.moreComment(wsCtrl.post().post.id, wsCtrl.post().comment[0].time);
                           // alert("123");
                         }
-                      }, children: ["View more comments"]},
-                      " Loading..."
+                      }, children: ["View more comments"]}
                   ]:(""), 
                   wsCtrl.post().comment.map(function(comment){
+
                     return (
                         {tag: "div", attrs: {className:"comment"}, children: [
                           {tag: "span", attrs: {className:"avatar"}, children: [
@@ -1210,7 +1283,7 @@ Home.ShowPost = function(ctrl){
                           (comment.replay || comment.children.length > 0)?[
                             (comment.children.length>0)?(
                             {tag: "div", attrs: {className:"comments"}, children: [
-                              comment.childCount > 2 ?({tag: "a", attrs: {href:"#"}, children: ["View more comments"]}):(""), 
+                              /*{comment.childCount > 2 ?(<a href="#">View more comments</a>):("")}*/
                               comment.children.map(function(childComment){
                                 return (
                                     {tag: "div", attrs: {className:"comment"}, children: [
@@ -1809,13 +1882,13 @@ var Nav = {
             {tag: "i", attrs: {className:"large icon comments"}}
           ]}, 
 
-          {tag: "div", attrs: {className:"ui category search item fix-icon"}, children: [
-            {tag: "div", attrs: {className:"ui icon input"}, children: [
-              {tag: "input", attrs: {className:"", type:"text", style:"width: 300px;", placeholder:"Search ..."}}, 
-              {tag: "i", attrs: {className:"search link icon"}}
-            ]}, 
-            {tag: "div", attrs: {className:"results"}}
-          ]}, 
+          /*<div className="ui category search item fix-icon">*/
+            /*<div className="ui icon input">*/
+              /*<input className="" type="text" style="width: 300px;" placeholder="Search ..."/>*/
+              /*<i className="search link icon"></i>*/
+            /*</div>*/
+            /*<div className="results"></div>*/
+          /*</div>*/
 
 
 
@@ -1962,7 +2035,8 @@ var Qa = {
     var ctrl = this;
     ctrl.server = initData.dashboard || {server: false};
 
-    if(!wsCtrl.data.qa.init && m.route.param("questionId") === undefined){
+    // if(!wsCtrl.data.qa.init && m.route.param("questionId") === undefined){
+    if(m.route.param("questionId") === undefined){
       wsCtrl.send(wsCtrl.sendData("initQA", {}));
     }
 
@@ -1970,6 +2044,12 @@ var Qa = {
       wsCtrl.question().answer = wsCtrl.question().answer.reverse();
       //api.showPost(wsCtrl.post().post.id);
     };
+
+    ctrl.setupHotQuestion = function(){
+      wsCtrl.initHotQuestion = true;
+    };
+
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/qa/hotquestion" }, wsCtrl.hotQuestion, ctrl.setupHotQuestion);
 
     ctrl.inputAnswer = m.prop("");
     ctrl.sendAnswer = function(){
@@ -2015,19 +2095,18 @@ var Qa = {
             {tag: "div", attrs: {className:"five wide column mh500"}, children: [
               {tag: "div", attrs: {className:"ui  home-post-Wr mh500"}, children: [
                 {tag: "div", attrs: {className:"trending"}, children: [
-                  {tag: "h3", attrs: {}, children: ["HOT NETWORK QUESTIONS (fake)"]}, 
-                  {tag: "ul", attrs: {}, children: [
-                    {tag: "li", attrs: {}, children: ["What is the most terrifying experience you have had while travelling?"]}, 
-                    {tag: "li", attrs: {}, children: ["Which actors have won Oscars without an Oscar-worthy performance?"]}, 
-                    {tag: "li", attrs: {}, children: ["Does vending machine black coffee contain sugar?"]}, 
-                    {tag: "li", attrs: {}, children: ["What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?"]}, 
-                    {tag: "li", attrs: {}, children: ["Which is the most astonishing piece of code you've ever seen in your life?"]}, 
-                    {tag: "li", attrs: {}, children: ["What do natives call San Francisco?"]}, 
-                    {tag: "li", attrs: {}, children: ["Why does \"The Force Awakens\" use an image language associated with national socialism for the First Order?"]}, 
-                    {tag: "li", attrs: {}, children: ["A Treasure Chest for your Post-apocalyptic Children"]}, 
-                    {tag: "li", attrs: {}, children: ["Phrase when you offer someone something but it's really them who are paying for it"]}, 
-                    {tag: "li", attrs: {}, children: ["Why do academic journals usually have continuous page numbering?"]}
-                  ]}
+                  {tag: "h3", attrs: {}, children: ["Câu hỏi HOT"]}, 
+                     !wsCtrl.initHotQuestion?(
+                         "loading !!"
+                     ):(
+                         {tag: "ul", attrs: {}, children: [
+                           wsCtrl.hotQuestion().map(function(question){
+                             return ({tag: "li", attrs: {}, children: [
+                               {tag: "a", attrs: {className:"route", href:"/qa/" + question.id}, children: [question.question]}
+                             ]})
+                           })
+                         ]}
+                     )
                 ]}
 
               ]}
@@ -2045,20 +2124,20 @@ Qa.list = function(ctrl, questions){
           {tag: "a", attrs: {className:((m.route() === '/qa')?"active":"") + " item route", href:"/qa"}, children: [
             "New Questions"
           ]}, 
-          {tag: "a", attrs: {className:"item"}, children: [
-            "Hot Questions"
-          ]}, 
+          /*<a className="item">*/
+            /*Hot Questions*/
+          /*</a>*/
           {tag: "a", attrs: {className:((m.route() === '/qa/new')?"active":"") + " item route", href:"/qa/new"}, children: [
             "Add a new question"
-          ]}, 
-          {tag: "div", attrs: {className:"right menu"}, children: [
-            {tag: "div", attrs: {className:"item"}, children: [
-              {tag: "div", attrs: {className:"ui transparent icon input"}, children: [
-                {tag: "input", attrs: {type:"text", placeholder:"Search users..."}}, 
-                  {tag: "i", attrs: {className:"search link icon"}}
-              ]}
-            ]}
           ]}
+          /*<div className="right menu">*/
+            /*<div className="item">*/
+              /*<div className="ui transparent icon input">*/
+                /*<input type="text" placeholder="Search users..." />*/
+                  /*<i className="search link icon"></i>*/
+              /*</div>*/
+            /*</div>*/
+          /*</div>*/
         ]}, 
         {tag: "div", attrs: {className:"ui bottom attached segment "}, children: [
           (m.route() !== '/qa/new')?(
@@ -2086,6 +2165,7 @@ Qa.list = function(ctrl, questions){
                       .done(function(data, textStatus, jqXHR){
                           el.reset();
                           $(el).removeClass('loading');
+                          m.route("/qa/")
                       })
                       .fail(function(jqXHR, textStatus, errorThrown){
                           console.log("Ajax problem: " + textStatus + ". " + errorThrown);
@@ -2502,6 +2582,12 @@ var Room = {
       rd.room(function(){m.redraw()})
     };
 
+    ctrl.setupHotQuestion = function(){
+      wsCtrl.initHotQuestion = true;
+    };
+
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/qa/hotquestion" }, wsCtrl.hotQuestion, ctrl.setupHotQuestion);
+
     wsCtrl.send(wsCtrl.sendData("initChat", {t: "room", v: ctrl.param()}));
 
     var intervalRoom = setInterval(function(){
@@ -2646,9 +2732,22 @@ var Room = {
           ]}, 
 
           {tag: "div", attrs: {className:"five wide column"}, children: [
-            {tag: "div", attrs: {className:"ui mh500"}
-
-            }
+            {tag: "div", attrs: {className:"ui mh500"}, children: [
+              {tag: "div", attrs: {className:"trending"}, children: [
+                {tag: "h3", attrs: {}, children: ["Câu hỏi HOT"]}, 
+                   !wsCtrl.initHotQuestion?(
+                       "loading !!"
+                   ):(
+                       {tag: "ul", attrs: {}, children: [
+                         wsCtrl.hotQuestion().map(function(question){
+                           return ({tag: "li", attrs: {}, children: [
+                             {tag: "a", attrs: {className:"route", href:"/qa/" + question.id}, children: [question.question]}
+                           ]})
+                         })
+                       ]}
+                   )
+              ]}
+            ]}
           ]}
         ]}
     )
@@ -2779,9 +2878,24 @@ var User = {
     //        ctrl.user(user);
     //    }
     //);
+    ctrl.initFollower = false;
+    ctrl.initFriend = false;
+    ctrl.followers = m.prop([]);
+    ctrl.friends = m.prop([]);
     ctrl.setup = function(){
       rd.user();
     };
+
+    ctrl.setupFollower = function(){
+      ctrl.initFollower  = true;
+    };
+
+    ctrl.setupFriend = function(){
+      ctrl.initFriend = true;
+    };
+
+    wsCtrl.request1 = api.requestWithFeedback2({method: "GET", url: "/api/listfollow/" + ctrl.userId }, ctrl.followers, ctrl.setupFollower);
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/api/listfriend/" + ctrl.userId }, ctrl.friends, ctrl.setupFriend);
 
     ctrl.error = function(){
       m.route('/');
@@ -2794,7 +2908,7 @@ var User = {
             {tag: "div", attrs: {className:"ui segment loading mh500"}
 
             }
-        ):(
+        ):[
             {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
               {tag: "div", attrs: {className:"head-user ui grid"}, children: [
                 {tag: "div", attrs: {className:"four wide column", style:"  min-height: 250px"}, children: [
@@ -2803,7 +2917,7 @@ var User = {
                   ]}
 
                 ]}, 
-                {tag: "div", attrs: {className:"twelve wide column", style:"b min-height: 250px"}, children: [
+                {tag: "div", attrs: {className:"twelve wide column", style:"min-height: 250px"}, children: [
                   {tag: "h2", attrs: {className:"ui header"}, children: [
                     ctrl.user().name
                   ]}, 
@@ -2820,7 +2934,6 @@ var User = {
 
                   ]}, 
                   {tag: "div", attrs: {className:"ui divider"}}, 
-                  "...", 
 
                   {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, {tag: "br", attrs: {}}, 
 
@@ -2887,8 +3000,39 @@ var User = {
                   ]}
                 ]}
               ]}
+            ]},
+          {tag: "div", attrs: {className:"ui grid main-content sha2"}, children: [
+            {tag: "div", attrs: {className:"body-user ui grid"}, children: [
+                {tag: "div", attrs: {className:"eight wide column", style:"min-height: 200px; border-right: 1px solid #ddd"}, children: [
+                  {tag: "h3", attrs: {}, children: ["List Followers"]}, 
+                  !ctrl.initFollower?(
+                      "loading ..."
+                  ):(
+                      {tag: "ul", attrs: {}, children: [
+                        ctrl.followers().map(function(user){
+                        return (
+                          {tag: "li", attrs: {}, children: [{tag: "a", attrs: {className:"route ulpt", href:"/@/" + user}, children: [user]}]}
+                        )
+                      })
+                      ]}
+                  )
+                ]}, 
+                {tag: "div", attrs: {className:"eight wide column", style:"min-height: 200px"}, children: [
+                  {tag: "h3", attrs: {}, children: ["List Friends"]}, 
+                  !ctrl.initFriend?(
+                      "loading ..."
+                  ):({tag: "ul", attrs: {}, children: [
+                    ctrl.friends().map(function(user){
+                        return (
+                          {tag: "li", attrs: {}, children: [{tag: "a", attrs: {className:"route ulpt", href:"/@/" + user}, children: [user]}]}
+                        )
+                      })
+                    ]}
+                  )
+                ]}
+              ]}
             ]}
-        )
+        ]
     )
   }
 };
@@ -3089,6 +3233,10 @@ wsCtrl.storage = {
   chat: $.localStorage.get('chat:' + wsCtrl.userId) || []
 };
 
+wsCtrl.initNewQuestion = false;
+wsCtrl.initHotQuestion = false;
+wsCtrl.newQuestion = m.prop([]);
+wsCtrl.hotQuestion = m.prop([]);
 
 wsCtrl.friendFlag = false;
 
@@ -3371,6 +3519,13 @@ ctrl.listen = function(d){
     if(wsCtrl.data.post.list.length > 0) wsCtrl.data.post.timepoint = wsCtrl.data.post.list[wsCtrl.data.post.list.length - 1].published;
     rd.home(function(){m.redraw()})
   }
+
+  else if(d.t === "morePost"){
+    console.log(d.d)
+    wsCtrl.data.post.list = wsCtrl.data.post.list.concat(d.d);
+    rd.home(function(){m.redraw()})
+  }
+
   else if(d.t === "newPost"){
 
     if(d.d.id !== undefined) {
@@ -3466,8 +3621,10 @@ ctrl.listen = function(d){
   else if (d.t === "moreComment"){
     // var parrentPos = arrayObjectIndexOf(wsCtrl.post().comment, d.d[0].parentPost, "id");
     wsCtrl.post().post.commentShow += d.d.length;
+    d.d.forEach(function(comment){
+      wsCtrl.post().post.commentShow += comment.childCount
+    })
     wsCtrl.post().comment = d.d.reverse().concat(wsCtrl.post().comment);
-    
     rd.home(function(){m.redraw();});
   }
 

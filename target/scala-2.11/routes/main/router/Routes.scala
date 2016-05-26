@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
 // @SOURCE:/mnt/ramdisk/mainapp/conf/routes
-// @DATE:Sun Apr 17 11:11:24 ICT 2016
+// @DATE:Thu May 26 05:20:56 ICT 2016
 
 package router
 
@@ -42,6 +42,8 @@ class Routes extends GeneratedRouter {
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """qa""", """controllers.Application.index"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """qa/new""", """controllers.Application.index"""),
     ("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """qa/new""", """controllers.API.doAsk"""),
+    ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """qa/newquestion""", """controllers.API.newQuestion"""),
+    ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """qa/hotquestion""", """controllers.API.hotQuestion"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """qa/allquestion""", """controllers.API.getAllQuestion"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """qa/$questionId<[^/]+>""", """controllers.API.getQuestion(questionId:String)"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """chatroom""", """controllers.Chat.chatRooms"""),
@@ -89,6 +91,8 @@ class Routes extends GeneratedRouter {
     ("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """settings""", """controllers.API.getSelfInformation"""),
     ("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """settings/updateInfo""", """controllers.API.updateInformation"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/getUser/$user<[^/]+>""", """controllers.API.getInformationUser(user:String)"""),
+    ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/listfollow/$userId<[^/]+>""", """controllers.API.getListFollower(userId:String)"""),
+    ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/listfriend/$userId<[^/]+>""", """controllers.API.getListFriend(userId:String)"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """google5106a805f9682e1e.html""", """controllers.Assets.at(path:String = "/public", file:String = "google5106a805f9682e1e.html")"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """robots.txt""", """controllers.Assets.at(path:String = "/public", file:String = "robots.txt")"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """sitemap.xml""", """controllers.Assets.at(path:String = "/public", file:String = "sitemap.xml")"""),
@@ -186,10 +190,44 @@ class Routes extends GeneratedRouter {
   )
 
   // @LINE:11
-  private[this] lazy val controllers_API_getAllQuestion5_route: Route.ParamsExtractor = Route("GET",
+  private[this] lazy val controllers_API_newQuestion5_route: Route.ParamsExtractor = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("qa/newquestion")))
+  )
+  private[this] lazy val controllers_API_newQuestion5_invoker = createInvoker(
+    controllers.API.newQuestion,
+    HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.API",
+      "newQuestion",
+      Nil,
+      "GET",
+      """""",
+      this.prefix + """qa/newquestion"""
+    )
+  )
+
+  // @LINE:12
+  private[this] lazy val controllers_API_hotQuestion6_route: Route.ParamsExtractor = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("qa/hotquestion")))
+  )
+  private[this] lazy val controllers_API_hotQuestion6_invoker = createInvoker(
+    controllers.API.hotQuestion,
+    HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.API",
+      "hotQuestion",
+      Nil,
+      "GET",
+      """""",
+      this.prefix + """qa/hotquestion"""
+    )
+  )
+
+  // @LINE:14
+  private[this] lazy val controllers_API_getAllQuestion7_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("qa/allquestion")))
   )
-  private[this] lazy val controllers_API_getAllQuestion5_invoker = createInvoker(
+  private[this] lazy val controllers_API_getAllQuestion7_invoker = createInvoker(
     controllers.API.getAllQuestion,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -202,11 +240,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:12
-  private[this] lazy val controllers_API_getQuestion6_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:15
+  private[this] lazy val controllers_API_getQuestion8_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("qa/"), DynamicPart("questionId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_API_getQuestion6_invoker = createInvoker(
+  private[this] lazy val controllers_API_getQuestion8_invoker = createInvoker(
     controllers.API.getQuestion(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -219,11 +257,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:14
-  private[this] lazy val controllers_Chat_chatRooms7_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:17
+  private[this] lazy val controllers_Chat_chatRooms9_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("chatroom")))
   )
-  private[this] lazy val controllers_Chat_chatRooms7_invoker = createInvoker(
+  private[this] lazy val controllers_Chat_chatRooms9_invoker = createInvoker(
     controllers.Chat.chatRooms,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -236,11 +274,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:15
-  private[this] lazy val controllers_Chat_chatRoom8_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:18
+  private[this] lazy val controllers_Chat_chatRoom10_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("chatroom/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Chat_chatRoom8_invoker = createInvoker(
+  private[this] lazy val controllers_Chat_chatRoom10_invoker = createInvoker(
     controllers.Chat.chatRoom(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -253,11 +291,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:16
-  private[this] lazy val controllers_Application_json9_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:19
+  private[this] lazy val controllers_Application_json11_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("json")))
   )
-  private[this] lazy val controllers_Application_json9_invoker = createInvoker(
+  private[this] lazy val controllers_Application_json11_invoker = createInvoker(
     controllers.Application.json,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -270,11 +308,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:17
-  private[this] lazy val controllers_Application_index10_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:20
+  private[this] lazy val controllers_Application_index12_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("settings")))
   )
-  private[this] lazy val controllers_Application_index10_invoker = createInvoker(
+  private[this] lazy val controllers_Application_index12_invoker = createInvoker(
     controllers.Application.index,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -287,11 +325,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:19
-  private[this] lazy val controllers_Application_user11_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:22
+  private[this] lazy val controllers_Application_user13_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("@/"), DynamicPart("username", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Application_user11_invoker = createInvoker(
+  private[this] lazy val controllers_Application_user13_invoker = createInvoker(
     controllers.Application.user(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -304,11 +342,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:20
-  private[this] lazy val controllers_User_showMini12_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:23
+  private[this] lazy val controllers_User_showMini14_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("@/"), DynamicPart("username", """[^/]+""",true), StaticPart("/mini")))
   )
-  private[this] lazy val controllers_User_showMini12_invoker = createInvoker(
+  private[this] lazy val controllers_User_showMini14_invoker = createInvoker(
     controllers.User.showMini(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -321,11 +359,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:22
-  private[this] lazy val controllers_API_doPost13_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:25
+  private[this] lazy val controllers_API_doPost15_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("post")))
   )
-  private[this] lazy val controllers_API_doPost13_invoker = createInvoker(
+  private[this] lazy val controllers_API_doPost15_invoker = createInvoker(
     controllers.API.doPost,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -338,11 +376,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:23
-  private[this] lazy val controllers_API_getPost14_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:26
+  private[this] lazy val controllers_API_getPost16_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("post/"), DynamicPart("username", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_API_getPost14_invoker = createInvoker(
+  private[this] lazy val controllers_API_getPost16_invoker = createInvoker(
     controllers.API.getPost(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -355,11 +393,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:24
-  private[this] lazy val controllers_API_viewPost15_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:27
+  private[this] lazy val controllers_API_viewPost17_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("viewpost/"), DynamicPart("postId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_API_viewPost15_invoker = createInvoker(
+  private[this] lazy val controllers_API_viewPost17_invoker = createInvoker(
     controllers.API.viewPost(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -372,11 +410,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:25
-  private[this] lazy val controllers_API_viewQuestion16_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:28
+  private[this] lazy val controllers_API_viewQuestion18_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("viewquestion/"), DynamicPart("questionId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_API_viewQuestion16_invoker = createInvoker(
+  private[this] lazy val controllers_API_viewQuestion18_invoker = createInvoker(
     controllers.API.viewQuestion(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -389,11 +427,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:27
-  private[this] lazy val controllers_API_likePost17_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:30
+  private[this] lazy val controllers_API_likePost19_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("like/post/"), DynamicPart("postId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_API_likePost17_invoker = createInvoker(
+  private[this] lazy val controllers_API_likePost19_invoker = createInvoker(
     controllers.API.likePost(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -406,11 +444,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:28
-  private[this] lazy val controllers_API_unlikePost18_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:31
+  private[this] lazy val controllers_API_unlikePost20_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("unlike/post/"), DynamicPart("postId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_API_unlikePost18_invoker = createInvoker(
+  private[this] lazy val controllers_API_unlikePost20_invoker = createInvoker(
     controllers.API.unlikePost(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -423,11 +461,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:29
-  private[this] lazy val controllers_API_vote19_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:32
+  private[this] lazy val controllers_API_vote21_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("vote/question/"), DynamicPart("questionId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_API_vote19_invoker = createInvoker(
+  private[this] lazy val controllers_API_vote21_invoker = createInvoker(
     controllers.API.vote(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -440,11 +478,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:30
-  private[this] lazy val controllers_API_voteAnswer20_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:33
+  private[this] lazy val controllers_API_voteAnswer22_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("vote/answer/"), DynamicPart("answerId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_API_voteAnswer20_invoker = createInvoker(
+  private[this] lazy val controllers_API_voteAnswer22_invoker = createInvoker(
     controllers.API.voteAnswer(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -457,11 +495,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:33
-  private[this] lazy val controllers_Main_websocket21_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:36
+  private[this] lazy val controllers_Main_websocket23_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("socket")))
   )
-  private[this] lazy val controllers_Main_websocket21_invoker = createInvoker(
+  private[this] lazy val controllers_Main_websocket23_invoker = createInvoker(
     controllers.Main.websocket,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -474,11 +512,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:35
-  private[this] lazy val controllers_Monitor_index22_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:38
+  private[this] lazy val controllers_Monitor_index24_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("monitor")))
   )
-  private[this] lazy val controllers_Monitor_index22_invoker = createInvoker(
+  private[this] lazy val controllers_Monitor_index24_invoker = createInvoker(
     controllers.Monitor.index,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -491,11 +529,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:36
-  private[this] lazy val controllers_Monitor_websocket23_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:39
+  private[this] lazy val controllers_Monitor_websocket25_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("monitor/socket")))
   )
-  private[this] lazy val controllers_Monitor_websocket23_invoker = createInvoker(
+  private[this] lazy val controllers_Monitor_websocket25_invoker = createInvoker(
     controllers.Monitor.websocket,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -508,11 +546,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:37
-  private[this] lazy val controllers_Monitor_status24_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:40
+  private[this] lazy val controllers_Monitor_status26_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("status")))
   )
-  private[this] lazy val controllers_Monitor_status24_invoker = createInvoker(
+  private[this] lazy val controllers_Monitor_status26_invoker = createInvoker(
     controllers.Monitor.status,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -525,11 +563,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:39
-  private[this] lazy val controllers_Auth_login25_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:42
+  private[this] lazy val controllers_Auth_login27_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("login")))
   )
-  private[this] lazy val controllers_Auth_login25_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_login27_invoker = createInvoker(
     controllers.Auth.login,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -542,11 +580,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:40
-  private[this] lazy val controllers_Auth_authenticate26_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:43
+  private[this] lazy val controllers_Auth_authenticate28_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("login")))
   )
-  private[this] lazy val controllers_Auth_authenticate26_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_authenticate28_invoker = createInvoker(
     controllers.Auth.authenticate,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -559,11 +597,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:41
-  private[this] lazy val controllers_Auth_logout27_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:44
+  private[this] lazy val controllers_Auth_logout29_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("logout")))
   )
-  private[this] lazy val controllers_Auth_logout27_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_logout29_invoker = createInvoker(
     controllers.Auth.logout,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -576,11 +614,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:42
-  private[this] lazy val controllers_Auth_signup28_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:45
+  private[this] lazy val controllers_Auth_signup30_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("signup")))
   )
-  private[this] lazy val controllers_Auth_signup28_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_signup30_invoker = createInvoker(
     controllers.Auth.signup,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -593,11 +631,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:43
-  private[this] lazy val controllers_Auth_signupPost29_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:46
+  private[this] lazy val controllers_Auth_signupPost31_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("signup")))
   )
-  private[this] lazy val controllers_Auth_signupPost29_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_signupPost31_invoker = createInvoker(
     controllers.Auth.signupPost,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -610,11 +648,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:44
-  private[this] lazy val controllers_Auth_checkYourEmail30_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:47
+  private[this] lazy val controllers_Auth_checkYourEmail32_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("signup/check-your-email/"), DynamicPart("name", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Auth_checkYourEmail30_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_checkYourEmail32_invoker = createInvoker(
     controllers.Auth.checkYourEmail(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -627,11 +665,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:45
-  private[this] lazy val controllers_Auth_signupConfirmEmail31_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:48
+  private[this] lazy val controllers_Auth_signupConfirmEmail33_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("signup/confirm/"), DynamicPart("token", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Auth_signupConfirmEmail31_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_signupConfirmEmail33_invoker = createInvoker(
     controllers.Auth.signupConfirmEmail(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -644,11 +682,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:46
-  private[this] lazy val controllers_Auth_passwordReset32_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:49
+  private[this] lazy val controllers_Auth_passwordReset34_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("password/reset")))
   )
-  private[this] lazy val controllers_Auth_passwordReset32_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_passwordReset34_invoker = createInvoker(
     controllers.Auth.passwordReset,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -661,11 +699,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:47
-  private[this] lazy val controllers_Auth_passwordResetApply33_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:50
+  private[this] lazy val controllers_Auth_passwordResetApply35_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("password/reset/send")))
   )
-  private[this] lazy val controllers_Auth_passwordResetApply33_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_passwordResetApply35_invoker = createInvoker(
     controllers.Auth.passwordResetApply,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -678,11 +716,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:48
-  private[this] lazy val controllers_Auth_passwordResetSent34_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:51
+  private[this] lazy val controllers_Auth_passwordResetSent36_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("password/reset/sent/"), DynamicPart("email", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Auth_passwordResetSent34_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_passwordResetSent36_invoker = createInvoker(
     controllers.Auth.passwordResetSent(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -695,11 +733,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:49
-  private[this] lazy val controllers_Auth_passwordResetConfirm35_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:52
+  private[this] lazy val controllers_Auth_passwordResetConfirm37_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("password/reset/confirm/"), DynamicPart("token", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Auth_passwordResetConfirm35_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_passwordResetConfirm37_invoker = createInvoker(
     controllers.Auth.passwordResetConfirm(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -712,11 +750,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:50
-  private[this] lazy val controllers_Auth_passwordResetConfirmApply36_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:53
+  private[this] lazy val controllers_Auth_passwordResetConfirmApply38_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("password/reset/confirm/"), DynamicPart("token", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Auth_passwordResetConfirmApply36_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_passwordResetConfirmApply38_invoker = createInvoker(
     controllers.Auth.passwordResetConfirmApply(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -729,11 +767,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:51
-  private[this] lazy val controllers_Auth_setFingerprint37_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:54
+  private[this] lazy val controllers_Auth_setFingerprint39_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("set-fingerprint/"), DynamicPart("hash", """[^/]+""",true), StaticPart("/"), DynamicPart("ms", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Auth_setFingerprint37_invoker = createInvoker(
+  private[this] lazy val controllers_Auth_setFingerprint39_invoker = createInvoker(
     controllers.Auth.setFingerprint(fakeValue[String], fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -746,11 +784,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:55
-  private[this] lazy val controllers_ImageCtrl_get38_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:58
+  private[this] lazy val controllers_ImageCtrl_get40_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("getimage/"), DynamicPart("size", """[^/]+""",true), StaticPart("/"), DynamicPart("uuid", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_ImageCtrl_get38_invoker = createInvoker(
+  private[this] lazy val controllers_ImageCtrl_get40_invoker = createInvoker(
     play.api.Play.maybeApplication.map(_.injector).getOrElse(play.api.inject.NewInstanceInjector).instanceOf(classOf[controllers.ImageCtrl]).get(fakeValue[String], fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -764,11 +802,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:56
-  private[this] lazy val controllers_ImageCtrl_upload39_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:59
+  private[this] lazy val controllers_ImageCtrl_upload41_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("upload/image")))
   )
-  private[this] lazy val controllers_ImageCtrl_upload39_invoker = createInvoker(
+  private[this] lazy val controllers_ImageCtrl_upload41_invoker = createInvoker(
     play.api.Play.maybeApplication.map(_.injector).getOrElse(play.api.inject.NewInstanceInjector).instanceOf(classOf[controllers.ImageCtrl]).upload,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -781,11 +819,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:59
-  private[this] lazy val controllers_Relation_follow40_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:62
+  private[this] lazy val controllers_Relation_follow42_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("rel/follow/"), DynamicPart("userId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Relation_follow40_invoker = createInvoker(
+  private[this] lazy val controllers_Relation_follow42_invoker = createInvoker(
     controllers.Relation.follow(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -798,11 +836,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:60
-  private[this] lazy val controllers_Relation_request41_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:63
+  private[this] lazy val controllers_Relation_request43_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("rel/request/"), DynamicPart("userId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Relation_request41_invoker = createInvoker(
+  private[this] lazy val controllers_Relation_request43_invoker = createInvoker(
     controllers.Relation.request(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -815,11 +853,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:61
-  private[this] lazy val controllers_Relation_unfollow42_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:64
+  private[this] lazy val controllers_Relation_unfollow44_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("rel/unfollow/"), DynamicPart("userId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Relation_unfollow42_invoker = createInvoker(
+  private[this] lazy val controllers_Relation_unfollow44_invoker = createInvoker(
     controllers.Relation.unfollow(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -832,11 +870,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:62
-  private[this] lazy val controllers_Relation_unrequest43_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:65
+  private[this] lazy val controllers_Relation_unrequest45_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("rel/unrequest/"), DynamicPart("userId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Relation_unrequest43_invoker = createInvoker(
+  private[this] lazy val controllers_Relation_unrequest45_invoker = createInvoker(
     controllers.Relation.unrequest(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -849,11 +887,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:63
-  private[this] lazy val controllers_Relation_reject44_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:66
+  private[this] lazy val controllers_Relation_reject46_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("rel/reject/"), DynamicPart("userId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Relation_reject44_invoker = createInvoker(
+  private[this] lazy val controllers_Relation_reject46_invoker = createInvoker(
     controllers.Relation.reject(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -866,11 +904,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:65
-  private[this] lazy val controllers_Relation_friend45_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:68
+  private[this] lazy val controllers_Relation_friend47_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("rel/friend/"), DynamicPart("userId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Relation_friend45_invoker = createInvoker(
+  private[this] lazy val controllers_Relation_friend47_invoker = createInvoker(
     controllers.Relation.friend(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -883,11 +921,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:66
-  private[this] lazy val controllers_Relation_unfriend46_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:69
+  private[this] lazy val controllers_Relation_unfriend48_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("rel/unfriend/"), DynamicPart("userId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Relation_unfriend46_invoker = createInvoker(
+  private[this] lazy val controllers_Relation_unfriend48_invoker = createInvoker(
     controllers.Relation.unfriend(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -900,11 +938,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:68
-  private[this] lazy val controllers_Relation_block47_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:71
+  private[this] lazy val controllers_Relation_block49_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("rel/block/"), DynamicPart("userId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Relation_block47_invoker = createInvoker(
+  private[this] lazy val controllers_Relation_block49_invoker = createInvoker(
     controllers.Relation.block(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -917,11 +955,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:69
-  private[this] lazy val controllers_Relation_unblock48_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:72
+  private[this] lazy val controllers_Relation_unblock50_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("rel/unblock/"), DynamicPart("userId", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_Relation_unblock48_invoker = createInvoker(
+  private[this] lazy val controllers_Relation_unblock50_invoker = createInvoker(
     controllers.Relation.unblock(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -934,11 +972,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:71
-  private[this] lazy val controllers_API_getSelfInformation49_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:74
+  private[this] lazy val controllers_API_getSelfInformation51_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("settings")))
   )
-  private[this] lazy val controllers_API_getSelfInformation49_invoker = createInvoker(
+  private[this] lazy val controllers_API_getSelfInformation51_invoker = createInvoker(
     controllers.API.getSelfInformation,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -951,11 +989,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:72
-  private[this] lazy val controllers_API_updateInformation50_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:75
+  private[this] lazy val controllers_API_updateInformation52_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("settings/updateInfo")))
   )
-  private[this] lazy val controllers_API_updateInformation50_invoker = createInvoker(
+  private[this] lazy val controllers_API_updateInformation52_invoker = createInvoker(
     controllers.API.updateInformation,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -968,11 +1006,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:74
-  private[this] lazy val controllers_API_getInformationUser51_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:77
+  private[this] lazy val controllers_API_getInformationUser53_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/getUser/"), DynamicPart("user", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_API_getInformationUser51_invoker = createInvoker(
+  private[this] lazy val controllers_API_getInformationUser53_invoker = createInvoker(
     controllers.API.getInformationUser(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -986,10 +1024,44 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
   )
 
   // @LINE:78
-  private[this] lazy val controllers_Assets_at52_route: Route.ParamsExtractor = Route("GET",
+  private[this] lazy val controllers_API_getListFollower54_route: Route.ParamsExtractor = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/listfollow/"), DynamicPart("userId", """[^/]+""",true)))
+  )
+  private[this] lazy val controllers_API_getListFollower54_invoker = createInvoker(
+    controllers.API.getListFollower(fakeValue[String]),
+    HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.API",
+      "getListFollower",
+      Seq(classOf[String]),
+      "GET",
+      """""",
+      this.prefix + """api/listfollow/$userId<[^/]+>"""
+    )
+  )
+
+  // @LINE:79
+  private[this] lazy val controllers_API_getListFriend55_route: Route.ParamsExtractor = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/listfriend/"), DynamicPart("userId", """[^/]+""",true)))
+  )
+  private[this] lazy val controllers_API_getListFriend55_invoker = createInvoker(
+    controllers.API.getListFriend(fakeValue[String]),
+    HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.API",
+      "getListFriend",
+      Seq(classOf[String]),
+      "GET",
+      """""",
+      this.prefix + """api/listfriend/$userId<[^/]+>"""
+    )
+  )
+
+  // @LINE:83
+  private[this] lazy val controllers_Assets_at56_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("google5106a805f9682e1e.html")))
   )
-  private[this] lazy val controllers_Assets_at52_invoker = createInvoker(
+  private[this] lazy val controllers_Assets_at56_invoker = createInvoker(
     controllers.Assets.at(fakeValue[String], fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -1003,11 +1075,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:79
-  private[this] lazy val controllers_Assets_at53_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:84
+  private[this] lazy val controllers_Assets_at57_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("robots.txt")))
   )
-  private[this] lazy val controllers_Assets_at53_invoker = createInvoker(
+  private[this] lazy val controllers_Assets_at57_invoker = createInvoker(
     controllers.Assets.at(fakeValue[String], fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -1020,11 +1092,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:80
-  private[this] lazy val controllers_Assets_at54_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:85
+  private[this] lazy val controllers_Assets_at58_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("sitemap.xml")))
   )
-  private[this] lazy val controllers_Assets_at54_invoker = createInvoker(
+  private[this] lazy val controllers_Assets_at58_invoker = createInvoker(
     controllers.Assets.at(fakeValue[String], fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -1037,11 +1109,11 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
     )
   )
 
-  // @LINE:81
-  private[this] lazy val controllers_Assets_at55_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:86
+  private[this] lazy val controllers_Assets_at59_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("assets/"), DynamicPart("file", """.+""",false)))
   )
-  private[this] lazy val controllers_Assets_at55_invoker = createInvoker(
+  private[this] lazy val controllers_Assets_at59_invoker = createInvoker(
     controllers.Assets.at(fakeValue[String], fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -1088,309 +1160,333 @@ GET      //static.luanlv.info/getimage/:size/:uuid        @controllers.ImageCtrl
       }
   
     // @LINE:11
-    case controllers_API_getAllQuestion5_route(params) =>
+    case controllers_API_newQuestion5_route(params) =>
       call { 
-        controllers_API_getAllQuestion5_invoker.call(controllers.API.getAllQuestion)
+        controllers_API_newQuestion5_invoker.call(controllers.API.newQuestion)
       }
   
     // @LINE:12
-    case controllers_API_getQuestion6_route(params) =>
-      call(params.fromPath[String]("questionId", None)) { (questionId) =>
-        controllers_API_getQuestion6_invoker.call(controllers.API.getQuestion(questionId))
+    case controllers_API_hotQuestion6_route(params) =>
+      call { 
+        controllers_API_hotQuestion6_invoker.call(controllers.API.hotQuestion)
       }
   
     // @LINE:14
-    case controllers_Chat_chatRooms7_route(params) =>
+    case controllers_API_getAllQuestion7_route(params) =>
       call { 
-        controllers_Chat_chatRooms7_invoker.call(controllers.Chat.chatRooms)
+        controllers_API_getAllQuestion7_invoker.call(controllers.API.getAllQuestion)
       }
   
     // @LINE:15
-    case controllers_Chat_chatRoom8_route(params) =>
-      call(params.fromPath[String]("id", None)) { (id) =>
-        controllers_Chat_chatRoom8_invoker.call(controllers.Chat.chatRoom(id))
-      }
-  
-    // @LINE:16
-    case controllers_Application_json9_route(params) =>
-      call { 
-        controllers_Application_json9_invoker.call(controllers.Application.json)
+    case controllers_API_getQuestion8_route(params) =>
+      call(params.fromPath[String]("questionId", None)) { (questionId) =>
+        controllers_API_getQuestion8_invoker.call(controllers.API.getQuestion(questionId))
       }
   
     // @LINE:17
-    case controllers_Application_index10_route(params) =>
+    case controllers_Chat_chatRooms9_route(params) =>
       call { 
-        controllers_Application_index10_invoker.call(controllers.Application.index)
+        controllers_Chat_chatRooms9_invoker.call(controllers.Chat.chatRooms)
+      }
+  
+    // @LINE:18
+    case controllers_Chat_chatRoom10_route(params) =>
+      call(params.fromPath[String]("id", None)) { (id) =>
+        controllers_Chat_chatRoom10_invoker.call(controllers.Chat.chatRoom(id))
       }
   
     // @LINE:19
-    case controllers_Application_user11_route(params) =>
-      call(params.fromPath[String]("username", None)) { (username) =>
-        controllers_Application_user11_invoker.call(controllers.Application.user(username))
+    case controllers_Application_json11_route(params) =>
+      call { 
+        controllers_Application_json11_invoker.call(controllers.Application.json)
       }
   
     // @LINE:20
-    case controllers_User_showMini12_route(params) =>
-      call(params.fromPath[String]("username", None)) { (username) =>
-        controllers_User_showMini12_invoker.call(controllers.User.showMini(username))
+    case controllers_Application_index12_route(params) =>
+      call { 
+        controllers_Application_index12_invoker.call(controllers.Application.index)
       }
   
     // @LINE:22
-    case controllers_API_doPost13_route(params) =>
-      call { 
-        controllers_API_doPost13_invoker.call(controllers.API.doPost)
+    case controllers_Application_user13_route(params) =>
+      call(params.fromPath[String]("username", None)) { (username) =>
+        controllers_Application_user13_invoker.call(controllers.Application.user(username))
       }
   
     // @LINE:23
-    case controllers_API_getPost14_route(params) =>
+    case controllers_User_showMini14_route(params) =>
       call(params.fromPath[String]("username", None)) { (username) =>
-        controllers_API_getPost14_invoker.call(controllers.API.getPost(username))
-      }
-  
-    // @LINE:24
-    case controllers_API_viewPost15_route(params) =>
-      call(params.fromPath[String]("postId", None)) { (postId) =>
-        controllers_API_viewPost15_invoker.call(controllers.API.viewPost(postId))
+        controllers_User_showMini14_invoker.call(controllers.User.showMini(username))
       }
   
     // @LINE:25
-    case controllers_API_viewQuestion16_route(params) =>
-      call(params.fromPath[String]("questionId", None)) { (questionId) =>
-        controllers_API_viewQuestion16_invoker.call(controllers.API.viewQuestion(questionId))
+    case controllers_API_doPost15_route(params) =>
+      call { 
+        controllers_API_doPost15_invoker.call(controllers.API.doPost)
+      }
+  
+    // @LINE:26
+    case controllers_API_getPost16_route(params) =>
+      call(params.fromPath[String]("username", None)) { (username) =>
+        controllers_API_getPost16_invoker.call(controllers.API.getPost(username))
       }
   
     // @LINE:27
-    case controllers_API_likePost17_route(params) =>
+    case controllers_API_viewPost17_route(params) =>
       call(params.fromPath[String]("postId", None)) { (postId) =>
-        controllers_API_likePost17_invoker.call(controllers.API.likePost(postId))
+        controllers_API_viewPost17_invoker.call(controllers.API.viewPost(postId))
       }
   
     // @LINE:28
-    case controllers_API_unlikePost18_route(params) =>
-      call(params.fromPath[String]("postId", None)) { (postId) =>
-        controllers_API_unlikePost18_invoker.call(controllers.API.unlikePost(postId))
-      }
-  
-    // @LINE:29
-    case controllers_API_vote19_route(params) =>
+    case controllers_API_viewQuestion18_route(params) =>
       call(params.fromPath[String]("questionId", None)) { (questionId) =>
-        controllers_API_vote19_invoker.call(controllers.API.vote(questionId))
+        controllers_API_viewQuestion18_invoker.call(controllers.API.viewQuestion(questionId))
       }
   
     // @LINE:30
-    case controllers_API_voteAnswer20_route(params) =>
-      call(params.fromPath[String]("answerId", None)) { (answerId) =>
-        controllers_API_voteAnswer20_invoker.call(controllers.API.voteAnswer(answerId))
+    case controllers_API_likePost19_route(params) =>
+      call(params.fromPath[String]("postId", None)) { (postId) =>
+        controllers_API_likePost19_invoker.call(controllers.API.likePost(postId))
+      }
+  
+    // @LINE:31
+    case controllers_API_unlikePost20_route(params) =>
+      call(params.fromPath[String]("postId", None)) { (postId) =>
+        controllers_API_unlikePost20_invoker.call(controllers.API.unlikePost(postId))
+      }
+  
+    // @LINE:32
+    case controllers_API_vote21_route(params) =>
+      call(params.fromPath[String]("questionId", None)) { (questionId) =>
+        controllers_API_vote21_invoker.call(controllers.API.vote(questionId))
       }
   
     // @LINE:33
-    case controllers_Main_websocket21_route(params) =>
-      call { 
-        controllers_Main_websocket21_invoker.call(controllers.Main.websocket)
-      }
-  
-    // @LINE:35
-    case controllers_Monitor_index22_route(params) =>
-      call { 
-        controllers_Monitor_index22_invoker.call(controllers.Monitor.index)
+    case controllers_API_voteAnswer22_route(params) =>
+      call(params.fromPath[String]("answerId", None)) { (answerId) =>
+        controllers_API_voteAnswer22_invoker.call(controllers.API.voteAnswer(answerId))
       }
   
     // @LINE:36
-    case controllers_Monitor_websocket23_route(params) =>
+    case controllers_Main_websocket23_route(params) =>
       call { 
-        controllers_Monitor_websocket23_invoker.call(controllers.Monitor.websocket)
+        controllers_Main_websocket23_invoker.call(controllers.Main.websocket)
       }
   
-    // @LINE:37
-    case controllers_Monitor_status24_route(params) =>
+    // @LINE:38
+    case controllers_Monitor_index24_route(params) =>
       call { 
-        controllers_Monitor_status24_invoker.call(controllers.Monitor.status)
+        controllers_Monitor_index24_invoker.call(controllers.Monitor.index)
       }
   
     // @LINE:39
-    case controllers_Auth_login25_route(params) =>
+    case controllers_Monitor_websocket25_route(params) =>
       call { 
-        controllers_Auth_login25_invoker.call(controllers.Auth.login)
+        controllers_Monitor_websocket25_invoker.call(controllers.Monitor.websocket)
       }
   
     // @LINE:40
-    case controllers_Auth_authenticate26_route(params) =>
+    case controllers_Monitor_status26_route(params) =>
       call { 
-        controllers_Auth_authenticate26_invoker.call(controllers.Auth.authenticate)
-      }
-  
-    // @LINE:41
-    case controllers_Auth_logout27_route(params) =>
-      call { 
-        controllers_Auth_logout27_invoker.call(controllers.Auth.logout)
+        controllers_Monitor_status26_invoker.call(controllers.Monitor.status)
       }
   
     // @LINE:42
-    case controllers_Auth_signup28_route(params) =>
+    case controllers_Auth_login27_route(params) =>
       call { 
-        controllers_Auth_signup28_invoker.call(controllers.Auth.signup)
+        controllers_Auth_login27_invoker.call(controllers.Auth.login)
       }
   
     // @LINE:43
-    case controllers_Auth_signupPost29_route(params) =>
+    case controllers_Auth_authenticate28_route(params) =>
       call { 
-        controllers_Auth_signupPost29_invoker.call(controllers.Auth.signupPost)
+        controllers_Auth_authenticate28_invoker.call(controllers.Auth.authenticate)
       }
   
     // @LINE:44
-    case controllers_Auth_checkYourEmail30_route(params) =>
-      call(params.fromPath[String]("name", None)) { (name) =>
-        controllers_Auth_checkYourEmail30_invoker.call(controllers.Auth.checkYourEmail(name))
+    case controllers_Auth_logout29_route(params) =>
+      call { 
+        controllers_Auth_logout29_invoker.call(controllers.Auth.logout)
       }
   
     // @LINE:45
-    case controllers_Auth_signupConfirmEmail31_route(params) =>
-      call(params.fromPath[String]("token", None)) { (token) =>
-        controllers_Auth_signupConfirmEmail31_invoker.call(controllers.Auth.signupConfirmEmail(token))
+    case controllers_Auth_signup30_route(params) =>
+      call { 
+        controllers_Auth_signup30_invoker.call(controllers.Auth.signup)
       }
   
     // @LINE:46
-    case controllers_Auth_passwordReset32_route(params) =>
+    case controllers_Auth_signupPost31_route(params) =>
       call { 
-        controllers_Auth_passwordReset32_invoker.call(controllers.Auth.passwordReset)
+        controllers_Auth_signupPost31_invoker.call(controllers.Auth.signupPost)
       }
   
     // @LINE:47
-    case controllers_Auth_passwordResetApply33_route(params) =>
-      call { 
-        controllers_Auth_passwordResetApply33_invoker.call(controllers.Auth.passwordResetApply)
+    case controllers_Auth_checkYourEmail32_route(params) =>
+      call(params.fromPath[String]("name", None)) { (name) =>
+        controllers_Auth_checkYourEmail32_invoker.call(controllers.Auth.checkYourEmail(name))
       }
   
     // @LINE:48
-    case controllers_Auth_passwordResetSent34_route(params) =>
-      call(params.fromPath[String]("email", None)) { (email) =>
-        controllers_Auth_passwordResetSent34_invoker.call(controllers.Auth.passwordResetSent(email))
+    case controllers_Auth_signupConfirmEmail33_route(params) =>
+      call(params.fromPath[String]("token", None)) { (token) =>
+        controllers_Auth_signupConfirmEmail33_invoker.call(controllers.Auth.signupConfirmEmail(token))
       }
   
     // @LINE:49
-    case controllers_Auth_passwordResetConfirm35_route(params) =>
-      call(params.fromPath[String]("token", None)) { (token) =>
-        controllers_Auth_passwordResetConfirm35_invoker.call(controllers.Auth.passwordResetConfirm(token))
+    case controllers_Auth_passwordReset34_route(params) =>
+      call { 
+        controllers_Auth_passwordReset34_invoker.call(controllers.Auth.passwordReset)
       }
   
     // @LINE:50
-    case controllers_Auth_passwordResetConfirmApply36_route(params) =>
-      call(params.fromPath[String]("token", None)) { (token) =>
-        controllers_Auth_passwordResetConfirmApply36_invoker.call(controllers.Auth.passwordResetConfirmApply(token))
+    case controllers_Auth_passwordResetApply35_route(params) =>
+      call { 
+        controllers_Auth_passwordResetApply35_invoker.call(controllers.Auth.passwordResetApply)
       }
   
     // @LINE:51
-    case controllers_Auth_setFingerprint37_route(params) =>
+    case controllers_Auth_passwordResetSent36_route(params) =>
+      call(params.fromPath[String]("email", None)) { (email) =>
+        controllers_Auth_passwordResetSent36_invoker.call(controllers.Auth.passwordResetSent(email))
+      }
+  
+    // @LINE:52
+    case controllers_Auth_passwordResetConfirm37_route(params) =>
+      call(params.fromPath[String]("token", None)) { (token) =>
+        controllers_Auth_passwordResetConfirm37_invoker.call(controllers.Auth.passwordResetConfirm(token))
+      }
+  
+    // @LINE:53
+    case controllers_Auth_passwordResetConfirmApply38_route(params) =>
+      call(params.fromPath[String]("token", None)) { (token) =>
+        controllers_Auth_passwordResetConfirmApply38_invoker.call(controllers.Auth.passwordResetConfirmApply(token))
+      }
+  
+    // @LINE:54
+    case controllers_Auth_setFingerprint39_route(params) =>
       call(params.fromPath[String]("hash", None), params.fromPath[Int]("ms", None)) { (hash, ms) =>
-        controllers_Auth_setFingerprint37_invoker.call(controllers.Auth.setFingerprint(hash, ms))
+        controllers_Auth_setFingerprint39_invoker.call(controllers.Auth.setFingerprint(hash, ms))
       }
   
-    // @LINE:55
-    case controllers_ImageCtrl_get38_route(params) =>
+    // @LINE:58
+    case controllers_ImageCtrl_get40_route(params) =>
       call(params.fromPath[String]("size", None), params.fromPath[String]("uuid", None)) { (size, uuid) =>
-        controllers_ImageCtrl_get38_invoker.call(play.api.Play.maybeApplication.map(_.injector).getOrElse(play.api.inject.NewInstanceInjector).instanceOf(classOf[controllers.ImageCtrl]).get(size, uuid))
-      }
-  
-    // @LINE:56
-    case controllers_ImageCtrl_upload39_route(params) =>
-      call { 
-        controllers_ImageCtrl_upload39_invoker.call(play.api.Play.maybeApplication.map(_.injector).getOrElse(play.api.inject.NewInstanceInjector).instanceOf(classOf[controllers.ImageCtrl]).upload)
+        controllers_ImageCtrl_get40_invoker.call(play.api.Play.maybeApplication.map(_.injector).getOrElse(play.api.inject.NewInstanceInjector).instanceOf(classOf[controllers.ImageCtrl]).get(size, uuid))
       }
   
     // @LINE:59
-    case controllers_Relation_follow40_route(params) =>
-      call(params.fromPath[String]("userId", None)) { (userId) =>
-        controllers_Relation_follow40_invoker.call(controllers.Relation.follow(userId))
-      }
-  
-    // @LINE:60
-    case controllers_Relation_request41_route(params) =>
-      call(params.fromPath[String]("userId", None)) { (userId) =>
-        controllers_Relation_request41_invoker.call(controllers.Relation.request(userId))
-      }
-  
-    // @LINE:61
-    case controllers_Relation_unfollow42_route(params) =>
-      call(params.fromPath[String]("userId", None)) { (userId) =>
-        controllers_Relation_unfollow42_invoker.call(controllers.Relation.unfollow(userId))
+    case controllers_ImageCtrl_upload41_route(params) =>
+      call { 
+        controllers_ImageCtrl_upload41_invoker.call(play.api.Play.maybeApplication.map(_.injector).getOrElse(play.api.inject.NewInstanceInjector).instanceOf(classOf[controllers.ImageCtrl]).upload)
       }
   
     // @LINE:62
-    case controllers_Relation_unrequest43_route(params) =>
+    case controllers_Relation_follow42_route(params) =>
       call(params.fromPath[String]("userId", None)) { (userId) =>
-        controllers_Relation_unrequest43_invoker.call(controllers.Relation.unrequest(userId))
+        controllers_Relation_follow42_invoker.call(controllers.Relation.follow(userId))
       }
   
     // @LINE:63
-    case controllers_Relation_reject44_route(params) =>
+    case controllers_Relation_request43_route(params) =>
       call(params.fromPath[String]("userId", None)) { (userId) =>
-        controllers_Relation_reject44_invoker.call(controllers.Relation.reject(userId))
+        controllers_Relation_request43_invoker.call(controllers.Relation.request(userId))
+      }
+  
+    // @LINE:64
+    case controllers_Relation_unfollow44_route(params) =>
+      call(params.fromPath[String]("userId", None)) { (userId) =>
+        controllers_Relation_unfollow44_invoker.call(controllers.Relation.unfollow(userId))
       }
   
     // @LINE:65
-    case controllers_Relation_friend45_route(params) =>
+    case controllers_Relation_unrequest45_route(params) =>
       call(params.fromPath[String]("userId", None)) { (userId) =>
-        controllers_Relation_friend45_invoker.call(controllers.Relation.friend(userId))
+        controllers_Relation_unrequest45_invoker.call(controllers.Relation.unrequest(userId))
       }
   
     // @LINE:66
-    case controllers_Relation_unfriend46_route(params) =>
+    case controllers_Relation_reject46_route(params) =>
       call(params.fromPath[String]("userId", None)) { (userId) =>
-        controllers_Relation_unfriend46_invoker.call(controllers.Relation.unfriend(userId))
+        controllers_Relation_reject46_invoker.call(controllers.Relation.reject(userId))
       }
   
     // @LINE:68
-    case controllers_Relation_block47_route(params) =>
+    case controllers_Relation_friend47_route(params) =>
       call(params.fromPath[String]("userId", None)) { (userId) =>
-        controllers_Relation_block47_invoker.call(controllers.Relation.block(userId))
+        controllers_Relation_friend47_invoker.call(controllers.Relation.friend(userId))
       }
   
     // @LINE:69
-    case controllers_Relation_unblock48_route(params) =>
+    case controllers_Relation_unfriend48_route(params) =>
       call(params.fromPath[String]("userId", None)) { (userId) =>
-        controllers_Relation_unblock48_invoker.call(controllers.Relation.unblock(userId))
+        controllers_Relation_unfriend48_invoker.call(controllers.Relation.unfriend(userId))
       }
   
     // @LINE:71
-    case controllers_API_getSelfInformation49_route(params) =>
-      call { 
-        controllers_API_getSelfInformation49_invoker.call(controllers.API.getSelfInformation)
+    case controllers_Relation_block49_route(params) =>
+      call(params.fromPath[String]("userId", None)) { (userId) =>
+        controllers_Relation_block49_invoker.call(controllers.Relation.block(userId))
       }
   
     // @LINE:72
-    case controllers_API_updateInformation50_route(params) =>
-      call { 
-        controllers_API_updateInformation50_invoker.call(controllers.API.updateInformation)
+    case controllers_Relation_unblock50_route(params) =>
+      call(params.fromPath[String]("userId", None)) { (userId) =>
+        controllers_Relation_unblock50_invoker.call(controllers.Relation.unblock(userId))
       }
   
     // @LINE:74
-    case controllers_API_getInformationUser51_route(params) =>
+    case controllers_API_getSelfInformation51_route(params) =>
+      call { 
+        controllers_API_getSelfInformation51_invoker.call(controllers.API.getSelfInformation)
+      }
+  
+    // @LINE:75
+    case controllers_API_updateInformation52_route(params) =>
+      call { 
+        controllers_API_updateInformation52_invoker.call(controllers.API.updateInformation)
+      }
+  
+    // @LINE:77
+    case controllers_API_getInformationUser53_route(params) =>
       call(params.fromPath[String]("user", None)) { (user) =>
-        controllers_API_getInformationUser51_invoker.call(controllers.API.getInformationUser(user))
+        controllers_API_getInformationUser53_invoker.call(controllers.API.getInformationUser(user))
       }
   
     // @LINE:78
-    case controllers_Assets_at52_route(params) =>
-      call(Param[String]("path", Right("/public")), Param[String]("file", Right("google5106a805f9682e1e.html"))) { (path, file) =>
-        controllers_Assets_at52_invoker.call(controllers.Assets.at(path, file))
+    case controllers_API_getListFollower54_route(params) =>
+      call(params.fromPath[String]("userId", None)) { (userId) =>
+        controllers_API_getListFollower54_invoker.call(controllers.API.getListFollower(userId))
       }
   
     // @LINE:79
-    case controllers_Assets_at53_route(params) =>
+    case controllers_API_getListFriend55_route(params) =>
+      call(params.fromPath[String]("userId", None)) { (userId) =>
+        controllers_API_getListFriend55_invoker.call(controllers.API.getListFriend(userId))
+      }
+  
+    // @LINE:83
+    case controllers_Assets_at56_route(params) =>
+      call(Param[String]("path", Right("/public")), Param[String]("file", Right("google5106a805f9682e1e.html"))) { (path, file) =>
+        controllers_Assets_at56_invoker.call(controllers.Assets.at(path, file))
+      }
+  
+    // @LINE:84
+    case controllers_Assets_at57_route(params) =>
       call(Param[String]("path", Right("/public")), Param[String]("file", Right("robots.txt"))) { (path, file) =>
-        controllers_Assets_at53_invoker.call(controllers.Assets.at(path, file))
+        controllers_Assets_at57_invoker.call(controllers.Assets.at(path, file))
       }
   
-    // @LINE:80
-    case controllers_Assets_at54_route(params) =>
+    // @LINE:85
+    case controllers_Assets_at58_route(params) =>
       call(Param[String]("path", Right("/public")), Param[String]("file", Right("sitemap.xml"))) { (path, file) =>
-        controllers_Assets_at54_invoker.call(controllers.Assets.at(path, file))
+        controllers_Assets_at58_invoker.call(controllers.Assets.at(path, file))
       }
   
-    // @LINE:81
-    case controllers_Assets_at55_route(params) =>
+    // @LINE:86
+    case controllers_Assets_at59_route(params) =>
       call(Param[String]("path", Right("/public")), params.fromPath[String]("file", None)) { (path, file) =>
-        controllers_Assets_at55_invoker.call(controllers.Assets.at(path, file))
+        controllers_Assets_at59_invoker.call(controllers.Assets.at(path, file))
       }
   }
 }

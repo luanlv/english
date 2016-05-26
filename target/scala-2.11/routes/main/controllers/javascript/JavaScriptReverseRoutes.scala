@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
 // @SOURCE:/mnt/ramdisk/mainapp/conf/routes
-// @DATE:Sun Apr 17 11:11:24 ICT 2016
+// @DATE:Thu May 26 05:20:56 ICT 2016
 
 import play.api.routing.JavaScriptReverseRoute
 import play.api.mvc.{ QueryStringBindable, PathBindable, Call, JavascriptLiteral }
@@ -14,7 +14,7 @@ import _root_.controllers.Assets.Asset
 package controllers.javascript {
   import ReverseRouteContext.empty
 
-  // @LINE:78
+  // @LINE:83
   class ReverseAssets(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -22,7 +22,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:78
+    // @LINE:83
     def at: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Assets.at",
       """
@@ -50,7 +50,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:14
+  // @LINE:17
   class ReverseChat(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -58,7 +58,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:15
+    // @LINE:18
     def chatRoom: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Chat.chatRoom",
       """
@@ -68,7 +68,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:14
+    // @LINE:17
     def chatRooms: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Chat.chatRooms",
       """
@@ -80,7 +80,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:55
+  // @LINE:58
   class ReverseImageCtrl(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -88,7 +88,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:56
+    // @LINE:59
     def upload: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.ImageCtrl.upload",
       """
@@ -98,7 +98,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:55
+    // @LINE:58
     def get: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.ImageCtrl.get",
       """
@@ -110,7 +110,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:39
+  // @LINE:42
   class ReverseAuth(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -118,7 +118,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:48
+    // @LINE:51
     def passwordResetSent: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.passwordResetSent",
       """
@@ -128,7 +128,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:46
+    // @LINE:49
     def passwordReset: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.passwordReset",
       """
@@ -138,7 +138,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:44
+    // @LINE:47
     def checkYourEmail: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.checkYourEmail",
       """
@@ -148,7 +148,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:49
+    // @LINE:52
     def passwordResetConfirm: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.passwordResetConfirm",
       """
@@ -158,7 +158,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:42
+    // @LINE:45
     def signup: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.signup",
       """
@@ -168,7 +168,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:47
+    // @LINE:50
     def passwordResetApply: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.passwordResetApply",
       """
@@ -178,7 +178,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:41
+    // @LINE:44
     def logout: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.logout",
       """
@@ -188,7 +188,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:50
+    // @LINE:53
     def passwordResetConfirmApply: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.passwordResetConfirmApply",
       """
@@ -198,7 +198,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:43
+    // @LINE:46
     def signupPost: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.signupPost",
       """
@@ -208,7 +208,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:51
+    // @LINE:54
     def setFingerprint: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.setFingerprint",
       """
@@ -218,7 +218,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:45
+    // @LINE:48
     def signupConfirmEmail: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.signupConfirmEmail",
       """
@@ -228,7 +228,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:40
+    // @LINE:43
     def authenticate: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.authenticate",
       """
@@ -238,7 +238,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:39
+    // @LINE:42
     def login: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Auth.login",
       """
@@ -250,7 +250,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:35
+  // @LINE:38
   class ReverseMonitor(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -258,7 +258,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:37
+    // @LINE:40
     def status: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Monitor.status",
       """
@@ -268,7 +268,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:35
+    // @LINE:38
     def index: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Monitor.index",
       """
@@ -278,7 +278,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:36
+    // @LINE:39
     def websocket: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Monitor.websocket",
       """
@@ -290,7 +290,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:59
+  // @LINE:62
   class ReverseRelation(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -298,7 +298,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:66
+    // @LINE:69
     def unfriend: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Relation.unfriend",
       """
@@ -308,7 +308,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:65
+    // @LINE:68
     def friend: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Relation.friend",
       """
@@ -318,7 +318,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:60
+    // @LINE:63
     def request: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Relation.request",
       """
@@ -328,7 +328,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:69
+    // @LINE:72
     def unblock: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Relation.unblock",
       """
@@ -338,7 +338,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:62
+    // @LINE:65
     def unrequest: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Relation.unrequest",
       """
@@ -348,7 +348,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:68
+    // @LINE:71
     def block: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Relation.block",
       """
@@ -358,7 +358,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:61
+    // @LINE:64
     def unfollow: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Relation.unfollow",
       """
@@ -368,7 +368,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:63
+    // @LINE:66
     def reject: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Relation.reject",
       """
@@ -378,7 +378,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:59
+    // @LINE:62
     def follow: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Relation.follow",
       """
@@ -408,7 +408,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:19
+    // @LINE:22
     def user: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Application.user",
       """
@@ -418,7 +418,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:16
+    // @LINE:19
     def json: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Application.json",
       """
@@ -444,7 +444,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:20
+  // @LINE:23
   class ReverseUser(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -452,7 +452,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:20
+    // @LINE:23
     def showMini: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.User.showMini",
       """
@@ -464,7 +464,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:33
+  // @LINE:36
   class ReverseMain(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -472,7 +472,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:33
+    // @LINE:36
     def websocket: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Main.websocket",
       """
@@ -492,7 +492,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:72
+    // @LINE:75
     def updateInformation: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.updateInformation",
       """
@@ -502,7 +502,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:12
+    // @LINE:15
     def getQuestion: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.getQuestion",
       """
@@ -512,7 +512,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:30
+    // @LINE:33
     def voteAnswer: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.voteAnswer",
       """
@@ -522,7 +522,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:28
+    // @LINE:31
     def unlikePost: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.unlikePost",
       """
@@ -532,7 +532,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:11
+    // @LINE:14
     def getAllQuestion: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.getAllQuestion",
       """
@@ -542,7 +542,27 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:71
+    // @LINE:79
+    def getListFriend: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.API.getListFriend",
+      """
+        function(userId) {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/listfriend/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("userId", encodeURIComponent(userId))})
+        }
+      """
+    )
+  
+    // @LINE:12
+    def hotQuestion: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.API.hotQuestion",
+      """
+        function() {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "qa/hotquestion"})
+        }
+      """
+    )
+  
+    // @LINE:74
     def getSelfInformation: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.getSelfInformation",
       """
@@ -552,7 +572,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:27
+    // @LINE:30
     def likePost: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.likePost",
       """
@@ -562,7 +582,17 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:22
+    // @LINE:11
+    def newQuestion: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.API.newQuestion",
+      """
+        function() {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "qa/newquestion"})
+        }
+      """
+    )
+  
+    // @LINE:25
     def doPost: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.doPost",
       """
@@ -572,7 +602,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:23
+    // @LINE:26
     def getPost: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.getPost",
       """
@@ -582,7 +612,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:25
+    // @LINE:28
     def viewQuestion: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.viewQuestion",
       """
@@ -592,7 +622,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:24
+    // @LINE:27
     def viewPost: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.viewPost",
       """
@@ -612,7 +642,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:74
+    // @LINE:77
     def getInformationUser: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.getInformationUser",
       """
@@ -622,7 +652,17 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:29
+    // @LINE:78
+    def getListFollower: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.API.getListFollower",
+      """
+        function(userId) {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/listfollow/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("userId", encodeURIComponent(userId))})
+        }
+      """
+    )
+  
+    // @LINE:32
     def vote: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.API.vote",
       """

@@ -73,6 +73,18 @@ object API extends LilaController {
     }
   }
 
+  def getListFollower(username: String) = Open { implicit  ctx =>
+    relationApi.followers(username).map {
+      listPeople => Ok(Json.toJson(listPeople))
+    }
+  }
+
+  def getListFriend(username: String) = Open { implicit  ctx =>
+    friendshipApi.friends(username).map {
+      listPeople => Ok(Json.toJson(listPeople))
+    }
+  }
+
   def doPost =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
     val req = ctx.body
     val content = ((Json.parse(req.body.toString).as[JsObject]\"content").as[String]).replaceAll("\\n\\n\\s*\\n", "\n\n").replaceAll("[ \\t\\x0B\\f]+", " ").trim()
@@ -110,6 +122,17 @@ object API extends LilaController {
 //      case None => BadRequest.fuccess
 //    }
 //  }
+  def newQuestion = Open { implicit ctx =>
+    questionApi.getNewQuestion.map {
+      listQuestion => Ok(Json.toJson(listQuestion))
+    }
+  }
+
+  def hotQuestion = Open { implicit ctx =>
+    questionApi.getHotQuestion.map {
+      listQuestion => Ok(Json.toJson(listQuestion))
+    }
+  }
 
   def doAsk =  OpenBody(BodyParsers.parse.tolerantJson) { implicit ctx =>
     val req = ctx.body

@@ -75,6 +75,25 @@ object PostRepo {
       .collect[List](10)
   }
 
+  def getMorePost(userId: String, ids: Set[ID], timepoint: DateTime): Fu[List[Post]] = {
+    coll.find(BSONDocument("userId" -> BSONDocument("$in" -> ids), "published" -> BSONDocument("$lt" -> timepoint)),
+      BSONDocument(
+        "_id" -> 1,
+        "content" -> 1,
+        "userId" -> 1,
+        "published" -> 1,
+        "likeCount" -> 1,
+        "likes" -> BSONDocument("$elemMatch" -> BSONDocument("$eq" -> userId)),
+        "shareCount" -> 1,
+        "shares" -> 1,
+        "commentCount" -> 1
+      )
+    )
+      .sort(BSONDocument("published" -> -1))
+      .cursor[Post]()
+      .collect[List](10)
+  }
+
   def like(userId: String, postId: String) = {
     coll.update(
       BSONDocument("_id" -> postId, "likes" -> BSONDocument("$ne" -> userId)),

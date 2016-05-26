@@ -87,7 +87,7 @@ var Chat = {
                   wsCtrl.friendFlag = false;
                   rd.right(function(){m.redraw()})
                 }}
-            ></span>
+            > X </span>
             <div className="ui segment  noSha noBor pad0">
               <div className="ui top attached tabular two item  menu" style="margin-top: 5px;">
                 <a className={(!wsCtrl.data.showOnline?("active"):("")) + " item pad0"}

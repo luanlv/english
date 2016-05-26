@@ -11,7 +11,8 @@ var Qa = {
     var ctrl = this;
     ctrl.server = initData.dashboard || {server: false};
 
-    if(!wsCtrl.data.qa.init && m.route.param("questionId") === undefined){
+    // if(!wsCtrl.data.qa.init && m.route.param("questionId") === undefined){
+    if(m.route.param("questionId") === undefined){
       wsCtrl.send(wsCtrl.sendData("initQA", {}));
     }
 
@@ -19,6 +20,12 @@ var Qa = {
       wsCtrl.question().answer = wsCtrl.question().answer.reverse();
       //api.showPost(wsCtrl.post().post.id);
     };
+
+    ctrl.setupHotQuestion = function(){
+      wsCtrl.initHotQuestion = true;
+    };
+
+    wsCtrl.request2 = api.requestWithFeedback2({method: "GET", url: "/qa/hotquestion" }, wsCtrl.hotQuestion, ctrl.setupHotQuestion);
 
     ctrl.inputAnswer = m.prop("");
     ctrl.sendAnswer = function(){
@@ -64,19 +71,18 @@ var Qa = {
             <div className="five wide column mh500">
               <div className="ui  home-post-Wr mh500">
                 <div className="trending">
-                  <h3>HOT NETWORK QUESTIONS (fake)</h3>
-                  <ul>
-                    <li>What is the most terrifying experience you have had while travelling?</li>
-                    <li>Which actors have won Oscars without an Oscar-worthy performance?</li>
-                    <li>Does vending machine black coffee contain sugar?</li>
-                    <li>What famous movie lines were dramatic and serious or poignant at the time but now are almost comical in pop culture?</li>
-                    <li>Which is the most astonishing piece of code you've ever seen in your life?</li>
-                    <li>What do natives call San Francisco?</li>
-                    <li>Why does "The Force Awakens" use an image language associated with national socialism for the First Order?</li>
-                    <li>A Treasure Chest for your Post-apocalyptic Children</li>
-                    <li>Phrase when you offer someone something but it's really them who are paying for it</li>
-                    <li>Why do academic journals usually have continuous page numbering?</li>
-                  </ul>
+                  <h3>Câu hỏi HOT</h3>
+                     {!wsCtrl.initHotQuestion?(
+                         "loading !!"
+                     ):(
+                         <ul>
+                           {wsCtrl.hotQuestion().map(function(question){
+                             return (<li>
+                               <a className="route" href={"/qa/" + question.id}>{question.question}</a>
+                             </li>)
+                           })}
+                         </ul>
+                     )}
                 </div>
 
               </div>
@@ -94,20 +100,20 @@ Qa.list = function(ctrl, questions){
           <a className={((m.route() === '/qa')?"active":"") + " item route" }  href="/qa">
             New Questions
           </a>
-          <a className="item">
-            Hot Questions
-          </a>
+          {/*<a className="item">*/}
+            {/*Hot Questions*/}
+          {/*</a>*/}
           <a className={((m.route() === '/qa/new')?"active":"") + " item route"} href="/qa/new">
             Add a new question
           </a>
-          <div className="right menu">
-            <div className="item">
-              <div className="ui transparent icon input">
-                <input type="text" placeholder="Search users..." />
-                  <i className="search link icon"></i>
-              </div>
-            </div>
-          </div>
+          {/*<div className="right menu">*/}
+            {/*<div className="item">*/}
+              {/*<div className="ui transparent icon input">*/}
+                {/*<input type="text" placeholder="Search users..." />*/}
+                  {/*<i className="search link icon"></i>*/}
+              {/*</div>*/}
+            {/*</div>*/}
+          {/*</div>*/}
         </div>
         <div className="ui bottom attached segment ">
           {(m.route() !== '/qa/new')?(
@@ -135,6 +141,7 @@ Qa.list = function(ctrl, questions){
                       .done(function(data, textStatus, jqXHR){
                           el.reset();
                           $(el).removeClass('loading');
+                          m.route("/qa/")
                       })
                       .fail(function(jqXHR, textStatus, errorThrown){
                           console.log("Ajax problem: " + textStatus + ". " + errorThrown);

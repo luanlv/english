@@ -153,6 +153,16 @@ object Handler {
         }
       }
 
+        case("morePost", o) => {
+          val obj = (o obj "d").get
+          val time = (obj long "time").get
+          (hub.actor.activity ? MorePost(userId.get, time)) foreach {
+            case posts: JsValue => {
+              socket ! SendMorePost(uid, posts)
+            }
+          }
+        }
+
       case ("subPost", o) => {
         val obj = (o obj "d").get
         (obj str "id") foreach { postId =>
